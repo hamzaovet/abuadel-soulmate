@@ -1,0 +1,39 @@
+{
+  "name": "abuadel-soulmate",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack --port 3099",
+    "build": "next build --webpack",
+    "start": "next start --port 3099",
+    "postinstall": "prisma generate",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "npx tsx scripts/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.10.1",
+    "@prisma/client": "^7.10.1",
+    "@tailwindcss/postcss": "^4",
+    "dotenv": "^16.4.7",
+    "lucide-react": "^1.61.0",
+    "next": "16.4.3",
+    "nodemailer": "^10.4.0",
+    "pg": "^8.13.1",
+    "prisma": "^7.10.1",
+    "qrcode": "^1.5.4",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "tailwindcss": "^4"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/nodemailer": "^8.0.2",
+    "@types/pg": "^8.11.10",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tsx": "^4.23.15",
+    "typescript": "^5"
+  }
+}

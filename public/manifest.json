@@ -1,0 +1,21 @@
+{
+  "name": "حلواني أبو عادل & سول ميت كافيه VIP",
+  "short_name": "أبو عادل & Soulmate",
+  "description": "المنظومة السحابية الذكية لإدارة حلواني أبو عادل وسول ميت كافيه والطلب بالـ QR",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07070a",
+  "theme_color": "#d97706",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,277 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/client"
+}
+
+// ----------------------------------------------------
+// 1. OUTLETS & BRANDS (سول ميت كافيه & حلواني أبو عادل)
+// ----------------------------------------------------
+model Outlet {
+  id        String   @id @default(cuid())
+  name      String // "سول ميت كافيه (Soulmate Cafe)" | "حلواني أبو عادل (Abu Adel Patisserie)"
+  code      String   @unique // "SOULMATE_CAFE" | "ABU_ADEL_PATISSERIE"
+  type      String   @default("CAFE") // "CAFE" | "PASTRY_SHOP"
+  address   String
+  phone     String
+  whatsapp  String?
+  logoUrl   String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  users        User[]
+  tables       DiningTable[]
+  menuItems    MenuItem[]
+  rawMaterials RawMaterial[]
+  orders       Order[]
+  shifts       Shift[]
+  expenses     Expense[]
+}
+
+// ----------------------------------------------------
+// 2. USERS, ROLES & PERMISSIONS (المستخدمين وطاقم العمل)
+// ----------------------------------------------------
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  username     String   @unique
+  passwordHash String
+  pin          String   @default("159920") // PIN code for quick cashier / POS switches
+  phone        String?
+  role         String   @default("cashier") // owner, general_manager, branch_manager, cashier, barista, chef, waiter
+  outletId     String?
+  outlet       Outlet?  @relation(fields: [outletId], references: [id], onDelete: SetNull)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+}
+
+// ----------------------------------------------------
+// 3. DINING TABLES & ZONES (ترابيزات كافيه سول ميت)
+// ----------------------------------------------------
+model DiningTable {
+  id            String   @id @default(cuid())
+  outletId      String
+  outlet        Outlet   @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  tableNumber   String // "T-01", "T-02", "VIP-1", "TERRACE-2"
+  zone          String   @default("INDOOR") // "INDOOR", "OUTDOOR", "VIP_LOUNGE"
+  capacity      Int      @default(4)
+  status        String   @default("AVAILABLE") // "AVAILABLE", "OCCUPIED", "BILL_REQUESTED", "RESERVED"
+  activeOrderId String?
+  qrCodeUrl     String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+
+  orders Order[]
+}
+
+// ----------------------------------------------------
+// 4. MENU ITEMS & FINISHED GOODS (أصناف الكافيه وحلواني أبو عادل)
+// ----------------------------------------------------
+model MenuItem {
+  id                    String   @id @default(cuid())
+  outletId              String
+  outlet                Outlet   @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  nameAr                String
+  nameEn                String?
+  category              String // HOT_COFFEE, COLD_COFFEE, BEVERAGES, WAFFLES_PANCAKES, ORIENTAL_SWEETS, WESTERN_PASTRY, CAKES_TORTES, ICE_CREAM, GIFT_BOXES
+  price                 Float
+  costPrice             Float    @default(0) // Calculated from Recipe or purchase cost
+  durationMinutes       Int      @default(5)
+  description           String?
+  image                 String?
+  itemType              String   @default("PREPARED_BEVERAGE") // "PREPARED_BEVERAGE" (uses recipe) | "READY_PASTRY" (finished unit) | "RETAIL"
+  unitType              String   @default("PIECE") // "PIECE", "PORTION", "KG", "BOX"
+  stockQty              Int      @default(100) // For ready-made pastries, tortes, boxes
+  minStockAlert         Int      @default(10)
+  isAvailable           Boolean  @default(true)
+  sortOrder             Int      @default(0)
+  loyaltyPointsEarned   Int      @default(5)
+  loyaltyPointsRequired Int      @default(50)
+  createdAt             DateTime @default(now())
+
+  recipes RecipeItem[]
+}
+
+// ----------------------------------------------------
+// 5. RAW MATERIALS INVENTORY (خامات البار ومخزن المشروبات)
+// ----------------------------------------------------
+model RawMaterial {
+  id            String   @id @default(cuid())
+  outletId      String
+  outlet        Outlet   @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  nameAr        String // بن إسبريسو حبوب، حليب كامل الدسم، سيرب فانيليا، صوص لوتس، أكواب ورقية
+  unit          String   @default("GRAM") // "GRAM", "ML", "PIECE", "PUMP"
+  currentStock  Float    @default(1000)
+  minStockAlert Float    @default(200)
+  costPerUnit   Float    @default(0.5) // EGP per Gram or ML
+  supplierName  String?
+  notes         String?
+  updatedAt     DateTime @default(now()) @updatedAt
+
+  recipeUsage RecipeItem[]
+}
+
+// ----------------------------------------------------
+// 6. RECIPES & BILL OF MATERIALS (الريسيبي وخصم الخامات)
+// ----------------------------------------------------
+model RecipeItem {
+  id            String      @id @default(cuid())
+  menuItemId    String
+  menuItem      MenuItem    @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  rawMaterialId String
+  rawMaterial   RawMaterial @relation(fields: [rawMaterialId], references: [id], onDelete: Cascade)
+  qtyRequired   Float // 18 grams, 160 ml, 1 piece
+  createdAt     DateTime    @default(now())
+
+  @@unique([menuItemId, rawMaterialId])
+}
+
+// ----------------------------------------------------
+// 7. CUSTOMERS & LOYALTY CRM (قاعدة العملاء وبرنامج الولاء)
+// ----------------------------------------------------
+model Customer {
+  id            String   @id @default(cuid())
+  name          String
+  phone         String   @unique
+  email         String?
+  loyaltyPoints Int      @default(0)
+  totalSpent    Float    @default(0)
+  visitCount    Int      @default(0)
+  notes         String?
+  createdAt     DateTime @default(now())
+
+  orders Order[]
+}
+
+// ----------------------------------------------------
+// 8. ORDERS & TICKETS (الطلبات والشيكات والفواتير)
+// ----------------------------------------------------
+model Order {
+  id            String       @id @default(cuid())
+  outletId      String
+  outlet        Outlet       @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  orderNumber   String       @unique // "SOUL-1001" or "ADEL-1001"
+  orderType     String       @default("DINE_IN") // "DINE_IN", "TAKEAWAY", "DELIVERY"
+  tableId       String?
+  table         DiningTable? @relation(fields: [tableId], references: [id], onDelete: SetNull)
+  tableNumber   String?
+  status        String       @default("NEW_PENDING") // "NEW_PENDING", "PREPARING", "READY_TO_SERVE", "COMPLETED", "CANCELLED"
+  paymentStatus String       @default("PENDING") // "PENDING", "PAID"
+  paymentMethod String       @default("CASH") // "CASH", "CARD", "INSTAPAY", "VODAFONE_CASH", "SPLIT"
+
+  subtotal       Float @default(0)
+  serviceCharge  Float @default(0)
+  taxAmount      Float @default(0)
+  discountAmount Float @default(0)
+  tipAmount      Float @default(0)
+  finalAmount    Float @default(0)
+
+  cashierName   String?
+  waiterName    String?
+  customerName  String?
+  customerPhone String?
+  customerId    String?
+  customer      Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  pointsEarned   Int     @default(0)
+  pointsRedeemed Int     @default(0)
+  notes          String?
+  items          String // JSON Array of ordered items [{ menuItemId, nameAr, price, qty, notes, itemType }]
+
+  createdAt DateTime  @default(now())
+  settledAt DateTime?
+
+  kdsTickets KdsTicket[]
+}
+
+// ----------------------------------------------------
+// 9. KDS (KITCHEN & BARISTA DISPLAY SYSTEM - شاشة المطبخ والبار)
+// ----------------------------------------------------
+model KdsTicket {
+  id           String    @id @default(cuid())
+  orderId      String
+  order        Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  station      String    @default("BARISTA") // "BARISTA", "KITCHEN", "PASTRY_COUNTER"
+  itemsSummary String // JSON or formatted string of items for this station
+  status       String    @default("QUEUED") // "QUEUED", "IN_PREPARATION", "DONE"
+  createdAt    DateTime  @default(now())
+  completedAt  DateTime?
+}
+
+// ----------------------------------------------------
+// 10. SHIFTS & CASH REGISTER (الورديات والخزنة وتقفيل الدرج)
+// ----------------------------------------------------
+model Shift {
+  id               String  @id @default(cuid())
+  outletId         String
+  outlet           Outlet  @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  shiftNumber      Int     @default(1)
+  openedBy         String // Cashier name
+  closedBy         String?
+  openingCashFloat Float   @default(500) // فكة الدرج الافتتاحية
+  expectedCash     Float   @default(0)
+  actualCash       Float   @default(0)
+  difference       Float   @default(0) // Actual - Expected
+
+  cashCollected     Float @default(0)
+  visaCollected     Float @default(0)
+  instapayCollected Float @default(0)
+  vodafoneCollected Float @default(0)
+  totalRevenue      Float @default(0)
+  expensesTotal     Float @default(0)
+  ticketsCount      Int   @default(0)
+
+  handedTo String? // المالك أو مدير الفرع المستلم
+  notes    String?
+  status   String    @default("OPEN") // "OPEN", "CLOSED"
+  openedAt DateTime  @default(now())
+  closedAt DateTime?
+}
+
+// ----------------------------------------------------
+// 11. EXPENSES & PETTY CASH (المصروفات والنثريات اليومية)
+// ----------------------------------------------------
+model Expense {
+  id         String   @id @default(cuid())
+  outletId   String
+  outlet     Outlet   @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  title      String
+  amount     Float
+  category   String   @default("SUPPLIES") // "RAW_MATERIALS", "SUPPLIES", "MAINTENANCE", "SALARIES", "UTILITIES", "MISC"
+  recordedBy String
+  notes      String?
+  createdAt  DateTime @default(now())
+}
+
+// ----------------------------------------------------
+// 12. SYSTEM SETTINGS & LOYALTY TOGGLE (الإعدادات العامة والولاء)
+// ----------------------------------------------------
+model SystemSettings {
+  id            String @id @default("default-settings")
+  brandNameAr   String @default("مجموعة أبو عادل وسول ميت كافيه (حلواني & كافيه عصري)")
+  brandNameEn   String @default("ABU ADEL PATISSERIE & SOULMATE CAFE")
+  soulmatePhone String @default("01099887766")
+  abuAdelPhone  String @default("15992")
+  hotline       String @default("15992")
+  whatsapp      String @default("01099887766")
+  haliyomakUrl  String @default("https://haliyomak.com/")
+  facebookUrl   String @default("https://www.facebook.com/hashtag/soulmate_cafe")
+
+  serviceChargePercent   Float   @default(12.0)
+  taxPercent             Float   @default(14.0)
+  isServiceChargeEnabled Boolean @default(false)
+  isTaxEnabled           Boolean @default(false)
+
+  // 👑 زر تفعيل / تعطيل برنامج الولاء في أي وقت
+  isLoyaltyEnabled    Boolean @default(true)
+  pointsPerPoundSpent Float   @default(0.1) // 1 point per 10 EGP
+  poundValuePerPoint  Float   @default(0.5) // Each point = 0.5 EGP
+
+  receiptFooterNotes String   @default("شكراً لزيارتكم حلواني أبو عادل وسول ميت كافيه • حلي يومك واستمتع بقهوتك ☕🍰")
+  systemLocked       Boolean  @default(false)
+  lockMessage        String   @default("النظام مغلق مؤقتاً لأعمال الجرد والصيانة الدورية.")
+  updatedAt          DateTime @default(now()) @updatedAt
+}

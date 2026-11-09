@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="adelBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a0d16" />
+      <stop offset="100%" stop-color="#0e0408" />
+    </linearGradient>
+    <linearGradient id="adelGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="50%" stop-color="#eab308" />
+      <stop offset="100%" stop-color="#ca8a04" />
+    </linearGradient>
+    <linearGradient id="ruby" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fb7185" />
+      <stop offset="100%" stop-color="#e11d48" />
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="40" fill="url(#adelBg)" stroke="url(#adelGold)" stroke-width="4" />
+  <!-- Pastry Crown & Cake -->
+  <path d="M55 125 H145 V140 C145 145 140 148 135 148 H65 C60 148 55 145 55 140 Z" fill="url(#adelGold)" />
+  <!-- Cake Base Tier 2 -->
+  <path d="M68 95 H132 V125 H68 Z" fill="none" stroke="url(#adelGold)" stroke-width="5" />
+  <!-- Cake Top Cherries -->
+  <circle cx="85" cy="80" r="8" fill="url(#ruby)" />
+  <circle cx="115" cy="80" r="8" fill="url(#ruby)" />
+  <circle cx="100" cy="74" r="9" fill="url(#adelGold)" />
+  <!-- Chef Crown Star -->
+  <path d="M100 35 L106 50 L122 51 L110 61 L114 76 L100 67 L86 76 L90 61 L78 51 L94 50 Z" fill="url(#adelGold)" />
+  <!-- Text -->
+  <text x="100" y="172" font-family="'Cairo', sans-serif" font-weight="900" font-size="19" fill="url(#adelGold)" text-anchor="middle">حلواني أبو عادل</text>
+  <text x="100" y="188" font-family="sans-serif" font-weight="700" font-size="9" fill="#fecdd3" text-anchor="middle" letter-spacing="1.5">حـلّـي يـومـك • 15992</text>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1005" />
+      <stop offset="100%" stop-color="#090502" />
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde047" />
+      <stop offset="50%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#92400e" />
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="40" fill="url(#bg)" stroke="url(#gold)" stroke-width="4" />
+  <!-- Coffee Cup -->
+  <path d="M50 75 H140 V115 C140 140 120 155 95 155 C70 155 50 140 50 115 Z" fill="none" stroke="url(#gold)" stroke-width="7" stroke-linecap="round" />
+  <!-- Handle -->
+  <path d="M140 85 C158 85 165 95 165 105 C165 118 152 125 140 125" fill="none" stroke="url(#gold)" stroke-width="6" stroke-linecap="round" />
+  <!-- Heart Latte Art inside -->
+  <path d="M95 95 C90 85 78 88 78 98 C78 110 95 125 95 125 C95 125 112 110 112 98 C112 88 100 85 95 95 Z" fill="url(#gold)" />
+  <!-- Steam lines -->
+  <path d="M80 55 Q75 42 82 32" fill="none" stroke="url(#gold)" stroke-width="4" stroke-linecap="round" opacity="0.8" />
+  <path d="M95 55 Q100 40 93 30" fill="none" stroke="url(#gold)" stroke-width="4" stroke-linecap="round" opacity="0.9" />
+  <path d="M110 55 Q105 42 112 32" fill="none" stroke="url(#gold)" stroke-width="4" stroke-linecap="round" opacity="0.8" />
+  <!-- Text -->
+  <text x="100" y="180" font-family="sans-serif" font-weight="900" font-size="15" fill="url(#gold)" text-anchor="middle" letter-spacing="2">SOULMATE</text>
+</svg>

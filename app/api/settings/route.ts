@@ -1,0 +1,55 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
+
+export async function GET() {
+  try {
+    let settings = await prisma.systemSettings.findFirst();
+    if (!settings) {
+      settings = await prisma.systemSettings.create({
+        data: { id: "default-settings" },
+      });
+    }
+    return NextResponse.json({ success: true, settings });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}
+
+export async function PATCH(req: Request) {
+  try {
+    const body = await req.json();
+    const settings = await prisma.systemSettings.upsert({
+      where: { id: "default-settings" },
+      update: {
+        ...(body.brandNameAr !== undefined && { brandNameAr: body.brandNameAr }),
+        ...(body.brandNameEn !== undefined && { brandNameEn: body.brandNameEn }),
+        ...(body.soulmatePhone !== undefined && { soulmatePhone: body.soulmatePhone }),
+        ...(body.abuAdelPhone !== undefined && { abuAdelPhone: body.abuAdelPhone }),
+        ...(body.hotline !== undefined && { hotline: body.hotline }),
+        ...(body.whatsapp !== undefined && { whatsapp: body.whatsapp }),
+        ...(body.haliyomakUrl !== undefined && { haliyomakUrl: body.haliyomakUrl }),
+        ...(body.facebookUrl !== undefined && { facebookUrl: body.facebookUrl }),
+        ...(body.serviceChargePercent !== undefined && { serviceChargePercent: Number(body.serviceChargePercent) }),
+        ...(body.taxPercent !== undefined && { taxPercent: Number(body.taxPercent) }),
+        ...(body.isServiceChargeEnabled !== undefined && { isServiceChargeEnabled: Boolean(body.isServiceChargeEnabled) }),
+        ...(body.isTaxEnabled !== undefined && { isTaxEnabled: Boolean(body.isTaxEnabled) }),
+        ...(body.isLoyaltyEnabled !== undefined && { isLoyaltyEnabled: Boolean(body.isLoyaltyEnabled) }),
+        ...(body.pointsPerPoundSpent !== undefined && { pointsPerPoundSpent: Number(body.pointsPerPoundSpent) }),
+        ...(body.poundValuePerPoint !== undefined && { poundValuePerPoint: Number(body.poundValuePerPoint) }),
+        ...(body.receiptFooterNotes !== undefined && { receiptFooterNotes: body.receiptFooterNotes }),
+        ...(body.systemLocked !== undefined && { systemLocked: Boolean(body.systemLocked) }),
+        ...(body.lockMessage !== undefined && { lockMessage: body.lockMessage }),
+      },
+      create: {
+        id: "default-settings",
+        ...body,
+      },
+    });
+
+    return NextResponse.json({ success: true, settings });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}
