@@ -137,7 +137,7 @@ export default function AdminDashboardPage() {
   const [reservations, setReservations] = useState<any[]>([]);
   const [chatMessages, setChatMessages] = useState<any[]>([]);
 
-  // Modals
+  // Modals & Sliders
   const [showQRModal, setShowQRModal] = useState(false);
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [showRawMaterialModal, setShowRawMaterialModal] = useState(false);
@@ -148,6 +148,34 @@ export default function AdminDashboardPage() {
   const [showRecipeModal, setShowRecipeModal] = useState(false);
   const [showPastryModal, setShowPastryModal] = useState(false);
   const [selectedMenuItemForRecipe, setSelectedMenuItemForRecipe] = useState<any>(null);
+
+  // Opening Stock Modal States
+  const [selectedRawForOpening, setSelectedRawForOpening] = useState<any>(null);
+  const [showRawOpeningModal, setShowRawOpeningModal] = useState(false);
+  const [rawOpeningValue, setRawOpeningValue] = useState("");
+
+  const [selectedPastryForOpening, setSelectedPastryForOpening] = useState<any>(null);
+  const [showPastryOpeningModal, setShowPastryOpeningModal] = useState(false);
+  const [pastryOpeningValue, setPastryOpeningValue] = useState("");
+
+  // Abu Adel Pastry ERP States
+  const [pastryInventory, setPastryInventory] = useState<any[]>([]);
+  const [pastrySubTab, setPastrySubTab] = useState<"cards" | "audit">("cards");
+  const [pastryAuditCounts, setPastryAuditCounts] = useState<Record<string, string>>({});
+  const [isSubmittingPastryAudit, setIsSubmittingPastryAudit] = useState(false);
+  const [pastrySearchQuery, setPastrySearchQuery] = useState("");
+  const [pastryCategoryFilter, setPastryCategoryFilter] = useState("ALL");
+  const [selectedPastryForInbound, setSelectedPastryForInbound] = useState<any>(null);
+  const [showPastryInboundModal, setShowPastryInboundModal] = useState(false);
+  const [pastryInboundForm, setPastryInboundForm] = useState({
+    quantity: "",
+    unitCost: "",
+    supplierName: "",
+    invoiceNumber: "",
+    notes: "",
+  });
+  const [selectedPastryForMovements, setSelectedPastryForMovements] = useState<any>(null);
+  const [showPastryMovementsModal, setShowPastryMovementsModal] = useState(false);
 
   // Sub-tabs for Recipes / Inventory Tab
   const [recipeSubTab, setRecipeSubTab] = useState<"cards" | "audit" | "bom">("cards");
@@ -264,6 +292,7 @@ export default function AdminDashboardPage() {
         expensesRes,
         recipesRes,
         menuRes,
+        pastryRes,
         ordersRes,
         customersRes,
         tablesRes,
@@ -277,6 +306,7 @@ export default function AdminDashboardPage() {
         fetch(`/api/expenses${outletParam}`),
         fetch(`/api/recipes${outletParam}`),
         fetch(`/api/menu${outletParam}`),
+        fetch(`/api/pastry-inventory${outletParam}`),
         fetch(`/api/orders${outletParam}`),
         fetch("/api/customers"),
         fetch(`/api/tables${outletParam}`),
@@ -292,6 +322,7 @@ export default function AdminDashboardPage() {
         expensesData,
         recipesData,
         menuData,
+        pastryData,
         ordersData,
         customersData,
         tablesData,
@@ -305,6 +336,7 @@ export default function AdminDashboardPage() {
         expensesRes.json(),
         recipesRes.json(),
         menuRes.json(),
+        pastryRes.json(),
         ordersRes.json(),
         customersRes.json(),
         tablesRes.json(),
@@ -319,6 +351,7 @@ export default function AdminDashboardPage() {
       if (expensesData.success) setExpenses(expensesData.expenses);
       if (recipesData.success) setRawMaterials(recipesData.rawMaterials);
       if (menuData.success) setMenuItems(menuData.items);
+      if (pastryData.success) setPastryInventory(pastryData.items);
       if (ordersData.success) setOrders(ordersData.orders);
       if (customersData.success) setCustomers(customersData.customers);
       if (tablesData.success) setTables(tablesData.tables);
@@ -769,8 +802,44 @@ export default function AdminDashboardPage() {
     }
   };
 
-  // Submit Inventory Audit Reconciliation (اعتماد وتسوية الجرد المقارن)
-  const handleSaveInventoryAudit = async () => {
+  // Set / Edit Raw Material Opening Stock Directly (تعديل رصيد أول المدة للخامة)
+  const handleSetRawOpeningStock = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedRawForOpening) return;
+    const val = parseFloat(rawOpeningValue);
+    if (isNaN(val) || val < 0) {
+      addToast("error", "يرجى إدخال رصيد أول مدة صحيح");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/recipes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "SET_OPENING_STOCK",
+          rawMaterialId: selectedRawForOpening.id,
+          openingStock: val,
+          recordedBy: currentUser?.name || "المايسترو",
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast("success", data.message || "تم تثبيت رصيد أول المدة بنجاح 🎯");
+        setShowRawOpeningModal(false);
+        setSelectedRawForOpening(null);
+        setRawOpeningValue("");
+        fetchDashboardData();
+      } else {
+        addToast("error", data.error || "فشل تثبيت رصيد أول المدة");
+      }
+    } catch {
+      addToast("error", "حدث خطأ أثناء تثبيت الرصيد");
+    }
+  };
+
+  // Submit Raw Material Inventory Audit (اعتماد وتسوية الجرد أو تثبيته كرصيد أول المدة)
+  const handleSaveInventoryAudit = async (asOpeningStock: boolean = false) => {
     const targetOutlet =
       outlets.find((o) => o.code === "SOULMATE_CAFE")?.id ||
       (selectedOutletId !== "ALL" ? selectedOutletId : outlets[0]?.id);
@@ -796,13 +865,14 @@ export default function AdminDashboardPage() {
           action: "RECORD_AUDIT",
           outletId: targetOutlet,
           auditorName: currentUser?.name || "المايسترو",
-          notes: "محضر جرد فعلي وتسوية دفتري وسحابي",
+          setAsOpeningStock: asOpeningStock,
+          notes: asOpeningStock ? "جرد تأسيسي وتثبيت رصيد أول المدة" : "محضر جرد فعلي وتسوية دفتري وسحابي",
           auditItems,
         }),
       });
       const data = await res.json();
       if (data.success) {
-        addToast("success", "تم اعتماد محضر الجرد وتسوية الأرصدة الدفترية بنجاح 📋✅");
+        addToast("success", data.message || "تم اعتماد محضر الجرد وتسوية الأرصدة بنجاح 📋✅");
         setAuditCounts({});
         fetchDashboardData();
       } else {
@@ -812,6 +882,137 @@ export default function AdminDashboardPage() {
       addToast("error", "حدث خطأ أثناء حفظ محضر الجرد");
     } finally {
       setIsSubmittingAudit(false);
+    }
+  };
+
+  // --- ABU ADEL PASTRY ERP HANDLERS ---
+
+  // Set / Edit Pastry Opening Stock Directly (تعديل رصيد أول المدة لصنف حلويات)
+  const handleSetPastryOpeningStock = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedPastryForOpening) return;
+    const val = parseFloat(pastryOpeningValue);
+    if (isNaN(val) || val < 0) {
+      addToast("error", "يرجى إدخال رصيد أول مدة صحيح");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/pastry-inventory", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "SET_OPENING_STOCK",
+          menuItemId: selectedPastryForOpening.id,
+          openingStock: val,
+          recordedBy: currentUser?.name || "المايسترو",
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast("success", data.message || "تم تثبيت رصيد أول المدة بنجاح 🎯");
+        setShowPastryOpeningModal(false);
+        setSelectedPastryForOpening(null);
+        setPastryOpeningValue("");
+        fetchDashboardData();
+      } else {
+        addToast("error", data.error || "فشل تثبيت رصيد أول المدة");
+      }
+    } catch {
+      addToast("error", "حدث خطأ أثناء تثبيت الرصيد");
+    }
+  };
+
+  // Record Pastry Inbound Movement from Workshop (توريد حلويات من المعمل)
+  const handleRecordPastryInbound = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedPastryForInbound) return;
+    const qty = parseFloat(pastryInboundForm.quantity);
+    if (!qty || qty <= 0) {
+      addToast("error", "يرجى إدخال كمية توريد صحيحة أكبر من صفر");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/pastry-inventory", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "ADD_INBOUND_MOVEMENT",
+          menuItemId: selectedPastryForInbound.id,
+          quantity: qty,
+          unitCost: pastryInboundForm.unitCost ? parseFloat(pastryInboundForm.unitCost) : undefined,
+          supplierName: pastryInboundForm.supplierName || "معمل حلواني أبو عادل",
+          invoiceNumber: pastryInboundForm.invoiceNumber,
+          recordedBy: currentUser?.name || "المايسترو",
+          notes: pastryInboundForm.notes,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast("success", data.message || "تم تسجيل حركة التوريد بنجاح 📦");
+        setShowPastryInboundModal(false);
+        setSelectedPastryForInbound(null);
+        setPastryInboundForm({
+          quantity: "",
+          unitCost: "",
+          supplierName: "",
+          invoiceNumber: "",
+          notes: "",
+        });
+        fetchDashboardData();
+      } else {
+        addToast("error", data.error || "فشل تسجيل حركة التوريد");
+      }
+    } catch {
+      addToast("error", "حدث خطأ أثناء الاتصال بالخادم");
+    }
+  };
+
+  // Submit Pastry Inventory Audit (اعتماد وتسوية جرد حلويات أبو عادل أو تثبيته كرصيد أول المدة)
+  const handleSavePastryAudit = async (asOpeningStock: boolean = false) => {
+    const targetOutlet =
+      outlets.find((o) => o.code === "ABU_ADEL_PATISSERIE")?.id ||
+      (selectedOutletId !== "ALL" ? selectedOutletId : outlets[0]?.id);
+
+    try {
+      setIsSubmittingPastryAudit(true);
+      const auditItems = (pastryInventory.length > 0 ? pastryInventory : menuItems.filter((m) => m.itemType === "READY_PASTRY")).map((p) => {
+        const enteredVal = pastryAuditCounts[p.id];
+        const actual = enteredVal !== undefined && enteredVal !== "" ? parseFloat(enteredVal) : (p.expectedStock ?? p.stockQty ?? 0);
+        return {
+          menuItemId: p.id,
+          actualStock: actual,
+          expectedStock: p.expectedStock ?? p.stockQty ?? 0,
+          totalInbound: p.totalInbound || 0,
+          totalSold: p.totalSold || 0,
+        };
+      });
+
+      const res = await fetch("/api/pastry-inventory", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "RECORD_AUDIT",
+          outletId: targetOutlet,
+          auditorName: currentUser?.name || "المايسترو",
+          setAsOpeningStock: asOpeningStock,
+          notes: asOpeningStock ? "جرد تأسيسي وتثبيت رصيد أول المدة لحلويات أبو عادل" : "محضر جرد فعلي وتسوية دفتري لحلويات أبو عادل",
+          auditItems,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast("success", data.message || "تم اعتماد محضر الجرد بنجاح 📋✅");
+        setPastryAuditCounts({});
+        fetchDashboardData();
+      } else {
+        addToast("error", data.error || "فشل اعتماد محضر الجرد");
+      }
+    } catch {
+      addToast("error", "حدث خطأ أثناء حفظ محضر الجرد");
+    } finally {
+      setIsSubmittingPastryAudit(false);
     }
   };
 
@@ -1932,14 +2133,26 @@ export default function AdminDashboardPage() {
               )}
 
               {recipeSubTab === "audit" && (
-                <button
-                  onClick={handleSaveInventoryAudit}
-                  disabled={isSubmittingAudit}
-                  className="flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-emerald-500/20 transition cursor-pointer"
-                >
-                  <ClipboardCheck className="w-4 h-4" />
-                  <span>{isSubmittingAudit ? "جاري التسوية والاعتماد..." : "اعتماد وتسوية محضر الجرد 📋✅"}</span>
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleSaveInventoryAudit(true)}
+                    disabled={isSubmittingAudit}
+                    className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-amber-500/20 transition cursor-pointer"
+                    title="تثبيت كافة الأرصدة المعدودة كرصيد أول المدة التأسيسي"
+                  >
+                    <Award className="w-4 h-4" />
+                    <span>اعتماد الجرد كرصيد أول المدة 🎯</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleSaveInventoryAudit(false)}
+                    disabled={isSubmittingAudit}
+                    className="flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-emerald-500/20 transition cursor-pointer"
+                  >
+                    <ClipboardCheck className="w-4 h-4" />
+                    <span>{isSubmittingAudit ? "جاري التسوية والاعتماد..." : "اعتماد وتسوية محضر الجرد 📋✅"}</span>
+                  </button>
+                </div>
               )}
             </div>
 
@@ -1954,7 +2167,7 @@ export default function AdminDashboardPage() {
                     </h4>
                     <p className="text-slate-300 leading-relaxed">
                       كل كارت صنف يحتوي على سعر الوحدة، رصيد بداية المدة، إجمالي الوارد بحركات توريد منفصلة، والمستهلك الفعلي تلقائياً بناءً على مبيعات الريسيبي.
-                      لتزويد رصيد خامة، اضغط على زر <strong>توريد كمية جديدة</strong> لتسجيل حركة توريد تفصيلية برقم الفاتورة واسم المورد.
+                      لتحديد أو تعديل رصيد بداية المدة، اضغط على <strong>تعديل رصيد أول المدة ✏️</strong>، ولتزويد رصيد خامة اضغط على <strong>توريد كمية جديدة</strong>.
                     </p>
                   </div>
                 </div>
@@ -2049,37 +2262,51 @@ export default function AdminDashboardPage() {
                         </div>
 
                         {/* Card Action Buttons */}
-                        <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800">
+                        <div className="space-y-1.5 pt-2 border-t border-slate-800">
                           <button
                             type="button"
                             onClick={() => {
-                              setSelectedRawForInbound(raw);
-                              setInboundForm({
-                                quantity: "",
-                                costPerUnit: String(raw.costPerUnit || ""),
-                                supplierName: raw.supplierName || "",
-                                invoiceNumber: "",
-                                notes: "",
-                              });
-                              setShowInboundModal(true);
+                              setSelectedRawForOpening(raw);
+                              setRawOpeningValue(String(raw.openingStock ?? ""));
+                              setShowRawOpeningModal(true);
                             }}
-                            className="py-1.5 px-2 rounded-xl bg-amber-500/15 hover:bg-amber-500 text-amber-300 hover:text-black font-bold text-[11px] border border-amber-500/30 transition flex items-center justify-center gap-1 cursor-pointer"
+                            className="w-full py-1 px-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-bold text-[11px] border border-amber-500/30 transition flex items-center justify-center gap-1 cursor-pointer"
                           >
-                            <Plus className="w-3.5 h-3.5" />
-                            <span>توريد كمية ➕</span>
+                            <span>تعديل رصيد أول المدة ✏️</span>
                           </button>
 
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setSelectedRawForMovements(raw);
-                              setShowMovementsModal(true);
-                            }}
-                            className="py-1.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-[11px] border border-slate-700 transition flex items-center justify-center gap-1 cursor-pointer"
-                          >
-                            <History className="w-3.5 h-3.5" />
-                            <span>سجل الحركات</span>
-                          </button>
+                          <div className="grid grid-cols-2 gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedRawForInbound(raw);
+                                setInboundForm({
+                                  quantity: "",
+                                  costPerUnit: String(raw.costPerUnit || ""),
+                                  supplierName: raw.supplierName || "",
+                                  invoiceNumber: "",
+                                  notes: "",
+                                });
+                                setShowInboundModal(true);
+                              }}
+                              className="py-1.5 px-2 rounded-xl bg-amber-500/15 hover:bg-amber-500 text-amber-300 hover:text-black font-bold text-[11px] border border-amber-500/30 transition flex items-center justify-center gap-1 cursor-pointer"
+                            >
+                              <Plus className="w-3.5 h-3.5" />
+                              <span>توريد كمية ➕</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedRawForMovements(raw);
+                                setShowMovementsModal(true);
+                              }}
+                              className="py-1.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-[11px] border border-slate-700 transition flex items-center justify-center gap-1 cursor-pointer"
+                            >
+                              <History className="w-3.5 h-3.5" />
+                              <span>سجل الحركات</span>
+                            </button>
+                          </div>
                         </div>
                       </div>
                     );
@@ -2101,18 +2328,30 @@ export default function AdminDashboardPage() {
                       <p className="text-slate-300 leading-relaxed">
                         تقارن هذه الشاشة بين <strong>الرصيد الدفتري المتوقع</strong> (رصيد بداية المدة + إجمالي الوارد - المستهلك من الريسيبي)
                         وبين <strong>الرصيد الفعلي</strong> الذي تقوم بعدّه على الرف.
-                        يتم حساب الفارق (عجز أو زيادة) وقيمته المالية بالجنيه فوراً، وعند اعتماد المحضر يتم تسوية الأرصدة تلقائياً.
+                        يمكنك اعتماد هذا الجرد كـ <strong>رصيد أول المدة التأسيسي 🎯</strong>، أو اعتماده لتسوية الفروقات رسمياً.
                       </p>
                     </div>
                   </div>
-                  <button
-                    onClick={handleSaveInventoryAudit}
-                    disabled={isSubmittingAudit}
-                    className="flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-emerald-500/20 transition cursor-pointer"
-                  >
-                    <ClipboardCheck className="w-4 h-4" />
-                    <span>{isSubmittingAudit ? "جاري التسوية..." : "اعتماد وتسوية المحضر 📋✅"}</span>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleSaveInventoryAudit(true)}
+                      disabled={isSubmittingAudit}
+                      className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-amber-500/20 transition cursor-pointer"
+                      title="تثبيت كافة الأرصدة المعدودة كرصيد أول المدة التأسيسي"
+                    >
+                      <Award className="w-4 h-4" />
+                      <span>اعتماد الجرد كرصيد أول المدة 🎯</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleSaveInventoryAudit(false)}
+                      disabled={isSubmittingAudit}
+                      className="flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-emerald-500/20 transition cursor-pointer"
+                    >
+                      <ClipboardCheck className="w-4 h-4" />
+                      <span>{isSubmittingAudit ? "جاري التسوية..." : "اعتماد وتسوية المحضر 📋✅"}</span>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg">
@@ -2329,102 +2568,428 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        {/* TAB 4: FINISHED PASTRY INVENTORY (ABU ADEL) */}
+        {/* TAB 4: FINISHED PASTRY INVENTORY (ABU ADEL ERP) */}
         {activeTab === "pastry" && (
           <div className="space-y-6">
-            <div className="bg-emerald-950/20 border border-emerald-500/30 rounded-2xl p-4 flex items-start gap-3">
-              <Cake className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-              <div className="text-xs">
-                <h4 className="font-bold text-emerald-300 mb-1">
-                  مخزن حلويات أبو عادل المستقل (Ready-Made Units & Pastry Stock)
-                </h4>
-                <p className="text-slate-300 leading-relaxed">
-                  أصناف حلواني أبو عادل تؤخذ كمنتجات تامة الصنع (بالقطعة / بالكيلو / بالعلبة) بدون ريسيبي. متابعة المخزون الفعلي، إعادة تزويد الرصيد فوراً، ورفع صور للمنتجات.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-              <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-                <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
-                  <Cake className="w-4 h-4 text-emerald-400" />
-                  <span>أصناف حلواني أبو عادل بالمخزن ({menuItems.filter((m) => m.itemType === "READY_PASTRY").length} صنف)</span>
-                </h3>
+            {/* Top Sub-Navigation Tabs */}
+            <div className="flex items-center justify-between flex-wrap gap-3 bg-slate-900 border border-slate-800 p-2 rounded-2xl">
+              <div className="flex items-center gap-1.5 flex-wrap">
                 <button
-                  onClick={() => setShowPastryModal(true)}
-                  className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl text-xs shadow transition"
+                  type="button"
+                  onClick={() => setPastrySubTab("cards")}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                    pastrySubTab === "cards"
+                      ? "bg-rose-500 text-white shadow-lg shadow-rose-500/20 font-black"
+                      : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                  }`}
                 >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>إضافة صنف حلويات جديد (مع رفع صورة)</span>
+                  <Cake className="w-4 h-4" />
+                  <span>كروت أصناف حلويات أبو عادل والمخزن</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPastrySubTab("audit")}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                    pastrySubTab === "audit"
+                      ? "bg-rose-500 text-white shadow-lg shadow-rose-500/20 font-black"
+                      : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                  }`}
+                >
+                  <Scale className="w-4 h-4" />
+                  <span>الجرد المقارن الفوري لحلويات أبو عادل</span>
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {menuItems
-                  .filter((m) => m.itemType === "READY_PASTRY")
-                  .map((item) => {
-                    const isLow = item.stockQty <= item.minStockAlert;
-                    return (
-                      <div
-                        key={item.id}
-                        className={`p-4 rounded-xl border transition ${
-                          isLow
-                            ? "bg-rose-950/20 border-rose-600/40"
-                            : "bg-slate-950/70 border-slate-800 hover:border-slate-700"
-                        }`}
-                      >
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="font-bold text-sm text-white">{item.nameAr}</span>
-                          <span className="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
-                            {item.category === "ORIENTAL_SWEETS"
-                              ? "شرقي"
-                              : item.category === "CAKES_TORTES"
-                              ? "تورتة"
-                              : "غربي / بوكس"}
-                          </span>
-                        </div>
+              <div className="flex items-center gap-2">
+                {pastrySubTab === "cards" && (
+                  <button
+                    onClick={() => setShowPastryModal(true)}
+                    className="flex items-center gap-1.5 bg-rose-600 hover:bg-rose-500 text-white font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-rose-600/20 transition cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>إضافة صنف حلويات جديد (مع صورة)</span>
+                  </button>
+                )}
 
-                        <div className="flex items-center justify-between mt-2">
-                          <div className="text-lg font-black text-amber-400 font-mono">
-                            {item.price} ج.م
-                          </div>
-                          <div className="text-right">
-                            <span className="text-xs text-slate-400">الرصيد: </span>
-                            <span
-                              className={`font-black font-mono text-sm ${
-                                isLow ? "text-rose-400" : "text-emerald-400"
-                              }`}
-                            >
-                              {item.stockQty} {item.unitType === "KG" ? "كجم" : "قطعة"}
-                            </span>
-                          </div>
-                        </div>
+                {pastrySubTab === "audit" && (
+                  <>
+                    <button
+                      onClick={() => handleSavePastryAudit(true)}
+                      disabled={isSubmittingPastryAudit}
+                      className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-amber-500/20 transition cursor-pointer"
+                      title="تثبيت كافة الأرصدة المعدودة كرصيد أول المدة لحلويات أبو عادل"
+                    >
+                      <Award className="w-4 h-4" />
+                      <span>اعتماد الجرد كرصيد أول المدة 🎯</span>
+                    </button>
 
-                        <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-slate-800">
-                          <button
-                            onClick={() => handleQuickPastryRestock(item.id, 10)}
-                            className="flex-1 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-200 border border-slate-700 transition"
-                          >
-                            +10
-                          </button>
-                          <button
-                            onClick={() => handleQuickPastryRestock(item.id, 25)}
-                            className="flex-1 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-200 border border-slate-700 transition"
-                          >
-                            +25
-                          </button>
-                          <button
-                            onClick={() => handleQuickPastryRestock(item.id, 50)}
-                            className="flex-1 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-200 border border-slate-700 transition"
-                          >
-                            +50
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
+                    <button
+                      onClick={() => handleSavePastryAudit(false)}
+                      disabled={isSubmittingPastryAudit}
+                      className="flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-emerald-500/20 transition cursor-pointer"
+                    >
+                      <ClipboardCheck className="w-4 h-4" />
+                      <span>{isSubmittingPastryAudit ? "جاري التسوية..." : "اعتماد وتسوية محضر الجرد 📋✅"}</span>
+                    </button>
+                  </>
+                )}
               </div>
             </div>
+
+            {/* SUB-TAB 1: PASTRY ERP ITEM CARDS */}
+            {pastrySubTab === "cards" && (
+              <div className="space-y-4">
+                <div className="bg-rose-950/20 border border-rose-500/30 rounded-2xl p-4 flex items-start gap-3">
+                  <Cake className="w-5 h-5 text-rose-400 flex-shrink-0 mt-0.5" />
+                  <div className="text-xs">
+                    <h4 className="font-bold text-rose-300 mb-1">
+                      مخزن أصناف حلواني أبو عادل المستقل (Finished Goods ERP Ledger)
+                    </h4>
+                    <p className="text-slate-300 leading-relaxed">
+                      نظام حركة وجرد متكامل لكل صنف: رصيد بداية المدة، إجمالي الوارد من معمل الحلواني، المسحوب والمباع عبر الكاشير، والرصيد الدفتري والفعلي.
+                      لتثبيت رصيد بداية المدة اضغط <strong>تعديل رصيد أول المدة ✏️</strong>، ولإضافة إنتاج جديد اضغط <strong>توريد من المعمل 📦➕</strong>.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Search & Filter Bar */}
+                <div className="flex items-center justify-between flex-wrap gap-3 bg-slate-900 border border-slate-800 p-3 rounded-2xl">
+                  <div className="relative flex-1 min-w-[200px]">
+                    <Search className="w-4 h-4 text-slate-400 absolute right-3 top-2.5" />
+                    <input
+                      type="text"
+                      placeholder="بحث في حلويات أبو عادل (الاسم أو الكود)..."
+                      value={pastrySearchQuery}
+                      onChange={(e) => setPastrySearchQuery(e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl pr-9 pl-3 py-1.5 text-xs text-white focus:outline-none focus:border-rose-400"
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-1.5 overflow-x-auto text-xs py-1">
+                    {[
+                      { id: "ALL", label: "كافة الأصناف" },
+                      { id: "ORIENTAL_SWEETS", label: "الشرقيات" },
+                      { id: "CAKES_TORTES", label: "التورت والمناسبات" },
+                      { id: "WESTERN_PASTRY", label: "الجاتوهات والغربيات" },
+                      { id: "BAKERY", label: "المخبوزات والفطير" },
+                      { id: "NOVO_SWEETS", label: "النواعم" },
+                      { id: "CHOCOLATE", label: "الشوكولاتة" },
+                      { id: "GIFT_BOXES", label: "بوكسات الهدايا" },
+                    ].map((cat) => (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => setPastryCategoryFilter(cat.id)}
+                        className={`px-3 py-1 rounded-xl text-[11px] font-bold whitespace-nowrap transition cursor-pointer ${
+                          pastryCategoryFilter === cat.id
+                            ? "bg-rose-500 text-white font-black"
+                            : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                        }`}
+                      >
+                        {cat.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Grid of Pastry Cards */}
+                {(() => {
+                  const source = pastryInventory.length > 0 ? pastryInventory : menuItems.filter((m) => m.itemType === "READY_PASTRY" || m.outlet?.code === "ABU_ADEL_PATISSERIE");
+                  const filtered = source.filter((item) => {
+                    const matchQuery =
+                      !pastrySearchQuery ||
+                      item.nameAr?.toLowerCase().includes(pastrySearchQuery.toLowerCase()) ||
+                      item.nameEn?.toLowerCase().includes(pastrySearchQuery.toLowerCase());
+                    const matchCategory =
+                      pastryCategoryFilter === "ALL" ||
+                      item.category === pastryCategoryFilter ||
+                      (pastryCategoryFilter === "BAKERY" && (item.category === "BAKERY" || item.category === "FETEER")) ||
+                      (pastryCategoryFilter === "NOVO_SWEETS" && (item.category === "NOVO_SWEETS" || item.category === "NOVAM"));
+                    return matchQuery && matchCategory;
+                  });
+
+                  return (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                      {filtered.map((item) => {
+                        const isLow = (item.stockQty ?? 0) <= (item.minStockAlert || 10);
+                        const unitLabel =
+                          item.unitType === "KG"
+                            ? "كجم"
+                            : item.unitType === "BOX"
+                            ? "علبة / بوكس"
+                            : item.unitType === "PORTION"
+                            ? "طبق"
+                            : "قطعة";
+
+                        return (
+                          <div
+                            key={item.id}
+                            className={`p-4 rounded-2xl border transition shadow-lg flex flex-col justify-between ${
+                              isLow
+                                ? "bg-rose-950/20 border-rose-600/40 hover:border-rose-500/60"
+                                : "bg-slate-900 border-slate-800 hover:border-rose-500/40"
+                            }`}
+                          >
+                            <div>
+                              <div className="flex items-start justify-between gap-2 mb-2">
+                                <div>
+                                  <h4 className="font-black text-sm text-white flex items-center gap-1.5">
+                                    <span>{item.nameAr}</span>
+                                  </h4>
+                                  <span className="text-[10px] text-slate-400">
+                                    الوحدة: {unitLabel} • {getCategoryLabel(item.category)}
+                                  </span>
+                                </div>
+                                <div className="flex flex-col items-end gap-1">
+                                  {isLow ? (
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold flex items-center gap-1">
+                                      <AlertTriangle className="w-3 h-3" />
+                                      <span>نواقص</span>
+                                    </span>
+                                  ) : (
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold">
+                                      متوفر
+                                    </span>
+                                  )}
+                                  <span className="text-xs text-amber-400 font-mono font-black">
+                                    {item.price} ج.م
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* 4-Stat ERP Ledger Matrix */}
+                              <div className="grid grid-cols-2 gap-2 my-3 bg-slate-950/70 border border-slate-800/80 rounded-xl p-2.5 text-[11px]">
+                                <div>
+                                  <span className="text-slate-400 block text-[10px]">رصيد بداية المدة:</span>
+                                  <span className="font-mono font-bold text-slate-200">
+                                    {(item.openingStock || 0).toLocaleString()} {unitLabel}
+                                  </span>
+                                </div>
+                                <div>
+                                  <span className="text-slate-400 block text-[10px]">وارد من المعمل:</span>
+                                  <span className="font-mono font-bold text-emerald-400">
+                                    +{(item.totalInbound || 0).toLocaleString()} {unitLabel}
+                                  </span>
+                                </div>
+                                <div>
+                                  <span className="text-slate-400 block text-[10px]">مبيعات الفواتير:</span>
+                                  <span className="font-mono font-bold text-rose-400">
+                                    -{(item.totalSold || 0).toLocaleString()} {unitLabel}
+                                  </span>
+                                </div>
+                                <div>
+                                  <span className="text-slate-400 block text-[10px]">الرصيد الدفتري المتوقع:</span>
+                                  <span className="font-mono font-black text-amber-400">
+                                    {(item.expectedStock ?? item.stockQty ?? 0).toLocaleString()} {unitLabel}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Main Actual Stock Number */}
+                              <div className="flex items-baseline justify-between pt-1 pb-3">
+                                <span className="text-xs text-slate-400 font-bold">الرصيد الفعلي الحالي:</span>
+                                <span className="text-xl font-black text-white font-mono">
+                                  {(item.stockQty ?? 0).toLocaleString()}{" "}
+                                  <span className="text-xs font-normal text-rose-400 font-sans">{unitLabel}</span>
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Card Action Buttons */}
+                            <div className="space-y-1.5 pt-2 border-t border-slate-800">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSelectedPastryForOpening(item);
+                                  setPastryOpeningValue(String(item.openingStock ?? ""));
+                                  setShowPastryOpeningModal(true);
+                                }}
+                                className="w-full py-1 px-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 font-bold text-[11px] border border-rose-500/30 transition flex items-center justify-center gap-1 cursor-pointer"
+                              >
+                                <span>تعديل رصيد أول المدة ✏️</span>
+                              </button>
+
+                              <div className="grid grid-cols-2 gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedPastryForInbound(item);
+                                    setPastryInboundForm({
+                                      quantity: "",
+                                      unitCost: String(item.costPrice || ""),
+                                      supplierName: "معمل حلواني أبو عادل",
+                                      invoiceNumber: "",
+                                      notes: "",
+                                    });
+                                    setShowPastryInboundModal(true);
+                                  }}
+                                  className="py-1.5 px-2 rounded-xl bg-rose-500/20 hover:bg-rose-500 text-rose-200 hover:text-white font-bold text-[11px] border border-rose-500/30 transition flex items-center justify-center gap-1 cursor-pointer"
+                                >
+                                  <Plus className="w-3.5 h-3.5" />
+                                  <span>توريد معمل ➕</span>
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedPastryForMovements(item);
+                                    setShowPastryMovementsModal(true);
+                                  }}
+                                  className="py-1.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-[11px] border border-slate-700 transition flex items-center justify-center gap-1 cursor-pointer"
+                                >
+                                  <History className="w-3.5 h-3.5" />
+                                  <span>سجل الحركات</span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+
+            {/* SUB-TAB 2: LIVE PASTRY AUDIT & RECONCILIATION */}
+            {pastrySubTab === "audit" && (
+              <div className="space-y-4">
+                <div className="bg-rose-950/20 border border-rose-500/30 rounded-2xl p-4 flex items-start justify-between flex-wrap gap-3">
+                  <div className="flex items-start gap-3">
+                    <Scale className="w-5 h-5 text-rose-400 flex-shrink-0 mt-0.5" />
+                    <div className="text-xs">
+                      <h4 className="font-bold text-rose-300 mb-1">
+                        شاشة الجرد المقارن الفوري لحلويات أبو عادل (Pastry Stock Reconciliation)
+                      </h4>
+                      <p className="text-slate-300 leading-relaxed">
+                        مقارنة الرصيد الدفتري المتوقع (بداية المدة + الوارد من المعمل - مبيعات الكاشير والدليفري) مع الرصيد الفعلي المعدود على الرف.
+                        يمكنك اعتماد هذا الجرد كـ <strong>رصيد أول المدة التأسيسي 🎯</strong> لجميع أصناف الحلويات، أو اعتماده لتسوية الفروقات والعجز تلقائياً.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleSavePastryAudit(true)}
+                      disabled={isSubmittingPastryAudit}
+                      className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-amber-500/20 transition cursor-pointer"
+                      title="تثبيت كافة الأرصدة المعدودة كرصيد أول المدة التأسيسي لحلويات أبو عادل"
+                    >
+                      <Award className="w-4 h-4" />
+                      <span>اعتماد الجرد كرصيد أول المدة 🎯</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleSavePastryAudit(false)}
+                      disabled={isSubmittingPastryAudit}
+                      className="flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-emerald-500/20 transition cursor-pointer"
+                    >
+                      <ClipboardCheck className="w-4 h-4" />
+                      <span>{isSubmittingPastryAudit ? "جاري التسوية..." : "اعتماد وتسوية المحضر 📋✅"}</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-xs">
+                      <thead className="bg-slate-950 text-slate-400 border-b border-slate-800 font-bold">
+                        <tr>
+                          <th className="py-3 px-3">صنف الحلويات</th>
+                          <th className="py-3 px-2">الوحدة</th>
+                          <th className="py-3 px-2">سعر البيع</th>
+                          <th className="py-3 px-2">رصيد البداية</th>
+                          <th className="py-3 px-2 text-emerald-400">+ وارد المعمل</th>
+                          <th className="py-3 px-2 text-rose-400">- المبيعات</th>
+                          <th className="py-3 px-3 text-amber-400 font-black">الرصيد الدفتري</th>
+                          <th className="py-3 px-3 text-white font-black bg-slate-800/60">
+                            الرصيد الفعلي (العدّ)
+                          </th>
+                          <th className="py-3 px-3 text-center">الفارق (عجز / زيادة)</th>
+                          <th className="py-3 px-3">القيمة المالية للفارق</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800 font-mono">
+                        {(pastryInventory.length > 0 ? pastryInventory : menuItems.filter((m) => m.itemType === "READY_PASTRY" || m.outlet?.code === "ABU_ADEL_PATISSERIE")).map((item) => {
+                          const unitLabel =
+                            item.unitType === "KG"
+                              ? "كجم"
+                              : item.unitType === "BOX"
+                              ? "علبة"
+                              : item.unitType === "PORTION"
+                              ? "طبق"
+                              : "قطعة";
+
+                          const expected = item.expectedStock ?? item.stockQty ?? 0;
+                          const entered = pastryAuditCounts[item.id];
+                          const actual = entered !== undefined && entered !== "" ? parseFloat(entered) : expected;
+                          const variance = actual - expected;
+                          const varianceCost = variance * (item.price || 0);
+
+                          return (
+                            <tr key={item.id} className="hover:bg-slate-800/40">
+                              <td className="py-3 px-3 font-bold text-white font-sans flex items-center gap-1.5">
+                                <Cake className="w-3.5 h-3.5 text-rose-400" />
+                                <span>{item.nameAr}</span>
+                              </td>
+                              <td className="py-3 px-2 text-slate-400 font-sans text-[11px]">{unitLabel}</td>
+                              <td className="py-3 px-2 text-amber-400">{item.price} ج.م</td>
+                              <td className="py-3 px-2 text-slate-300">{(item.openingStock || 0).toLocaleString()}</td>
+                              <td className="py-3 px-2 text-emerald-400 font-bold">+{(item.totalInbound || 0).toLocaleString()}</td>
+                              <td className="py-3 px-2 text-rose-400 font-bold">-{(item.totalSold || 0).toLocaleString()}</td>
+                              <td className="py-3 px-3 font-black text-amber-300 bg-amber-500/5">
+                                {expected.toLocaleString()}
+                              </td>
+                              <td className="py-2 px-3 bg-slate-800/40">
+                                <input
+                                  type="number"
+                                  step="any"
+                                  placeholder={String(expected)}
+                                  value={pastryAuditCounts[item.id] !== undefined ? pastryAuditCounts[item.id] : ""}
+                                  onChange={(e) =>
+                                    setPastryAuditCounts({ ...pastryAuditCounts, [item.id]: e.target.value })
+                                  }
+                                  className="w-28 bg-black/80 border border-rose-500/40 rounded-lg px-2.5 py-1 text-center font-mono font-black text-xs text-white focus:outline-none focus:border-rose-400"
+                                />
+                              </td>
+                              <td className="py-3 px-3 text-center">
+                                {variance === 0 ? (
+                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-sans">
+                                    مطابق وسليم ✅
+                                  </span>
+                                ) : variance < 0 ? (
+                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 font-sans flex items-center justify-center gap-1">
+                                    <AlertTriangle className="w-3 h-3" />
+                                    <span>عجز ({variance.toLocaleString()})</span>
+                                  </span>
+                                ) : (
+                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/40 font-sans">
+                                    زيادة (+{variance.toLocaleString()})
+                                  </span>
+                                )}
+                              </td>
+                              <td className="py-3 px-3">
+                                {variance === 0 ? (
+                                  <span className="text-slate-500 text-[11px]">0.00 ج.م</span>
+                                ) : variance < 0 ? (
+                                  <span className="font-bold text-rose-400">
+                                    {varianceCost.toFixed(2)} ج.م
+                                  </span>
+                                ) : (
+                                  <span className="font-bold text-blue-400">
+                                    +{varianceCost.toFixed(2)} ج.م
+                                  </span>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -4179,6 +4744,365 @@ export default function AdminDashboardPage() {
                 className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black transition shadow-lg shadow-amber-500/20"
               >
                 حفظ الريسيبي وتحديث تكلفة الكوب 📋☕
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 5. RAW OPENING STOCK MODAL */}
+      {showRawOpeningModal && selectedRawForOpening && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative text-right">
+            <button
+              onClick={() => {
+                setShowRawOpeningModal(false);
+                setSelectedRawForOpening(null);
+              }}
+              className="absolute left-4 top-4 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="text-base font-black text-white mb-1 flex items-center gap-2">
+              <Boxes className="w-5 h-5 text-amber-400" />
+              <span>تعديل رصيد أول المدة التأسيسي</span>
+            </h3>
+            <p className="text-xs text-amber-300 font-bold mb-4">
+              خامة: {selectedRawForOpening.nameAr} ({selectedRawForOpening.unit})
+            </p>
+
+            <form onSubmit={handleSetRawOpeningStock} className="space-y-4 text-xs">
+              <div>
+                <label className="block text-slate-300 font-bold mb-1">
+                  رصيد أول المدة الفعلي بعد الجرد ({selectedRawForOpening.unit}) *
+                </label>
+                <input
+                  type="number"
+                  step="any"
+                  required
+                  autoFocus
+                  placeholder="أدخل الرصيد الفعلي الذي تم جرده..."
+                  value={rawOpeningValue}
+                  onChange={(e) => setRawOpeningValue(e.target.value)}
+                  className="w-full bg-slate-950 border border-amber-500/40 rounded-xl px-3 py-2 text-white font-mono text-sm font-bold focus:outline-none focus:border-amber-400"
+                />
+                <p className="text-[11px] text-slate-400 mt-1">
+                  سيتم تعيين هذا الرقم كرصيد بداية المدة التأسيسي لكارت الصنف وبدء احتساب الوارد والمنصرف عليه.
+                </p>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowRawOpeningModal(false);
+                    setSelectedRawForOpening(null);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700 transition"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black transition shadow-lg shadow-amber-500/20"
+                >
+                  تثبيت الرصيد 🎯
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 6. PASTRY OPENING STOCK MODAL */}
+      {showPastryOpeningModal && selectedPastryForOpening && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative text-right">
+            <button
+              onClick={() => {
+                setShowPastryOpeningModal(false);
+                setSelectedPastryForOpening(null);
+              }}
+              className="absolute left-4 top-4 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="text-base font-black text-white mb-1 flex items-center gap-2">
+              <Cake className="w-5 h-5 text-rose-400" />
+              <span>تعديل رصيد أول المدة لحلويات أبو عادل</span>
+            </h3>
+            <p className="text-xs text-rose-300 font-bold mb-4">
+              صنف: {selectedPastryForOpening.nameAr} ({selectedPastryForOpening.unitType})
+            </p>
+
+            <form onSubmit={handleSetPastryOpeningStock} className="space-y-4 text-xs">
+              <div>
+                <label className="block text-slate-300 font-bold mb-1">
+                  رصيد أول المدة الفعلي بالمحل بعد الجرد ({selectedPastryForOpening.unitType}) *
+                </label>
+                <input
+                  type="number"
+                  step="any"
+                  required
+                  autoFocus
+                  placeholder="أدخل عدد القطع أو الكيلوات الفعلية..."
+                  value={pastryOpeningValue}
+                  onChange={(e) => setPastryOpeningValue(e.target.value)}
+                  className="w-full bg-slate-950 border border-rose-500/40 rounded-xl px-3 py-2 text-white font-mono text-sm font-bold focus:outline-none focus:border-rose-400"
+                />
+                <p className="text-[11px] text-slate-400 mt-1">
+                  سيتم تعيين هذا الرقم كرصيد بداية المدة لكارت حركة هذا الصنف.
+                </p>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPastryOpeningModal(false);
+                    setSelectedPastryForOpening(null);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700 transition"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-rose-500 hover:bg-rose-400 text-white font-black transition shadow-lg shadow-rose-500/20"
+                >
+                  تثبيت الرصيد 🎯
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 7. PASTRY INBOUND MOVEMENT MODAL */}
+      {showPastryInboundModal && selectedPastryForInbound && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative text-right">
+            <button
+              onClick={() => {
+                setShowPastryInboundModal(false);
+                setSelectedPastryForInbound(null);
+              }}
+              className="absolute left-4 top-4 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <h3 className="text-base font-black text-white mb-1 flex items-center gap-2">
+              <Plus className="w-5 h-5 text-rose-400" />
+              <span>توريد حلويات جديد من المعمل (شحنة واردة)</span>
+            </h3>
+            <p className="text-xs text-rose-300 font-bold mb-4">
+              صنف: {selectedPastryForInbound.nameAr} • الرصيد الحالي: {(selectedPastryForInbound.stockQty ?? 0).toLocaleString()} {selectedPastryForInbound.unitType}
+            </p>
+
+            <form onSubmit={handleRecordPastryInbound} className="space-y-3.5 text-xs">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">
+                    الكمية الواردة ({selectedPastryForInbound.unitType}) *
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    required
+                    autoFocus
+                    placeholder="25"
+                    value={pastryInboundForm.quantity}
+                    onChange={(e) => setPastryInboundForm({ ...pastryInboundForm, quantity: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono text-sm font-bold focus:outline-none focus:border-rose-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">سعر تكلفة القطعة (ج.م)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder={String(selectedPastryForInbound.costPrice || "")}
+                    value={pastryInboundForm.unitCost}
+                    onChange={(e) => setPastryInboundForm({ ...pastryInboundForm, unitCost: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono text-sm focus:outline-none focus:border-rose-400"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">الشيف / المعمل المورد</label>
+                  <input
+                    type="text"
+                    placeholder="معمل حلواني أبو عادل الرئيسي"
+                    value={pastryInboundForm.supplierName}
+                    onChange={(e) => setPastryInboundForm({ ...pastryInboundForm, supplierName: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-rose-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">رقم إذن التشغيل / الدفعة</label>
+                  <input
+                    type="text"
+                    placeholder="BATCH-104"
+                    value={pastryInboundForm.invoiceNumber}
+                    onChange={(e) => setPastryInboundForm({ ...pastryInboundForm, invoiceNumber: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-rose-400"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-slate-300 font-bold mb-1">ملاحظات الدفعة</label>
+                <input
+                  type="text"
+                  placeholder="ملاحظات الإنتاج أو التغليف..."
+                  value={pastryInboundForm.notes}
+                  onChange={(e) => setPastryInboundForm({ ...pastryInboundForm, notes: e.target.value })}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-rose-400"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPastryInboundModal(false);
+                    setSelectedPastryForInbound(null);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700 transition"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black transition shadow-lg shadow-rose-600/20"
+                >
+                  تأكيد استلام التوريد
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 8. PASTRY MOVEMENTS AUDIT LEDGER MODAL */}
+      {showPastryMovementsModal && selectedPastryForMovements && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl p-6 shadow-2xl relative text-right max-h-[85vh] flex flex-col">
+            <button
+              onClick={() => {
+                setShowPastryMovementsModal(false);
+                setSelectedPastryForMovements(null);
+              }}
+              className="absolute left-4 top-4 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="mb-4">
+              <h3 className="text-base font-black text-white flex items-center gap-2">
+                <History className="w-5 h-5 text-rose-400" />
+                <span>سجل حركات كارت الصنف (حلواني أبو عادل)</span>
+              </h3>
+              <p className="text-xs text-rose-300 font-bold">
+                صنف: {selectedPastryForMovements.nameAr} ({selectedPastryForMovements.unitType})
+              </p>
+            </div>
+
+            {/* Quick Stat Pill */}
+            <div className="grid grid-cols-4 gap-2 bg-slate-950 p-2.5 rounded-xl border border-slate-800 mb-4 text-center text-xs">
+              <div>
+                <span className="text-slate-400 text-[10px] block">رصيد البداية:</span>
+                <span className="font-mono font-bold text-white">{(selectedPastryForMovements.openingStock || 0).toLocaleString()}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 text-[10px] block">وارد المعمل:</span>
+                <span className="font-mono font-bold text-emerald-400">+{(selectedPastryForMovements.totalInbound || 0).toLocaleString()}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 text-[10px] block">المبيعات:</span>
+                <span className="font-mono font-bold text-rose-400">-{(selectedPastryForMovements.totalSold || 0).toLocaleString()}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 text-[10px] block">الرصيد الفعلي:</span>
+                <span className="font-mono font-black text-amber-400">{(selectedPastryForMovements.stockQty ?? 0).toLocaleString()}</span>
+              </div>
+            </div>
+
+            {/* Movements List Table */}
+            <div className="overflow-y-auto flex-1 border border-slate-800 rounded-xl">
+              <table className="w-full text-right text-xs">
+                <thead className="bg-slate-950 text-slate-400 border-b border-slate-800 sticky top-0">
+                  <tr>
+                    <th className="py-2.5 px-3">التاريخ والوقت</th>
+                    <th className="py-2.5 px-3">نوع الحركة</th>
+                    <th className="py-2.5 px-3">الكمية</th>
+                    <th className="py-2.5 px-3">المستند / الفاتورة</th>
+                    <th className="py-2.5 px-3">المسؤول والملاحظات</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800 font-mono">
+                  {(selectedPastryForMovements.movements || []).length > 0 ? (
+                    selectedPastryForMovements.movements.map((m: any) => (
+                      <tr key={m.id} className="hover:bg-slate-800/40">
+                        <td className="py-2 px-3 text-slate-400 text-[11px]">
+                          {new Date(m.createdAt).toLocaleString("ar-EG")}
+                        </td>
+                        <td className="py-2 px-3 font-sans">
+                          {m.type === "INBOUND" ? (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                              وارد معمل 📥
+                            </span>
+                          ) : m.type === "SALE" ? (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/15 text-rose-300 border border-rose-500/30">
+                              مبيعات فاتورة 🧾
+                            </span>
+                          ) : m.type === "INITIAL" ? (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                              رصيد تأسيسي 🎯
+                            </span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/15 text-blue-300 border border-blue-500/30">
+                              تسوية جردية ⚖️
+                            </span>
+                          )}
+                        </td>
+                        <td className={`py-2 px-3 font-bold ${m.quantity > 0 ? "text-emerald-400" : "text-rose-400"}`}>
+                          {m.quantity > 0 ? `+${m.quantity}` : m.quantity} {selectedPastryForMovements.unitType}
+                        </td>
+                        <td className="py-2 px-3 font-sans text-slate-300 text-[11px]">
+                          {m.invoiceNumber ? `إذن: ${m.invoiceNumber}` : m.orderNumber ? `فاتورة #${m.orderNumber}` : "-"}
+                        </td>
+                        <td className="py-2 px-3 font-sans text-slate-400 text-[11px]">
+                          {m.notes || m.recordedBy || "المايسترو"}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="py-6 text-center text-slate-500 font-sans">
+                        لا توجد حركات مسجلة حتى الآن
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="pt-3 mt-3 border-t border-slate-800 flex justify-end">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowPastryMovementsModal(false);
+                  setSelectedPastryForMovements(null);
+                }}
+                className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700 transition"
+              >
+                إغلاق
               </button>
             </div>
           </div>

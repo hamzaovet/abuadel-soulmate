@@ -32,6 +32,7 @@ model Outlet {
   reservations    Reservation[]
   chatMessages    ChatMessage[]
   inventoryAudits InventoryAudit[]
+  pastryAudits    PastryAudit[]
 }
 
 // ----------------------------------------------------
@@ -87,7 +88,8 @@ model MenuItem {
   image                 String?
   itemType              String   @default("PREPARED_BEVERAGE") // "PREPARED_BEVERAGE" (uses recipe) | "READY_PASTRY" (finished unit) | "RETAIL"
   unitType              String   @default("PIECE") // "PIECE", "PORTION", "KG", "BOX"
-  stockQty              Int      @default(100) // For ready-made pastries, tortes, boxes
+  openingStock          Float    @default(0) // رصيد بداية المدة الافتتاحي للحلويات
+  stockQty              Int      @default(0) // الرصيد الفعلي الحالي بالمحل
   minStockAlert         Int      @default(10)
   isAvailable           Boolean  @default(true)
   sortOrder             Int      @default(0)
@@ -95,7 +97,60 @@ model MenuItem {
   loyaltyPointsRequired Int      @default(50)
   createdAt             DateTime @default(now())
 
-  recipes RecipeItem[]
+  recipes   RecipeItem[]
+  movements ProductMovement[]
+}
+
+// ----------------------------------------------------
+// 4.1 PRODUCT MOVEMENTS (حركات توريد ومبيعات وجرد حلويات أبو عادل)
+// ----------------------------------------------------
+model ProductMovement {
+  id            String   @id @default(cuid())
+  menuItemId    String
+  menuItem      MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  type          String // "INBOUND" (توريد من المعمل), "SALE" (بيع فاتورة), "ADJUSTMENT" (تسوية جردية), "INITIAL" (رصيد بداية المدة)
+  quantity      Float // positive for inbound/surplus, negative for sale/deficit
+  unitCost      Float? // Cost price
+  totalCost     Float? // quantity * unitCost
+  supplierName  String? // اسم الشيف أو المعمل
+  invoiceNumber String? // رقم إذن التشغيل أو الفاتورة
+  orderNumber   String? // رقم الفاتورة أو الأوردر
+  recordedBy    String? // اسم المستخدم
+  notes         String? // ملاحظات
+  createdAt     DateTime @default(now())
+}
+
+// ----------------------------------------------------
+// 4.2 PASTRY AUDITS (محاضر الجرد المقارن لحلويات أبو عادل)
+// ----------------------------------------------------
+model PastryAudit {
+  id          String            @id @default(cuid())
+  outletId    String
+  outlet      Outlet            @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  auditorName String            @default("المايسترو")
+  notes       String?
+  items       PastryAuditItem[]
+  createdAt   DateTime          @default(now())
+}
+
+model PastryAuditItem {
+  id            String      @id @default(cuid())
+  auditId       String
+  audit         PastryAudit @relation(fields: [auditId], references: [id], onDelete: Cascade)
+  menuItemId    String
+  menuItemName  String
+  unitType      String
+  price         Float       @default(0)
+  costPrice     Float       @default(0)
+  openingStock  Float       @default(0)
+  totalInbound  Float       @default(0)
+  totalSold     Float       @default(0)
+  expectedStock Float       @default(0)
+  actualStock   Float       @default(0)
+  variance      Float       @default(0)
+  varianceCost  Float       @default(0)
+  status        String      @default("MATCH") // "MATCH" | "DEFICIT" | "SURPLUS"
+  createdAt     DateTime    @default(now())
 }
 
 // ----------------------------------------------------

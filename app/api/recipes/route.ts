@@ -173,6 +173,47 @@ export async function POST(req: Request) {
       });
     }
 
+    // 1.1 ACTION: SET_OPENING_STOCK (تعيين أو تعديل رصيد أول المدة يدوياً بعد الجرد)
+    if (action === "SET_OPENING_STOCK") {
+      const targetId = rawMaterialId || id;
+      const initialVal = Number(openingStock);
+      if (!targetId || isNaN(initialVal)) {
+        return NextResponse.json({ success: false, error: "معرف الخامة ورصيد أول المدة مطلوبين" }, { status: 400 });
+      }
+
+      const existing = await prisma.rawMaterial.findUnique({ where: { id: targetId } });
+      if (!existing) {
+        return NextResponse.json({ success: false, error: "الخامة غير موجودة" }, { status: 404 });
+      }
+
+      const updated = await prisma.rawMaterial.update({
+        where: { id: targetId },
+        data: {
+          openingStock: initialVal,
+          currentStock: initialVal,
+        },
+      });
+
+      // Register initial opening movement
+      await prisma.rawMaterialMovement.create({
+        data: {
+          rawMaterialId: targetId,
+          type: "INBOUND",
+          quantity: initialVal,
+          costPerUnit: existing.costPerUnit,
+          totalCost: initialVal * existing.costPerUnit,
+          recordedBy: recordedBy || "المايسترو",
+          notes: notes || `تعيين رصيد أول المدة التأسيسي بعد الجرد: ${initialVal} ${existing.unit}`,
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: `تم تثبيت رصيد أول المدة لخامة (${existing.nameAr}) بـ ${initialVal} ${existing.unit} بنجاح 🎯`,
+        rawMaterial: updated,
+      });
+    }
+
     // 2. ACTION: ADD_MOVEMENT / RESTOCK (حركة توريد بضاعة منفصلة)
     if (action === "ADD_MOVEMENT" || action === "RESTOCK") {
       const targetId = rawMaterialId || id;
@@ -272,6 +313,7 @@ export async function POST(req: Request) {
 
     // 4. ACTION: RECORD_AUDIT (محضر الجرد الفعلي والتسوية السحابية)
     if (action === "RECORD_AUDIT") {
+      const { setAsOpeningStock } = body;
       let resolvedOutletId = outletId;
       if (!resolvedOutletId || resolvedOutletId === "ALL") {
         const soulmate = await prisma.outlet.findFirst({
@@ -289,7 +331,7 @@ export async function POST(req: Request) {
         data: {
           outletId: resolvedOutletId,
           auditorName: auditorName || "المايسترو",
-          notes: notes || "جرد دوري فعلي للخامات",
+          notes: notes || (setAsOpeningStock ? "جرد تأسيسي وتعيين رصيد أول المدة" : "جرد دوري فعلي للخامات"),
         },
       });
 
@@ -327,20 +369,25 @@ export async function POST(req: Request) {
         // Reconcile book stock to actual
         await prisma.rawMaterial.update({
           where: { id: raw.id },
-          data: { currentStock: actual },
+          data: {
+            currentStock: actual,
+            ...(setAsOpeningStock ? { openingStock: actual } : {}),
+          },
         });
 
-        // Record adjustment movement if there is a variance
-        if (variance !== 0) {
+        // Record adjustment movement if there is a variance or setting initial
+        if (variance !== 0 || setAsOpeningStock) {
           await prisma.rawMaterialMovement.create({
             data: {
               rawMaterialId: raw.id,
-              type: "ADJUSTMENT",
-              quantity: variance,
+              type: setAsOpeningStock ? "INBOUND" : "ADJUSTMENT",
+              quantity: setAsOpeningStock ? actual : variance,
               costPerUnit: raw.costPerUnit,
               totalCost: Math.abs(varianceCost),
               recordedBy: auditorName || "المايسترو",
-              notes: `تسوية جردية رسمية (محضر #${audit.id.slice(-6)}): ${variance < 0 ? "عجز" : "زيادة"} بمقدار ${variance} ${raw.unit}`,
+              notes: setAsOpeningStock
+                ? `تعيين رصيد أول المدة التأسيسي بالجرد: ${actual} ${raw.unit}`
+                : `تسوية جردية رسمية (محضر #${audit.id.slice(-6)}): ${variance < 0 ? "عجز" : "زيادة"} بمقدار ${variance} ${raw.unit}`,
             },
           });
         }
@@ -348,7 +395,9 @@ export async function POST(req: Request) {
 
       return NextResponse.json({
         success: true,
-        message: "تم اعتماد محضر الجرد وتسوية الأرصدة الدفترية مع الفعلي بنجاح 📋✅",
+        message: setAsOpeningStock
+          ? "تم اعتماد الجرد وتثبيته كرصيد أول المدة التأسيسي لجميع الخامات بنجاح 🎯"
+          : "تم اعتماد محضر الجرد وتسوية الأرصدة الدفترية مع الفعلي بنجاح 📋✅",
         auditId: audit.id,
       });
     }

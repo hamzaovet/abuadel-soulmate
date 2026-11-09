@@ -199,12 +199,30 @@ export async function POST(req: Request) {
         }
       }
 
-      // If Ready-Made Pastry (Abu Adel sweets / Cakes) -> Deduct stockQty directly
+      // If Ready-Made Pastry (Abu Adel sweets / Cakes) -> Deduct stockQty directly & Log Sale Movement
       if (it.itemType === "READY_PASTRY" && it.menuItemId) {
         await prisma.menuItem.update({
           where: { id: it.menuItemId },
           data: { stockQty: { decrement: qty } },
         });
+
+        // Log product sale movement for Abu Adel ERP ledger
+        try {
+          await prisma.productMovement.create({
+            data: {
+              menuItemId: it.menuItemId,
+              type: "SALE",
+              quantity: -qty,
+              unitCost: it.costPrice || 0,
+              totalCost: (it.costPrice || 0) * qty,
+              orderNumber: order.orderNumber,
+              recordedBy: "كاشير ونظام مبيعات حلواني أبو عادل",
+              notes: `مبيعات فاتورة #${order.orderNumber} - صنف: ${it.nameAr || it.name || "حلويات"} (${qty} ${it.unitType || "قطعة"})`,
+            },
+          });
+        } catch (e) {
+          console.error("Failed to log product sale movement:", e);
+        }
       }
     }
 

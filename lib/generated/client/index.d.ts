@@ -34,6 +34,21 @@ export type DiningTable = $Result.DefaultSelection<Prisma.$DiningTablePayload>
  */
 export type MenuItem = $Result.DefaultSelection<Prisma.$MenuItemPayload>
 /**
+ * Model ProductMovement
+ * 
+ */
+export type ProductMovement = $Result.DefaultSelection<Prisma.$ProductMovementPayload>
+/**
+ * Model PastryAudit
+ * 
+ */
+export type PastryAudit = $Result.DefaultSelection<Prisma.$PastryAuditPayload>
+/**
+ * Model PastryAuditItem
+ * 
+ */
+export type PastryAuditItem = $Result.DefaultSelection<Prisma.$PastryAuditItemPayload>
+/**
  * Model RawMaterial
  * 
  */
@@ -259,6 +274,36 @@ export class PrismaClient<
     * ```
     */
   get menuItem(): Prisma.MenuItemDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.productMovement`: Exposes CRUD operations for the **ProductMovement** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProductMovements
+    * const productMovements = await prisma.productMovement.findMany()
+    * ```
+    */
+  get productMovement(): Prisma.ProductMovementDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.pastryAudit`: Exposes CRUD operations for the **PastryAudit** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PastryAudits
+    * const pastryAudits = await prisma.pastryAudit.findMany()
+    * ```
+    */
+  get pastryAudit(): Prisma.PastryAuditDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.pastryAuditItem`: Exposes CRUD operations for the **PastryAuditItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PastryAuditItems
+    * const pastryAuditItems = await prisma.pastryAuditItem.findMany()
+    * ```
+    */
+  get pastryAuditItem(): Prisma.PastryAuditItemDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.rawMaterial`: Exposes CRUD operations for the **RawMaterial** model.
@@ -840,6 +885,9 @@ export namespace Prisma {
     User: 'User',
     DiningTable: 'DiningTable',
     MenuItem: 'MenuItem',
+    ProductMovement: 'ProductMovement',
+    PastryAudit: 'PastryAudit',
+    PastryAuditItem: 'PastryAuditItem',
     RawMaterial: 'RawMaterial',
     RawMaterialMovement: 'RawMaterialMovement',
     InventoryAudit: 'InventoryAudit',
@@ -868,7 +916,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "outlet" | "user" | "diningTable" | "menuItem" | "rawMaterial" | "rawMaterialMovement" | "inventoryAudit" | "inventoryAuditItem" | "recipeItem" | "customer" | "order" | "kdsTicket" | "shift" | "expense" | "systemSettings" | "reservation" | "chatMessage"
+      modelProps: "outlet" | "user" | "diningTable" | "menuItem" | "productMovement" | "pastryAudit" | "pastryAuditItem" | "rawMaterial" | "rawMaterialMovement" | "inventoryAudit" | "inventoryAuditItem" | "recipeItem" | "customer" | "order" | "kdsTicket" | "shift" | "expense" | "systemSettings" | "reservation" | "chatMessage"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1165,6 +1213,228 @@ export namespace Prisma {
           count: {
             args: Prisma.MenuItemCountArgs<ExtArgs>
             result: $Utils.Optional<MenuItemCountAggregateOutputType> | number
+          }
+        }
+      }
+      ProductMovement: {
+        payload: Prisma.$ProductMovementPayload<ExtArgs>
+        fields: Prisma.ProductMovementFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProductMovementFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductMovementPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProductMovementFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductMovementPayload>
+          }
+          findFirst: {
+            args: Prisma.ProductMovementFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductMovementPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProductMovementFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductMovementPayload>
+          }
+          findMany: {
+            args: Prisma.ProductMovementFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductMovementPayload>[]
+          }
+          create: {
+            args: Prisma.ProductMovementCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductMovementPayload>
+          }
+          createMany: {
+            args: Prisma.ProductMovementCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProductMovementCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductMovementPayload>[]
+          }
+          delete: {
+            args: Prisma.ProductMovementDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductMovementPayload>
+          }
+          update: {
+            args: Prisma.ProductMovementUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductMovementPayload>
+          }
+          deleteMany: {
+            args: Prisma.ProductMovementDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProductMovementUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ProductMovementUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductMovementPayload>[]
+          }
+          upsert: {
+            args: Prisma.ProductMovementUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductMovementPayload>
+          }
+          aggregate: {
+            args: Prisma.ProductMovementAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProductMovement>
+          }
+          groupBy: {
+            args: Prisma.ProductMovementGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProductMovementGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProductMovementCountArgs<ExtArgs>
+            result: $Utils.Optional<ProductMovementCountAggregateOutputType> | number
+          }
+        }
+      }
+      PastryAudit: {
+        payload: Prisma.$PastryAuditPayload<ExtArgs>
+        fields: Prisma.PastryAuditFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PastryAuditFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PastryAuditFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditPayload>
+          }
+          findFirst: {
+            args: Prisma.PastryAuditFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PastryAuditFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditPayload>
+          }
+          findMany: {
+            args: Prisma.PastryAuditFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditPayload>[]
+          }
+          create: {
+            args: Prisma.PastryAuditCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditPayload>
+          }
+          createMany: {
+            args: Prisma.PastryAuditCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PastryAuditCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditPayload>[]
+          }
+          delete: {
+            args: Prisma.PastryAuditDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditPayload>
+          }
+          update: {
+            args: Prisma.PastryAuditUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditPayload>
+          }
+          deleteMany: {
+            args: Prisma.PastryAuditDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PastryAuditUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PastryAuditUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditPayload>[]
+          }
+          upsert: {
+            args: Prisma.PastryAuditUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditPayload>
+          }
+          aggregate: {
+            args: Prisma.PastryAuditAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePastryAudit>
+          }
+          groupBy: {
+            args: Prisma.PastryAuditGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PastryAuditGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PastryAuditCountArgs<ExtArgs>
+            result: $Utils.Optional<PastryAuditCountAggregateOutputType> | number
+          }
+        }
+      }
+      PastryAuditItem: {
+        payload: Prisma.$PastryAuditItemPayload<ExtArgs>
+        fields: Prisma.PastryAuditItemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PastryAuditItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditItemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PastryAuditItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditItemPayload>
+          }
+          findFirst: {
+            args: Prisma.PastryAuditItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditItemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PastryAuditItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditItemPayload>
+          }
+          findMany: {
+            args: Prisma.PastryAuditItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditItemPayload>[]
+          }
+          create: {
+            args: Prisma.PastryAuditItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditItemPayload>
+          }
+          createMany: {
+            args: Prisma.PastryAuditItemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PastryAuditItemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditItemPayload>[]
+          }
+          delete: {
+            args: Prisma.PastryAuditItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditItemPayload>
+          }
+          update: {
+            args: Prisma.PastryAuditItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditItemPayload>
+          }
+          deleteMany: {
+            args: Prisma.PastryAuditItemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PastryAuditItemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PastryAuditItemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditItemPayload>[]
+          }
+          upsert: {
+            args: Prisma.PastryAuditItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PastryAuditItemPayload>
+          }
+          aggregate: {
+            args: Prisma.PastryAuditItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePastryAuditItem>
+          }
+          groupBy: {
+            args: Prisma.PastryAuditItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PastryAuditItemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PastryAuditItemCountArgs<ExtArgs>
+            result: $Utils.Optional<PastryAuditItemCountAggregateOutputType> | number
           }
         }
       }
@@ -2257,6 +2527,9 @@ export namespace Prisma {
     user?: UserOmit
     diningTable?: DiningTableOmit
     menuItem?: MenuItemOmit
+    productMovement?: ProductMovementOmit
+    pastryAudit?: PastryAuditOmit
+    pastryAuditItem?: PastryAuditItemOmit
     rawMaterial?: RawMaterialOmit
     rawMaterialMovement?: RawMaterialMovementOmit
     inventoryAudit?: InventoryAuditOmit
@@ -2360,6 +2633,7 @@ export namespace Prisma {
     reservations: number
     chatMessages: number
     inventoryAudits: number
+    pastryAudits: number
   }
 
   export type OutletCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2373,6 +2647,7 @@ export namespace Prisma {
     reservations?: boolean | OutletCountOutputTypeCountReservationsArgs
     chatMessages?: boolean | OutletCountOutputTypeCountChatMessagesArgs
     inventoryAudits?: boolean | OutletCountOutputTypeCountInventoryAuditsArgs
+    pastryAudits?: boolean | OutletCountOutputTypeCountPastryAuditsArgs
   }
 
   // Custom InputTypes
@@ -2456,6 +2731,13 @@ export namespace Prisma {
     where?: InventoryAuditWhereInput
   }
 
+  /**
+   * OutletCountOutputType without action
+   */
+  export type OutletCountOutputTypeCountPastryAuditsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PastryAuditWhereInput
+  }
+
 
   /**
    * Count Type DiningTableCountOutputType
@@ -2494,10 +2776,12 @@ export namespace Prisma {
 
   export type MenuItemCountOutputType = {
     recipes: number
+    movements: number
   }
 
   export type MenuItemCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     recipes?: boolean | MenuItemCountOutputTypeCountRecipesArgs
+    movements?: boolean | MenuItemCountOutputTypeCountMovementsArgs
   }
 
   // Custom InputTypes
@@ -2516,6 +2800,44 @@ export namespace Prisma {
    */
   export type MenuItemCountOutputTypeCountRecipesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RecipeItemWhereInput
+  }
+
+  /**
+   * MenuItemCountOutputType without action
+   */
+  export type MenuItemCountOutputTypeCountMovementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProductMovementWhereInput
+  }
+
+
+  /**
+   * Count Type PastryAuditCountOutputType
+   */
+
+  export type PastryAuditCountOutputType = {
+    items: number
+  }
+
+  export type PastryAuditCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    items?: boolean | PastryAuditCountOutputTypeCountItemsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * PastryAuditCountOutputType without action
+   */
+  export type PastryAuditCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAuditCountOutputType
+     */
+    select?: PastryAuditCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * PastryAuditCountOutputType without action
+   */
+  export type PastryAuditCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PastryAuditItemWhereInput
   }
 
 
@@ -2870,6 +3192,7 @@ export namespace Prisma {
     reservations?: boolean | Outlet$reservationsArgs<ExtArgs>
     chatMessages?: boolean | Outlet$chatMessagesArgs<ExtArgs>
     inventoryAudits?: boolean | Outlet$inventoryAuditsArgs<ExtArgs>
+    pastryAudits?: boolean | Outlet$pastryAuditsArgs<ExtArgs>
     _count?: boolean | OutletCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["outlet"]>
 
@@ -2924,6 +3247,7 @@ export namespace Prisma {
     reservations?: boolean | Outlet$reservationsArgs<ExtArgs>
     chatMessages?: boolean | Outlet$chatMessagesArgs<ExtArgs>
     inventoryAudits?: boolean | Outlet$inventoryAuditsArgs<ExtArgs>
+    pastryAudits?: boolean | Outlet$pastryAuditsArgs<ExtArgs>
     _count?: boolean | OutletCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OutletIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2942,6 +3266,7 @@ export namespace Prisma {
       reservations: Prisma.$ReservationPayload<ExtArgs>[]
       chatMessages: Prisma.$ChatMessagePayload<ExtArgs>[]
       inventoryAudits: Prisma.$InventoryAuditPayload<ExtArgs>[]
+      pastryAudits: Prisma.$PastryAuditPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3358,6 +3683,7 @@ export namespace Prisma {
     reservations<T extends Outlet$reservationsArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$reservationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReservationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     chatMessages<T extends Outlet$chatMessagesArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$chatMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     inventoryAudits<T extends Outlet$inventoryAuditsArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$inventoryAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InventoryAuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    pastryAudits<T extends Outlet$pastryAuditsArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$pastryAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PastryAuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4027,6 +4353,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: InventoryAuditScalarFieldEnum | InventoryAuditScalarFieldEnum[]
+  }
+
+  /**
+   * Outlet.pastryAudits
+   */
+  export type Outlet$pastryAuditsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAudit
+     */
+    select?: PastryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAudit
+     */
+    omit?: PastryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditInclude<ExtArgs> | null
+    where?: PastryAuditWhereInput
+    orderBy?: PastryAuditOrderByWithRelationInput | PastryAuditOrderByWithRelationInput[]
+    cursor?: PastryAuditWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PastryAuditScalarFieldEnum | PastryAuditScalarFieldEnum[]
   }
 
   /**
@@ -6403,6 +6753,7 @@ export namespace Prisma {
     price: number | null
     costPrice: number | null
     durationMinutes: number | null
+    openingStock: number | null
     stockQty: number | null
     minStockAlert: number | null
     sortOrder: number | null
@@ -6414,6 +6765,7 @@ export namespace Prisma {
     price: number | null
     costPrice: number | null
     durationMinutes: number | null
+    openingStock: number | null
     stockQty: number | null
     minStockAlert: number | null
     sortOrder: number | null
@@ -6434,6 +6786,7 @@ export namespace Prisma {
     image: string | null
     itemType: string | null
     unitType: string | null
+    openingStock: number | null
     stockQty: number | null
     minStockAlert: number | null
     isAvailable: boolean | null
@@ -6456,6 +6809,7 @@ export namespace Prisma {
     image: string | null
     itemType: string | null
     unitType: string | null
+    openingStock: number | null
     stockQty: number | null
     minStockAlert: number | null
     isAvailable: boolean | null
@@ -6478,6 +6832,7 @@ export namespace Prisma {
     image: number
     itemType: number
     unitType: number
+    openingStock: number
     stockQty: number
     minStockAlert: number
     isAvailable: number
@@ -6493,6 +6848,7 @@ export namespace Prisma {
     price?: true
     costPrice?: true
     durationMinutes?: true
+    openingStock?: true
     stockQty?: true
     minStockAlert?: true
     sortOrder?: true
@@ -6504,6 +6860,7 @@ export namespace Prisma {
     price?: true
     costPrice?: true
     durationMinutes?: true
+    openingStock?: true
     stockQty?: true
     minStockAlert?: true
     sortOrder?: true
@@ -6524,6 +6881,7 @@ export namespace Prisma {
     image?: true
     itemType?: true
     unitType?: true
+    openingStock?: true
     stockQty?: true
     minStockAlert?: true
     isAvailable?: true
@@ -6546,6 +6904,7 @@ export namespace Prisma {
     image?: true
     itemType?: true
     unitType?: true
+    openingStock?: true
     stockQty?: true
     minStockAlert?: true
     isAvailable?: true
@@ -6568,6 +6927,7 @@ export namespace Prisma {
     image?: true
     itemType?: true
     unitType?: true
+    openingStock?: true
     stockQty?: true
     minStockAlert?: true
     isAvailable?: true
@@ -6677,6 +7037,7 @@ export namespace Prisma {
     image: string | null
     itemType: string
     unitType: string
+    openingStock: number
     stockQty: number
     minStockAlert: number
     isAvailable: boolean
@@ -6718,6 +7079,7 @@ export namespace Prisma {
     image?: boolean
     itemType?: boolean
     unitType?: boolean
+    openingStock?: boolean
     stockQty?: boolean
     minStockAlert?: boolean
     isAvailable?: boolean
@@ -6727,6 +7089,7 @@ export namespace Prisma {
     createdAt?: boolean
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     recipes?: boolean | MenuItem$recipesArgs<ExtArgs>
+    movements?: boolean | MenuItem$movementsArgs<ExtArgs>
     _count?: boolean | MenuItemCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["menuItem"]>
 
@@ -6743,6 +7106,7 @@ export namespace Prisma {
     image?: boolean
     itemType?: boolean
     unitType?: boolean
+    openingStock?: boolean
     stockQty?: boolean
     minStockAlert?: boolean
     isAvailable?: boolean
@@ -6766,6 +7130,7 @@ export namespace Prisma {
     image?: boolean
     itemType?: boolean
     unitType?: boolean
+    openingStock?: boolean
     stockQty?: boolean
     minStockAlert?: boolean
     isAvailable?: boolean
@@ -6789,6 +7154,7 @@ export namespace Prisma {
     image?: boolean
     itemType?: boolean
     unitType?: boolean
+    openingStock?: boolean
     stockQty?: boolean
     minStockAlert?: boolean
     isAvailable?: boolean
@@ -6798,10 +7164,11 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type MenuItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "nameAr" | "nameEn" | "category" | "price" | "costPrice" | "durationMinutes" | "description" | "image" | "itemType" | "unitType" | "stockQty" | "minStockAlert" | "isAvailable" | "sortOrder" | "loyaltyPointsEarned" | "loyaltyPointsRequired" | "createdAt", ExtArgs["result"]["menuItem"]>
+  export type MenuItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "nameAr" | "nameEn" | "category" | "price" | "costPrice" | "durationMinutes" | "description" | "image" | "itemType" | "unitType" | "openingStock" | "stockQty" | "minStockAlert" | "isAvailable" | "sortOrder" | "loyaltyPointsEarned" | "loyaltyPointsRequired" | "createdAt", ExtArgs["result"]["menuItem"]>
   export type MenuItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     recipes?: boolean | MenuItem$recipesArgs<ExtArgs>
+    movements?: boolean | MenuItem$movementsArgs<ExtArgs>
     _count?: boolean | MenuItemCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MenuItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6816,6 +7183,7 @@ export namespace Prisma {
     objects: {
       outlet: Prisma.$OutletPayload<ExtArgs>
       recipes: Prisma.$RecipeItemPayload<ExtArgs>[]
+      movements: Prisma.$ProductMovementPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6830,6 +7198,7 @@ export namespace Prisma {
       image: string | null
       itemType: string
       unitType: string
+      openingStock: number
       stockQty: number
       minStockAlert: number
       isAvailable: boolean
@@ -7233,6 +7602,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     outlet<T extends OutletDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OutletDefaultArgs<ExtArgs>>): Prisma__OutletClient<$Result.GetResult<Prisma.$OutletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     recipes<T extends MenuItem$recipesArgs<ExtArgs> = {}>(args?: Subset<T, MenuItem$recipesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecipeItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    movements<T extends MenuItem$movementsArgs<ExtArgs> = {}>(args?: Subset<T, MenuItem$movementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7274,6 +7644,7 @@ export namespace Prisma {
     readonly image: FieldRef<"MenuItem", 'String'>
     readonly itemType: FieldRef<"MenuItem", 'String'>
     readonly unitType: FieldRef<"MenuItem", 'String'>
+    readonly openingStock: FieldRef<"MenuItem", 'Float'>
     readonly stockQty: FieldRef<"MenuItem", 'Int'>
     readonly minStockAlert: FieldRef<"MenuItem", 'Int'>
     readonly isAvailable: FieldRef<"MenuItem", 'Boolean'>
@@ -7706,6 +8077,30 @@ export namespace Prisma {
   }
 
   /**
+   * MenuItem.movements
+   */
+  export type MenuItem$movementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductMovement
+     */
+    select?: ProductMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductMovement
+     */
+    omit?: ProductMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductMovementInclude<ExtArgs> | null
+    where?: ProductMovementWhereInput
+    orderBy?: ProductMovementOrderByWithRelationInput | ProductMovementOrderByWithRelationInput[]
+    cursor?: ProductMovementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProductMovementScalarFieldEnum | ProductMovementScalarFieldEnum[]
+  }
+
+  /**
    * MenuItem without action
    */
   export type MenuItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7721,6 +8116,3567 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: MenuItemInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ProductMovement
+   */
+
+  export type AggregateProductMovement = {
+    _count: ProductMovementCountAggregateOutputType | null
+    _avg: ProductMovementAvgAggregateOutputType | null
+    _sum: ProductMovementSumAggregateOutputType | null
+    _min: ProductMovementMinAggregateOutputType | null
+    _max: ProductMovementMaxAggregateOutputType | null
+  }
+
+  export type ProductMovementAvgAggregateOutputType = {
+    quantity: number | null
+    unitCost: number | null
+    totalCost: number | null
+  }
+
+  export type ProductMovementSumAggregateOutputType = {
+    quantity: number | null
+    unitCost: number | null
+    totalCost: number | null
+  }
+
+  export type ProductMovementMinAggregateOutputType = {
+    id: string | null
+    menuItemId: string | null
+    type: string | null
+    quantity: number | null
+    unitCost: number | null
+    totalCost: number | null
+    supplierName: string | null
+    invoiceNumber: string | null
+    orderNumber: string | null
+    recordedBy: string | null
+    notes: string | null
+    createdAt: Date | null
+  }
+
+  export type ProductMovementMaxAggregateOutputType = {
+    id: string | null
+    menuItemId: string | null
+    type: string | null
+    quantity: number | null
+    unitCost: number | null
+    totalCost: number | null
+    supplierName: string | null
+    invoiceNumber: string | null
+    orderNumber: string | null
+    recordedBy: string | null
+    notes: string | null
+    createdAt: Date | null
+  }
+
+  export type ProductMovementCountAggregateOutputType = {
+    id: number
+    menuItemId: number
+    type: number
+    quantity: number
+    unitCost: number
+    totalCost: number
+    supplierName: number
+    invoiceNumber: number
+    orderNumber: number
+    recordedBy: number
+    notes: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ProductMovementAvgAggregateInputType = {
+    quantity?: true
+    unitCost?: true
+    totalCost?: true
+  }
+
+  export type ProductMovementSumAggregateInputType = {
+    quantity?: true
+    unitCost?: true
+    totalCost?: true
+  }
+
+  export type ProductMovementMinAggregateInputType = {
+    id?: true
+    menuItemId?: true
+    type?: true
+    quantity?: true
+    unitCost?: true
+    totalCost?: true
+    supplierName?: true
+    invoiceNumber?: true
+    orderNumber?: true
+    recordedBy?: true
+    notes?: true
+    createdAt?: true
+  }
+
+  export type ProductMovementMaxAggregateInputType = {
+    id?: true
+    menuItemId?: true
+    type?: true
+    quantity?: true
+    unitCost?: true
+    totalCost?: true
+    supplierName?: true
+    invoiceNumber?: true
+    orderNumber?: true
+    recordedBy?: true
+    notes?: true
+    createdAt?: true
+  }
+
+  export type ProductMovementCountAggregateInputType = {
+    id?: true
+    menuItemId?: true
+    type?: true
+    quantity?: true
+    unitCost?: true
+    totalCost?: true
+    supplierName?: true
+    invoiceNumber?: true
+    orderNumber?: true
+    recordedBy?: true
+    notes?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ProductMovementAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProductMovement to aggregate.
+     */
+    where?: ProductMovementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductMovements to fetch.
+     */
+    orderBy?: ProductMovementOrderByWithRelationInput | ProductMovementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProductMovementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductMovements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductMovements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ProductMovements
+    **/
+    _count?: true | ProductMovementCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ProductMovementAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ProductMovementSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProductMovementMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProductMovementMaxAggregateInputType
+  }
+
+  export type GetProductMovementAggregateType<T extends ProductMovementAggregateArgs> = {
+        [P in keyof T & keyof AggregateProductMovement]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProductMovement[P]>
+      : GetScalarType<T[P], AggregateProductMovement[P]>
+  }
+
+
+
+
+  export type ProductMovementGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProductMovementWhereInput
+    orderBy?: ProductMovementOrderByWithAggregationInput | ProductMovementOrderByWithAggregationInput[]
+    by: ProductMovementScalarFieldEnum[] | ProductMovementScalarFieldEnum
+    having?: ProductMovementScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProductMovementCountAggregateInputType | true
+    _avg?: ProductMovementAvgAggregateInputType
+    _sum?: ProductMovementSumAggregateInputType
+    _min?: ProductMovementMinAggregateInputType
+    _max?: ProductMovementMaxAggregateInputType
+  }
+
+  export type ProductMovementGroupByOutputType = {
+    id: string
+    menuItemId: string
+    type: string
+    quantity: number
+    unitCost: number | null
+    totalCost: number | null
+    supplierName: string | null
+    invoiceNumber: string | null
+    orderNumber: string | null
+    recordedBy: string | null
+    notes: string | null
+    createdAt: Date
+    _count: ProductMovementCountAggregateOutputType | null
+    _avg: ProductMovementAvgAggregateOutputType | null
+    _sum: ProductMovementSumAggregateOutputType | null
+    _min: ProductMovementMinAggregateOutputType | null
+    _max: ProductMovementMaxAggregateOutputType | null
+  }
+
+  type GetProductMovementGroupByPayload<T extends ProductMovementGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProductMovementGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProductMovementGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProductMovementGroupByOutputType[P]>
+            : GetScalarType<T[P], ProductMovementGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProductMovementSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    menuItemId?: boolean
+    type?: boolean
+    quantity?: boolean
+    unitCost?: boolean
+    totalCost?: boolean
+    supplierName?: boolean
+    invoiceNumber?: boolean
+    orderNumber?: boolean
+    recordedBy?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    menuItem?: boolean | MenuItemDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["productMovement"]>
+
+  export type ProductMovementSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    menuItemId?: boolean
+    type?: boolean
+    quantity?: boolean
+    unitCost?: boolean
+    totalCost?: boolean
+    supplierName?: boolean
+    invoiceNumber?: boolean
+    orderNumber?: boolean
+    recordedBy?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    menuItem?: boolean | MenuItemDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["productMovement"]>
+
+  export type ProductMovementSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    menuItemId?: boolean
+    type?: boolean
+    quantity?: boolean
+    unitCost?: boolean
+    totalCost?: boolean
+    supplierName?: boolean
+    invoiceNumber?: boolean
+    orderNumber?: boolean
+    recordedBy?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    menuItem?: boolean | MenuItemDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["productMovement"]>
+
+  export type ProductMovementSelectScalar = {
+    id?: boolean
+    menuItemId?: boolean
+    type?: boolean
+    quantity?: boolean
+    unitCost?: boolean
+    totalCost?: boolean
+    supplierName?: boolean
+    invoiceNumber?: boolean
+    orderNumber?: boolean
+    recordedBy?: boolean
+    notes?: boolean
+    createdAt?: boolean
+  }
+
+  export type ProductMovementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "menuItemId" | "type" | "quantity" | "unitCost" | "totalCost" | "supplierName" | "invoiceNumber" | "orderNumber" | "recordedBy" | "notes" | "createdAt", ExtArgs["result"]["productMovement"]>
+  export type ProductMovementInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    menuItem?: boolean | MenuItemDefaultArgs<ExtArgs>
+  }
+  export type ProductMovementIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    menuItem?: boolean | MenuItemDefaultArgs<ExtArgs>
+  }
+  export type ProductMovementIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    menuItem?: boolean | MenuItemDefaultArgs<ExtArgs>
+  }
+
+  export type $ProductMovementPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProductMovement"
+    objects: {
+      menuItem: Prisma.$MenuItemPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      menuItemId: string
+      type: string
+      quantity: number
+      unitCost: number | null
+      totalCost: number | null
+      supplierName: string | null
+      invoiceNumber: string | null
+      orderNumber: string | null
+      recordedBy: string | null
+      notes: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["productMovement"]>
+    composites: {}
+  }
+
+  type ProductMovementGetPayload<S extends boolean | null | undefined | ProductMovementDefaultArgs> = $Result.GetResult<Prisma.$ProductMovementPayload, S>
+
+  type ProductMovementCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProductMovementFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProductMovementCountAggregateInputType | true
+    }
+
+  export interface ProductMovementDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProductMovement'], meta: { name: 'ProductMovement' } }
+    /**
+     * Find zero or one ProductMovement that matches the filter.
+     * @param {ProductMovementFindUniqueArgs} args - Arguments to find a ProductMovement
+     * @example
+     * // Get one ProductMovement
+     * const productMovement = await prisma.productMovement.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProductMovementFindUniqueArgs>(args: SelectSubset<T, ProductMovementFindUniqueArgs<ExtArgs>>): Prisma__ProductMovementClient<$Result.GetResult<Prisma.$ProductMovementPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ProductMovement that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ProductMovementFindUniqueOrThrowArgs} args - Arguments to find a ProductMovement
+     * @example
+     * // Get one ProductMovement
+     * const productMovement = await prisma.productMovement.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProductMovementFindUniqueOrThrowArgs>(args: SelectSubset<T, ProductMovementFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProductMovementClient<$Result.GetResult<Prisma.$ProductMovementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProductMovement that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductMovementFindFirstArgs} args - Arguments to find a ProductMovement
+     * @example
+     * // Get one ProductMovement
+     * const productMovement = await prisma.productMovement.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProductMovementFindFirstArgs>(args?: SelectSubset<T, ProductMovementFindFirstArgs<ExtArgs>>): Prisma__ProductMovementClient<$Result.GetResult<Prisma.$ProductMovementPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProductMovement that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductMovementFindFirstOrThrowArgs} args - Arguments to find a ProductMovement
+     * @example
+     * // Get one ProductMovement
+     * const productMovement = await prisma.productMovement.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProductMovementFindFirstOrThrowArgs>(args?: SelectSubset<T, ProductMovementFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProductMovementClient<$Result.GetResult<Prisma.$ProductMovementPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ProductMovements that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductMovementFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ProductMovements
+     * const productMovements = await prisma.productMovement.findMany()
+     * 
+     * // Get first 10 ProductMovements
+     * const productMovements = await prisma.productMovement.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const productMovementWithIdOnly = await prisma.productMovement.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProductMovementFindManyArgs>(args?: SelectSubset<T, ProductMovementFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ProductMovement.
+     * @param {ProductMovementCreateArgs} args - Arguments to create a ProductMovement.
+     * @example
+     * // Create one ProductMovement
+     * const ProductMovement = await prisma.productMovement.create({
+     *   data: {
+     *     // ... data to create a ProductMovement
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProductMovementCreateArgs>(args: SelectSubset<T, ProductMovementCreateArgs<ExtArgs>>): Prisma__ProductMovementClient<$Result.GetResult<Prisma.$ProductMovementPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ProductMovements.
+     * @param {ProductMovementCreateManyArgs} args - Arguments to create many ProductMovements.
+     * @example
+     * // Create many ProductMovements
+     * const productMovement = await prisma.productMovement.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProductMovementCreateManyArgs>(args?: SelectSubset<T, ProductMovementCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ProductMovements and returns the data saved in the database.
+     * @param {ProductMovementCreateManyAndReturnArgs} args - Arguments to create many ProductMovements.
+     * @example
+     * // Create many ProductMovements
+     * const productMovement = await prisma.productMovement.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ProductMovements and only return the `id`
+     * const productMovementWithIdOnly = await prisma.productMovement.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProductMovementCreateManyAndReturnArgs>(args?: SelectSubset<T, ProductMovementCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductMovementPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ProductMovement.
+     * @param {ProductMovementDeleteArgs} args - Arguments to delete one ProductMovement.
+     * @example
+     * // Delete one ProductMovement
+     * const ProductMovement = await prisma.productMovement.delete({
+     *   where: {
+     *     // ... filter to delete one ProductMovement
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProductMovementDeleteArgs>(args: SelectSubset<T, ProductMovementDeleteArgs<ExtArgs>>): Prisma__ProductMovementClient<$Result.GetResult<Prisma.$ProductMovementPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ProductMovement.
+     * @param {ProductMovementUpdateArgs} args - Arguments to update one ProductMovement.
+     * @example
+     * // Update one ProductMovement
+     * const productMovement = await prisma.productMovement.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProductMovementUpdateArgs>(args: SelectSubset<T, ProductMovementUpdateArgs<ExtArgs>>): Prisma__ProductMovementClient<$Result.GetResult<Prisma.$ProductMovementPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ProductMovements.
+     * @param {ProductMovementDeleteManyArgs} args - Arguments to filter ProductMovements to delete.
+     * @example
+     * // Delete a few ProductMovements
+     * const { count } = await prisma.productMovement.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProductMovementDeleteManyArgs>(args?: SelectSubset<T, ProductMovementDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProductMovements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductMovementUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ProductMovements
+     * const productMovement = await prisma.productMovement.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProductMovementUpdateManyArgs>(args: SelectSubset<T, ProductMovementUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProductMovements and returns the data updated in the database.
+     * @param {ProductMovementUpdateManyAndReturnArgs} args - Arguments to update many ProductMovements.
+     * @example
+     * // Update many ProductMovements
+     * const productMovement = await prisma.productMovement.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ProductMovements and only return the `id`
+     * const productMovementWithIdOnly = await prisma.productMovement.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ProductMovementUpdateManyAndReturnArgs>(args: SelectSubset<T, ProductMovementUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductMovementPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ProductMovement.
+     * @param {ProductMovementUpsertArgs} args - Arguments to update or create a ProductMovement.
+     * @example
+     * // Update or create a ProductMovement
+     * const productMovement = await prisma.productMovement.upsert({
+     *   create: {
+     *     // ... data to create a ProductMovement
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ProductMovement we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProductMovementUpsertArgs>(args: SelectSubset<T, ProductMovementUpsertArgs<ExtArgs>>): Prisma__ProductMovementClient<$Result.GetResult<Prisma.$ProductMovementPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ProductMovements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductMovementCountArgs} args - Arguments to filter ProductMovements to count.
+     * @example
+     * // Count the number of ProductMovements
+     * const count = await prisma.productMovement.count({
+     *   where: {
+     *     // ... the filter for the ProductMovements we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProductMovementCountArgs>(
+      args?: Subset<T, ProductMovementCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProductMovementCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ProductMovement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductMovementAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProductMovementAggregateArgs>(args: Subset<T, ProductMovementAggregateArgs>): Prisma.PrismaPromise<GetProductMovementAggregateType<T>>
+
+    /**
+     * Group by ProductMovement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductMovementGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProductMovementGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProductMovementGroupByArgs['orderBy'] }
+        : { orderBy?: ProductMovementGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProductMovementGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProductMovementGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ProductMovement model
+   */
+  readonly fields: ProductMovementFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ProductMovement.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProductMovementClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    menuItem<T extends MenuItemDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MenuItemDefaultArgs<ExtArgs>>): Prisma__MenuItemClient<$Result.GetResult<Prisma.$MenuItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ProductMovement model
+   */
+  interface ProductMovementFieldRefs {
+    readonly id: FieldRef<"ProductMovement", 'String'>
+    readonly menuItemId: FieldRef<"ProductMovement", 'String'>
+    readonly type: FieldRef<"ProductMovement", 'String'>
+    readonly quantity: FieldRef<"ProductMovement", 'Float'>
+    readonly unitCost: FieldRef<"ProductMovement", 'Float'>
+    readonly totalCost: FieldRef<"ProductMovement", 'Float'>
+    readonly supplierName: FieldRef<"ProductMovement", 'String'>
+    readonly invoiceNumber: FieldRef<"ProductMovement", 'String'>
+    readonly orderNumber: FieldRef<"ProductMovement", 'String'>
+    readonly recordedBy: FieldRef<"ProductMovement", 'String'>
+    readonly notes: FieldRef<"ProductMovement", 'String'>
+    readonly createdAt: FieldRef<"ProductMovement", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ProductMovement findUnique
+   */
+  export type ProductMovementFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductMovement
+     */
+    select?: ProductMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductMovement
+     */
+    omit?: ProductMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductMovementInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductMovement to fetch.
+     */
+    where: ProductMovementWhereUniqueInput
+  }
+
+  /**
+   * ProductMovement findUniqueOrThrow
+   */
+  export type ProductMovementFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductMovement
+     */
+    select?: ProductMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductMovement
+     */
+    omit?: ProductMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductMovementInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductMovement to fetch.
+     */
+    where: ProductMovementWhereUniqueInput
+  }
+
+  /**
+   * ProductMovement findFirst
+   */
+  export type ProductMovementFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductMovement
+     */
+    select?: ProductMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductMovement
+     */
+    omit?: ProductMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductMovementInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductMovement to fetch.
+     */
+    where?: ProductMovementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductMovements to fetch.
+     */
+    orderBy?: ProductMovementOrderByWithRelationInput | ProductMovementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProductMovements.
+     */
+    cursor?: ProductMovementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductMovements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductMovements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProductMovements.
+     */
+    distinct?: ProductMovementScalarFieldEnum | ProductMovementScalarFieldEnum[]
+  }
+
+  /**
+   * ProductMovement findFirstOrThrow
+   */
+  export type ProductMovementFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductMovement
+     */
+    select?: ProductMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductMovement
+     */
+    omit?: ProductMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductMovementInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductMovement to fetch.
+     */
+    where?: ProductMovementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductMovements to fetch.
+     */
+    orderBy?: ProductMovementOrderByWithRelationInput | ProductMovementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProductMovements.
+     */
+    cursor?: ProductMovementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductMovements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductMovements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProductMovements.
+     */
+    distinct?: ProductMovementScalarFieldEnum | ProductMovementScalarFieldEnum[]
+  }
+
+  /**
+   * ProductMovement findMany
+   */
+  export type ProductMovementFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductMovement
+     */
+    select?: ProductMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductMovement
+     */
+    omit?: ProductMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductMovementInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductMovements to fetch.
+     */
+    where?: ProductMovementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductMovements to fetch.
+     */
+    orderBy?: ProductMovementOrderByWithRelationInput | ProductMovementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ProductMovements.
+     */
+    cursor?: ProductMovementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductMovements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductMovements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProductMovements.
+     */
+    distinct?: ProductMovementScalarFieldEnum | ProductMovementScalarFieldEnum[]
+  }
+
+  /**
+   * ProductMovement create
+   */
+  export type ProductMovementCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductMovement
+     */
+    select?: ProductMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductMovement
+     */
+    omit?: ProductMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductMovementInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ProductMovement.
+     */
+    data: XOR<ProductMovementCreateInput, ProductMovementUncheckedCreateInput>
+  }
+
+  /**
+   * ProductMovement createMany
+   */
+  export type ProductMovementCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ProductMovements.
+     */
+    data: ProductMovementCreateManyInput | ProductMovementCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ProductMovement createManyAndReturn
+   */
+  export type ProductMovementCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductMovement
+     */
+    select?: ProductMovementSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductMovement
+     */
+    omit?: ProductMovementOmit<ExtArgs> | null
+    /**
+     * The data used to create many ProductMovements.
+     */
+    data: ProductMovementCreateManyInput | ProductMovementCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductMovementIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProductMovement update
+   */
+  export type ProductMovementUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductMovement
+     */
+    select?: ProductMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductMovement
+     */
+    omit?: ProductMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductMovementInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ProductMovement.
+     */
+    data: XOR<ProductMovementUpdateInput, ProductMovementUncheckedUpdateInput>
+    /**
+     * Choose, which ProductMovement to update.
+     */
+    where: ProductMovementWhereUniqueInput
+  }
+
+  /**
+   * ProductMovement updateMany
+   */
+  export type ProductMovementUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ProductMovements.
+     */
+    data: XOR<ProductMovementUpdateManyMutationInput, ProductMovementUncheckedUpdateManyInput>
+    /**
+     * Filter which ProductMovements to update
+     */
+    where?: ProductMovementWhereInput
+    /**
+     * Limit how many ProductMovements to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProductMovement updateManyAndReturn
+   */
+  export type ProductMovementUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductMovement
+     */
+    select?: ProductMovementSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductMovement
+     */
+    omit?: ProductMovementOmit<ExtArgs> | null
+    /**
+     * The data used to update ProductMovements.
+     */
+    data: XOR<ProductMovementUpdateManyMutationInput, ProductMovementUncheckedUpdateManyInput>
+    /**
+     * Filter which ProductMovements to update
+     */
+    where?: ProductMovementWhereInput
+    /**
+     * Limit how many ProductMovements to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductMovementIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProductMovement upsert
+   */
+  export type ProductMovementUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductMovement
+     */
+    select?: ProductMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductMovement
+     */
+    omit?: ProductMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductMovementInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ProductMovement to update in case it exists.
+     */
+    where: ProductMovementWhereUniqueInput
+    /**
+     * In case the ProductMovement found by the `where` argument doesn't exist, create a new ProductMovement with this data.
+     */
+    create: XOR<ProductMovementCreateInput, ProductMovementUncheckedCreateInput>
+    /**
+     * In case the ProductMovement was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProductMovementUpdateInput, ProductMovementUncheckedUpdateInput>
+  }
+
+  /**
+   * ProductMovement delete
+   */
+  export type ProductMovementDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductMovement
+     */
+    select?: ProductMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductMovement
+     */
+    omit?: ProductMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductMovementInclude<ExtArgs> | null
+    /**
+     * Filter which ProductMovement to delete.
+     */
+    where: ProductMovementWhereUniqueInput
+  }
+
+  /**
+   * ProductMovement deleteMany
+   */
+  export type ProductMovementDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProductMovements to delete
+     */
+    where?: ProductMovementWhereInput
+    /**
+     * Limit how many ProductMovements to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProductMovement without action
+   */
+  export type ProductMovementDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductMovement
+     */
+    select?: ProductMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductMovement
+     */
+    omit?: ProductMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductMovementInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PastryAudit
+   */
+
+  export type AggregatePastryAudit = {
+    _count: PastryAuditCountAggregateOutputType | null
+    _min: PastryAuditMinAggregateOutputType | null
+    _max: PastryAuditMaxAggregateOutputType | null
+  }
+
+  export type PastryAuditMinAggregateOutputType = {
+    id: string | null
+    outletId: string | null
+    auditorName: string | null
+    notes: string | null
+    createdAt: Date | null
+  }
+
+  export type PastryAuditMaxAggregateOutputType = {
+    id: string | null
+    outletId: string | null
+    auditorName: string | null
+    notes: string | null
+    createdAt: Date | null
+  }
+
+  export type PastryAuditCountAggregateOutputType = {
+    id: number
+    outletId: number
+    auditorName: number
+    notes: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type PastryAuditMinAggregateInputType = {
+    id?: true
+    outletId?: true
+    auditorName?: true
+    notes?: true
+    createdAt?: true
+  }
+
+  export type PastryAuditMaxAggregateInputType = {
+    id?: true
+    outletId?: true
+    auditorName?: true
+    notes?: true
+    createdAt?: true
+  }
+
+  export type PastryAuditCountAggregateInputType = {
+    id?: true
+    outletId?: true
+    auditorName?: true
+    notes?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type PastryAuditAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PastryAudit to aggregate.
+     */
+    where?: PastryAuditWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PastryAudits to fetch.
+     */
+    orderBy?: PastryAuditOrderByWithRelationInput | PastryAuditOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PastryAuditWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PastryAudits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PastryAudits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PastryAudits
+    **/
+    _count?: true | PastryAuditCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PastryAuditMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PastryAuditMaxAggregateInputType
+  }
+
+  export type GetPastryAuditAggregateType<T extends PastryAuditAggregateArgs> = {
+        [P in keyof T & keyof AggregatePastryAudit]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePastryAudit[P]>
+      : GetScalarType<T[P], AggregatePastryAudit[P]>
+  }
+
+
+
+
+  export type PastryAuditGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PastryAuditWhereInput
+    orderBy?: PastryAuditOrderByWithAggregationInput | PastryAuditOrderByWithAggregationInput[]
+    by: PastryAuditScalarFieldEnum[] | PastryAuditScalarFieldEnum
+    having?: PastryAuditScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PastryAuditCountAggregateInputType | true
+    _min?: PastryAuditMinAggregateInputType
+    _max?: PastryAuditMaxAggregateInputType
+  }
+
+  export type PastryAuditGroupByOutputType = {
+    id: string
+    outletId: string
+    auditorName: string
+    notes: string | null
+    createdAt: Date
+    _count: PastryAuditCountAggregateOutputType | null
+    _min: PastryAuditMinAggregateOutputType | null
+    _max: PastryAuditMaxAggregateOutputType | null
+  }
+
+  type GetPastryAuditGroupByPayload<T extends PastryAuditGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PastryAuditGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PastryAuditGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PastryAuditGroupByOutputType[P]>
+            : GetScalarType<T[P], PastryAuditGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PastryAuditSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    auditorName?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+    items?: boolean | PastryAudit$itemsArgs<ExtArgs>
+    _count?: boolean | PastryAuditCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pastryAudit"]>
+
+  export type PastryAuditSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    auditorName?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pastryAudit"]>
+
+  export type PastryAuditSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    auditorName?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pastryAudit"]>
+
+  export type PastryAuditSelectScalar = {
+    id?: boolean
+    outletId?: boolean
+    auditorName?: boolean
+    notes?: boolean
+    createdAt?: boolean
+  }
+
+  export type PastryAuditOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "auditorName" | "notes" | "createdAt", ExtArgs["result"]["pastryAudit"]>
+  export type PastryAuditInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+    items?: boolean | PastryAudit$itemsArgs<ExtArgs>
+    _count?: boolean | PastryAuditCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type PastryAuditIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }
+  export type PastryAuditIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }
+
+  export type $PastryAuditPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PastryAudit"
+    objects: {
+      outlet: Prisma.$OutletPayload<ExtArgs>
+      items: Prisma.$PastryAuditItemPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      outletId: string
+      auditorName: string
+      notes: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["pastryAudit"]>
+    composites: {}
+  }
+
+  type PastryAuditGetPayload<S extends boolean | null | undefined | PastryAuditDefaultArgs> = $Result.GetResult<Prisma.$PastryAuditPayload, S>
+
+  type PastryAuditCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PastryAuditFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PastryAuditCountAggregateInputType | true
+    }
+
+  export interface PastryAuditDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PastryAudit'], meta: { name: 'PastryAudit' } }
+    /**
+     * Find zero or one PastryAudit that matches the filter.
+     * @param {PastryAuditFindUniqueArgs} args - Arguments to find a PastryAudit
+     * @example
+     * // Get one PastryAudit
+     * const pastryAudit = await prisma.pastryAudit.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PastryAuditFindUniqueArgs>(args: SelectSubset<T, PastryAuditFindUniqueArgs<ExtArgs>>): Prisma__PastryAuditClient<$Result.GetResult<Prisma.$PastryAuditPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PastryAudit that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PastryAuditFindUniqueOrThrowArgs} args - Arguments to find a PastryAudit
+     * @example
+     * // Get one PastryAudit
+     * const pastryAudit = await prisma.pastryAudit.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PastryAuditFindUniqueOrThrowArgs>(args: SelectSubset<T, PastryAuditFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PastryAuditClient<$Result.GetResult<Prisma.$PastryAuditPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PastryAudit that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PastryAuditFindFirstArgs} args - Arguments to find a PastryAudit
+     * @example
+     * // Get one PastryAudit
+     * const pastryAudit = await prisma.pastryAudit.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PastryAuditFindFirstArgs>(args?: SelectSubset<T, PastryAuditFindFirstArgs<ExtArgs>>): Prisma__PastryAuditClient<$Result.GetResult<Prisma.$PastryAuditPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PastryAudit that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PastryAuditFindFirstOrThrowArgs} args - Arguments to find a PastryAudit
+     * @example
+     * // Get one PastryAudit
+     * const pastryAudit = await prisma.pastryAudit.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PastryAuditFindFirstOrThrowArgs>(args?: SelectSubset<T, PastryAuditFindFirstOrThrowArgs<ExtArgs>>): Prisma__PastryAuditClient<$Result.GetResult<Prisma.$PastryAuditPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PastryAudits that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PastryAuditFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PastryAudits
+     * const pastryAudits = await prisma.pastryAudit.findMany()
+     * 
+     * // Get first 10 PastryAudits
+     * const pastryAudits = await prisma.pastryAudit.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const pastryAuditWithIdOnly = await prisma.pastryAudit.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PastryAuditFindManyArgs>(args?: SelectSubset<T, PastryAuditFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PastryAuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PastryAudit.
+     * @param {PastryAuditCreateArgs} args - Arguments to create a PastryAudit.
+     * @example
+     * // Create one PastryAudit
+     * const PastryAudit = await prisma.pastryAudit.create({
+     *   data: {
+     *     // ... data to create a PastryAudit
+     *   }
+     * })
+     * 
+     */
+    create<T extends PastryAuditCreateArgs>(args: SelectSubset<T, PastryAuditCreateArgs<ExtArgs>>): Prisma__PastryAuditClient<$Result.GetResult<Prisma.$PastryAuditPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PastryAudits.
+     * @param {PastryAuditCreateManyArgs} args - Arguments to create many PastryAudits.
+     * @example
+     * // Create many PastryAudits
+     * const pastryAudit = await prisma.pastryAudit.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PastryAuditCreateManyArgs>(args?: SelectSubset<T, PastryAuditCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PastryAudits and returns the data saved in the database.
+     * @param {PastryAuditCreateManyAndReturnArgs} args - Arguments to create many PastryAudits.
+     * @example
+     * // Create many PastryAudits
+     * const pastryAudit = await prisma.pastryAudit.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PastryAudits and only return the `id`
+     * const pastryAuditWithIdOnly = await prisma.pastryAudit.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PastryAuditCreateManyAndReturnArgs>(args?: SelectSubset<T, PastryAuditCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PastryAuditPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PastryAudit.
+     * @param {PastryAuditDeleteArgs} args - Arguments to delete one PastryAudit.
+     * @example
+     * // Delete one PastryAudit
+     * const PastryAudit = await prisma.pastryAudit.delete({
+     *   where: {
+     *     // ... filter to delete one PastryAudit
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PastryAuditDeleteArgs>(args: SelectSubset<T, PastryAuditDeleteArgs<ExtArgs>>): Prisma__PastryAuditClient<$Result.GetResult<Prisma.$PastryAuditPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PastryAudit.
+     * @param {PastryAuditUpdateArgs} args - Arguments to update one PastryAudit.
+     * @example
+     * // Update one PastryAudit
+     * const pastryAudit = await prisma.pastryAudit.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PastryAuditUpdateArgs>(args: SelectSubset<T, PastryAuditUpdateArgs<ExtArgs>>): Prisma__PastryAuditClient<$Result.GetResult<Prisma.$PastryAuditPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PastryAudits.
+     * @param {PastryAuditDeleteManyArgs} args - Arguments to filter PastryAudits to delete.
+     * @example
+     * // Delete a few PastryAudits
+     * const { count } = await prisma.pastryAudit.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PastryAuditDeleteManyArgs>(args?: SelectSubset<T, PastryAuditDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PastryAudits.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PastryAuditUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PastryAudits
+     * const pastryAudit = await prisma.pastryAudit.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PastryAuditUpdateManyArgs>(args: SelectSubset<T, PastryAuditUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PastryAudits and returns the data updated in the database.
+     * @param {PastryAuditUpdateManyAndReturnArgs} args - Arguments to update many PastryAudits.
+     * @example
+     * // Update many PastryAudits
+     * const pastryAudit = await prisma.pastryAudit.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PastryAudits and only return the `id`
+     * const pastryAuditWithIdOnly = await prisma.pastryAudit.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PastryAuditUpdateManyAndReturnArgs>(args: SelectSubset<T, PastryAuditUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PastryAuditPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PastryAudit.
+     * @param {PastryAuditUpsertArgs} args - Arguments to update or create a PastryAudit.
+     * @example
+     * // Update or create a PastryAudit
+     * const pastryAudit = await prisma.pastryAudit.upsert({
+     *   create: {
+     *     // ... data to create a PastryAudit
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PastryAudit we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PastryAuditUpsertArgs>(args: SelectSubset<T, PastryAuditUpsertArgs<ExtArgs>>): Prisma__PastryAuditClient<$Result.GetResult<Prisma.$PastryAuditPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PastryAudits.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PastryAuditCountArgs} args - Arguments to filter PastryAudits to count.
+     * @example
+     * // Count the number of PastryAudits
+     * const count = await prisma.pastryAudit.count({
+     *   where: {
+     *     // ... the filter for the PastryAudits we want to count
+     *   }
+     * })
+    **/
+    count<T extends PastryAuditCountArgs>(
+      args?: Subset<T, PastryAuditCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PastryAuditCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PastryAudit.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PastryAuditAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PastryAuditAggregateArgs>(args: Subset<T, PastryAuditAggregateArgs>): Prisma.PrismaPromise<GetPastryAuditAggregateType<T>>
+
+    /**
+     * Group by PastryAudit.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PastryAuditGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PastryAuditGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PastryAuditGroupByArgs['orderBy'] }
+        : { orderBy?: PastryAuditGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PastryAuditGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPastryAuditGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PastryAudit model
+   */
+  readonly fields: PastryAuditFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PastryAudit.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PastryAuditClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    outlet<T extends OutletDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OutletDefaultArgs<ExtArgs>>): Prisma__OutletClient<$Result.GetResult<Prisma.$OutletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    items<T extends PastryAudit$itemsArgs<ExtArgs> = {}>(args?: Subset<T, PastryAudit$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PastryAuditItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PastryAudit model
+   */
+  interface PastryAuditFieldRefs {
+    readonly id: FieldRef<"PastryAudit", 'String'>
+    readonly outletId: FieldRef<"PastryAudit", 'String'>
+    readonly auditorName: FieldRef<"PastryAudit", 'String'>
+    readonly notes: FieldRef<"PastryAudit", 'String'>
+    readonly createdAt: FieldRef<"PastryAudit", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PastryAudit findUnique
+   */
+  export type PastryAuditFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAudit
+     */
+    select?: PastryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAudit
+     */
+    omit?: PastryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditInclude<ExtArgs> | null
+    /**
+     * Filter, which PastryAudit to fetch.
+     */
+    where: PastryAuditWhereUniqueInput
+  }
+
+  /**
+   * PastryAudit findUniqueOrThrow
+   */
+  export type PastryAuditFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAudit
+     */
+    select?: PastryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAudit
+     */
+    omit?: PastryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditInclude<ExtArgs> | null
+    /**
+     * Filter, which PastryAudit to fetch.
+     */
+    where: PastryAuditWhereUniqueInput
+  }
+
+  /**
+   * PastryAudit findFirst
+   */
+  export type PastryAuditFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAudit
+     */
+    select?: PastryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAudit
+     */
+    omit?: PastryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditInclude<ExtArgs> | null
+    /**
+     * Filter, which PastryAudit to fetch.
+     */
+    where?: PastryAuditWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PastryAudits to fetch.
+     */
+    orderBy?: PastryAuditOrderByWithRelationInput | PastryAuditOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PastryAudits.
+     */
+    cursor?: PastryAuditWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PastryAudits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PastryAudits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PastryAudits.
+     */
+    distinct?: PastryAuditScalarFieldEnum | PastryAuditScalarFieldEnum[]
+  }
+
+  /**
+   * PastryAudit findFirstOrThrow
+   */
+  export type PastryAuditFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAudit
+     */
+    select?: PastryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAudit
+     */
+    omit?: PastryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditInclude<ExtArgs> | null
+    /**
+     * Filter, which PastryAudit to fetch.
+     */
+    where?: PastryAuditWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PastryAudits to fetch.
+     */
+    orderBy?: PastryAuditOrderByWithRelationInput | PastryAuditOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PastryAudits.
+     */
+    cursor?: PastryAuditWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PastryAudits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PastryAudits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PastryAudits.
+     */
+    distinct?: PastryAuditScalarFieldEnum | PastryAuditScalarFieldEnum[]
+  }
+
+  /**
+   * PastryAudit findMany
+   */
+  export type PastryAuditFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAudit
+     */
+    select?: PastryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAudit
+     */
+    omit?: PastryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditInclude<ExtArgs> | null
+    /**
+     * Filter, which PastryAudits to fetch.
+     */
+    where?: PastryAuditWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PastryAudits to fetch.
+     */
+    orderBy?: PastryAuditOrderByWithRelationInput | PastryAuditOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PastryAudits.
+     */
+    cursor?: PastryAuditWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PastryAudits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PastryAudits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PastryAudits.
+     */
+    distinct?: PastryAuditScalarFieldEnum | PastryAuditScalarFieldEnum[]
+  }
+
+  /**
+   * PastryAudit create
+   */
+  export type PastryAuditCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAudit
+     */
+    select?: PastryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAudit
+     */
+    omit?: PastryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PastryAudit.
+     */
+    data: XOR<PastryAuditCreateInput, PastryAuditUncheckedCreateInput>
+  }
+
+  /**
+   * PastryAudit createMany
+   */
+  export type PastryAuditCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PastryAudits.
+     */
+    data: PastryAuditCreateManyInput | PastryAuditCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PastryAudit createManyAndReturn
+   */
+  export type PastryAuditCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAudit
+     */
+    select?: PastryAuditSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAudit
+     */
+    omit?: PastryAuditOmit<ExtArgs> | null
+    /**
+     * The data used to create many PastryAudits.
+     */
+    data: PastryAuditCreateManyInput | PastryAuditCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PastryAudit update
+   */
+  export type PastryAuditUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAudit
+     */
+    select?: PastryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAudit
+     */
+    omit?: PastryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PastryAudit.
+     */
+    data: XOR<PastryAuditUpdateInput, PastryAuditUncheckedUpdateInput>
+    /**
+     * Choose, which PastryAudit to update.
+     */
+    where: PastryAuditWhereUniqueInput
+  }
+
+  /**
+   * PastryAudit updateMany
+   */
+  export type PastryAuditUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PastryAudits.
+     */
+    data: XOR<PastryAuditUpdateManyMutationInput, PastryAuditUncheckedUpdateManyInput>
+    /**
+     * Filter which PastryAudits to update
+     */
+    where?: PastryAuditWhereInput
+    /**
+     * Limit how many PastryAudits to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PastryAudit updateManyAndReturn
+   */
+  export type PastryAuditUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAudit
+     */
+    select?: PastryAuditSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAudit
+     */
+    omit?: PastryAuditOmit<ExtArgs> | null
+    /**
+     * The data used to update PastryAudits.
+     */
+    data: XOR<PastryAuditUpdateManyMutationInput, PastryAuditUncheckedUpdateManyInput>
+    /**
+     * Filter which PastryAudits to update
+     */
+    where?: PastryAuditWhereInput
+    /**
+     * Limit how many PastryAudits to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PastryAudit upsert
+   */
+  export type PastryAuditUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAudit
+     */
+    select?: PastryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAudit
+     */
+    omit?: PastryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PastryAudit to update in case it exists.
+     */
+    where: PastryAuditWhereUniqueInput
+    /**
+     * In case the PastryAudit found by the `where` argument doesn't exist, create a new PastryAudit with this data.
+     */
+    create: XOR<PastryAuditCreateInput, PastryAuditUncheckedCreateInput>
+    /**
+     * In case the PastryAudit was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PastryAuditUpdateInput, PastryAuditUncheckedUpdateInput>
+  }
+
+  /**
+   * PastryAudit delete
+   */
+  export type PastryAuditDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAudit
+     */
+    select?: PastryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAudit
+     */
+    omit?: PastryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditInclude<ExtArgs> | null
+    /**
+     * Filter which PastryAudit to delete.
+     */
+    where: PastryAuditWhereUniqueInput
+  }
+
+  /**
+   * PastryAudit deleteMany
+   */
+  export type PastryAuditDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PastryAudits to delete
+     */
+    where?: PastryAuditWhereInput
+    /**
+     * Limit how many PastryAudits to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PastryAudit.items
+   */
+  export type PastryAudit$itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAuditItem
+     */
+    select?: PastryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAuditItem
+     */
+    omit?: PastryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditItemInclude<ExtArgs> | null
+    where?: PastryAuditItemWhereInput
+    orderBy?: PastryAuditItemOrderByWithRelationInput | PastryAuditItemOrderByWithRelationInput[]
+    cursor?: PastryAuditItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PastryAuditItemScalarFieldEnum | PastryAuditItemScalarFieldEnum[]
+  }
+
+  /**
+   * PastryAudit without action
+   */
+  export type PastryAuditDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAudit
+     */
+    select?: PastryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAudit
+     */
+    omit?: PastryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PastryAuditItem
+   */
+
+  export type AggregatePastryAuditItem = {
+    _count: PastryAuditItemCountAggregateOutputType | null
+    _avg: PastryAuditItemAvgAggregateOutputType | null
+    _sum: PastryAuditItemSumAggregateOutputType | null
+    _min: PastryAuditItemMinAggregateOutputType | null
+    _max: PastryAuditItemMaxAggregateOutputType | null
+  }
+
+  export type PastryAuditItemAvgAggregateOutputType = {
+    price: number | null
+    costPrice: number | null
+    openingStock: number | null
+    totalInbound: number | null
+    totalSold: number | null
+    expectedStock: number | null
+    actualStock: number | null
+    variance: number | null
+    varianceCost: number | null
+  }
+
+  export type PastryAuditItemSumAggregateOutputType = {
+    price: number | null
+    costPrice: number | null
+    openingStock: number | null
+    totalInbound: number | null
+    totalSold: number | null
+    expectedStock: number | null
+    actualStock: number | null
+    variance: number | null
+    varianceCost: number | null
+  }
+
+  export type PastryAuditItemMinAggregateOutputType = {
+    id: string | null
+    auditId: string | null
+    menuItemId: string | null
+    menuItemName: string | null
+    unitType: string | null
+    price: number | null
+    costPrice: number | null
+    openingStock: number | null
+    totalInbound: number | null
+    totalSold: number | null
+    expectedStock: number | null
+    actualStock: number | null
+    variance: number | null
+    varianceCost: number | null
+    status: string | null
+    createdAt: Date | null
+  }
+
+  export type PastryAuditItemMaxAggregateOutputType = {
+    id: string | null
+    auditId: string | null
+    menuItemId: string | null
+    menuItemName: string | null
+    unitType: string | null
+    price: number | null
+    costPrice: number | null
+    openingStock: number | null
+    totalInbound: number | null
+    totalSold: number | null
+    expectedStock: number | null
+    actualStock: number | null
+    variance: number | null
+    varianceCost: number | null
+    status: string | null
+    createdAt: Date | null
+  }
+
+  export type PastryAuditItemCountAggregateOutputType = {
+    id: number
+    auditId: number
+    menuItemId: number
+    menuItemName: number
+    unitType: number
+    price: number
+    costPrice: number
+    openingStock: number
+    totalInbound: number
+    totalSold: number
+    expectedStock: number
+    actualStock: number
+    variance: number
+    varianceCost: number
+    status: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type PastryAuditItemAvgAggregateInputType = {
+    price?: true
+    costPrice?: true
+    openingStock?: true
+    totalInbound?: true
+    totalSold?: true
+    expectedStock?: true
+    actualStock?: true
+    variance?: true
+    varianceCost?: true
+  }
+
+  export type PastryAuditItemSumAggregateInputType = {
+    price?: true
+    costPrice?: true
+    openingStock?: true
+    totalInbound?: true
+    totalSold?: true
+    expectedStock?: true
+    actualStock?: true
+    variance?: true
+    varianceCost?: true
+  }
+
+  export type PastryAuditItemMinAggregateInputType = {
+    id?: true
+    auditId?: true
+    menuItemId?: true
+    menuItemName?: true
+    unitType?: true
+    price?: true
+    costPrice?: true
+    openingStock?: true
+    totalInbound?: true
+    totalSold?: true
+    expectedStock?: true
+    actualStock?: true
+    variance?: true
+    varianceCost?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type PastryAuditItemMaxAggregateInputType = {
+    id?: true
+    auditId?: true
+    menuItemId?: true
+    menuItemName?: true
+    unitType?: true
+    price?: true
+    costPrice?: true
+    openingStock?: true
+    totalInbound?: true
+    totalSold?: true
+    expectedStock?: true
+    actualStock?: true
+    variance?: true
+    varianceCost?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type PastryAuditItemCountAggregateInputType = {
+    id?: true
+    auditId?: true
+    menuItemId?: true
+    menuItemName?: true
+    unitType?: true
+    price?: true
+    costPrice?: true
+    openingStock?: true
+    totalInbound?: true
+    totalSold?: true
+    expectedStock?: true
+    actualStock?: true
+    variance?: true
+    varianceCost?: true
+    status?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type PastryAuditItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PastryAuditItem to aggregate.
+     */
+    where?: PastryAuditItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PastryAuditItems to fetch.
+     */
+    orderBy?: PastryAuditItemOrderByWithRelationInput | PastryAuditItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PastryAuditItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PastryAuditItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PastryAuditItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PastryAuditItems
+    **/
+    _count?: true | PastryAuditItemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PastryAuditItemAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PastryAuditItemSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PastryAuditItemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PastryAuditItemMaxAggregateInputType
+  }
+
+  export type GetPastryAuditItemAggregateType<T extends PastryAuditItemAggregateArgs> = {
+        [P in keyof T & keyof AggregatePastryAuditItem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePastryAuditItem[P]>
+      : GetScalarType<T[P], AggregatePastryAuditItem[P]>
+  }
+
+
+
+
+  export type PastryAuditItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PastryAuditItemWhereInput
+    orderBy?: PastryAuditItemOrderByWithAggregationInput | PastryAuditItemOrderByWithAggregationInput[]
+    by: PastryAuditItemScalarFieldEnum[] | PastryAuditItemScalarFieldEnum
+    having?: PastryAuditItemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PastryAuditItemCountAggregateInputType | true
+    _avg?: PastryAuditItemAvgAggregateInputType
+    _sum?: PastryAuditItemSumAggregateInputType
+    _min?: PastryAuditItemMinAggregateInputType
+    _max?: PastryAuditItemMaxAggregateInputType
+  }
+
+  export type PastryAuditItemGroupByOutputType = {
+    id: string
+    auditId: string
+    menuItemId: string
+    menuItemName: string
+    unitType: string
+    price: number
+    costPrice: number
+    openingStock: number
+    totalInbound: number
+    totalSold: number
+    expectedStock: number
+    actualStock: number
+    variance: number
+    varianceCost: number
+    status: string
+    createdAt: Date
+    _count: PastryAuditItemCountAggregateOutputType | null
+    _avg: PastryAuditItemAvgAggregateOutputType | null
+    _sum: PastryAuditItemSumAggregateOutputType | null
+    _min: PastryAuditItemMinAggregateOutputType | null
+    _max: PastryAuditItemMaxAggregateOutputType | null
+  }
+
+  type GetPastryAuditItemGroupByPayload<T extends PastryAuditItemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PastryAuditItemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PastryAuditItemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PastryAuditItemGroupByOutputType[P]>
+            : GetScalarType<T[P], PastryAuditItemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PastryAuditItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    auditId?: boolean
+    menuItemId?: boolean
+    menuItemName?: boolean
+    unitType?: boolean
+    price?: boolean
+    costPrice?: boolean
+    openingStock?: boolean
+    totalInbound?: boolean
+    totalSold?: boolean
+    expectedStock?: boolean
+    actualStock?: boolean
+    variance?: boolean
+    varianceCost?: boolean
+    status?: boolean
+    createdAt?: boolean
+    audit?: boolean | PastryAuditDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pastryAuditItem"]>
+
+  export type PastryAuditItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    auditId?: boolean
+    menuItemId?: boolean
+    menuItemName?: boolean
+    unitType?: boolean
+    price?: boolean
+    costPrice?: boolean
+    openingStock?: boolean
+    totalInbound?: boolean
+    totalSold?: boolean
+    expectedStock?: boolean
+    actualStock?: boolean
+    variance?: boolean
+    varianceCost?: boolean
+    status?: boolean
+    createdAt?: boolean
+    audit?: boolean | PastryAuditDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pastryAuditItem"]>
+
+  export type PastryAuditItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    auditId?: boolean
+    menuItemId?: boolean
+    menuItemName?: boolean
+    unitType?: boolean
+    price?: boolean
+    costPrice?: boolean
+    openingStock?: boolean
+    totalInbound?: boolean
+    totalSold?: boolean
+    expectedStock?: boolean
+    actualStock?: boolean
+    variance?: boolean
+    varianceCost?: boolean
+    status?: boolean
+    createdAt?: boolean
+    audit?: boolean | PastryAuditDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pastryAuditItem"]>
+
+  export type PastryAuditItemSelectScalar = {
+    id?: boolean
+    auditId?: boolean
+    menuItemId?: boolean
+    menuItemName?: boolean
+    unitType?: boolean
+    price?: boolean
+    costPrice?: boolean
+    openingStock?: boolean
+    totalInbound?: boolean
+    totalSold?: boolean
+    expectedStock?: boolean
+    actualStock?: boolean
+    variance?: boolean
+    varianceCost?: boolean
+    status?: boolean
+    createdAt?: boolean
+  }
+
+  export type PastryAuditItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "auditId" | "menuItemId" | "menuItemName" | "unitType" | "price" | "costPrice" | "openingStock" | "totalInbound" | "totalSold" | "expectedStock" | "actualStock" | "variance" | "varianceCost" | "status" | "createdAt", ExtArgs["result"]["pastryAuditItem"]>
+  export type PastryAuditItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    audit?: boolean | PastryAuditDefaultArgs<ExtArgs>
+  }
+  export type PastryAuditItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    audit?: boolean | PastryAuditDefaultArgs<ExtArgs>
+  }
+  export type PastryAuditItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    audit?: boolean | PastryAuditDefaultArgs<ExtArgs>
+  }
+
+  export type $PastryAuditItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PastryAuditItem"
+    objects: {
+      audit: Prisma.$PastryAuditPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      auditId: string
+      menuItemId: string
+      menuItemName: string
+      unitType: string
+      price: number
+      costPrice: number
+      openingStock: number
+      totalInbound: number
+      totalSold: number
+      expectedStock: number
+      actualStock: number
+      variance: number
+      varianceCost: number
+      status: string
+      createdAt: Date
+    }, ExtArgs["result"]["pastryAuditItem"]>
+    composites: {}
+  }
+
+  type PastryAuditItemGetPayload<S extends boolean | null | undefined | PastryAuditItemDefaultArgs> = $Result.GetResult<Prisma.$PastryAuditItemPayload, S>
+
+  type PastryAuditItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PastryAuditItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PastryAuditItemCountAggregateInputType | true
+    }
+
+  export interface PastryAuditItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PastryAuditItem'], meta: { name: 'PastryAuditItem' } }
+    /**
+     * Find zero or one PastryAuditItem that matches the filter.
+     * @param {PastryAuditItemFindUniqueArgs} args - Arguments to find a PastryAuditItem
+     * @example
+     * // Get one PastryAuditItem
+     * const pastryAuditItem = await prisma.pastryAuditItem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PastryAuditItemFindUniqueArgs>(args: SelectSubset<T, PastryAuditItemFindUniqueArgs<ExtArgs>>): Prisma__PastryAuditItemClient<$Result.GetResult<Prisma.$PastryAuditItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PastryAuditItem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PastryAuditItemFindUniqueOrThrowArgs} args - Arguments to find a PastryAuditItem
+     * @example
+     * // Get one PastryAuditItem
+     * const pastryAuditItem = await prisma.pastryAuditItem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PastryAuditItemFindUniqueOrThrowArgs>(args: SelectSubset<T, PastryAuditItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PastryAuditItemClient<$Result.GetResult<Prisma.$PastryAuditItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PastryAuditItem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PastryAuditItemFindFirstArgs} args - Arguments to find a PastryAuditItem
+     * @example
+     * // Get one PastryAuditItem
+     * const pastryAuditItem = await prisma.pastryAuditItem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PastryAuditItemFindFirstArgs>(args?: SelectSubset<T, PastryAuditItemFindFirstArgs<ExtArgs>>): Prisma__PastryAuditItemClient<$Result.GetResult<Prisma.$PastryAuditItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PastryAuditItem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PastryAuditItemFindFirstOrThrowArgs} args - Arguments to find a PastryAuditItem
+     * @example
+     * // Get one PastryAuditItem
+     * const pastryAuditItem = await prisma.pastryAuditItem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PastryAuditItemFindFirstOrThrowArgs>(args?: SelectSubset<T, PastryAuditItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__PastryAuditItemClient<$Result.GetResult<Prisma.$PastryAuditItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PastryAuditItems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PastryAuditItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PastryAuditItems
+     * const pastryAuditItems = await prisma.pastryAuditItem.findMany()
+     * 
+     * // Get first 10 PastryAuditItems
+     * const pastryAuditItems = await prisma.pastryAuditItem.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const pastryAuditItemWithIdOnly = await prisma.pastryAuditItem.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PastryAuditItemFindManyArgs>(args?: SelectSubset<T, PastryAuditItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PastryAuditItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PastryAuditItem.
+     * @param {PastryAuditItemCreateArgs} args - Arguments to create a PastryAuditItem.
+     * @example
+     * // Create one PastryAuditItem
+     * const PastryAuditItem = await prisma.pastryAuditItem.create({
+     *   data: {
+     *     // ... data to create a PastryAuditItem
+     *   }
+     * })
+     * 
+     */
+    create<T extends PastryAuditItemCreateArgs>(args: SelectSubset<T, PastryAuditItemCreateArgs<ExtArgs>>): Prisma__PastryAuditItemClient<$Result.GetResult<Prisma.$PastryAuditItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PastryAuditItems.
+     * @param {PastryAuditItemCreateManyArgs} args - Arguments to create many PastryAuditItems.
+     * @example
+     * // Create many PastryAuditItems
+     * const pastryAuditItem = await prisma.pastryAuditItem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PastryAuditItemCreateManyArgs>(args?: SelectSubset<T, PastryAuditItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PastryAuditItems and returns the data saved in the database.
+     * @param {PastryAuditItemCreateManyAndReturnArgs} args - Arguments to create many PastryAuditItems.
+     * @example
+     * // Create many PastryAuditItems
+     * const pastryAuditItem = await prisma.pastryAuditItem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PastryAuditItems and only return the `id`
+     * const pastryAuditItemWithIdOnly = await prisma.pastryAuditItem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PastryAuditItemCreateManyAndReturnArgs>(args?: SelectSubset<T, PastryAuditItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PastryAuditItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PastryAuditItem.
+     * @param {PastryAuditItemDeleteArgs} args - Arguments to delete one PastryAuditItem.
+     * @example
+     * // Delete one PastryAuditItem
+     * const PastryAuditItem = await prisma.pastryAuditItem.delete({
+     *   where: {
+     *     // ... filter to delete one PastryAuditItem
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PastryAuditItemDeleteArgs>(args: SelectSubset<T, PastryAuditItemDeleteArgs<ExtArgs>>): Prisma__PastryAuditItemClient<$Result.GetResult<Prisma.$PastryAuditItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PastryAuditItem.
+     * @param {PastryAuditItemUpdateArgs} args - Arguments to update one PastryAuditItem.
+     * @example
+     * // Update one PastryAuditItem
+     * const pastryAuditItem = await prisma.pastryAuditItem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PastryAuditItemUpdateArgs>(args: SelectSubset<T, PastryAuditItemUpdateArgs<ExtArgs>>): Prisma__PastryAuditItemClient<$Result.GetResult<Prisma.$PastryAuditItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PastryAuditItems.
+     * @param {PastryAuditItemDeleteManyArgs} args - Arguments to filter PastryAuditItems to delete.
+     * @example
+     * // Delete a few PastryAuditItems
+     * const { count } = await prisma.pastryAuditItem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PastryAuditItemDeleteManyArgs>(args?: SelectSubset<T, PastryAuditItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PastryAuditItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PastryAuditItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PastryAuditItems
+     * const pastryAuditItem = await prisma.pastryAuditItem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PastryAuditItemUpdateManyArgs>(args: SelectSubset<T, PastryAuditItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PastryAuditItems and returns the data updated in the database.
+     * @param {PastryAuditItemUpdateManyAndReturnArgs} args - Arguments to update many PastryAuditItems.
+     * @example
+     * // Update many PastryAuditItems
+     * const pastryAuditItem = await prisma.pastryAuditItem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PastryAuditItems and only return the `id`
+     * const pastryAuditItemWithIdOnly = await prisma.pastryAuditItem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PastryAuditItemUpdateManyAndReturnArgs>(args: SelectSubset<T, PastryAuditItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PastryAuditItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PastryAuditItem.
+     * @param {PastryAuditItemUpsertArgs} args - Arguments to update or create a PastryAuditItem.
+     * @example
+     * // Update or create a PastryAuditItem
+     * const pastryAuditItem = await prisma.pastryAuditItem.upsert({
+     *   create: {
+     *     // ... data to create a PastryAuditItem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PastryAuditItem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PastryAuditItemUpsertArgs>(args: SelectSubset<T, PastryAuditItemUpsertArgs<ExtArgs>>): Prisma__PastryAuditItemClient<$Result.GetResult<Prisma.$PastryAuditItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PastryAuditItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PastryAuditItemCountArgs} args - Arguments to filter PastryAuditItems to count.
+     * @example
+     * // Count the number of PastryAuditItems
+     * const count = await prisma.pastryAuditItem.count({
+     *   where: {
+     *     // ... the filter for the PastryAuditItems we want to count
+     *   }
+     * })
+    **/
+    count<T extends PastryAuditItemCountArgs>(
+      args?: Subset<T, PastryAuditItemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PastryAuditItemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PastryAuditItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PastryAuditItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PastryAuditItemAggregateArgs>(args: Subset<T, PastryAuditItemAggregateArgs>): Prisma.PrismaPromise<GetPastryAuditItemAggregateType<T>>
+
+    /**
+     * Group by PastryAuditItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PastryAuditItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PastryAuditItemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PastryAuditItemGroupByArgs['orderBy'] }
+        : { orderBy?: PastryAuditItemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PastryAuditItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPastryAuditItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PastryAuditItem model
+   */
+  readonly fields: PastryAuditItemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PastryAuditItem.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PastryAuditItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    audit<T extends PastryAuditDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PastryAuditDefaultArgs<ExtArgs>>): Prisma__PastryAuditClient<$Result.GetResult<Prisma.$PastryAuditPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PastryAuditItem model
+   */
+  interface PastryAuditItemFieldRefs {
+    readonly id: FieldRef<"PastryAuditItem", 'String'>
+    readonly auditId: FieldRef<"PastryAuditItem", 'String'>
+    readonly menuItemId: FieldRef<"PastryAuditItem", 'String'>
+    readonly menuItemName: FieldRef<"PastryAuditItem", 'String'>
+    readonly unitType: FieldRef<"PastryAuditItem", 'String'>
+    readonly price: FieldRef<"PastryAuditItem", 'Float'>
+    readonly costPrice: FieldRef<"PastryAuditItem", 'Float'>
+    readonly openingStock: FieldRef<"PastryAuditItem", 'Float'>
+    readonly totalInbound: FieldRef<"PastryAuditItem", 'Float'>
+    readonly totalSold: FieldRef<"PastryAuditItem", 'Float'>
+    readonly expectedStock: FieldRef<"PastryAuditItem", 'Float'>
+    readonly actualStock: FieldRef<"PastryAuditItem", 'Float'>
+    readonly variance: FieldRef<"PastryAuditItem", 'Float'>
+    readonly varianceCost: FieldRef<"PastryAuditItem", 'Float'>
+    readonly status: FieldRef<"PastryAuditItem", 'String'>
+    readonly createdAt: FieldRef<"PastryAuditItem", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PastryAuditItem findUnique
+   */
+  export type PastryAuditItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAuditItem
+     */
+    select?: PastryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAuditItem
+     */
+    omit?: PastryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditItemInclude<ExtArgs> | null
+    /**
+     * Filter, which PastryAuditItem to fetch.
+     */
+    where: PastryAuditItemWhereUniqueInput
+  }
+
+  /**
+   * PastryAuditItem findUniqueOrThrow
+   */
+  export type PastryAuditItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAuditItem
+     */
+    select?: PastryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAuditItem
+     */
+    omit?: PastryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditItemInclude<ExtArgs> | null
+    /**
+     * Filter, which PastryAuditItem to fetch.
+     */
+    where: PastryAuditItemWhereUniqueInput
+  }
+
+  /**
+   * PastryAuditItem findFirst
+   */
+  export type PastryAuditItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAuditItem
+     */
+    select?: PastryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAuditItem
+     */
+    omit?: PastryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditItemInclude<ExtArgs> | null
+    /**
+     * Filter, which PastryAuditItem to fetch.
+     */
+    where?: PastryAuditItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PastryAuditItems to fetch.
+     */
+    orderBy?: PastryAuditItemOrderByWithRelationInput | PastryAuditItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PastryAuditItems.
+     */
+    cursor?: PastryAuditItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PastryAuditItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PastryAuditItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PastryAuditItems.
+     */
+    distinct?: PastryAuditItemScalarFieldEnum | PastryAuditItemScalarFieldEnum[]
+  }
+
+  /**
+   * PastryAuditItem findFirstOrThrow
+   */
+  export type PastryAuditItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAuditItem
+     */
+    select?: PastryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAuditItem
+     */
+    omit?: PastryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditItemInclude<ExtArgs> | null
+    /**
+     * Filter, which PastryAuditItem to fetch.
+     */
+    where?: PastryAuditItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PastryAuditItems to fetch.
+     */
+    orderBy?: PastryAuditItemOrderByWithRelationInput | PastryAuditItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PastryAuditItems.
+     */
+    cursor?: PastryAuditItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PastryAuditItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PastryAuditItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PastryAuditItems.
+     */
+    distinct?: PastryAuditItemScalarFieldEnum | PastryAuditItemScalarFieldEnum[]
+  }
+
+  /**
+   * PastryAuditItem findMany
+   */
+  export type PastryAuditItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAuditItem
+     */
+    select?: PastryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAuditItem
+     */
+    omit?: PastryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditItemInclude<ExtArgs> | null
+    /**
+     * Filter, which PastryAuditItems to fetch.
+     */
+    where?: PastryAuditItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PastryAuditItems to fetch.
+     */
+    orderBy?: PastryAuditItemOrderByWithRelationInput | PastryAuditItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PastryAuditItems.
+     */
+    cursor?: PastryAuditItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PastryAuditItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PastryAuditItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PastryAuditItems.
+     */
+    distinct?: PastryAuditItemScalarFieldEnum | PastryAuditItemScalarFieldEnum[]
+  }
+
+  /**
+   * PastryAuditItem create
+   */
+  export type PastryAuditItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAuditItem
+     */
+    select?: PastryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAuditItem
+     */
+    omit?: PastryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditItemInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PastryAuditItem.
+     */
+    data: XOR<PastryAuditItemCreateInput, PastryAuditItemUncheckedCreateInput>
+  }
+
+  /**
+   * PastryAuditItem createMany
+   */
+  export type PastryAuditItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PastryAuditItems.
+     */
+    data: PastryAuditItemCreateManyInput | PastryAuditItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PastryAuditItem createManyAndReturn
+   */
+  export type PastryAuditItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAuditItem
+     */
+    select?: PastryAuditItemSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAuditItem
+     */
+    omit?: PastryAuditItemOmit<ExtArgs> | null
+    /**
+     * The data used to create many PastryAuditItems.
+     */
+    data: PastryAuditItemCreateManyInput | PastryAuditItemCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditItemIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PastryAuditItem update
+   */
+  export type PastryAuditItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAuditItem
+     */
+    select?: PastryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAuditItem
+     */
+    omit?: PastryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditItemInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PastryAuditItem.
+     */
+    data: XOR<PastryAuditItemUpdateInput, PastryAuditItemUncheckedUpdateInput>
+    /**
+     * Choose, which PastryAuditItem to update.
+     */
+    where: PastryAuditItemWhereUniqueInput
+  }
+
+  /**
+   * PastryAuditItem updateMany
+   */
+  export type PastryAuditItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PastryAuditItems.
+     */
+    data: XOR<PastryAuditItemUpdateManyMutationInput, PastryAuditItemUncheckedUpdateManyInput>
+    /**
+     * Filter which PastryAuditItems to update
+     */
+    where?: PastryAuditItemWhereInput
+    /**
+     * Limit how many PastryAuditItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PastryAuditItem updateManyAndReturn
+   */
+  export type PastryAuditItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAuditItem
+     */
+    select?: PastryAuditItemSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAuditItem
+     */
+    omit?: PastryAuditItemOmit<ExtArgs> | null
+    /**
+     * The data used to update PastryAuditItems.
+     */
+    data: XOR<PastryAuditItemUpdateManyMutationInput, PastryAuditItemUncheckedUpdateManyInput>
+    /**
+     * Filter which PastryAuditItems to update
+     */
+    where?: PastryAuditItemWhereInput
+    /**
+     * Limit how many PastryAuditItems to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditItemIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PastryAuditItem upsert
+   */
+  export type PastryAuditItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAuditItem
+     */
+    select?: PastryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAuditItem
+     */
+    omit?: PastryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditItemInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PastryAuditItem to update in case it exists.
+     */
+    where: PastryAuditItemWhereUniqueInput
+    /**
+     * In case the PastryAuditItem found by the `where` argument doesn't exist, create a new PastryAuditItem with this data.
+     */
+    create: XOR<PastryAuditItemCreateInput, PastryAuditItemUncheckedCreateInput>
+    /**
+     * In case the PastryAuditItem was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PastryAuditItemUpdateInput, PastryAuditItemUncheckedUpdateInput>
+  }
+
+  /**
+   * PastryAuditItem delete
+   */
+  export type PastryAuditItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAuditItem
+     */
+    select?: PastryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAuditItem
+     */
+    omit?: PastryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditItemInclude<ExtArgs> | null
+    /**
+     * Filter which PastryAuditItem to delete.
+     */
+    where: PastryAuditItemWhereUniqueInput
+  }
+
+  /**
+   * PastryAuditItem deleteMany
+   */
+  export type PastryAuditItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PastryAuditItems to delete
+     */
+    where?: PastryAuditItemWhereInput
+    /**
+     * Limit how many PastryAuditItems to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PastryAuditItem without action
+   */
+  export type PastryAuditItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PastryAuditItem
+     */
+    select?: PastryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PastryAuditItem
+     */
+    omit?: PastryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PastryAuditItemInclude<ExtArgs> | null
   }
 
 
@@ -23592,6 +27548,7 @@ export namespace Prisma {
     image: 'image',
     itemType: 'itemType',
     unitType: 'unitType',
+    openingStock: 'openingStock',
     stockQty: 'stockQty',
     minStockAlert: 'minStockAlert',
     isAvailable: 'isAvailable',
@@ -23602,6 +27559,57 @@ export namespace Prisma {
   };
 
   export type MenuItemScalarFieldEnum = (typeof MenuItemScalarFieldEnum)[keyof typeof MenuItemScalarFieldEnum]
+
+
+  export const ProductMovementScalarFieldEnum: {
+    id: 'id',
+    menuItemId: 'menuItemId',
+    type: 'type',
+    quantity: 'quantity',
+    unitCost: 'unitCost',
+    totalCost: 'totalCost',
+    supplierName: 'supplierName',
+    invoiceNumber: 'invoiceNumber',
+    orderNumber: 'orderNumber',
+    recordedBy: 'recordedBy',
+    notes: 'notes',
+    createdAt: 'createdAt'
+  };
+
+  export type ProductMovementScalarFieldEnum = (typeof ProductMovementScalarFieldEnum)[keyof typeof ProductMovementScalarFieldEnum]
+
+
+  export const PastryAuditScalarFieldEnum: {
+    id: 'id',
+    outletId: 'outletId',
+    auditorName: 'auditorName',
+    notes: 'notes',
+    createdAt: 'createdAt'
+  };
+
+  export type PastryAuditScalarFieldEnum = (typeof PastryAuditScalarFieldEnum)[keyof typeof PastryAuditScalarFieldEnum]
+
+
+  export const PastryAuditItemScalarFieldEnum: {
+    id: 'id',
+    auditId: 'auditId',
+    menuItemId: 'menuItemId',
+    menuItemName: 'menuItemName',
+    unitType: 'unitType',
+    price: 'price',
+    costPrice: 'costPrice',
+    openingStock: 'openingStock',
+    totalInbound: 'totalInbound',
+    totalSold: 'totalSold',
+    expectedStock: 'expectedStock',
+    actualStock: 'actualStock',
+    variance: 'variance',
+    varianceCost: 'varianceCost',
+    status: 'status',
+    createdAt: 'createdAt'
+  };
+
+  export type PastryAuditItemScalarFieldEnum = (typeof PastryAuditItemScalarFieldEnum)[keyof typeof PastryAuditItemScalarFieldEnum]
 
 
   export const RawMaterialScalarFieldEnum: {
@@ -23971,6 +27979,7 @@ export namespace Prisma {
     reservations?: ReservationListRelationFilter
     chatMessages?: ChatMessageListRelationFilter
     inventoryAudits?: InventoryAuditListRelationFilter
+    pastryAudits?: PastryAuditListRelationFilter
   }
 
   export type OutletOrderByWithRelationInput = {
@@ -23994,6 +28003,7 @@ export namespace Prisma {
     reservations?: ReservationOrderByRelationAggregateInput
     chatMessages?: ChatMessageOrderByRelationAggregateInput
     inventoryAudits?: InventoryAuditOrderByRelationAggregateInput
+    pastryAudits?: PastryAuditOrderByRelationAggregateInput
   }
 
   export type OutletWhereUniqueInput = Prisma.AtLeast<{
@@ -24020,6 +28030,7 @@ export namespace Prisma {
     reservations?: ReservationListRelationFilter
     chatMessages?: ChatMessageListRelationFilter
     inventoryAudits?: InventoryAuditListRelationFilter
+    pastryAudits?: PastryAuditListRelationFilter
   }, "id" | "code">
 
   export type OutletOrderByWithAggregationInput = {
@@ -24235,6 +28246,7 @@ export namespace Prisma {
     image?: StringNullableFilter<"MenuItem"> | string | null
     itemType?: StringFilter<"MenuItem"> | string
     unitType?: StringFilter<"MenuItem"> | string
+    openingStock?: FloatFilter<"MenuItem"> | number
     stockQty?: IntFilter<"MenuItem"> | number
     minStockAlert?: IntFilter<"MenuItem"> | number
     isAvailable?: BoolFilter<"MenuItem"> | boolean
@@ -24244,6 +28256,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"MenuItem"> | Date | string
     outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
     recipes?: RecipeItemListRelationFilter
+    movements?: ProductMovementListRelationFilter
   }
 
   export type MenuItemOrderByWithRelationInput = {
@@ -24259,6 +28272,7 @@ export namespace Prisma {
     image?: SortOrderInput | SortOrder
     itemType?: SortOrder
     unitType?: SortOrder
+    openingStock?: SortOrder
     stockQty?: SortOrder
     minStockAlert?: SortOrder
     isAvailable?: SortOrder
@@ -24268,6 +28282,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     outlet?: OutletOrderByWithRelationInput
     recipes?: RecipeItemOrderByRelationAggregateInput
+    movements?: ProductMovementOrderByRelationAggregateInput
   }
 
   export type MenuItemWhereUniqueInput = Prisma.AtLeast<{
@@ -24286,6 +28301,7 @@ export namespace Prisma {
     image?: StringNullableFilter<"MenuItem"> | string | null
     itemType?: StringFilter<"MenuItem"> | string
     unitType?: StringFilter<"MenuItem"> | string
+    openingStock?: FloatFilter<"MenuItem"> | number
     stockQty?: IntFilter<"MenuItem"> | number
     minStockAlert?: IntFilter<"MenuItem"> | number
     isAvailable?: BoolFilter<"MenuItem"> | boolean
@@ -24295,6 +28311,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"MenuItem"> | Date | string
     outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
     recipes?: RecipeItemListRelationFilter
+    movements?: ProductMovementListRelationFilter
   }, "id">
 
   export type MenuItemOrderByWithAggregationInput = {
@@ -24310,6 +28327,7 @@ export namespace Prisma {
     image?: SortOrderInput | SortOrder
     itemType?: SortOrder
     unitType?: SortOrder
+    openingStock?: SortOrder
     stockQty?: SortOrder
     minStockAlert?: SortOrder
     isAvailable?: SortOrder
@@ -24340,6 +28358,7 @@ export namespace Prisma {
     image?: StringNullableWithAggregatesFilter<"MenuItem"> | string | null
     itemType?: StringWithAggregatesFilter<"MenuItem"> | string
     unitType?: StringWithAggregatesFilter<"MenuItem"> | string
+    openingStock?: FloatWithAggregatesFilter<"MenuItem"> | number
     stockQty?: IntWithAggregatesFilter<"MenuItem"> | number
     minStockAlert?: IntWithAggregatesFilter<"MenuItem"> | number
     isAvailable?: BoolWithAggregatesFilter<"MenuItem"> | boolean
@@ -24347,6 +28366,268 @@ export namespace Prisma {
     loyaltyPointsEarned?: IntWithAggregatesFilter<"MenuItem"> | number
     loyaltyPointsRequired?: IntWithAggregatesFilter<"MenuItem"> | number
     createdAt?: DateTimeWithAggregatesFilter<"MenuItem"> | Date | string
+  }
+
+  export type ProductMovementWhereInput = {
+    AND?: ProductMovementWhereInput | ProductMovementWhereInput[]
+    OR?: ProductMovementWhereInput[]
+    NOT?: ProductMovementWhereInput | ProductMovementWhereInput[]
+    id?: StringFilter<"ProductMovement"> | string
+    menuItemId?: StringFilter<"ProductMovement"> | string
+    type?: StringFilter<"ProductMovement"> | string
+    quantity?: FloatFilter<"ProductMovement"> | number
+    unitCost?: FloatNullableFilter<"ProductMovement"> | number | null
+    totalCost?: FloatNullableFilter<"ProductMovement"> | number | null
+    supplierName?: StringNullableFilter<"ProductMovement"> | string | null
+    invoiceNumber?: StringNullableFilter<"ProductMovement"> | string | null
+    orderNumber?: StringNullableFilter<"ProductMovement"> | string | null
+    recordedBy?: StringNullableFilter<"ProductMovement"> | string | null
+    notes?: StringNullableFilter<"ProductMovement"> | string | null
+    createdAt?: DateTimeFilter<"ProductMovement"> | Date | string
+    menuItem?: XOR<MenuItemScalarRelationFilter, MenuItemWhereInput>
+  }
+
+  export type ProductMovementOrderByWithRelationInput = {
+    id?: SortOrder
+    menuItemId?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    unitCost?: SortOrderInput | SortOrder
+    totalCost?: SortOrderInput | SortOrder
+    supplierName?: SortOrderInput | SortOrder
+    invoiceNumber?: SortOrderInput | SortOrder
+    orderNumber?: SortOrderInput | SortOrder
+    recordedBy?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    menuItem?: MenuItemOrderByWithRelationInput
+  }
+
+  export type ProductMovementWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ProductMovementWhereInput | ProductMovementWhereInput[]
+    OR?: ProductMovementWhereInput[]
+    NOT?: ProductMovementWhereInput | ProductMovementWhereInput[]
+    menuItemId?: StringFilter<"ProductMovement"> | string
+    type?: StringFilter<"ProductMovement"> | string
+    quantity?: FloatFilter<"ProductMovement"> | number
+    unitCost?: FloatNullableFilter<"ProductMovement"> | number | null
+    totalCost?: FloatNullableFilter<"ProductMovement"> | number | null
+    supplierName?: StringNullableFilter<"ProductMovement"> | string | null
+    invoiceNumber?: StringNullableFilter<"ProductMovement"> | string | null
+    orderNumber?: StringNullableFilter<"ProductMovement"> | string | null
+    recordedBy?: StringNullableFilter<"ProductMovement"> | string | null
+    notes?: StringNullableFilter<"ProductMovement"> | string | null
+    createdAt?: DateTimeFilter<"ProductMovement"> | Date | string
+    menuItem?: XOR<MenuItemScalarRelationFilter, MenuItemWhereInput>
+  }, "id">
+
+  export type ProductMovementOrderByWithAggregationInput = {
+    id?: SortOrder
+    menuItemId?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    unitCost?: SortOrderInput | SortOrder
+    totalCost?: SortOrderInput | SortOrder
+    supplierName?: SortOrderInput | SortOrder
+    invoiceNumber?: SortOrderInput | SortOrder
+    orderNumber?: SortOrderInput | SortOrder
+    recordedBy?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ProductMovementCountOrderByAggregateInput
+    _avg?: ProductMovementAvgOrderByAggregateInput
+    _max?: ProductMovementMaxOrderByAggregateInput
+    _min?: ProductMovementMinOrderByAggregateInput
+    _sum?: ProductMovementSumOrderByAggregateInput
+  }
+
+  export type ProductMovementScalarWhereWithAggregatesInput = {
+    AND?: ProductMovementScalarWhereWithAggregatesInput | ProductMovementScalarWhereWithAggregatesInput[]
+    OR?: ProductMovementScalarWhereWithAggregatesInput[]
+    NOT?: ProductMovementScalarWhereWithAggregatesInput | ProductMovementScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ProductMovement"> | string
+    menuItemId?: StringWithAggregatesFilter<"ProductMovement"> | string
+    type?: StringWithAggregatesFilter<"ProductMovement"> | string
+    quantity?: FloatWithAggregatesFilter<"ProductMovement"> | number
+    unitCost?: FloatNullableWithAggregatesFilter<"ProductMovement"> | number | null
+    totalCost?: FloatNullableWithAggregatesFilter<"ProductMovement"> | number | null
+    supplierName?: StringNullableWithAggregatesFilter<"ProductMovement"> | string | null
+    invoiceNumber?: StringNullableWithAggregatesFilter<"ProductMovement"> | string | null
+    orderNumber?: StringNullableWithAggregatesFilter<"ProductMovement"> | string | null
+    recordedBy?: StringNullableWithAggregatesFilter<"ProductMovement"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"ProductMovement"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ProductMovement"> | Date | string
+  }
+
+  export type PastryAuditWhereInput = {
+    AND?: PastryAuditWhereInput | PastryAuditWhereInput[]
+    OR?: PastryAuditWhereInput[]
+    NOT?: PastryAuditWhereInput | PastryAuditWhereInput[]
+    id?: StringFilter<"PastryAudit"> | string
+    outletId?: StringFilter<"PastryAudit"> | string
+    auditorName?: StringFilter<"PastryAudit"> | string
+    notes?: StringNullableFilter<"PastryAudit"> | string | null
+    createdAt?: DateTimeFilter<"PastryAudit"> | Date | string
+    outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
+    items?: PastryAuditItemListRelationFilter
+  }
+
+  export type PastryAuditOrderByWithRelationInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    auditorName?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    outlet?: OutletOrderByWithRelationInput
+    items?: PastryAuditItemOrderByRelationAggregateInput
+  }
+
+  export type PastryAuditWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PastryAuditWhereInput | PastryAuditWhereInput[]
+    OR?: PastryAuditWhereInput[]
+    NOT?: PastryAuditWhereInput | PastryAuditWhereInput[]
+    outletId?: StringFilter<"PastryAudit"> | string
+    auditorName?: StringFilter<"PastryAudit"> | string
+    notes?: StringNullableFilter<"PastryAudit"> | string | null
+    createdAt?: DateTimeFilter<"PastryAudit"> | Date | string
+    outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
+    items?: PastryAuditItemListRelationFilter
+  }, "id">
+
+  export type PastryAuditOrderByWithAggregationInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    auditorName?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: PastryAuditCountOrderByAggregateInput
+    _max?: PastryAuditMaxOrderByAggregateInput
+    _min?: PastryAuditMinOrderByAggregateInput
+  }
+
+  export type PastryAuditScalarWhereWithAggregatesInput = {
+    AND?: PastryAuditScalarWhereWithAggregatesInput | PastryAuditScalarWhereWithAggregatesInput[]
+    OR?: PastryAuditScalarWhereWithAggregatesInput[]
+    NOT?: PastryAuditScalarWhereWithAggregatesInput | PastryAuditScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PastryAudit"> | string
+    outletId?: StringWithAggregatesFilter<"PastryAudit"> | string
+    auditorName?: StringWithAggregatesFilter<"PastryAudit"> | string
+    notes?: StringNullableWithAggregatesFilter<"PastryAudit"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"PastryAudit"> | Date | string
+  }
+
+  export type PastryAuditItemWhereInput = {
+    AND?: PastryAuditItemWhereInput | PastryAuditItemWhereInput[]
+    OR?: PastryAuditItemWhereInput[]
+    NOT?: PastryAuditItemWhereInput | PastryAuditItemWhereInput[]
+    id?: StringFilter<"PastryAuditItem"> | string
+    auditId?: StringFilter<"PastryAuditItem"> | string
+    menuItemId?: StringFilter<"PastryAuditItem"> | string
+    menuItemName?: StringFilter<"PastryAuditItem"> | string
+    unitType?: StringFilter<"PastryAuditItem"> | string
+    price?: FloatFilter<"PastryAuditItem"> | number
+    costPrice?: FloatFilter<"PastryAuditItem"> | number
+    openingStock?: FloatFilter<"PastryAuditItem"> | number
+    totalInbound?: FloatFilter<"PastryAuditItem"> | number
+    totalSold?: FloatFilter<"PastryAuditItem"> | number
+    expectedStock?: FloatFilter<"PastryAuditItem"> | number
+    actualStock?: FloatFilter<"PastryAuditItem"> | number
+    variance?: FloatFilter<"PastryAuditItem"> | number
+    varianceCost?: FloatFilter<"PastryAuditItem"> | number
+    status?: StringFilter<"PastryAuditItem"> | string
+    createdAt?: DateTimeFilter<"PastryAuditItem"> | Date | string
+    audit?: XOR<PastryAuditScalarRelationFilter, PastryAuditWhereInput>
+  }
+
+  export type PastryAuditItemOrderByWithRelationInput = {
+    id?: SortOrder
+    auditId?: SortOrder
+    menuItemId?: SortOrder
+    menuItemName?: SortOrder
+    unitType?: SortOrder
+    price?: SortOrder
+    costPrice?: SortOrder
+    openingStock?: SortOrder
+    totalInbound?: SortOrder
+    totalSold?: SortOrder
+    expectedStock?: SortOrder
+    actualStock?: SortOrder
+    variance?: SortOrder
+    varianceCost?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    audit?: PastryAuditOrderByWithRelationInput
+  }
+
+  export type PastryAuditItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PastryAuditItemWhereInput | PastryAuditItemWhereInput[]
+    OR?: PastryAuditItemWhereInput[]
+    NOT?: PastryAuditItemWhereInput | PastryAuditItemWhereInput[]
+    auditId?: StringFilter<"PastryAuditItem"> | string
+    menuItemId?: StringFilter<"PastryAuditItem"> | string
+    menuItemName?: StringFilter<"PastryAuditItem"> | string
+    unitType?: StringFilter<"PastryAuditItem"> | string
+    price?: FloatFilter<"PastryAuditItem"> | number
+    costPrice?: FloatFilter<"PastryAuditItem"> | number
+    openingStock?: FloatFilter<"PastryAuditItem"> | number
+    totalInbound?: FloatFilter<"PastryAuditItem"> | number
+    totalSold?: FloatFilter<"PastryAuditItem"> | number
+    expectedStock?: FloatFilter<"PastryAuditItem"> | number
+    actualStock?: FloatFilter<"PastryAuditItem"> | number
+    variance?: FloatFilter<"PastryAuditItem"> | number
+    varianceCost?: FloatFilter<"PastryAuditItem"> | number
+    status?: StringFilter<"PastryAuditItem"> | string
+    createdAt?: DateTimeFilter<"PastryAuditItem"> | Date | string
+    audit?: XOR<PastryAuditScalarRelationFilter, PastryAuditWhereInput>
+  }, "id">
+
+  export type PastryAuditItemOrderByWithAggregationInput = {
+    id?: SortOrder
+    auditId?: SortOrder
+    menuItemId?: SortOrder
+    menuItemName?: SortOrder
+    unitType?: SortOrder
+    price?: SortOrder
+    costPrice?: SortOrder
+    openingStock?: SortOrder
+    totalInbound?: SortOrder
+    totalSold?: SortOrder
+    expectedStock?: SortOrder
+    actualStock?: SortOrder
+    variance?: SortOrder
+    varianceCost?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    _count?: PastryAuditItemCountOrderByAggregateInput
+    _avg?: PastryAuditItemAvgOrderByAggregateInput
+    _max?: PastryAuditItemMaxOrderByAggregateInput
+    _min?: PastryAuditItemMinOrderByAggregateInput
+    _sum?: PastryAuditItemSumOrderByAggregateInput
+  }
+
+  export type PastryAuditItemScalarWhereWithAggregatesInput = {
+    AND?: PastryAuditItemScalarWhereWithAggregatesInput | PastryAuditItemScalarWhereWithAggregatesInput[]
+    OR?: PastryAuditItemScalarWhereWithAggregatesInput[]
+    NOT?: PastryAuditItemScalarWhereWithAggregatesInput | PastryAuditItemScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PastryAuditItem"> | string
+    auditId?: StringWithAggregatesFilter<"PastryAuditItem"> | string
+    menuItemId?: StringWithAggregatesFilter<"PastryAuditItem"> | string
+    menuItemName?: StringWithAggregatesFilter<"PastryAuditItem"> | string
+    unitType?: StringWithAggregatesFilter<"PastryAuditItem"> | string
+    price?: FloatWithAggregatesFilter<"PastryAuditItem"> | number
+    costPrice?: FloatWithAggregatesFilter<"PastryAuditItem"> | number
+    openingStock?: FloatWithAggregatesFilter<"PastryAuditItem"> | number
+    totalInbound?: FloatWithAggregatesFilter<"PastryAuditItem"> | number
+    totalSold?: FloatWithAggregatesFilter<"PastryAuditItem"> | number
+    expectedStock?: FloatWithAggregatesFilter<"PastryAuditItem"> | number
+    actualStock?: FloatWithAggregatesFilter<"PastryAuditItem"> | number
+    variance?: FloatWithAggregatesFilter<"PastryAuditItem"> | number
+    varianceCost?: FloatWithAggregatesFilter<"PastryAuditItem"> | number
+    status?: StringWithAggregatesFilter<"PastryAuditItem"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"PastryAuditItem"> | Date | string
   }
 
   export type RawMaterialWhereInput = {
@@ -25649,6 +29930,7 @@ export namespace Prisma {
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateInput = {
@@ -25672,6 +29954,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUpdateInput = {
@@ -25695,6 +29978,7 @@ export namespace Prisma {
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateInput = {
@@ -25718,6 +30002,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateManyInput = {
@@ -25955,6 +30240,7 @@ export namespace Prisma {
     image?: string | null
     itemType?: string
     unitType?: string
+    openingStock?: number
     stockQty?: number
     minStockAlert?: number
     isAvailable?: boolean
@@ -25964,6 +30250,7 @@ export namespace Prisma {
     createdAt?: Date | string
     outlet: OutletCreateNestedOneWithoutMenuItemsInput
     recipes?: RecipeItemCreateNestedManyWithoutMenuItemInput
+    movements?: ProductMovementCreateNestedManyWithoutMenuItemInput
   }
 
   export type MenuItemUncheckedCreateInput = {
@@ -25979,6 +30266,7 @@ export namespace Prisma {
     image?: string | null
     itemType?: string
     unitType?: string
+    openingStock?: number
     stockQty?: number
     minStockAlert?: number
     isAvailable?: boolean
@@ -25987,6 +30275,7 @@ export namespace Prisma {
     loyaltyPointsRequired?: number
     createdAt?: Date | string
     recipes?: RecipeItemUncheckedCreateNestedManyWithoutMenuItemInput
+    movements?: ProductMovementUncheckedCreateNestedManyWithoutMenuItemInput
   }
 
   export type MenuItemUpdateInput = {
@@ -26001,6 +30290,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
     stockQty?: IntFieldUpdateOperationsInput | number
     minStockAlert?: IntFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
@@ -26010,6 +30300,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outlet?: OutletUpdateOneRequiredWithoutMenuItemsNestedInput
     recipes?: RecipeItemUpdateManyWithoutMenuItemNestedInput
+    movements?: ProductMovementUpdateManyWithoutMenuItemNestedInput
   }
 
   export type MenuItemUncheckedUpdateInput = {
@@ -26025,6 +30316,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
     stockQty?: IntFieldUpdateOperationsInput | number
     minStockAlert?: IntFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
@@ -26033,6 +30325,7 @@ export namespace Prisma {
     loyaltyPointsRequired?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recipes?: RecipeItemUncheckedUpdateManyWithoutMenuItemNestedInput
+    movements?: ProductMovementUncheckedUpdateManyWithoutMenuItemNestedInput
   }
 
   export type MenuItemCreateManyInput = {
@@ -26048,6 +30341,7 @@ export namespace Prisma {
     image?: string | null
     itemType?: string
     unitType?: string
+    openingStock?: number
     stockQty?: number
     minStockAlert?: number
     isAvailable?: boolean
@@ -26069,6 +30363,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
     stockQty?: IntFieldUpdateOperationsInput | number
     minStockAlert?: IntFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
@@ -26091,12 +30386,308 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
     stockQty?: IntFieldUpdateOperationsInput | number
     minStockAlert?: IntFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     loyaltyPointsEarned?: IntFieldUpdateOperationsInput | number
     loyaltyPointsRequired?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductMovementCreateInput = {
+    id?: string
+    type: string
+    quantity: number
+    unitCost?: number | null
+    totalCost?: number | null
+    supplierName?: string | null
+    invoiceNumber?: string | null
+    orderNumber?: string | null
+    recordedBy?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    menuItem: MenuItemCreateNestedOneWithoutMovementsInput
+  }
+
+  export type ProductMovementUncheckedCreateInput = {
+    id?: string
+    menuItemId: string
+    type: string
+    quantity: number
+    unitCost?: number | null
+    totalCost?: number | null
+    supplierName?: string | null
+    invoiceNumber?: string | null
+    orderNumber?: string | null
+    recordedBy?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ProductMovementUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    unitCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierName?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    menuItem?: MenuItemUpdateOneRequiredWithoutMovementsNestedInput
+  }
+
+  export type ProductMovementUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    menuItemId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    unitCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierName?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductMovementCreateManyInput = {
+    id?: string
+    menuItemId: string
+    type: string
+    quantity: number
+    unitCost?: number | null
+    totalCost?: number | null
+    supplierName?: string | null
+    invoiceNumber?: string | null
+    orderNumber?: string | null
+    recordedBy?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ProductMovementUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    unitCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierName?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductMovementUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    menuItemId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    unitCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierName?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PastryAuditCreateInput = {
+    id?: string
+    auditorName?: string
+    notes?: string | null
+    createdAt?: Date | string
+    outlet: OutletCreateNestedOneWithoutPastryAuditsInput
+    items?: PastryAuditItemCreateNestedManyWithoutAuditInput
+  }
+
+  export type PastryAuditUncheckedCreateInput = {
+    id?: string
+    outletId: string
+    auditorName?: string
+    notes?: string | null
+    createdAt?: Date | string
+    items?: PastryAuditItemUncheckedCreateNestedManyWithoutAuditInput
+  }
+
+  export type PastryAuditUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    auditorName?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outlet?: OutletUpdateOneRequiredWithoutPastryAuditsNestedInput
+    items?: PastryAuditItemUpdateManyWithoutAuditNestedInput
+  }
+
+  export type PastryAuditUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    auditorName?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: PastryAuditItemUncheckedUpdateManyWithoutAuditNestedInput
+  }
+
+  export type PastryAuditCreateManyInput = {
+    id?: string
+    outletId: string
+    auditorName?: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PastryAuditUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    auditorName?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PastryAuditUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    auditorName?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PastryAuditItemCreateInput = {
+    id?: string
+    menuItemId: string
+    menuItemName: string
+    unitType: string
+    price?: number
+    costPrice?: number
+    openingStock?: number
+    totalInbound?: number
+    totalSold?: number
+    expectedStock?: number
+    actualStock?: number
+    variance?: number
+    varianceCost?: number
+    status?: string
+    createdAt?: Date | string
+    audit: PastryAuditCreateNestedOneWithoutItemsInput
+  }
+
+  export type PastryAuditItemUncheckedCreateInput = {
+    id?: string
+    auditId: string
+    menuItemId: string
+    menuItemName: string
+    unitType: string
+    price?: number
+    costPrice?: number
+    openingStock?: number
+    totalInbound?: number
+    totalSold?: number
+    expectedStock?: number
+    actualStock?: number
+    variance?: number
+    varianceCost?: number
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type PastryAuditItemUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    menuItemId?: StringFieldUpdateOperationsInput | string
+    menuItemName?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    price?: FloatFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    openingStock?: FloatFieldUpdateOperationsInput | number
+    totalInbound?: FloatFieldUpdateOperationsInput | number
+    totalSold?: FloatFieldUpdateOperationsInput | number
+    expectedStock?: FloatFieldUpdateOperationsInput | number
+    actualStock?: FloatFieldUpdateOperationsInput | number
+    variance?: FloatFieldUpdateOperationsInput | number
+    varianceCost?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    audit?: PastryAuditUpdateOneRequiredWithoutItemsNestedInput
+  }
+
+  export type PastryAuditItemUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    auditId?: StringFieldUpdateOperationsInput | string
+    menuItemId?: StringFieldUpdateOperationsInput | string
+    menuItemName?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    price?: FloatFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    openingStock?: FloatFieldUpdateOperationsInput | number
+    totalInbound?: FloatFieldUpdateOperationsInput | number
+    totalSold?: FloatFieldUpdateOperationsInput | number
+    expectedStock?: FloatFieldUpdateOperationsInput | number
+    actualStock?: FloatFieldUpdateOperationsInput | number
+    variance?: FloatFieldUpdateOperationsInput | number
+    varianceCost?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PastryAuditItemCreateManyInput = {
+    id?: string
+    auditId: string
+    menuItemId: string
+    menuItemName: string
+    unitType: string
+    price?: number
+    costPrice?: number
+    openingStock?: number
+    totalInbound?: number
+    totalSold?: number
+    expectedStock?: number
+    actualStock?: number
+    variance?: number
+    varianceCost?: number
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type PastryAuditItemUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    menuItemId?: StringFieldUpdateOperationsInput | string
+    menuItemName?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    price?: FloatFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    openingStock?: FloatFieldUpdateOperationsInput | number
+    totalInbound?: FloatFieldUpdateOperationsInput | number
+    totalSold?: FloatFieldUpdateOperationsInput | number
+    expectedStock?: FloatFieldUpdateOperationsInput | number
+    actualStock?: FloatFieldUpdateOperationsInput | number
+    variance?: FloatFieldUpdateOperationsInput | number
+    varianceCost?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PastryAuditItemUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    auditId?: StringFieldUpdateOperationsInput | string
+    menuItemId?: StringFieldUpdateOperationsInput | string
+    menuItemName?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    price?: FloatFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    openingStock?: FloatFieldUpdateOperationsInput | number
+    totalInbound?: FloatFieldUpdateOperationsInput | number
+    totalSold?: FloatFieldUpdateOperationsInput | number
+    expectedStock?: FloatFieldUpdateOperationsInput | number
+    actualStock?: FloatFieldUpdateOperationsInput | number
+    variance?: FloatFieldUpdateOperationsInput | number
+    varianceCost?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -27675,6 +32266,12 @@ export namespace Prisma {
     none?: InventoryAuditWhereInput
   }
 
+  export type PastryAuditListRelationFilter = {
+    every?: PastryAuditWhereInput
+    some?: PastryAuditWhereInput
+    none?: PastryAuditWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -27717,6 +32314,10 @@ export namespace Prisma {
   }
 
   export type InventoryAuditOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PastryAuditOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -27957,7 +32558,17 @@ export namespace Prisma {
     none?: RecipeItemWhereInput
   }
 
+  export type ProductMovementListRelationFilter = {
+    every?: ProductMovementWhereInput
+    some?: ProductMovementWhereInput
+    none?: ProductMovementWhereInput
+  }
+
   export type RecipeItemOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ProductMovementOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -27974,6 +32585,7 @@ export namespace Prisma {
     image?: SortOrder
     itemType?: SortOrder
     unitType?: SortOrder
+    openingStock?: SortOrder
     stockQty?: SortOrder
     minStockAlert?: SortOrder
     isAvailable?: SortOrder
@@ -27987,6 +32599,7 @@ export namespace Prisma {
     price?: SortOrder
     costPrice?: SortOrder
     durationMinutes?: SortOrder
+    openingStock?: SortOrder
     stockQty?: SortOrder
     minStockAlert?: SortOrder
     sortOrder?: SortOrder
@@ -28007,6 +32620,7 @@ export namespace Prisma {
     image?: SortOrder
     itemType?: SortOrder
     unitType?: SortOrder
+    openingStock?: SortOrder
     stockQty?: SortOrder
     minStockAlert?: SortOrder
     isAvailable?: SortOrder
@@ -28029,6 +32643,7 @@ export namespace Prisma {
     image?: SortOrder
     itemType?: SortOrder
     unitType?: SortOrder
+    openingStock?: SortOrder
     stockQty?: SortOrder
     minStockAlert?: SortOrder
     isAvailable?: SortOrder
@@ -28042,6 +32657,7 @@ export namespace Prisma {
     price?: SortOrder
     costPrice?: SortOrder
     durationMinutes?: SortOrder
+    openingStock?: SortOrder
     stockQty?: SortOrder
     minStockAlert?: SortOrder
     sortOrder?: SortOrder
@@ -28063,6 +32679,215 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type MenuItemScalarRelationFilter = {
+    is?: MenuItemWhereInput
+    isNot?: MenuItemWhereInput
+  }
+
+  export type ProductMovementCountOrderByAggregateInput = {
+    id?: SortOrder
+    menuItemId?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    unitCost?: SortOrder
+    totalCost?: SortOrder
+    supplierName?: SortOrder
+    invoiceNumber?: SortOrder
+    orderNumber?: SortOrder
+    recordedBy?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProductMovementAvgOrderByAggregateInput = {
+    quantity?: SortOrder
+    unitCost?: SortOrder
+    totalCost?: SortOrder
+  }
+
+  export type ProductMovementMaxOrderByAggregateInput = {
+    id?: SortOrder
+    menuItemId?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    unitCost?: SortOrder
+    totalCost?: SortOrder
+    supplierName?: SortOrder
+    invoiceNumber?: SortOrder
+    orderNumber?: SortOrder
+    recordedBy?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProductMovementMinOrderByAggregateInput = {
+    id?: SortOrder
+    menuItemId?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    unitCost?: SortOrder
+    totalCost?: SortOrder
+    supplierName?: SortOrder
+    invoiceNumber?: SortOrder
+    orderNumber?: SortOrder
+    recordedBy?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProductMovementSumOrderByAggregateInput = {
+    quantity?: SortOrder
+    unitCost?: SortOrder
+    totalCost?: SortOrder
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type PastryAuditItemListRelationFilter = {
+    every?: PastryAuditItemWhereInput
+    some?: PastryAuditItemWhereInput
+    none?: PastryAuditItemWhereInput
+  }
+
+  export type PastryAuditItemOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PastryAuditCountOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    auditorName?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PastryAuditMaxOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    auditorName?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PastryAuditMinOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    auditorName?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PastryAuditScalarRelationFilter = {
+    is?: PastryAuditWhereInput
+    isNot?: PastryAuditWhereInput
+  }
+
+  export type PastryAuditItemCountOrderByAggregateInput = {
+    id?: SortOrder
+    auditId?: SortOrder
+    menuItemId?: SortOrder
+    menuItemName?: SortOrder
+    unitType?: SortOrder
+    price?: SortOrder
+    costPrice?: SortOrder
+    openingStock?: SortOrder
+    totalInbound?: SortOrder
+    totalSold?: SortOrder
+    expectedStock?: SortOrder
+    actualStock?: SortOrder
+    variance?: SortOrder
+    varianceCost?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PastryAuditItemAvgOrderByAggregateInput = {
+    price?: SortOrder
+    costPrice?: SortOrder
+    openingStock?: SortOrder
+    totalInbound?: SortOrder
+    totalSold?: SortOrder
+    expectedStock?: SortOrder
+    actualStock?: SortOrder
+    variance?: SortOrder
+    varianceCost?: SortOrder
+  }
+
+  export type PastryAuditItemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    auditId?: SortOrder
+    menuItemId?: SortOrder
+    menuItemName?: SortOrder
+    unitType?: SortOrder
+    price?: SortOrder
+    costPrice?: SortOrder
+    openingStock?: SortOrder
+    totalInbound?: SortOrder
+    totalSold?: SortOrder
+    expectedStock?: SortOrder
+    actualStock?: SortOrder
+    variance?: SortOrder
+    varianceCost?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PastryAuditItemMinOrderByAggregateInput = {
+    id?: SortOrder
+    auditId?: SortOrder
+    menuItemId?: SortOrder
+    menuItemName?: SortOrder
+    unitType?: SortOrder
+    price?: SortOrder
+    costPrice?: SortOrder
+    openingStock?: SortOrder
+    totalInbound?: SortOrder
+    totalSold?: SortOrder
+    expectedStock?: SortOrder
+    actualStock?: SortOrder
+    variance?: SortOrder
+    varianceCost?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PastryAuditItemSumOrderByAggregateInput = {
+    price?: SortOrder
+    costPrice?: SortOrder
+    openingStock?: SortOrder
+    totalInbound?: SortOrder
+    totalSold?: SortOrder
+    expectedStock?: SortOrder
+    actualStock?: SortOrder
+    variance?: SortOrder
+    varianceCost?: SortOrder
   }
 
   export type RawMaterialMovementListRelationFilter = {
@@ -28131,17 +32956,6 @@ export namespace Prisma {
     costPerUnit?: SortOrder
   }
 
-  export type FloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
   export type RawMaterialScalarRelationFilter = {
     is?: RawMaterialWhereInput
     isNot?: RawMaterialWhereInput
@@ -28202,22 +33016,6 @@ export namespace Prisma {
     quantity?: SortOrder
     costPerUnit?: SortOrder
     totalCost?: SortOrder
-  }
-
-  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type InventoryAuditItemListRelationFilter = {
@@ -28333,11 +33131,6 @@ export namespace Prisma {
     actualStock?: SortOrder
     variance?: SortOrder
     varianceCost?: SortOrder
-  }
-
-  export type MenuItemScalarRelationFilter = {
-    is?: MenuItemWhereInput
-    isNot?: MenuItemWhereInput
   }
 
   export type RecipeItemMenuItemIdRawMaterialIdCompoundUniqueInput = {
@@ -29029,6 +33822,13 @@ export namespace Prisma {
     connect?: InventoryAuditWhereUniqueInput | InventoryAuditWhereUniqueInput[]
   }
 
+  export type PastryAuditCreateNestedManyWithoutOutletInput = {
+    create?: XOR<PastryAuditCreateWithoutOutletInput, PastryAuditUncheckedCreateWithoutOutletInput> | PastryAuditCreateWithoutOutletInput[] | PastryAuditUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: PastryAuditCreateOrConnectWithoutOutletInput | PastryAuditCreateOrConnectWithoutOutletInput[]
+    createMany?: PastryAuditCreateManyOutletInputEnvelope
+    connect?: PastryAuditWhereUniqueInput | PastryAuditWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutOutletInput = {
     create?: XOR<UserCreateWithoutOutletInput, UserUncheckedCreateWithoutOutletInput> | UserCreateWithoutOutletInput[] | UserUncheckedCreateWithoutOutletInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOutletInput | UserCreateOrConnectWithoutOutletInput[]
@@ -29097,6 +33897,13 @@ export namespace Prisma {
     connectOrCreate?: InventoryAuditCreateOrConnectWithoutOutletInput | InventoryAuditCreateOrConnectWithoutOutletInput[]
     createMany?: InventoryAuditCreateManyOutletInputEnvelope
     connect?: InventoryAuditWhereUniqueInput | InventoryAuditWhereUniqueInput[]
+  }
+
+  export type PastryAuditUncheckedCreateNestedManyWithoutOutletInput = {
+    create?: XOR<PastryAuditCreateWithoutOutletInput, PastryAuditUncheckedCreateWithoutOutletInput> | PastryAuditCreateWithoutOutletInput[] | PastryAuditUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: PastryAuditCreateOrConnectWithoutOutletInput | PastryAuditCreateOrConnectWithoutOutletInput[]
+    createMany?: PastryAuditCreateManyOutletInputEnvelope
+    connect?: PastryAuditWhereUniqueInput | PastryAuditWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -29255,6 +34062,20 @@ export namespace Prisma {
     deleteMany?: InventoryAuditScalarWhereInput | InventoryAuditScalarWhereInput[]
   }
 
+  export type PastryAuditUpdateManyWithoutOutletNestedInput = {
+    create?: XOR<PastryAuditCreateWithoutOutletInput, PastryAuditUncheckedCreateWithoutOutletInput> | PastryAuditCreateWithoutOutletInput[] | PastryAuditUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: PastryAuditCreateOrConnectWithoutOutletInput | PastryAuditCreateOrConnectWithoutOutletInput[]
+    upsert?: PastryAuditUpsertWithWhereUniqueWithoutOutletInput | PastryAuditUpsertWithWhereUniqueWithoutOutletInput[]
+    createMany?: PastryAuditCreateManyOutletInputEnvelope
+    set?: PastryAuditWhereUniqueInput | PastryAuditWhereUniqueInput[]
+    disconnect?: PastryAuditWhereUniqueInput | PastryAuditWhereUniqueInput[]
+    delete?: PastryAuditWhereUniqueInput | PastryAuditWhereUniqueInput[]
+    connect?: PastryAuditWhereUniqueInput | PastryAuditWhereUniqueInput[]
+    update?: PastryAuditUpdateWithWhereUniqueWithoutOutletInput | PastryAuditUpdateWithWhereUniqueWithoutOutletInput[]
+    updateMany?: PastryAuditUpdateManyWithWhereWithoutOutletInput | PastryAuditUpdateManyWithWhereWithoutOutletInput[]
+    deleteMany?: PastryAuditScalarWhereInput | PastryAuditScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutOutletNestedInput = {
     create?: XOR<UserCreateWithoutOutletInput, UserUncheckedCreateWithoutOutletInput> | UserCreateWithoutOutletInput[] | UserUncheckedCreateWithoutOutletInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOutletInput | UserCreateOrConnectWithoutOutletInput[]
@@ -29395,6 +34216,20 @@ export namespace Prisma {
     deleteMany?: InventoryAuditScalarWhereInput | InventoryAuditScalarWhereInput[]
   }
 
+  export type PastryAuditUncheckedUpdateManyWithoutOutletNestedInput = {
+    create?: XOR<PastryAuditCreateWithoutOutletInput, PastryAuditUncheckedCreateWithoutOutletInput> | PastryAuditCreateWithoutOutletInput[] | PastryAuditUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: PastryAuditCreateOrConnectWithoutOutletInput | PastryAuditCreateOrConnectWithoutOutletInput[]
+    upsert?: PastryAuditUpsertWithWhereUniqueWithoutOutletInput | PastryAuditUpsertWithWhereUniqueWithoutOutletInput[]
+    createMany?: PastryAuditCreateManyOutletInputEnvelope
+    set?: PastryAuditWhereUniqueInput | PastryAuditWhereUniqueInput[]
+    disconnect?: PastryAuditWhereUniqueInput | PastryAuditWhereUniqueInput[]
+    delete?: PastryAuditWhereUniqueInput | PastryAuditWhereUniqueInput[]
+    connect?: PastryAuditWhereUniqueInput | PastryAuditWhereUniqueInput[]
+    update?: PastryAuditUpdateWithWhereUniqueWithoutOutletInput | PastryAuditUpdateWithWhereUniqueWithoutOutletInput[]
+    updateMany?: PastryAuditUpdateManyWithWhereWithoutOutletInput | PastryAuditUpdateManyWithWhereWithoutOutletInput[]
+    deleteMany?: PastryAuditScalarWhereInput | PastryAuditScalarWhereInput[]
+  }
+
   export type OutletCreateNestedOneWithoutUsersInput = {
     create?: XOR<OutletCreateWithoutUsersInput, OutletUncheckedCreateWithoutUsersInput>
     connectOrCreate?: OutletCreateOrConnectWithoutUsersInput
@@ -29488,11 +34323,25 @@ export namespace Prisma {
     connect?: RecipeItemWhereUniqueInput | RecipeItemWhereUniqueInput[]
   }
 
+  export type ProductMovementCreateNestedManyWithoutMenuItemInput = {
+    create?: XOR<ProductMovementCreateWithoutMenuItemInput, ProductMovementUncheckedCreateWithoutMenuItemInput> | ProductMovementCreateWithoutMenuItemInput[] | ProductMovementUncheckedCreateWithoutMenuItemInput[]
+    connectOrCreate?: ProductMovementCreateOrConnectWithoutMenuItemInput | ProductMovementCreateOrConnectWithoutMenuItemInput[]
+    createMany?: ProductMovementCreateManyMenuItemInputEnvelope
+    connect?: ProductMovementWhereUniqueInput | ProductMovementWhereUniqueInput[]
+  }
+
   export type RecipeItemUncheckedCreateNestedManyWithoutMenuItemInput = {
     create?: XOR<RecipeItemCreateWithoutMenuItemInput, RecipeItemUncheckedCreateWithoutMenuItemInput> | RecipeItemCreateWithoutMenuItemInput[] | RecipeItemUncheckedCreateWithoutMenuItemInput[]
     connectOrCreate?: RecipeItemCreateOrConnectWithoutMenuItemInput | RecipeItemCreateOrConnectWithoutMenuItemInput[]
     createMany?: RecipeItemCreateManyMenuItemInputEnvelope
     connect?: RecipeItemWhereUniqueInput | RecipeItemWhereUniqueInput[]
+  }
+
+  export type ProductMovementUncheckedCreateNestedManyWithoutMenuItemInput = {
+    create?: XOR<ProductMovementCreateWithoutMenuItemInput, ProductMovementUncheckedCreateWithoutMenuItemInput> | ProductMovementCreateWithoutMenuItemInput[] | ProductMovementUncheckedCreateWithoutMenuItemInput[]
+    connectOrCreate?: ProductMovementCreateOrConnectWithoutMenuItemInput | ProductMovementCreateOrConnectWithoutMenuItemInput[]
+    createMany?: ProductMovementCreateManyMenuItemInputEnvelope
+    connect?: ProductMovementWhereUniqueInput | ProductMovementWhereUniqueInput[]
   }
 
   export type FloatFieldUpdateOperationsInput = {
@@ -29525,6 +34374,20 @@ export namespace Prisma {
     deleteMany?: RecipeItemScalarWhereInput | RecipeItemScalarWhereInput[]
   }
 
+  export type ProductMovementUpdateManyWithoutMenuItemNestedInput = {
+    create?: XOR<ProductMovementCreateWithoutMenuItemInput, ProductMovementUncheckedCreateWithoutMenuItemInput> | ProductMovementCreateWithoutMenuItemInput[] | ProductMovementUncheckedCreateWithoutMenuItemInput[]
+    connectOrCreate?: ProductMovementCreateOrConnectWithoutMenuItemInput | ProductMovementCreateOrConnectWithoutMenuItemInput[]
+    upsert?: ProductMovementUpsertWithWhereUniqueWithoutMenuItemInput | ProductMovementUpsertWithWhereUniqueWithoutMenuItemInput[]
+    createMany?: ProductMovementCreateManyMenuItemInputEnvelope
+    set?: ProductMovementWhereUniqueInput | ProductMovementWhereUniqueInput[]
+    disconnect?: ProductMovementWhereUniqueInput | ProductMovementWhereUniqueInput[]
+    delete?: ProductMovementWhereUniqueInput | ProductMovementWhereUniqueInput[]
+    connect?: ProductMovementWhereUniqueInput | ProductMovementWhereUniqueInput[]
+    update?: ProductMovementUpdateWithWhereUniqueWithoutMenuItemInput | ProductMovementUpdateWithWhereUniqueWithoutMenuItemInput[]
+    updateMany?: ProductMovementUpdateManyWithWhereWithoutMenuItemInput | ProductMovementUpdateManyWithWhereWithoutMenuItemInput[]
+    deleteMany?: ProductMovementScalarWhereInput | ProductMovementScalarWhereInput[]
+  }
+
   export type RecipeItemUncheckedUpdateManyWithoutMenuItemNestedInput = {
     create?: XOR<RecipeItemCreateWithoutMenuItemInput, RecipeItemUncheckedCreateWithoutMenuItemInput> | RecipeItemCreateWithoutMenuItemInput[] | RecipeItemUncheckedCreateWithoutMenuItemInput[]
     connectOrCreate?: RecipeItemCreateOrConnectWithoutMenuItemInput | RecipeItemCreateOrConnectWithoutMenuItemInput[]
@@ -29537,6 +34400,112 @@ export namespace Prisma {
     update?: RecipeItemUpdateWithWhereUniqueWithoutMenuItemInput | RecipeItemUpdateWithWhereUniqueWithoutMenuItemInput[]
     updateMany?: RecipeItemUpdateManyWithWhereWithoutMenuItemInput | RecipeItemUpdateManyWithWhereWithoutMenuItemInput[]
     deleteMany?: RecipeItemScalarWhereInput | RecipeItemScalarWhereInput[]
+  }
+
+  export type ProductMovementUncheckedUpdateManyWithoutMenuItemNestedInput = {
+    create?: XOR<ProductMovementCreateWithoutMenuItemInput, ProductMovementUncheckedCreateWithoutMenuItemInput> | ProductMovementCreateWithoutMenuItemInput[] | ProductMovementUncheckedCreateWithoutMenuItemInput[]
+    connectOrCreate?: ProductMovementCreateOrConnectWithoutMenuItemInput | ProductMovementCreateOrConnectWithoutMenuItemInput[]
+    upsert?: ProductMovementUpsertWithWhereUniqueWithoutMenuItemInput | ProductMovementUpsertWithWhereUniqueWithoutMenuItemInput[]
+    createMany?: ProductMovementCreateManyMenuItemInputEnvelope
+    set?: ProductMovementWhereUniqueInput | ProductMovementWhereUniqueInput[]
+    disconnect?: ProductMovementWhereUniqueInput | ProductMovementWhereUniqueInput[]
+    delete?: ProductMovementWhereUniqueInput | ProductMovementWhereUniqueInput[]
+    connect?: ProductMovementWhereUniqueInput | ProductMovementWhereUniqueInput[]
+    update?: ProductMovementUpdateWithWhereUniqueWithoutMenuItemInput | ProductMovementUpdateWithWhereUniqueWithoutMenuItemInput[]
+    updateMany?: ProductMovementUpdateManyWithWhereWithoutMenuItemInput | ProductMovementUpdateManyWithWhereWithoutMenuItemInput[]
+    deleteMany?: ProductMovementScalarWhereInput | ProductMovementScalarWhereInput[]
+  }
+
+  export type MenuItemCreateNestedOneWithoutMovementsInput = {
+    create?: XOR<MenuItemCreateWithoutMovementsInput, MenuItemUncheckedCreateWithoutMovementsInput>
+    connectOrCreate?: MenuItemCreateOrConnectWithoutMovementsInput
+    connect?: MenuItemWhereUniqueInput
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type MenuItemUpdateOneRequiredWithoutMovementsNestedInput = {
+    create?: XOR<MenuItemCreateWithoutMovementsInput, MenuItemUncheckedCreateWithoutMovementsInput>
+    connectOrCreate?: MenuItemCreateOrConnectWithoutMovementsInput
+    upsert?: MenuItemUpsertWithoutMovementsInput
+    connect?: MenuItemWhereUniqueInput
+    update?: XOR<XOR<MenuItemUpdateToOneWithWhereWithoutMovementsInput, MenuItemUpdateWithoutMovementsInput>, MenuItemUncheckedUpdateWithoutMovementsInput>
+  }
+
+  export type OutletCreateNestedOneWithoutPastryAuditsInput = {
+    create?: XOR<OutletCreateWithoutPastryAuditsInput, OutletUncheckedCreateWithoutPastryAuditsInput>
+    connectOrCreate?: OutletCreateOrConnectWithoutPastryAuditsInput
+    connect?: OutletWhereUniqueInput
+  }
+
+  export type PastryAuditItemCreateNestedManyWithoutAuditInput = {
+    create?: XOR<PastryAuditItemCreateWithoutAuditInput, PastryAuditItemUncheckedCreateWithoutAuditInput> | PastryAuditItemCreateWithoutAuditInput[] | PastryAuditItemUncheckedCreateWithoutAuditInput[]
+    connectOrCreate?: PastryAuditItemCreateOrConnectWithoutAuditInput | PastryAuditItemCreateOrConnectWithoutAuditInput[]
+    createMany?: PastryAuditItemCreateManyAuditInputEnvelope
+    connect?: PastryAuditItemWhereUniqueInput | PastryAuditItemWhereUniqueInput[]
+  }
+
+  export type PastryAuditItemUncheckedCreateNestedManyWithoutAuditInput = {
+    create?: XOR<PastryAuditItemCreateWithoutAuditInput, PastryAuditItemUncheckedCreateWithoutAuditInput> | PastryAuditItemCreateWithoutAuditInput[] | PastryAuditItemUncheckedCreateWithoutAuditInput[]
+    connectOrCreate?: PastryAuditItemCreateOrConnectWithoutAuditInput | PastryAuditItemCreateOrConnectWithoutAuditInput[]
+    createMany?: PastryAuditItemCreateManyAuditInputEnvelope
+    connect?: PastryAuditItemWhereUniqueInput | PastryAuditItemWhereUniqueInput[]
+  }
+
+  export type OutletUpdateOneRequiredWithoutPastryAuditsNestedInput = {
+    create?: XOR<OutletCreateWithoutPastryAuditsInput, OutletUncheckedCreateWithoutPastryAuditsInput>
+    connectOrCreate?: OutletCreateOrConnectWithoutPastryAuditsInput
+    upsert?: OutletUpsertWithoutPastryAuditsInput
+    connect?: OutletWhereUniqueInput
+    update?: XOR<XOR<OutletUpdateToOneWithWhereWithoutPastryAuditsInput, OutletUpdateWithoutPastryAuditsInput>, OutletUncheckedUpdateWithoutPastryAuditsInput>
+  }
+
+  export type PastryAuditItemUpdateManyWithoutAuditNestedInput = {
+    create?: XOR<PastryAuditItemCreateWithoutAuditInput, PastryAuditItemUncheckedCreateWithoutAuditInput> | PastryAuditItemCreateWithoutAuditInput[] | PastryAuditItemUncheckedCreateWithoutAuditInput[]
+    connectOrCreate?: PastryAuditItemCreateOrConnectWithoutAuditInput | PastryAuditItemCreateOrConnectWithoutAuditInput[]
+    upsert?: PastryAuditItemUpsertWithWhereUniqueWithoutAuditInput | PastryAuditItemUpsertWithWhereUniqueWithoutAuditInput[]
+    createMany?: PastryAuditItemCreateManyAuditInputEnvelope
+    set?: PastryAuditItemWhereUniqueInput | PastryAuditItemWhereUniqueInput[]
+    disconnect?: PastryAuditItemWhereUniqueInput | PastryAuditItemWhereUniqueInput[]
+    delete?: PastryAuditItemWhereUniqueInput | PastryAuditItemWhereUniqueInput[]
+    connect?: PastryAuditItemWhereUniqueInput | PastryAuditItemWhereUniqueInput[]
+    update?: PastryAuditItemUpdateWithWhereUniqueWithoutAuditInput | PastryAuditItemUpdateWithWhereUniqueWithoutAuditInput[]
+    updateMany?: PastryAuditItemUpdateManyWithWhereWithoutAuditInput | PastryAuditItemUpdateManyWithWhereWithoutAuditInput[]
+    deleteMany?: PastryAuditItemScalarWhereInput | PastryAuditItemScalarWhereInput[]
+  }
+
+  export type PastryAuditItemUncheckedUpdateManyWithoutAuditNestedInput = {
+    create?: XOR<PastryAuditItemCreateWithoutAuditInput, PastryAuditItemUncheckedCreateWithoutAuditInput> | PastryAuditItemCreateWithoutAuditInput[] | PastryAuditItemUncheckedCreateWithoutAuditInput[]
+    connectOrCreate?: PastryAuditItemCreateOrConnectWithoutAuditInput | PastryAuditItemCreateOrConnectWithoutAuditInput[]
+    upsert?: PastryAuditItemUpsertWithWhereUniqueWithoutAuditInput | PastryAuditItemUpsertWithWhereUniqueWithoutAuditInput[]
+    createMany?: PastryAuditItemCreateManyAuditInputEnvelope
+    set?: PastryAuditItemWhereUniqueInput | PastryAuditItemWhereUniqueInput[]
+    disconnect?: PastryAuditItemWhereUniqueInput | PastryAuditItemWhereUniqueInput[]
+    delete?: PastryAuditItemWhereUniqueInput | PastryAuditItemWhereUniqueInput[]
+    connect?: PastryAuditItemWhereUniqueInput | PastryAuditItemWhereUniqueInput[]
+    update?: PastryAuditItemUpdateWithWhereUniqueWithoutAuditInput | PastryAuditItemUpdateWithWhereUniqueWithoutAuditInput[]
+    updateMany?: PastryAuditItemUpdateManyWithWhereWithoutAuditInput | PastryAuditItemUpdateManyWithWhereWithoutAuditInput[]
+    deleteMany?: PastryAuditItemScalarWhereInput | PastryAuditItemScalarWhereInput[]
+  }
+
+  export type PastryAuditCreateNestedOneWithoutItemsInput = {
+    create?: XOR<PastryAuditCreateWithoutItemsInput, PastryAuditUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: PastryAuditCreateOrConnectWithoutItemsInput
+    connect?: PastryAuditWhereUniqueInput
+  }
+
+  export type PastryAuditUpdateOneRequiredWithoutItemsNestedInput = {
+    create?: XOR<PastryAuditCreateWithoutItemsInput, PastryAuditUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: PastryAuditCreateOrConnectWithoutItemsInput
+    upsert?: PastryAuditUpsertWithoutItemsInput
+    connect?: PastryAuditWhereUniqueInput
+    update?: XOR<XOR<PastryAuditUpdateToOneWithWhereWithoutItemsInput, PastryAuditUpdateWithoutItemsInput>, PastryAuditUncheckedUpdateWithoutItemsInput>
   }
 
   export type OutletCreateNestedOneWithoutRawMaterialsInput = {
@@ -29641,14 +34610,6 @@ export namespace Prisma {
     create?: XOR<RawMaterialCreateWithoutMovementsInput, RawMaterialUncheckedCreateWithoutMovementsInput>
     connectOrCreate?: RawMaterialCreateOrConnectWithoutMovementsInput
     connect?: RawMaterialWhereUniqueInput
-  }
-
-  export type NullableFloatFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type RawMaterialUpdateOneRequiredWithoutMovementsNestedInput = {
@@ -30260,6 +35221,7 @@ export namespace Prisma {
     image?: string | null
     itemType?: string
     unitType?: string
+    openingStock?: number
     stockQty?: number
     minStockAlert?: number
     isAvailable?: boolean
@@ -30268,6 +35230,7 @@ export namespace Prisma {
     loyaltyPointsRequired?: number
     createdAt?: Date | string
     recipes?: RecipeItemCreateNestedManyWithoutMenuItemInput
+    movements?: ProductMovementCreateNestedManyWithoutMenuItemInput
   }
 
   export type MenuItemUncheckedCreateWithoutOutletInput = {
@@ -30282,6 +35245,7 @@ export namespace Prisma {
     image?: string | null
     itemType?: string
     unitType?: string
+    openingStock?: number
     stockQty?: number
     minStockAlert?: number
     isAvailable?: boolean
@@ -30290,6 +35254,7 @@ export namespace Prisma {
     loyaltyPointsRequired?: number
     createdAt?: Date | string
     recipes?: RecipeItemUncheckedCreateNestedManyWithoutMenuItemInput
+    movements?: ProductMovementUncheckedCreateNestedManyWithoutMenuItemInput
   }
 
   export type MenuItemCreateOrConnectWithoutOutletInput = {
@@ -30602,6 +35567,32 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type PastryAuditCreateWithoutOutletInput = {
+    id?: string
+    auditorName?: string
+    notes?: string | null
+    createdAt?: Date | string
+    items?: PastryAuditItemCreateNestedManyWithoutAuditInput
+  }
+
+  export type PastryAuditUncheckedCreateWithoutOutletInput = {
+    id?: string
+    auditorName?: string
+    notes?: string | null
+    createdAt?: Date | string
+    items?: PastryAuditItemUncheckedCreateNestedManyWithoutAuditInput
+  }
+
+  export type PastryAuditCreateOrConnectWithoutOutletInput = {
+    where: PastryAuditWhereUniqueInput
+    create: XOR<PastryAuditCreateWithoutOutletInput, PastryAuditUncheckedCreateWithoutOutletInput>
+  }
+
+  export type PastryAuditCreateManyOutletInputEnvelope = {
+    data: PastryAuditCreateManyOutletInput | PastryAuditCreateManyOutletInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithWhereUniqueWithoutOutletInput = {
     where: UserWhereUniqueInput
     update: XOR<UserUpdateWithoutOutletInput, UserUncheckedUpdateWithoutOutletInput>
@@ -30698,6 +35689,7 @@ export namespace Prisma {
     image?: StringNullableFilter<"MenuItem"> | string | null
     itemType?: StringFilter<"MenuItem"> | string
     unitType?: StringFilter<"MenuItem"> | string
+    openingStock?: FloatFilter<"MenuItem"> | number
     stockQty?: IntFilter<"MenuItem"> | number
     minStockAlert?: IntFilter<"MenuItem"> | number
     isAvailable?: BoolFilter<"MenuItem"> | boolean
@@ -30958,6 +35950,33 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"InventoryAudit"> | Date | string
   }
 
+  export type PastryAuditUpsertWithWhereUniqueWithoutOutletInput = {
+    where: PastryAuditWhereUniqueInput
+    update: XOR<PastryAuditUpdateWithoutOutletInput, PastryAuditUncheckedUpdateWithoutOutletInput>
+    create: XOR<PastryAuditCreateWithoutOutletInput, PastryAuditUncheckedCreateWithoutOutletInput>
+  }
+
+  export type PastryAuditUpdateWithWhereUniqueWithoutOutletInput = {
+    where: PastryAuditWhereUniqueInput
+    data: XOR<PastryAuditUpdateWithoutOutletInput, PastryAuditUncheckedUpdateWithoutOutletInput>
+  }
+
+  export type PastryAuditUpdateManyWithWhereWithoutOutletInput = {
+    where: PastryAuditScalarWhereInput
+    data: XOR<PastryAuditUpdateManyMutationInput, PastryAuditUncheckedUpdateManyWithoutOutletInput>
+  }
+
+  export type PastryAuditScalarWhereInput = {
+    AND?: PastryAuditScalarWhereInput | PastryAuditScalarWhereInput[]
+    OR?: PastryAuditScalarWhereInput[]
+    NOT?: PastryAuditScalarWhereInput | PastryAuditScalarWhereInput[]
+    id?: StringFilter<"PastryAudit"> | string
+    outletId?: StringFilter<"PastryAudit"> | string
+    auditorName?: StringFilter<"PastryAudit"> | string
+    notes?: StringNullableFilter<"PastryAudit"> | string | null
+    createdAt?: DateTimeFilter<"PastryAudit"> | Date | string
+  }
+
   export type OutletCreateWithoutUsersInput = {
     id?: string
     name: string
@@ -30978,6 +35997,7 @@ export namespace Prisma {
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutUsersInput = {
@@ -31000,6 +36020,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutUsersInput = {
@@ -31038,6 +36059,7 @@ export namespace Prisma {
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutUsersInput = {
@@ -31060,6 +36082,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateWithoutTablesInput = {
@@ -31082,6 +36105,7 @@ export namespace Prisma {
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutTablesInput = {
@@ -31104,6 +36128,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutTablesInput = {
@@ -31216,6 +36241,7 @@ export namespace Prisma {
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutTablesInput = {
@@ -31238,6 +36264,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OrderUpsertWithWhereUniqueWithoutTableInput = {
@@ -31276,6 +36303,7 @@ export namespace Prisma {
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutMenuItemsInput = {
@@ -31298,6 +36326,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutMenuItemsInput = {
@@ -31326,6 +36355,44 @@ export namespace Prisma {
 
   export type RecipeItemCreateManyMenuItemInputEnvelope = {
     data: RecipeItemCreateManyMenuItemInput | RecipeItemCreateManyMenuItemInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ProductMovementCreateWithoutMenuItemInput = {
+    id?: string
+    type: string
+    quantity: number
+    unitCost?: number | null
+    totalCost?: number | null
+    supplierName?: string | null
+    invoiceNumber?: string | null
+    orderNumber?: string | null
+    recordedBy?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ProductMovementUncheckedCreateWithoutMenuItemInput = {
+    id?: string
+    type: string
+    quantity: number
+    unitCost?: number | null
+    totalCost?: number | null
+    supplierName?: string | null
+    invoiceNumber?: string | null
+    orderNumber?: string | null
+    recordedBy?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ProductMovementCreateOrConnectWithoutMenuItemInput = {
+    where: ProductMovementWhereUniqueInput
+    create: XOR<ProductMovementCreateWithoutMenuItemInput, ProductMovementUncheckedCreateWithoutMenuItemInput>
+  }
+
+  export type ProductMovementCreateManyMenuItemInputEnvelope = {
+    data: ProductMovementCreateManyMenuItemInput | ProductMovementCreateManyMenuItemInput[]
     skipDuplicates?: boolean
   }
 
@@ -31360,6 +36427,7 @@ export namespace Prisma {
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutMenuItemsInput = {
@@ -31382,6 +36450,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type RecipeItemUpsertWithWhereUniqueWithoutMenuItemInput = {
@@ -31411,6 +36480,392 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"RecipeItem"> | Date | string
   }
 
+  export type ProductMovementUpsertWithWhereUniqueWithoutMenuItemInput = {
+    where: ProductMovementWhereUniqueInput
+    update: XOR<ProductMovementUpdateWithoutMenuItemInput, ProductMovementUncheckedUpdateWithoutMenuItemInput>
+    create: XOR<ProductMovementCreateWithoutMenuItemInput, ProductMovementUncheckedCreateWithoutMenuItemInput>
+  }
+
+  export type ProductMovementUpdateWithWhereUniqueWithoutMenuItemInput = {
+    where: ProductMovementWhereUniqueInput
+    data: XOR<ProductMovementUpdateWithoutMenuItemInput, ProductMovementUncheckedUpdateWithoutMenuItemInput>
+  }
+
+  export type ProductMovementUpdateManyWithWhereWithoutMenuItemInput = {
+    where: ProductMovementScalarWhereInput
+    data: XOR<ProductMovementUpdateManyMutationInput, ProductMovementUncheckedUpdateManyWithoutMenuItemInput>
+  }
+
+  export type ProductMovementScalarWhereInput = {
+    AND?: ProductMovementScalarWhereInput | ProductMovementScalarWhereInput[]
+    OR?: ProductMovementScalarWhereInput[]
+    NOT?: ProductMovementScalarWhereInput | ProductMovementScalarWhereInput[]
+    id?: StringFilter<"ProductMovement"> | string
+    menuItemId?: StringFilter<"ProductMovement"> | string
+    type?: StringFilter<"ProductMovement"> | string
+    quantity?: FloatFilter<"ProductMovement"> | number
+    unitCost?: FloatNullableFilter<"ProductMovement"> | number | null
+    totalCost?: FloatNullableFilter<"ProductMovement"> | number | null
+    supplierName?: StringNullableFilter<"ProductMovement"> | string | null
+    invoiceNumber?: StringNullableFilter<"ProductMovement"> | string | null
+    orderNumber?: StringNullableFilter<"ProductMovement"> | string | null
+    recordedBy?: StringNullableFilter<"ProductMovement"> | string | null
+    notes?: StringNullableFilter<"ProductMovement"> | string | null
+    createdAt?: DateTimeFilter<"ProductMovement"> | Date | string
+  }
+
+  export type MenuItemCreateWithoutMovementsInput = {
+    id?: string
+    nameAr: string
+    nameEn?: string | null
+    category: string
+    price: number
+    costPrice?: number
+    durationMinutes?: number
+    description?: string | null
+    image?: string | null
+    itemType?: string
+    unitType?: string
+    openingStock?: number
+    stockQty?: number
+    minStockAlert?: number
+    isAvailable?: boolean
+    sortOrder?: number
+    loyaltyPointsEarned?: number
+    loyaltyPointsRequired?: number
+    createdAt?: Date | string
+    outlet: OutletCreateNestedOneWithoutMenuItemsInput
+    recipes?: RecipeItemCreateNestedManyWithoutMenuItemInput
+  }
+
+  export type MenuItemUncheckedCreateWithoutMovementsInput = {
+    id?: string
+    outletId: string
+    nameAr: string
+    nameEn?: string | null
+    category: string
+    price: number
+    costPrice?: number
+    durationMinutes?: number
+    description?: string | null
+    image?: string | null
+    itemType?: string
+    unitType?: string
+    openingStock?: number
+    stockQty?: number
+    minStockAlert?: number
+    isAvailable?: boolean
+    sortOrder?: number
+    loyaltyPointsEarned?: number
+    loyaltyPointsRequired?: number
+    createdAt?: Date | string
+    recipes?: RecipeItemUncheckedCreateNestedManyWithoutMenuItemInput
+  }
+
+  export type MenuItemCreateOrConnectWithoutMovementsInput = {
+    where: MenuItemWhereUniqueInput
+    create: XOR<MenuItemCreateWithoutMovementsInput, MenuItemUncheckedCreateWithoutMovementsInput>
+  }
+
+  export type MenuItemUpsertWithoutMovementsInput = {
+    update: XOR<MenuItemUpdateWithoutMovementsInput, MenuItemUncheckedUpdateWithoutMovementsInput>
+    create: XOR<MenuItemCreateWithoutMovementsInput, MenuItemUncheckedCreateWithoutMovementsInput>
+    where?: MenuItemWhereInput
+  }
+
+  export type MenuItemUpdateToOneWithWhereWithoutMovementsInput = {
+    where?: MenuItemWhereInput
+    data: XOR<MenuItemUpdateWithoutMovementsInput, MenuItemUncheckedUpdateWithoutMovementsInput>
+  }
+
+  export type MenuItemUpdateWithoutMovementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nameAr?: StringFieldUpdateOperationsInput | string
+    nameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    price?: FloatFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    itemType?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
+    stockQty?: IntFieldUpdateOperationsInput | number
+    minStockAlert?: IntFieldUpdateOperationsInput | number
+    isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    loyaltyPointsEarned?: IntFieldUpdateOperationsInput | number
+    loyaltyPointsRequired?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outlet?: OutletUpdateOneRequiredWithoutMenuItemsNestedInput
+    recipes?: RecipeItemUpdateManyWithoutMenuItemNestedInput
+  }
+
+  export type MenuItemUncheckedUpdateWithoutMovementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    nameAr?: StringFieldUpdateOperationsInput | string
+    nameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    price?: FloatFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    itemType?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
+    stockQty?: IntFieldUpdateOperationsInput | number
+    minStockAlert?: IntFieldUpdateOperationsInput | number
+    isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    loyaltyPointsEarned?: IntFieldUpdateOperationsInput | number
+    loyaltyPointsRequired?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    recipes?: RecipeItemUncheckedUpdateManyWithoutMenuItemNestedInput
+  }
+
+  export type OutletCreateWithoutPastryAuditsInput = {
+    id?: string
+    name: string
+    code: string
+    type?: string
+    address: string
+    phone: string
+    whatsapp?: string | null
+    logoUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    users?: UserCreateNestedManyWithoutOutletInput
+    tables?: DiningTableCreateNestedManyWithoutOutletInput
+    menuItems?: MenuItemCreateNestedManyWithoutOutletInput
+    rawMaterials?: RawMaterialCreateNestedManyWithoutOutletInput
+    orders?: OrderCreateNestedManyWithoutOutletInput
+    shifts?: ShiftCreateNestedManyWithoutOutletInput
+    expenses?: ExpenseCreateNestedManyWithoutOutletInput
+    reservations?: ReservationCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
+  }
+
+  export type OutletUncheckedCreateWithoutPastryAuditsInput = {
+    id?: string
+    name: string
+    code: string
+    type?: string
+    address: string
+    phone: string
+    whatsapp?: string | null
+    logoUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutOutletInput
+    tables?: DiningTableUncheckedCreateNestedManyWithoutOutletInput
+    menuItems?: MenuItemUncheckedCreateNestedManyWithoutOutletInput
+    rawMaterials?: RawMaterialUncheckedCreateNestedManyWithoutOutletInput
+    orders?: OrderUncheckedCreateNestedManyWithoutOutletInput
+    shifts?: ShiftUncheckedCreateNestedManyWithoutOutletInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
+    reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
+  }
+
+  export type OutletCreateOrConnectWithoutPastryAuditsInput = {
+    where: OutletWhereUniqueInput
+    create: XOR<OutletCreateWithoutPastryAuditsInput, OutletUncheckedCreateWithoutPastryAuditsInput>
+  }
+
+  export type PastryAuditItemCreateWithoutAuditInput = {
+    id?: string
+    menuItemId: string
+    menuItemName: string
+    unitType: string
+    price?: number
+    costPrice?: number
+    openingStock?: number
+    totalInbound?: number
+    totalSold?: number
+    expectedStock?: number
+    actualStock?: number
+    variance?: number
+    varianceCost?: number
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type PastryAuditItemUncheckedCreateWithoutAuditInput = {
+    id?: string
+    menuItemId: string
+    menuItemName: string
+    unitType: string
+    price?: number
+    costPrice?: number
+    openingStock?: number
+    totalInbound?: number
+    totalSold?: number
+    expectedStock?: number
+    actualStock?: number
+    variance?: number
+    varianceCost?: number
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type PastryAuditItemCreateOrConnectWithoutAuditInput = {
+    where: PastryAuditItemWhereUniqueInput
+    create: XOR<PastryAuditItemCreateWithoutAuditInput, PastryAuditItemUncheckedCreateWithoutAuditInput>
+  }
+
+  export type PastryAuditItemCreateManyAuditInputEnvelope = {
+    data: PastryAuditItemCreateManyAuditInput | PastryAuditItemCreateManyAuditInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OutletUpsertWithoutPastryAuditsInput = {
+    update: XOR<OutletUpdateWithoutPastryAuditsInput, OutletUncheckedUpdateWithoutPastryAuditsInput>
+    create: XOR<OutletCreateWithoutPastryAuditsInput, OutletUncheckedCreateWithoutPastryAuditsInput>
+    where?: OutletWhereInput
+  }
+
+  export type OutletUpdateToOneWithWhereWithoutPastryAuditsInput = {
+    where?: OutletWhereInput
+    data: XOR<OutletUpdateWithoutPastryAuditsInput, OutletUncheckedUpdateWithoutPastryAuditsInput>
+  }
+
+  export type OutletUpdateWithoutPastryAuditsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutOutletNestedInput
+    tables?: DiningTableUpdateManyWithoutOutletNestedInput
+    menuItems?: MenuItemUpdateManyWithoutOutletNestedInput
+    rawMaterials?: RawMaterialUpdateManyWithoutOutletNestedInput
+    orders?: OrderUpdateManyWithoutOutletNestedInput
+    shifts?: ShiftUpdateManyWithoutOutletNestedInput
+    expenses?: ExpenseUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
+  }
+
+  export type OutletUncheckedUpdateWithoutPastryAuditsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutOutletNestedInput
+    tables?: DiningTableUncheckedUpdateManyWithoutOutletNestedInput
+    menuItems?: MenuItemUncheckedUpdateManyWithoutOutletNestedInput
+    rawMaterials?: RawMaterialUncheckedUpdateManyWithoutOutletNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutOutletNestedInput
+    shifts?: ShiftUncheckedUpdateManyWithoutOutletNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
+  }
+
+  export type PastryAuditItemUpsertWithWhereUniqueWithoutAuditInput = {
+    where: PastryAuditItemWhereUniqueInput
+    update: XOR<PastryAuditItemUpdateWithoutAuditInput, PastryAuditItemUncheckedUpdateWithoutAuditInput>
+    create: XOR<PastryAuditItemCreateWithoutAuditInput, PastryAuditItemUncheckedCreateWithoutAuditInput>
+  }
+
+  export type PastryAuditItemUpdateWithWhereUniqueWithoutAuditInput = {
+    where: PastryAuditItemWhereUniqueInput
+    data: XOR<PastryAuditItemUpdateWithoutAuditInput, PastryAuditItemUncheckedUpdateWithoutAuditInput>
+  }
+
+  export type PastryAuditItemUpdateManyWithWhereWithoutAuditInput = {
+    where: PastryAuditItemScalarWhereInput
+    data: XOR<PastryAuditItemUpdateManyMutationInput, PastryAuditItemUncheckedUpdateManyWithoutAuditInput>
+  }
+
+  export type PastryAuditItemScalarWhereInput = {
+    AND?: PastryAuditItemScalarWhereInput | PastryAuditItemScalarWhereInput[]
+    OR?: PastryAuditItemScalarWhereInput[]
+    NOT?: PastryAuditItemScalarWhereInput | PastryAuditItemScalarWhereInput[]
+    id?: StringFilter<"PastryAuditItem"> | string
+    auditId?: StringFilter<"PastryAuditItem"> | string
+    menuItemId?: StringFilter<"PastryAuditItem"> | string
+    menuItemName?: StringFilter<"PastryAuditItem"> | string
+    unitType?: StringFilter<"PastryAuditItem"> | string
+    price?: FloatFilter<"PastryAuditItem"> | number
+    costPrice?: FloatFilter<"PastryAuditItem"> | number
+    openingStock?: FloatFilter<"PastryAuditItem"> | number
+    totalInbound?: FloatFilter<"PastryAuditItem"> | number
+    totalSold?: FloatFilter<"PastryAuditItem"> | number
+    expectedStock?: FloatFilter<"PastryAuditItem"> | number
+    actualStock?: FloatFilter<"PastryAuditItem"> | number
+    variance?: FloatFilter<"PastryAuditItem"> | number
+    varianceCost?: FloatFilter<"PastryAuditItem"> | number
+    status?: StringFilter<"PastryAuditItem"> | string
+    createdAt?: DateTimeFilter<"PastryAuditItem"> | Date | string
+  }
+
+  export type PastryAuditCreateWithoutItemsInput = {
+    id?: string
+    auditorName?: string
+    notes?: string | null
+    createdAt?: Date | string
+    outlet: OutletCreateNestedOneWithoutPastryAuditsInput
+  }
+
+  export type PastryAuditUncheckedCreateWithoutItemsInput = {
+    id?: string
+    outletId: string
+    auditorName?: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PastryAuditCreateOrConnectWithoutItemsInput = {
+    where: PastryAuditWhereUniqueInput
+    create: XOR<PastryAuditCreateWithoutItemsInput, PastryAuditUncheckedCreateWithoutItemsInput>
+  }
+
+  export type PastryAuditUpsertWithoutItemsInput = {
+    update: XOR<PastryAuditUpdateWithoutItemsInput, PastryAuditUncheckedUpdateWithoutItemsInput>
+    create: XOR<PastryAuditCreateWithoutItemsInput, PastryAuditUncheckedCreateWithoutItemsInput>
+    where?: PastryAuditWhereInput
+  }
+
+  export type PastryAuditUpdateToOneWithWhereWithoutItemsInput = {
+    where?: PastryAuditWhereInput
+    data: XOR<PastryAuditUpdateWithoutItemsInput, PastryAuditUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type PastryAuditUpdateWithoutItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    auditorName?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outlet?: OutletUpdateOneRequiredWithoutPastryAuditsNestedInput
+  }
+
+  export type PastryAuditUncheckedUpdateWithoutItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    auditorName?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type OutletCreateWithoutRawMaterialsInput = {
     id?: string
     name: string
@@ -31431,6 +36886,7 @@ export namespace Prisma {
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutRawMaterialsInput = {
@@ -31453,6 +36909,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutRawMaterialsInput = {
@@ -31553,6 +37010,7 @@ export namespace Prisma {
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutRawMaterialsInput = {
@@ -31575,6 +37033,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type RecipeItemUpsertWithWhereUniqueWithoutRawMaterialInput = {
@@ -31723,6 +37182,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutInventoryAuditsInput = {
@@ -31745,6 +37205,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutInventoryAuditsInput = {
@@ -31827,6 +37288,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutInventoryAuditsInput = {
@@ -31849,6 +37311,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type InventoryAuditItemUpsertWithWhereUniqueWithoutAuditInput = {
@@ -31948,6 +37411,7 @@ export namespace Prisma {
     image?: string | null
     itemType?: string
     unitType?: string
+    openingStock?: number
     stockQty?: number
     minStockAlert?: number
     isAvailable?: boolean
@@ -31956,6 +37420,7 @@ export namespace Prisma {
     loyaltyPointsRequired?: number
     createdAt?: Date | string
     outlet: OutletCreateNestedOneWithoutMenuItemsInput
+    movements?: ProductMovementCreateNestedManyWithoutMenuItemInput
   }
 
   export type MenuItemUncheckedCreateWithoutRecipesInput = {
@@ -31971,6 +37436,7 @@ export namespace Prisma {
     image?: string | null
     itemType?: string
     unitType?: string
+    openingStock?: number
     stockQty?: number
     minStockAlert?: number
     isAvailable?: boolean
@@ -31978,6 +37444,7 @@ export namespace Prisma {
     loyaltyPointsEarned?: number
     loyaltyPointsRequired?: number
     createdAt?: Date | string
+    movements?: ProductMovementUncheckedCreateNestedManyWithoutMenuItemInput
   }
 
   export type MenuItemCreateOrConnectWithoutRecipesInput = {
@@ -32043,6 +37510,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
     stockQty?: IntFieldUpdateOperationsInput | number
     minStockAlert?: IntFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
@@ -32051,6 +37519,7 @@ export namespace Prisma {
     loyaltyPointsRequired?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outlet?: OutletUpdateOneRequiredWithoutMenuItemsNestedInput
+    movements?: ProductMovementUpdateManyWithoutMenuItemNestedInput
   }
 
   export type MenuItemUncheckedUpdateWithoutRecipesInput = {
@@ -32066,6 +37535,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
     stockQty?: IntFieldUpdateOperationsInput | number
     minStockAlert?: IntFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
@@ -32073,6 +37543,7 @@ export namespace Prisma {
     loyaltyPointsEarned?: IntFieldUpdateOperationsInput | number
     loyaltyPointsRequired?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    movements?: ProductMovementUncheckedUpdateManyWithoutMenuItemNestedInput
   }
 
   export type RawMaterialUpsertWithoutRecipeUsageInput = {
@@ -32226,6 +37697,7 @@ export namespace Prisma {
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutOrdersInput = {
@@ -32248,6 +37720,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutOrdersInput = {
@@ -32384,6 +37857,7 @@ export namespace Prisma {
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutOrdersInput = {
@@ -32406,6 +37880,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type DiningTableUpsertWithoutOrdersInput = {
@@ -32683,6 +38158,7 @@ export namespace Prisma {
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutShiftsInput = {
@@ -32705,6 +38181,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutShiftsInput = {
@@ -32743,6 +38220,7 @@ export namespace Prisma {
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutShiftsInput = {
@@ -32765,6 +38243,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateWithoutExpensesInput = {
@@ -32787,6 +38266,7 @@ export namespace Prisma {
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutExpensesInput = {
@@ -32809,6 +38289,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutExpensesInput = {
@@ -32847,6 +38328,7 @@ export namespace Prisma {
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutExpensesInput = {
@@ -32869,6 +38351,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateWithoutReservationsInput = {
@@ -32891,6 +38374,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutReservationsInput = {
@@ -32913,6 +38397,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutReservationsInput = {
@@ -32951,6 +38436,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutReservationsInput = {
@@ -32973,6 +38459,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateWithoutChatMessagesInput = {
@@ -32995,6 +38482,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutChatMessagesInput = {
@@ -33017,6 +38505,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutChatMessagesInput = {
@@ -33055,6 +38544,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutChatMessagesInput = {
@@ -33077,6 +38567,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type UserCreateManyOutletInput = {
@@ -33115,6 +38606,7 @@ export namespace Prisma {
     image?: string | null
     itemType?: string
     unitType?: string
+    openingStock?: number
     stockQty?: number
     minStockAlert?: number
     isAvailable?: boolean
@@ -33235,6 +38727,13 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type PastryAuditCreateManyOutletInput = {
+    id?: string
+    auditorName?: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
   export type UserUpdateWithoutOutletInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -33321,6 +38820,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
     stockQty?: IntFieldUpdateOperationsInput | number
     minStockAlert?: IntFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
@@ -33329,6 +38829,7 @@ export namespace Prisma {
     loyaltyPointsRequired?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recipes?: RecipeItemUpdateManyWithoutMenuItemNestedInput
+    movements?: ProductMovementUpdateManyWithoutMenuItemNestedInput
   }
 
   export type MenuItemUncheckedUpdateWithoutOutletInput = {
@@ -33343,6 +38844,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
     stockQty?: IntFieldUpdateOperationsInput | number
     minStockAlert?: IntFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
@@ -33351,6 +38853,7 @@ export namespace Prisma {
     loyaltyPointsRequired?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recipes?: RecipeItemUncheckedUpdateManyWithoutMenuItemNestedInput
+    movements?: ProductMovementUncheckedUpdateManyWithoutMenuItemNestedInput
   }
 
   export type MenuItemUncheckedUpdateManyWithoutOutletInput = {
@@ -33365,6 +38868,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
     stockQty?: IntFieldUpdateOperationsInput | number
     minStockAlert?: IntFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
@@ -33715,6 +39219,29 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PastryAuditUpdateWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    auditorName?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: PastryAuditItemUpdateManyWithoutAuditNestedInput
+  }
+
+  export type PastryAuditUncheckedUpdateWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    auditorName?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: PastryAuditItemUncheckedUpdateManyWithoutAuditNestedInput
+  }
+
+  export type PastryAuditUncheckedUpdateManyWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    auditorName?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type OrderCreateManyTableInput = {
     id?: string
     outletId: string
@@ -33848,6 +39375,20 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type ProductMovementCreateManyMenuItemInput = {
+    id?: string
+    type: string
+    quantity: number
+    unitCost?: number | null
+    totalCost?: number | null
+    supplierName?: string | null
+    invoiceNumber?: string | null
+    orderNumber?: string | null
+    recordedBy?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
   export type RecipeItemUpdateWithoutMenuItemInput = {
     id?: StringFieldUpdateOperationsInput | string
     qtyRequired?: FloatFieldUpdateOperationsInput | number
@@ -33866,6 +39407,120 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     rawMaterialId?: StringFieldUpdateOperationsInput | string
     qtyRequired?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductMovementUpdateWithoutMenuItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    unitCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierName?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductMovementUncheckedUpdateWithoutMenuItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    unitCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierName?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductMovementUncheckedUpdateManyWithoutMenuItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    unitCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierName?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PastryAuditItemCreateManyAuditInput = {
+    id?: string
+    menuItemId: string
+    menuItemName: string
+    unitType: string
+    price?: number
+    costPrice?: number
+    openingStock?: number
+    totalInbound?: number
+    totalSold?: number
+    expectedStock?: number
+    actualStock?: number
+    variance?: number
+    varianceCost?: number
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type PastryAuditItemUpdateWithoutAuditInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    menuItemId?: StringFieldUpdateOperationsInput | string
+    menuItemName?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    price?: FloatFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    openingStock?: FloatFieldUpdateOperationsInput | number
+    totalInbound?: FloatFieldUpdateOperationsInput | number
+    totalSold?: FloatFieldUpdateOperationsInput | number
+    expectedStock?: FloatFieldUpdateOperationsInput | number
+    actualStock?: FloatFieldUpdateOperationsInput | number
+    variance?: FloatFieldUpdateOperationsInput | number
+    varianceCost?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PastryAuditItemUncheckedUpdateWithoutAuditInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    menuItemId?: StringFieldUpdateOperationsInput | string
+    menuItemName?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    price?: FloatFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    openingStock?: FloatFieldUpdateOperationsInput | number
+    totalInbound?: FloatFieldUpdateOperationsInput | number
+    totalSold?: FloatFieldUpdateOperationsInput | number
+    expectedStock?: FloatFieldUpdateOperationsInput | number
+    actualStock?: FloatFieldUpdateOperationsInput | number
+    variance?: FloatFieldUpdateOperationsInput | number
+    varianceCost?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PastryAuditItemUncheckedUpdateManyWithoutAuditInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    menuItemId?: StringFieldUpdateOperationsInput | string
+    menuItemName?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    price?: FloatFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    openingStock?: FloatFieldUpdateOperationsInput | number
+    totalInbound?: FloatFieldUpdateOperationsInput | number
+    totalSold?: FloatFieldUpdateOperationsInput | number
+    expectedStock?: FloatFieldUpdateOperationsInput | number
+    actualStock?: FloatFieldUpdateOperationsInput | number
+    variance?: FloatFieldUpdateOperationsInput | number
+    varianceCost?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
