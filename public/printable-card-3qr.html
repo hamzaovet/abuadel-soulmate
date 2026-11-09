@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>كارت الـ 3 QR كود المعتمد - سول ميت كافيه VIP & حلواني أبو عادل</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #060608;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .no-print-bar {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .print-btn {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #000;
+      border: none;
+      padding: 12px 28px;
+      font-size: 15px;
+      font-weight: 800;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+      font-family: 'Cairo', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .print-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+    }
+
+    .card-container {
+      background: radial-gradient(circle at center, #1c1307 0%, #0c0803 100%);
+      border: 3px solid #d97706;
+      border-radius: 28px;
+      width: 100%;
+      max-width: 900px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(217, 119, 6, 0.15);
+      position: relative;
+    }
+
+    .corner-dec {
+      position: absolute;
+      color: rgba(245, 158, 11, 0.4);
+      font-size: 24px;
+    }
+    .top-right { top: 15px; right: 15px; }
+    .top-left { top: 15px; left: 15px; }
+    .bottom-right { bottom: 15px; right: 15px; }
+    .bottom-left { bottom: 15px; left: 15px; }
+
+    .brand-logos {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .logo-box {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 900;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+    }
+
+    .soulmate-logo {
+      background: linear-gradient(135deg, #f59e0b, #b45309);
+      color: #000;
+      border: 2px solid #fbbf24;
+    }
+
+    .abuadel-logo {
+      background: linear-gradient(135deg, #059669, #047857);
+      color: #fff;
+      border: 2px solid #34d399;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 900;
+      color: #fbbf24;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #e2e8f0;
+      font-weight: 600;
+      margin-bottom: 30px;
+    }
+
+    .qr-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .qr-card {
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 20px;
+      padding: 20px 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    .qr-card.table-card { border-color: rgba(245, 158, 11, 0.5); }
+    .qr-card.web-card { border-color: rgba(16, 185, 129, 0.5); }
+    .qr-card.app-card { border-color: rgba(168, 85, 247, 0.5); }
+
+    .qr-title {
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .table-card .qr-title { color: #fbbf24; }
+    .web-card .qr-title { color: #34d399; }
+    .app-card .qr-title { color: #c084fc; }
+
+    .qr-desc {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-bottom: 12px;
+      min-height: 28px;
+    }
+
+    .qr-canvas-box {
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 14px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .qr-canvas-box canvas {
+      display: block;
+      width: 140px !important;
+      height: 140px !important;
+    }
+
+    .qr-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: #cbd5e1;
+    }
+
+    .footer-bar {
+      border-top: 1px solid rgba(245, 158, 11, 0.25);
+      padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .hotlines {
+      display: flex;
+      gap: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #f1f5f9;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .hotlines strong {
+      color: #fbbf24;
+      font-family: monospace;
+      font-size: 15px;
+    }
+
+    .developer-signature {
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    .developer-signature strong {
+      color: #fbbf24;
+    }
+
+    @media print {
+      body {
+        background: none;
+        padding: 0;
+      }
+      .no-print-bar {
+        display: none !important;
+      }
+      .card-container {
+        border: 2px solid #000;
+        box-shadow: none;
+        max-width: 100%;
+        page-break-inside: avoid;
+        color: #000 !important;
+        background: #fff !important;
+      }
+      h1, .table-card .qr-title, .web-card .qr-title, .app-card .qr-title {
+        color: #000 !important;
+      }
+      .subtitle, .qr-desc, .qr-tag, .developer-signature {
+        color: #333 !important;
+      }
+      .qr-card {
+        background: #f8fafc !important;
+        border: 1px solid #000 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="no-print-bar">
+    <button class="print-btn" onclick="window.print()">🖨️ طباعة الكارت المعتمد الآن</button>
+  </div>
+
+  <div class="card-container">
+    <div class="corner-dec top-right">✤</div>
+    <div class="corner-dec top-left">✤</div>
+    <div class="corner-dec bottom-right">✤</div>
+    <div class="corner-dec bottom-left">✤</div>
+
+    <div class="brand-logos">
+      <div class="logo-box soulmate-logo">S</div>
+      <div class="logo-box abuadel-logo">ع</div>
+    </div>
+
+    <h1>سول ميت كافيه VIP & حلواني أبو عادل المستقل</h1>
+    <p class="subtitle">تجربة القهوة المختصة والضيافة الراقية • أشهى وأعرق الحلويات الشرقية والتورت بالسمن البلدي</p>
+
+    <div class="qr-grid">
+      <!-- QR 1 -->
+      <div class="qr-card table-card">
+        <div class="qr-title">1. طلب الصالة والترابيزة ☕</div>
+        <div class="qr-desc">امسح واطلب مباشرة من ترابيزتك بدون انتظار</div>
+        <div class="qr-canvas-box">
+          <canvas id="qr-table"></canvas>
+        </div>
+        <div class="qr-tag">منيو الصالة الذكي 📱</div>
+      </div>
+
+      <!-- QR 2 -->
+      <div class="qr-card web-card">
+        <div class="qr-title">2. البوابة الرقمية والدليفري 🛵</div>
+        <div class="qr-desc">منيو حلواني أبو عادل وطلب التوصيل للمنزل</div>
+        <div class="qr-canvas-box">
+          <canvas id="qr-web"></canvas>
+        </div>
+        <div class="qr-tag">المتجر الإلكتروني والدليفري</div>
+      </div>
+
+      <!-- QR 3 -->
+      <div class="qr-card app-card">
+        <div class="qr-title">3. تطبيق الموبايل PWA ⭐</div>
+        <div class="qr-desc">تثبيت التطبيق على موبايلك ونقاط الولاء</div>
+        <div class="qr-canvas-box">
+          <canvas id="qr-app"></canvas>
+        </div>
+        <div class="qr-tag">تطبيق الأندرويد والآيفون</div>
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <div class="hotlines">
+        <div>📞 الخط الساخن الموحد لأبو عادل: <strong>15992</strong></div>
+        <div>☕ هاتف كافيه سول ميت VIP: <strong>01099887766</strong></div>
+      </div>
+
+      <div class="developer-signature">
+        تصميم وتطوير المنظومة الذكية: <strong style="color: #fff;">م / حمزة عباس</strong> — شركة <strong>أوركا للحلول البرمجية والذكاء الاصطناعي (Orca Tech) 🐬</strong> • خدمة الدعم الفني: <strong>01018671000</strong>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const origin = window.location.origin;
+    
+    // 1. Table Order QR
+    QRCode.toCanvas(document.getElementById('qr-table'), origin + '/order', {
+      width: 140,
+      margin: 1,
+      color: { dark: '#1c0d02', light: '#ffffff' }
+    });
+
+    // 2. Web Portal QR
+    QRCode.toCanvas(document.getElementById('qr-web'), origin, {
+      width: 140,
+      margin: 1,
+      color: { dark: '#064e3b', light: '#ffffff' }
+    });
+
+    // 3. Mobile App QR
+    QRCode.toCanvas(document.getElementById('qr-app'), origin + '/manifest.json', {
+      width: 140,
+      margin: 1,
+      color: { dark: '#3b0764', light: '#ffffff' }
+    });
+  </script>
+</body>
+</html>

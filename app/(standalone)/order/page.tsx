@@ -686,16 +686,33 @@ function TableOrderContent() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {filteredItems.map((item) => {
             const inCart = cart.find((i) => i.menuItemId === item.id);
+            const fallbackImage =
+              item.itemType === "READY_PASTRY"
+                ? "https://images.unsplash.com/photo-1579372786545-d24232daf58c?w=600"
+                : "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=600";
             return (
               <div
                 key={item.id}
-                className="p-3 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 transition flex items-center justify-between gap-3 shadow"
+                className="p-3 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 transition flex items-center justify-between gap-3 shadow group"
               >
-                <div className="flex-1">
+                {/* Product Thumbnail Image */}
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-slate-950 border border-slate-800 flex-shrink-0 relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={item.image || fallbackImage}
+                    alt={item.nameAr}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    onError={(e) => {
+                      (e.target as any).src = fallbackImage;
+                    }}
+                  />
+                </div>
+
+                <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-bold text-white text-sm">{item.nameAr}</h4>
+                    <h4 className="font-bold text-white text-sm truncate">{item.nameAr}</h4>
                     {item.loyaltyPointsEarned > 0 && settings?.isLoyaltyEnabled && (
-                      <span className="text-[9px] px-1.5 py-0.2 rounded-full font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                      <span className="text-[9px] px-1.5 py-0.2 rounded-full font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 whitespace-nowrap">
                         +{item.loyaltyPointsEarned}★
                       </span>
                     )}
@@ -714,12 +731,12 @@ function TableOrderContent() {
                 </div>
 
                 {/* Add / Qty Controls */}
-                <div>
+                <div className="flex-shrink-0">
                   {inCart ? (
                     <div className="flex items-center gap-2 bg-slate-950 p-1.5 rounded-xl border border-amber-500/30">
                       <button
                         onClick={() => updateCartQty(item.id, -1)}
-                        className="w-7 h-7 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-rose-900/50 transition"
+                        className="w-7 h-7 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-rose-900/50 transition cursor-pointer"
                       >
                         <Minus className="w-3.5 h-3.5" />
                       </button>
@@ -728,7 +745,7 @@ function TableOrderContent() {
                       </span>
                       <button
                         onClick={() => updateCartQty(item.id, 1)}
-                        className="w-7 h-7 rounded-lg bg-amber-500 text-black flex items-center justify-center font-bold hover:bg-amber-400 transition"
+                        className="w-7 h-7 rounded-lg bg-amber-500 text-black flex items-center justify-center font-bold hover:bg-amber-400 transition cursor-pointer"
                       >
                         <Plus className="w-3.5 h-3.5" />
                       </button>
@@ -736,7 +753,7 @@ function TableOrderContent() {
                   ) : (
                     <button
                       onClick={() => addToCart(item)}
-                      className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow ${
+                      className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow cursor-pointer ${
                         activeBrandTab === "SOULMATE"
                           ? "bg-amber-500 hover:bg-amber-400 text-black font-black"
                           : "bg-emerald-600 hover:bg-emerald-500 text-white font-black"
@@ -751,6 +768,18 @@ function TableOrderContent() {
             );
           })}
         </div>
+
+        {/* Orca Tech Developer Signature */}
+        <footer className="mt-12 mb-20 text-center border-t border-slate-800/80 pt-6 pb-2">
+          <p className="text-[11px] text-slate-400 font-medium">
+            تصميم وتطوير المنظومة الذكية:{" "}
+            <strong className="text-white font-bold">م / حمزة عباس</strong> — شركة{" "}
+            <strong className="text-amber-400 font-black">أوركا للحلول البرمجية والذكاء الاصطناعي (Orca Tech) 🐬</strong>
+          </p>
+          <p className="text-[10px] text-slate-500 font-mono mt-1">
+            خدمة الدعم الفني المباشر وتطوير الأنظمة: 01018671000
+          </p>
+        </footer>
       </main>
 
       {/* 3. STICKY BOTTOM ORDER BAR */}

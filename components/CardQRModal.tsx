@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import QRCode from "qrcode";
-import { QrCode, X, Printer, Sparkles, Smartphone, Globe, Coffee, Cake } from "lucide-react";
+import { QrCode, X, Printer, Sparkles, Smartphone, Globe, Coffee, Cake, Download } from "lucide-react";
 
 interface CardQRModalProps {
   isOpen: boolean;
@@ -22,7 +22,8 @@ export default function CardQRModal({
   abuAdelPhone = "15992",
 }: CardQRModalProps) {
   const [originUrl, setOriginUrl] = useState("");
-  const [menuQrDataUrl, setMenuQrDataUrl] = useState("");
+  const [tableQrDataUrl, setTableQrDataUrl] = useState("");
+  const [webQrDataUrl, setWebQrDataUrl] = useState("");
   const [appQrDataUrl, setAppQrDataUrl] = useState("");
 
   useEffect(() => {
@@ -31,173 +32,252 @@ export default function CardQRModal({
       setOriginUrl(origin);
 
       // QR 1: Online Digital Menu & Table Ordering
-      const menuUrl = activeTable ? `${origin}/order?table=${encodeURIComponent(activeTable)}` : `${origin}/order`;
-      QRCode.toDataURL(menuUrl, {
-        width: 320,
+      const tableUrl = activeTable
+        ? `${origin}/order?table=${encodeURIComponent(activeTable)}`
+        : `${origin}/order`;
+      QRCode.toDataURL(tableUrl, {
+        width: 350,
         margin: 1,
         color: {
           dark: "#1c0d02",
           light: "#ffffff",
         },
       })
-        .then(setMenuQrDataUrl)
+        .then(setTableQrDataUrl)
         .catch(console.error);
 
-      // QR 2: Direct App / Digital Loyalty
-      const appUrl = `${origin}`;
-      QRCode.toDataURL(appUrl, {
-        width: 320,
+      // QR 2: Web Portal & Online Delivery Store
+      const webUrl = `${origin}`;
+      QRCode.toDataURL(webUrl, {
+        width: 350,
         margin: 1,
         color: {
-          dark: "#2a0815",
+          dark: "#064e3b",
+          light: "#ffffff",
+        },
+      })
+        .then(setWebQrDataUrl)
+        .catch(console.error);
+
+      // QR 3: Direct Mobile App / PWA Install
+      const appUrl = `${origin}/manifest.json`;
+      QRCode.toDataURL(appUrl, {
+        width: 350,
+        margin: 1,
+        color: {
+          dark: "#3b0764",
           light: "#ffffff",
         },
       })
         .then(setAppQrDataUrl)
         .catch(console.error);
     }
-  }, []);
+  }, [activeTable]);
 
   if (!isOpen) return null;
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in font-sans"
-      dir="rtl"
-    >
-      <div className="relative w-full max-w-2xl bg-[#0e0a0d] border-2 border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 text-white max-h-[92vh] overflow-y-auto">
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-5 left-5 p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition cursor-pointer"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        {/* PRINTABLE CARD CONTAINER */}
-        <div
-          id="printable-2qr-card"
-          className="bg-gradient-to-b from-[#1a0f14] via-[#12080e] to-[#0a0508] border-2 border-amber-400/50 rounded-3xl p-6 sm:p-8 space-y-6 text-center shadow-xl relative overflow-hidden"
-        >
-          {/* Subtle Glow Accents */}
-          <div className="absolute w-72 h-72 bg-amber-500/10 blur-[100px] rounded-full pointer-events-none -top-10 -right-10" />
-          <div className="absolute w-72 h-72 bg-rose-500/10 blur-[100px] rounded-full pointer-events-none -bottom-10 -left-10" />
-
-          {/* DUAL LOGOS & HEADER */}
-          <div className="flex items-center justify-center gap-4">
-            <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-amber-400 bg-black shadow-lg shadow-amber-500/20 p-1">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/soulmate-logo.svg" alt="Soulmate" className="w-full h-full object-contain" />
+    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+      {/* Modal Dialog Box */}
+      <div className="bg-[#0f0e13] border-2 border-amber-500/40 rounded-3xl w-full max-w-4xl p-6 shadow-2xl relative space-y-6">
+        {/* Modal Actions Header */}
+        <div className="flex items-center justify-between border-b border-white/10 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 text-black flex items-center justify-center font-black text-lg shadow-lg shadow-amber-500/20">
+              3QR
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-black gold-gradient-text tracking-wide">
-                حلواني أبو عادل &amp; سول ميت كافيه
-              </h2>
-              <p className="text-xs text-amber-200/80 font-bold">
-                ABU ADEL PATISSERIE &amp; SOULMATE SPECIALTY CAFE
+              <h3 className="text-base font-black text-white flex items-center gap-2">
+                <span>كارت الكيو آر كود الثلاثي المعتمد (VIP 3-QR Card)</span>
+                <Sparkles className="w-4 h-4 text-amber-400" />
+              </h3>
+              <p className="text-xs text-slate-400">
+                جاهز للطباعة على الترابيزات والريسبشن والستاندات الخارجية
               </p>
-            </div>
-            <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-rose-400 bg-black shadow-lg shadow-rose-500/20 p-1">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/abuadel-logo.svg" alt="Abu Adel" className="w-full h-full object-contain" />
             </div>
           </div>
 
-          <div className="inline-flex items-center gap-2 py-1 px-4 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-black">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>كارت الضيافة الملكي والطلب بالـ 2 QR Code</span>
-          </div>
+          <div className="flex items-center gap-2">
+            <a
+              href="/printable-card-3qr.html"
+              target="_blank"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 transition"
+              title="فتح النسخة المحفوظة في فولدر المشروع"
+            >
+              <Download className="w-4 h-4 text-emerald-400" />
+              <span>نسخة الفولدر HTML</span>
+            </a>
 
-          {/* DUAL QR CODES GRID */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
-            {/* QR 1: Table Ordering & Digital Menu */}
-            <div className="p-5 rounded-2xl bg-[#1c1218]/90 border border-amber-500/30 space-y-3 flex flex-col items-center shadow-md">
-              <div className="flex items-center gap-1.5 text-amber-300 font-black text-sm">
-                <Coffee className="w-4 h-4" />
-                <span>الـ QR الأول: المنيو وطلب الترابيزة</span>
-              </div>
-              <p className="text-[11px] text-slate-300 leading-relaxed">
-                امسح الكود لفتح منيو المشروبات والحلويات والطلب الفوري
-              </p>
+            <button
+              onClick={handlePrint}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs shadow-lg transition"
+            >
+              <Printer className="w-4 h-4" />
+              <span>طباعة الكارت الآن</span>
+            </button>
 
-              <div className="p-3 bg-white rounded-2xl shadow-lg border-2 border-amber-400/80 w-44 h-44 flex items-center justify-center">
-                {menuQrDataUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={menuQrDataUrl} alt="Menu QR" className="w-full h-full object-contain" />
-                ) : (
-                  <div className="text-xs text-slate-500 flex items-center gap-1">
-                    <QrCode className="w-4 h-4 animate-spin" />
-                    <span>جارٍ التوليد...</span>
-                  </div>
-                )}
-              </div>
-
-              <span className="text-[10px] text-amber-300/80 font-mono font-bold">
-                طلب فوري من الترابيزة 📱💺
-              </span>
-            </div>
-
-            {/* QR 2: Official Web App & Delivery */}
-            <div className="p-5 rounded-2xl bg-[#1c1218]/90 border border-rose-500/30 space-y-3 flex flex-col items-center shadow-md">
-              <div className="flex items-center gap-1.5 text-rose-300 font-black text-sm">
-                <Cake className="w-4 h-4" />
-                <span>الـ QR الثاني: الموقع الرسمي والدليفري</span>
-              </div>
-              <p className="text-[11px] text-slate-300 leading-relaxed">
-                تصفح تورت وحلويات أبو عادل ونقاط الولاء والدليفري
-              </p>
-
-              <div className="p-3 bg-white rounded-2xl shadow-lg border-2 border-rose-400/80 w-44 h-44 flex items-center justify-center">
-                {appQrDataUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={appQrDataUrl} alt="App QR" className="w-full h-full object-contain" />
-                ) : (
-                  <div className="text-xs text-slate-500 flex items-center gap-1">
-                    <QrCode className="w-4 h-4 animate-spin" />
-                    <span>جارٍ التوليد...</span>
-                  </div>
-                )}
-              </div>
-
-              <span className="text-[10px] text-rose-300/80 font-mono font-bold">
-                حلي يومك مع أبو عادل 🍰✨
-              </span>
-            </div>
-          </div>
-
-          {/* CONTACT & HOTLINE FOOTER */}
-          <div className="pt-3 border-t border-amber-500/20 text-xs text-slate-300 space-y-1.5">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 font-bold text-center">
-              <span>📍 حلواني أبو عادل: ترعة الجبل، حدائق القبة</span>
-              <span className="hidden sm:inline">•</span>
-              <span>📍 سول ميت كافيه: كينج بارك، ترعة الجبل</span>
-            </div>
-            <p className="text-xs text-amber-400 font-mono font-black">
-              الخط الساخن لأبو عادل: {abuAdelPhone} • واتساب الكافيه: {soulmatePhone}
-            </p>
+            <button
+              onClick={onClose}
+              className="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white transition"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
         </div>
 
-        {/* MODAL ACTIONS */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-          <p className="text-xs text-slate-400 font-mono">
-            النطاق النشط: <span className="text-amber-400 font-bold">{originUrl || "abuadel-soulmate.vercel.app"}</span>
-          </p>
+        {/* PRINTABLE CARD AREA (3-QR CODES) */}
+        <div
+          id="printable-card-container"
+          className="print-section bg-gradient-to-b from-[#1a1209] via-[#0d0905] to-[#12080a] border-2 border-amber-500/50 rounded-3xl p-6 sm:p-8 text-center text-white relative shadow-2xl overflow-hidden font-sans"
+          dir="rtl"
+        >
+          {/* Decorative Corner Ornaments */}
+          <div className="absolute top-3 right-3 text-amber-400/40 text-xl font-serif">✤</div>
+          <div className="absolute top-3 left-3 text-amber-400/40 text-xl font-serif">✤</div>
+          <div className="absolute bottom-3 right-3 text-amber-400/40 text-xl font-serif">✤</div>
+          <div className="absolute bottom-3 left-3 text-amber-400/40 text-xl font-serif">✤</div>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => window.print()}
-              className="py-2.5 px-5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition flex items-center gap-2 shadow-lg shadow-amber-500/20 cursor-pointer"
-            >
-              <Printer className="w-4 h-4" />
-              <span>طباعة الكارت الملكي 🖨️</span>
-            </button>
-            <button
-              onClick={onClose}
-              className="py-2.5 px-4 rounded-2xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-bold transition cursor-pointer"
-            >
-              إغلاق
-            </button>
+          {/* Dual Brand Logos & Main Header */}
+          <div className="space-y-2 mb-6">
+            <div className="flex items-center justify-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500 text-black flex items-center justify-center font-black text-2xl shadow-xl shadow-amber-500/30 border-2 border-amber-300">
+                S
+              </div>
+              <div className="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-black text-2xl shadow-xl shadow-emerald-600/30 border-2 border-emerald-400">
+                ع
+              </div>
+            </div>
+
+            <h2 className="text-xl sm:text-2xl font-black text-amber-400 tracking-wide mt-2">
+              سول ميت كافيه VIP & حلواني أبو عادل المستقل
+            </h2>
+            <p className="text-xs text-amber-200/80 font-medium">
+              القهوة المختصة والضيافة الراقية • أشهى الحلويات الشرقية والتورت بالسمن البلدي
+            </p>
+          </div>
+
+          {/* 3 QR CODES GRID */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
+            {/* QR 1: Table Ordering */}
+            <div className="bg-black/80 border-2 border-amber-500/50 rounded-2xl p-4 shadow-xl flex flex-col items-center justify-between group">
+              <div className="w-full text-center pb-2 border-b border-amber-500/20">
+                <div className="flex items-center justify-center gap-1.5 text-xs font-black text-amber-400">
+                  <Coffee className="w-4 h-4" />
+                  <span>1. طلب الصالة والترابيزة</span>
+                </div>
+                <p className="text-[10px] text-slate-400 mt-0.5">
+                  امسح واطلب فوراً وأنت على ترابيزتك 📱
+                </p>
+              </div>
+
+              <div className="p-2.5 bg-white rounded-xl shadow-lg my-3">
+                {tableQrDataUrl ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={tableQrDataUrl}
+                    alt="Table Order QR"
+                    className="w-36 h-36 object-contain"
+                  />
+                ) : (
+                  <div className="w-36 h-36 flex items-center justify-center text-black text-xs">
+                    جاري التوليد...
+                  </div>
+                )}
+              </div>
+
+              <div className="text-[11px] font-bold text-amber-300 font-mono">
+                {activeTable ? `ترابيزة: ${activeTable}` : "/order"}
+              </div>
+            </div>
+
+            {/* QR 2: Web Portal & Delivery */}
+            <div className="bg-black/80 border-2 border-emerald-500/50 rounded-2xl p-4 shadow-xl flex flex-col items-center justify-between group">
+              <div className="w-full text-center pb-2 border-b border-emerald-500/20">
+                <div className="flex items-center justify-center gap-1.5 text-xs font-black text-emerald-400">
+                  <Globe className="w-4 h-4" />
+                  <span>2. البوابة الرقمية والدليفري</span>
+                </div>
+                <p className="text-[10px] text-slate-400 mt-0.5">
+                  منيو حلويات أبو عادل وتوصيل المنازل 🛵
+                </p>
+              </div>
+
+              <div className="p-2.5 bg-white rounded-xl shadow-lg my-3">
+                {webQrDataUrl ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={webQrDataUrl}
+                    alt="Web Portal QR"
+                    className="w-36 h-36 object-contain"
+                  />
+                ) : (
+                  <div className="w-36 h-36 flex items-center justify-center text-black text-xs">
+                    جاري التوليد...
+                  </div>
+                )}
+              </div>
+
+              <div className="text-[11px] font-bold text-emerald-300 font-mono">
+                منيو وطلبات الأونلاين
+              </div>
+            </div>
+
+            {/* QR 3: Mobile PWA App */}
+            <div className="bg-black/80 border-2 border-purple-500/50 rounded-2xl p-4 shadow-xl flex flex-col items-center justify-between group">
+              <div className="w-full text-center pb-2 border-b border-purple-500/20">
+                <div className="flex items-center justify-center gap-1.5 text-xs font-black text-purple-400">
+                  <Smartphone className="w-4 h-4" />
+                  <span>3. تطبيق الموبايل السحابي</span>
+                </div>
+                <p className="text-[10px] text-slate-400 mt-0.5">
+                  تثبيت تطبيق PWA ونقاط الولاء ⭐
+                </p>
+              </div>
+
+              <div className="p-2.5 bg-white rounded-xl shadow-lg my-3">
+                {appQrDataUrl ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={appQrDataUrl}
+                    alt="Mobile App QR"
+                    className="w-36 h-36 object-contain"
+                  />
+                ) : (
+                  <div className="w-36 h-36 flex items-center justify-center text-black text-xs">
+                    جاري التوليد...
+                  </div>
+                )}
+              </div>
+
+              <div className="text-[11px] font-bold text-purple-300 font-mono">
+                تطبيق أندرويد وآيفون PWA
+              </div>
+            </div>
+          </div>
+
+          {/* Card Footer Details */}
+          <div className="border-t border-amber-500/20 pt-4 space-y-2">
+            <div className="flex items-center justify-center gap-6 text-xs font-bold text-slate-300 flex-wrap">
+              <span className="flex items-center gap-1.5">
+                <span>📞 الخط الساخن الموحد لأبو عادل:</span>
+                <strong className="text-amber-400 font-mono">{hotline}</strong>
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span>☕ هاتف سول ميت كافيه VIP:</span>
+                <strong className="text-amber-400 font-mono">{soulmatePhone}</strong>
+              </span>
+            </div>
+
+            {/* Signature Orca Developer */}
+            <div className="text-[10px] text-slate-500 pt-1">
+              تصميم وتطوير المنظومة الذكية:{" "}
+              <span className="text-amber-300 font-bold">م / حمزة عباس</span> — شركة{" "}
+              <span className="text-amber-400 font-black">أوركا تك للحلول البرمجية (Orca Tech) 🐬</span> • 01018671000
+            </div>
           </div>
         </div>
       </div>

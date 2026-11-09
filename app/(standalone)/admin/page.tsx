@@ -63,14 +63,55 @@ export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<
     | "overview"
     | "treasury"
+    | "menu"
     | "recipes"
     | "pastry"
     | "orders"
     | "reservations"
     | "chat"
     | "loyalty"
+    | "users"
     | "settings"
   >("overview");
+
+  // Users Management state (Maestro & GM)
+  const [usersList, setUsersList] = useState<any[]>([]);
+  const [showUserModal, setShowUserModal] = useState(false);
+  const [userModalMode, setUserModalMode] = useState<"ADD" | "EDIT">("ADD");
+  const [userForm, setUserForm] = useState({
+    id: "",
+    name: "",
+    username: "",
+    password: "",
+    pin: "",
+    role: "cashier",
+    outletId: "",
+    phone: "",
+    isActive: true,
+  });
+
+  // Menu Items Management state
+  const [menuSearch, setMenuSearch] = useState("");
+  const [menuOutletFilter, setMenuOutletFilter] = useState("ALL");
+  const [menuCategoryFilter, setMenuCategoryFilter] = useState("ALL");
+  const [showMenuItemModal, setShowMenuItemModal] = useState(false);
+  const [menuItemModalMode, setMenuItemModalMode] = useState<"ADD" | "EDIT">("ADD");
+  const [menuItemForm, setMenuItemForm] = useState({
+    id: "",
+    outletId: "",
+    nameAr: "",
+    nameEn: "",
+    category: "HOT_COFFEE",
+    price: "",
+    costPrice: "",
+    stockQty: "100",
+    minStockAlert: "10",
+    unitType: "PIECE",
+    itemType: "PREPARED_BEVERAGE",
+    image: "",
+    isAvailable: true,
+    description: "",
+  });
 
   // Data states
   const [loading, setLoading] = useState(true);
@@ -200,6 +241,7 @@ export default function AdminDashboardPage() {
         tablesRes,
         reservationsRes,
         chatRes,
+        usersRes,
       ] = await Promise.all([
         fetch("/api/outlets"),
         fetch("/api/settings"),
@@ -212,6 +254,7 @@ export default function AdminDashboardPage() {
         fetch(`/api/tables${outletParam}`),
         fetch(`/api/reservations${outletParam}`),
         fetch(`/api/chat${outletParam}`),
+        fetch("/api/users"),
       ]);
 
       const [
@@ -226,6 +269,7 @@ export default function AdminDashboardPage() {
         tablesData,
         resData,
         chatData,
+        usersData,
       ] = await Promise.all([
         outletsRes.json(),
         settingsRes.json(),
@@ -238,6 +282,7 @@ export default function AdminDashboardPage() {
         tablesRes.json(),
         reservationsRes.json(),
         chatRes.json(),
+        usersRes.json(),
       ]);
 
       if (outletsData.success) setOutlets(outletsData.outlets);
@@ -251,6 +296,7 @@ export default function AdminDashboardPage() {
       if (tablesData.success) setTables(tablesData.tables);
       if (resData.success) setReservations(resData.reservations);
       if (chatData.success) setChatMessages(chatData.messages);
+      if (usersData?.success) setUsersList(usersData.users);
     } catch (err) {
       console.error(err);
       addToast("error", "فشل تحديث بيانات لوحة الإدارة");
@@ -266,10 +312,16 @@ export default function AdminDashboardPage() {
     }
   }, [currentUser, selectedOutletId]);
 
-  // Active Outlet Info
+  // Active Outlet Info & Branch Isolation Helpers
   const activeOutlet = outlets.find((o) => o.id === selectedOutletId);
   const isSoulmate = activeOutlet?.code === "SOULMATE_CAFE";
   const isAbuAdel = activeOutlet?.code === "ABU_ADEL_PATISSERIE";
+
+  const isOwnerOrGM = currentUser?.role === "owner" || currentUser?.role === "general_manager";
+  const isBranchManager = currentUser?.role === "branch_manager";
+  const userOutlet = outlets.find((o) => o.id === currentUser?.outletId);
+  const isUserSoulmate = userOutlet?.code === "SOULMATE_CAFE";
+  const isUserAbuAdel = userOutlet?.code === "ABU_ADEL_PATISSERIE";
 
   // KPIs Calculations
   const totalSales = orders
@@ -308,6 +360,7 @@ export default function AdminDashboardPage() {
       const data = await res.json();
       if (data.success && data.url) {
         setPastryForm((prev) => ({ ...prev, image: data.url }));
+        setMenuItemForm((prev) => ({ ...prev, image: data.url }));
         addToast("success", "تم رفع الصورة بنجاح عبر ImgBB 📸");
       } else {
         addToast("error", data.error || "فشل رفع الصورة");
@@ -316,6 +369,220 @@ export default function AdminDashboardPage() {
       addToast("error", "حدث خطأ أثناء رفع الصورة");
     } finally {
       setUploadingImage(false);
+    }
+  };
+
+  // User Management Handlers (Maestro & GM)
+  const handleToggleUserStatus = async (user: any) => {
+    try {
+      const res = await fetch("/api/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: user.id,
+          isActive: !user.isActive,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast(
+          "success",
+          `تم ${!user.isActive ? "تفعيل" : "تعطيل"} حساب (${user.name}) بنجاح 👍`
+        );
+        fetchDashboardData();
+      } else {
+        addToast("error", data.error || "فشل تحديث حالة المستخدم");
+      }
+    } catch (err: any) {
+      addToast("error", err.message);
+    }
+  };
+
+  const handleSaveUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (userModalMode === "ADD") {
+        const res = await fetch("/api/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: userForm.name,
+            username: userForm.username,
+            password: userForm.password,
+            pin: userForm.pin,
+            role: userForm.role,
+            outletId: userForm.outletId || null,
+            phone: userForm.phone,
+          }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          addToast("success", "تم إضافة المستخدم الجديد بنجاح 🎉");
+          setShowUserModal(false);
+          fetchDashboardData();
+        } else {
+          addToast("error", data.error || "فشل إنشاء المستخدم");
+        }
+      } else {
+        const res = await fetch("/api/users", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: userForm.id,
+            name: userForm.name,
+            username: userForm.username,
+            ...(userForm.password && { password: userForm.password }),
+            pin: userForm.pin,
+            role: userForm.role,
+            outletId: userForm.outletId || null,
+            phone: userForm.phone,
+          }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          addToast("success", "تم تعديل بيانات وصلاحيات المستخدم بنجاح 👍");
+          setShowUserModal(false);
+          fetchDashboardData();
+        } else {
+          addToast("error", data.error || "فشل تحديث المستخدم");
+        }
+      }
+    } catch (err: any) {
+      addToast("error", err.message);
+    }
+  };
+
+  // Emergency System Lock Handler (Maestro Exclusive)
+  const handleToggleSystemLock = async (isLocked: boolean) => {
+    try {
+      const res = await fetch("/api/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ systemLocked: isLocked }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSettings(data.settings);
+        addToast(
+          isLocked ? "error" : "success",
+          isLocked
+            ? "⚠️ تم تفعيل قفل الطوارئ للمنظومة بالكامل!"
+            : "✅ تم فك قفل المنظومة بنجاح، النظام متاح للعمل الآن."
+        );
+      } else {
+        addToast("error", data.error || "فشل تحديث حالة قفل المنظومة");
+      }
+    } catch (err: any) {
+      addToast("error", err.message);
+    }
+  };
+
+  // Menu Items Management Handlers
+  const handleToggleItemAvailability = async (item: any) => {
+    try {
+      const res = await fetch("/api/menu", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: item.id,
+          isAvailable: !item.isAvailable,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast(
+          "success",
+          `تم ${!item.isAvailable ? "إتاحة" : "تعطيل"} صنف (${item.nameAr}) بنجاح`
+        );
+        setMenuItems((prev) =>
+          prev.map((it) =>
+            it.id === item.id ? { ...it, isAvailable: !item.isAvailable } : it
+          )
+        );
+      } else {
+        addToast("error", data.error || "فشل تحديث حالة الصنف");
+      }
+    } catch (err: any) {
+      addToast("error", err.message);
+    }
+  };
+
+  const handleDeleteMenuItem = async (id: string, name: string) => {
+    if (!confirm(`هل أنت متأكد من حذف الصنف (${name}) نهائياً من القائمة؟`)) return;
+    try {
+      const res = await fetch(`/api/menu?id=${id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (data.success) {
+        addToast("success", `تم حذف الصنف (${name}) بنجاح`);
+        setMenuItems((prev) => prev.filter((it) => it.id !== id));
+      } else {
+        addToast("error", data.error || "فشل حذف الصنف");
+      }
+    } catch (err: any) {
+      addToast("error", err.message);
+    }
+  };
+
+  const handleSaveMenuItem = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (menuItemModalMode === "ADD") {
+        const res = await fetch("/api/menu", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            outletId: menuItemForm.outletId || (outlets[0]?.id || ""),
+            nameAr: menuItemForm.nameAr,
+            nameEn: menuItemForm.nameEn,
+            category: menuItemForm.category,
+            price: menuItemForm.price,
+            costPrice: menuItemForm.costPrice,
+            stockQty: menuItemForm.stockQty,
+            minStockAlert: menuItemForm.minStockAlert,
+            unitType: menuItemForm.unitType,
+            itemType: menuItemForm.itemType,
+            image: menuItemForm.image,
+            description: menuItemForm.description,
+          }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          addToast("success", "تم إضافة الصنف الجديد بنجاح 🎉");
+          setShowMenuItemModal(false);
+          fetchDashboardData();
+        } else {
+          addToast("error", data.error || "فشل إضافة الصنف");
+        }
+      } else {
+        const res = await fetch("/api/menu", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: menuItemForm.id,
+            nameAr: menuItemForm.nameAr,
+            nameEn: menuItemForm.nameEn,
+            category: menuItemForm.category,
+            price: menuItemForm.price,
+            costPrice: menuItemForm.costPrice,
+            stockQty: menuItemForm.stockQty,
+            minStockAlert: menuItemForm.minStockAlert,
+            unitType: menuItemForm.unitType,
+            itemType: menuItemForm.itemType,
+            image: menuItemForm.image,
+            description: menuItemForm.description,
+          }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          addToast("success", "تم حفظ وتعديل الصنف بنجاح 👍");
+          setShowMenuItemModal(false);
+          fetchDashboardData();
+        } else {
+          addToast("error", data.error || "فشل تعديل الصنف");
+        }
+      }
+    } catch (err: any) {
+      addToast("error", err.message);
     }
   };
 
@@ -727,7 +994,7 @@ export default function AdminDashboardPage() {
               title="طباعة كارت الكيو آر كود المزدوج"
             >
               <QrCode className="w-4 h-4 text-amber-400" />
-              <span>كارت الـ 2 QR</span>
+              <span>كارت الـ 3 QR</span>
             </button>
 
             <button
@@ -777,28 +1044,46 @@ export default function AdminDashboardPage() {
             </button>
 
             <button
-              onClick={() => setActiveTab("recipes")}
+              onClick={() => setActiveTab("menu")}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                activeTab === "recipes"
+                activeTab === "menu"
                   ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
               }`}
             >
-              <Coffee className="w-4 h-4" />
-              <span>الريسيبي وتكاليف البار (Soulmate)</span>
+              <Package className="w-4 h-4" />
+              <span>قائمة الأصناف والتعديل الشامل (${menuItems.length})</span>
             </button>
 
-            <button
-              onClick={() => setActiveTab("pastry")}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                activeTab === "pastry"
-                  ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
-              }`}
-            >
-              <Cake className="w-4 h-4" />
-              <span>مخزن حلويات أبو عادل (Finished Goods)</span>
-            </button>
+            {/* Recipes Tab (Soulmate only) */}
+            {(isOwnerOrGM || isUserSoulmate) && (
+              <button
+                onClick={() => setActiveTab("recipes")}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+                  activeTab === "recipes"
+                    ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                }`}
+              >
+                <Coffee className="w-4 h-4" />
+                <span>الريسيبي وتكاليف البار (Soulmate)</span>
+              </button>
+            )}
+
+            {/* Pastry Tab (Abu Adel only) */}
+            {(isOwnerOrGM || isUserAbuAdel) && (
+              <button
+                onClick={() => setActiveTab("pastry")}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+                  activeTab === "pastry"
+                    ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                }`}
+              >
+                <Cake className="w-4 h-4" />
+                <span>مخزن حلويات أبو عادل (Finished Goods)</span>
+              </button>
+            )}
 
             <button
               onClick={() => setActiveTab("orders")}
@@ -812,56 +1097,83 @@ export default function AdminDashboardPage() {
               <span>سجل الطلبات والدليفري</span>
             </button>
 
-            <button
-              onClick={() => setActiveTab("reservations")}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                activeTab === "reservations"
-                  ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
-              }`}
-            >
-              <Calendar className="w-4 h-4" />
-              <span>حجوزات الترابيزات والحفلات ({reservations.length})</span>
-            </button>
+            {/* Reservations Tab (Soulmate only) */}
+            {(isOwnerOrGM || isUserSoulmate) && (
+              <button
+                onClick={() => setActiveTab("reservations")}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+                  activeTab === "reservations"
+                    ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                }`}
+              >
+                <Calendar className="w-4 h-4" />
+                <span>حجوزات الترابيزات والحفلات (${reservations.length})</span>
+              </button>
+            )}
 
-            <button
-              onClick={() => setActiveTab("chat")}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                activeTab === "chat"
-                  ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
-              }`}
-            >
-              <MessageCircle className="w-4 h-4" />
-              <span>شات الزبائن والباريستا ({chatMessages.length})</span>
-            </button>
+            {/* Chat Tab (Soulmate only) */}
+            {(isOwnerOrGM || isUserSoulmate) && (
+              <button
+                onClick={() => setActiveTab("chat")}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+                  activeTab === "chat"
+                    ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                }`}
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>شات الزبائن والباريستا (${chatMessages.length})</span>
+              </button>
+            )}
 
-            <button
-              onClick={() => setActiveTab("loyalty")}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                activeTab === "loyalty"
-                  ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
-              }`}
-            >
-              <Award className="w-4 h-4" />
-              <span>برنامج الولاء (Soulmate Points)</span>
-              {settings?.isLoyaltyEnabled && (
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              )}
-            </button>
+            {/* Loyalty Tab (Soulmate only) */}
+            {(isOwnerOrGM || isUserSoulmate) && (
+              <button
+                onClick={() => setActiveTab("loyalty")}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+                  activeTab === "loyalty"
+                    ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                }`}
+              >
+                <Award className="w-4 h-4" />
+                <span>برنامج الولاء (Soulmate Points)</span>
+                {settings?.isLoyaltyEnabled && (
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                )}
+              </button>
+            )}
 
-            <button
-              onClick={() => setActiveTab("settings")}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                activeTab === "settings"
-                  ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
-              }`}
-            >
-              <Settings className="w-4 h-4" />
-              <span>الإعدادات وهوية المنظومة</span>
-            </button>
+            {/* Users & Permissions Tab (Maestro & GM Exclusive!) */}
+            {isOwnerOrGM && (
+              <button
+                onClick={() => setActiveTab("users")}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+                  activeTab === "users"
+                    ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                }`}
+              >
+                <Users className="w-4 h-4" />
+                <span>إدارة المستخدمين والصلاحيات 👑</span>
+              </button>
+            )}
+
+            {/* Settings Tab (Maestro & GM Exclusive!) */}
+            {isOwnerOrGM && (
+              <button
+                onClick={() => setActiveTab("settings")}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+                  activeTab === "settings"
+                    ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                }`}
+              >
+                <Settings className="w-4 h-4" />
+                <span>الإعدادات وهوية المنظومة</span>
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -1195,6 +1507,250 @@ export default function AdminDashboardPage() {
                         <td className="py-2.5 px-3 text-slate-400">{exp.notes || "-"}</td>
                       </tr>
                     ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB: MENU & PRODUCTS CATALOG (DYNAMIC PRICING & IMAGES) */}
+        {activeTab === "menu" && (
+          <div className="space-y-6">
+            {/* Header & Controls */}
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                  <h3 className="text-base font-black text-white flex items-center gap-2">
+                    <Package className="w-5 h-5 text-amber-400" />
+                    <span>قائمة الأصناف والمنتجات والتسعير المباشر</span>
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-1">
+                    إدارة وتعديل أسعار وتكاليف ومخزون كافة الأصناف وصورها لكلا المنفذين مع إمكانية الرفع المباشر.
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => {
+                    setMenuItemModalMode("ADD");
+                    setMenuItemForm({
+                      id: "",
+                      outletId: isUserAbuAdel
+                        ? outlets.find((o) => o.code === "ABU_ADEL_PATISSERIE")?.id || ""
+                        : isUserSoulmate
+                        ? outlets.find((o) => o.code === "SOULMATE_CAFE")?.id || ""
+                        : outlets[0]?.id || "",
+                      nameAr: "",
+                      nameEn: "",
+                      category: isUserAbuAdel ? "ORIENTAL_SWEETS" : "HOT_COFFEE",
+                      price: "",
+                      costPrice: "",
+                      stockQty: "100",
+                      minStockAlert: "10",
+                      unitType: "PIECE",
+                      itemType: isUserAbuAdel ? "READY_PASTRY" : "PREPARED_BEVERAGE",
+                      image: "",
+                      isAvailable: true,
+                      description: "",
+                    });
+                    setShowMenuItemModal(true);
+                  }}
+                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-black px-4 py-2.5 rounded-xl text-xs shadow-lg transition cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>إضافة صنف جديد للقائمة 🍰☕</span>
+                </button>
+              </div>
+
+              {/* Filters Bar */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-slate-800">
+                <div className="relative">
+                  <Search className="w-4 h-4 text-slate-500 absolute right-3 top-3" />
+                  <input
+                    type="text"
+                    placeholder="ابحث بالاسم العربي أو الإنجليزي..."
+                    value={menuSearch}
+                    onChange={(e) => setMenuSearch(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl pr-9 pl-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+
+                {isOwnerOrGM && (
+                  <select
+                    value={menuOutletFilter}
+                    onChange={(e) => setMenuOutletFilter(e.target.value)}
+                    className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-amber-300 focus:outline-none focus:border-amber-500 font-bold"
+                  >
+                    <option value="ALL">🌟 كل المنافذ (أبو عادل & سول ميت)</option>
+                    {outlets.map((o) => (
+                      <option key={o.id} value={o.id}>
+                        {o.code === "SOULMATE_CAFE" ? "☕ سول ميت كافيه VIP" : "🍰 حلواني أبو عادل"}
+                      </option>
+                    ))}
+                  </select>
+                )}
+
+                <select
+                  value={menuCategoryFilter}
+                  onChange={(e) => setMenuCategoryFilter(e.target.value)}
+                  className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-amber-500"
+                >
+                  <option value="ALL">📂 كافة التصنيفات</option>
+                  <option value="HOT_COFFEE">☕ قهوة ساخنة</option>
+                  <option value="COLD_COFFEE">🧊 قهوة مثلجة وموهيتو</option>
+                  <option value="BEVERAGES">🥤 مشروبات وميلك شيك</option>
+                  <option value="WAFFLES_PANCAKES">🧇 وافل وبان كيك</option>
+                  <option value="ORIENTAL_SWEETS">🥮 حلويات شرقية</option>
+                  <option value="CAKES_TORTES">🎂 تورت وتريليتشا</option>
+                  <option value="GATEAUX_WESTERN">🧁 جاتوهات وحلويات غربية</option>
+                  <option value="GIFT_BOXES">🎁 علب هدايا وكعك</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Menu Items Table */}
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-right text-xs">
+                  <thead className="bg-slate-950/80 text-slate-400 border-b border-slate-800">
+                    <tr>
+                      <th className="py-3 px-3">الصورة</th>
+                      <th className="py-3 px-3">اسم الصنف</th>
+                      <th className="py-3 px-3">المنفذ / الفرع</th>
+                      <th className="py-3 px-3">التصنيف</th>
+                      <th className="py-3 px-3">سعر البيع</th>
+                      <th className="py-3 px-3">سعر التكلفة</th>
+                      <th className="py-3 px-3">المخزون</th>
+                      <th className="py-3 px-3 text-center">الحالة</th>
+                      <th className="py-3 px-3 text-center">إجراءات</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800">
+                    {menuItems
+                      .filter((it) => {
+                        if (isUserSoulmate && it.outlet?.code !== "SOULMATE_CAFE") return false;
+                        if (isUserAbuAdel && it.outlet?.code !== "ABU_ADEL_PATISSERIE") return false;
+                        if (menuOutletFilter !== "ALL" && it.outletId !== menuOutletFilter) return false;
+                        if (menuCategoryFilter !== "ALL" && it.category !== menuCategoryFilter) return false;
+                        if (menuSearch.trim()) {
+                          const q = menuSearch.toLowerCase();
+                          return (
+                            it.nameAr?.toLowerCase().includes(q) ||
+                            it.nameEn?.toLowerCase().includes(q)
+                          );
+                        }
+                        return true;
+                      })
+                      .map((item) => {
+                        const fallbackImage =
+                          item.itemType === "READY_PASTRY"
+                            ? "https://images.unsplash.com/photo-1579372786545-d24232daf58c?w=600"
+                            : "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=600";
+                        return (
+                          <tr key={item.id} className="hover:bg-slate-800/40 transition">
+                            <td className="py-2.5 px-3">
+                              <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-950 border border-slate-800 relative">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={item.image || fallbackImage}
+                                  alt={item.nameAr}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    (e.target as any).src = fallbackImage;
+                                  }}
+                                />
+                              </div>
+                            </td>
+                            <td className="py-2.5 px-3">
+                              <div className="font-bold text-white text-sm">{item.nameAr}</div>
+                              {item.nameEn && (
+                                <div className="text-[10px] text-slate-400 font-mono">
+                                  {item.nameEn}
+                                </div>
+                              )}
+                            </td>
+                            <td className="py-2.5 px-3">
+                              <span
+                                className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                  item.outlet?.code === "SOULMATE_CAFE"
+                                    ? "bg-amber-500/10 text-amber-300 border border-amber-500/20"
+                                    : "bg-emerald-500/10 text-emerald-300 border border-emerald-500/20"
+                                }`}
+                              >
+                                {item.outlet?.code === "SOULMATE_CAFE"
+                                  ? "☕ سول ميت كافيه"
+                                  : "🍰 حلواني أبو عادل"}
+                              </span>
+                            </td>
+                            <td className="py-2.5 px-3">
+                              <span className="text-[11px] text-slate-300">{item.category}</span>
+                            </td>
+                            <td className="py-2.5 px-3 font-mono font-bold text-amber-400 text-sm">
+                              {item.price} ج.م
+                            </td>
+                            <td className="py-2.5 px-3 font-mono text-slate-300">
+                              {item.calculatedCost || item.costPrice || 0} ج.م
+                              {item.profitMarginPercent !== undefined && (
+                                <span className="text-[10px] text-emerald-400 block">
+                                  هامش: {item.profitMarginPercent}%
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-2.5 px-3 font-mono text-slate-300">
+                              {item.stockQty} {item.unitType === "KG" ? "كجم" : "قطعة"}
+                            </td>
+                            <td className="py-2.5 px-3 text-center">
+                              <button
+                                onClick={() => handleToggleItemAvailability(item)}
+                                className={`px-2.5 py-1 rounded-xl text-[10px] font-black transition cursor-pointer ${
+                                  item.isAvailable
+                                    ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                                    : "bg-rose-500/20 text-rose-300 border border-rose-500/30"
+                                }`}
+                              >
+                                {item.isAvailable ? "متاح للطلب ✓" : "معطل ✕"}
+                              </button>
+                            </td>
+                            <td className="py-2.5 px-3 text-center">
+                              <div className="flex items-center justify-center gap-1.5">
+                                <button
+                                  onClick={() => {
+                                    setMenuItemModalMode("EDIT");
+                                    setMenuItemForm({
+                                      id: item.id,
+                                      outletId: item.outletId,
+                                      nameAr: item.nameAr,
+                                      nameEn: item.nameEn || "",
+                                      category: item.category,
+                                      price: String(item.price),
+                                      costPrice: String(item.costPrice || ""),
+                                      stockQty: String(item.stockQty),
+                                      minStockAlert: String(item.minStockAlert || 10),
+                                      unitType: item.unitType || "PIECE",
+                                      itemType: item.itemType || "PREPARED_BEVERAGE",
+                                      image: item.image || "",
+                                      isAvailable: item.isAvailable,
+                                      description: item.description || "",
+                                    });
+                                    setShowMenuItemModal(true);
+                                  }}
+                                  className="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-black font-bold text-[11px] transition cursor-pointer"
+                                  title="تعديل بيانات الصنف والصورة"
+                                >
+                                  تعديل ✏️
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteMenuItem(item.id, item.nameAr)}
+                                  className="px-2 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-600 text-rose-300 hover:text-white font-bold text-[11px] transition cursor-pointer"
+                                  title="حذف الصنف نهائياً"
+                                >
+                                  حذف
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
                   </tbody>
                 </table>
               </div>
@@ -1872,6 +2428,208 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
+        {/* TAB: USERS & ROLES MANAGEMENT (MAESTRO & GM EXCLUSIVE) */}
+        {activeTab === "users" && isOwnerOrGM && (
+          <div className="space-y-6">
+            {/* Maestro Emergency System Lock Card */}
+            <div className="bg-gradient-to-r from-slate-900 via-rose-950/30 to-slate-900 border-2 border-rose-500/40 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center justify-center text-2xl flex-shrink-0">
+                    🚨
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-base font-black text-white">
+                        مركز التحكم الشامل - قفل الطوارئ للمنظومة
+                      </h3>
+                      <span
+                        className={`px-2.5 py-0.5 rounded-full text-[10px] font-black ${
+                          settings?.systemLocked
+                            ? "bg-rose-500 text-white animate-pulse"
+                            : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"
+                        }`}
+                      >
+                        {settings?.systemLocked ? "قفل الطوارئ مفعل ⚠️" : "المنظومة تعمل بكفاءة 🟢"}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                      صلاحية حصرية للمالك (المايسترو). في حالات الطوارئ أو أعمال الجرد والصيانة،
+                      يمكن إيقاف المنظومة والموقع فوراً لمنع دخول الطلبات أو الحجوزات.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex-shrink-0">
+                  <button
+                    onClick={() => handleToggleSystemLock(!settings?.systemLocked)}
+                    className={`px-5 py-2.5 rounded-xl font-black text-xs transition shadow-lg cursor-pointer flex items-center gap-2 ${
+                      settings?.systemLocked
+                        ? "bg-emerald-500 hover:bg-emerald-400 text-black shadow-emerald-500/20"
+                        : "bg-rose-600 hover:bg-rose-500 text-white shadow-rose-600/30"
+                    }`}
+                  >
+                    <Shield className="w-4 h-4" />
+                    <span>
+                      {settings?.systemLocked
+                        ? "فك قفل المنظومة وتشغيل العمل ✅"
+                        : "تفعيل قفل الطوارئ وإيقاف النظام ⛔"}
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Users Table Header */}
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                <div>
+                  <h3 className="text-base font-black text-white flex items-center gap-2">
+                    <Users className="w-5 h-5 text-amber-400" />
+                    <span>طاقم العمل والمستخدمين ورموز الدخول السريع (PIN)</span>
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-1">
+                    إدارة حسابات المديرين، الكاشيرات، والباريستا وتفعيل أو تعطيل الحسابات وتغيير كلمات السر.
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => {
+                    setUserModalMode("ADD");
+                    setUserForm({
+                      id: "",
+                      name: "",
+                      username: "",
+                      password: "",
+                      pin: "159920",
+                      role: "cashier",
+                      outletId: outlets[0]?.id || "",
+                      phone: "",
+                      isActive: true,
+                    });
+                    setShowUserModal(true);
+                  }}
+                  className="flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-black font-black px-4 py-2.5 rounded-xl text-xs shadow-lg transition cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>إضافة مستخدم جديد 👤</span>
+                </button>
+              </div>
+
+              {/* Users Table */}
+              <div className="overflow-x-auto mt-4">
+                <table className="w-full text-right text-xs">
+                  <thead className="bg-slate-950/80 text-slate-400 border-b border-slate-800">
+                    <tr>
+                      <th className="py-3 px-3">الاسم واسم المستخدم</th>
+                      <th className="py-3 px-3">الدور / الصلاحية</th>
+                      <th className="py-3 px-3">الفرع المعتمد</th>
+                      <th className="py-3 px-3">الهاتف</th>
+                      <th className="py-3 px-3">رمز الـ PIN</th>
+                      <th className="py-3 px-3 text-center">الحالة</th>
+                      <th className="py-3 px-3 text-center">إجراءات</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800">
+                    {usersList.map((u) => {
+                      const isOwnerUser = u.username === "maestro" || u.role === "owner";
+                      return (
+                        <tr key={u.id} className="hover:bg-slate-800/40 transition">
+                          <td className="py-3 px-3">
+                            <div className="font-bold text-white text-sm flex items-center gap-2">
+                              <span>{u.name}</span>
+                              {isOwnerUser && (
+                                <span className="text-[10px] px-2 py-0.5 rounded-full font-black bg-amber-500 text-black">
+                                  👑 المايسترو
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-[11px] text-amber-400/80 font-mono">
+                              @{u.username}
+                            </div>
+                          </td>
+                          <td className="py-3 px-3">
+                            <span
+                              className={`px-2.5 py-0.5 rounded-full text-[10px] font-black ${
+                                u.role === "owner"
+                                  ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                                  : u.role === "general_manager"
+                                  ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                                  : u.role === "branch_manager"
+                                  ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
+                                  : u.role === "barista"
+                                  ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                                  : "bg-slate-800 text-slate-300 border border-slate-700"
+                              }`}
+                            >
+                              {u.role === "owner"
+                                ? "👑 المالك (Owner)"
+                                : u.role === "general_manager"
+                                ? "⭐ المدير العام"
+                                : u.role === "branch_manager"
+                                ? "🏢 مدير فرع"
+                                : u.role === "barista"
+                                ? "☕ باريستا (KDS)"
+                                : "💳 كاشير"}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 font-medium text-slate-300">
+                            {u.outletName || "الإدارة المركزية العامة"}
+                          </td>
+                          <td className="py-3 px-3 font-mono text-slate-400">
+                            {u.phone || "-"}
+                          </td>
+                          <td className="py-3 px-3 font-mono font-bold text-amber-300">
+                            {u.pin || "******"}
+                          </td>
+                          <td className="py-3 px-3 text-center">
+                            <button
+                              onClick={() => !isOwnerUser && handleToggleUserStatus(u)}
+                              disabled={isOwnerUser}
+                              className={`px-2.5 py-1 rounded-xl text-[10px] font-black transition ${
+                                isOwnerUser
+                                  ? "bg-emerald-500/20 text-emerald-400 cursor-default"
+                                  : u.isActive
+                                  ? "bg-emerald-500/20 hover:bg-rose-500/20 text-emerald-300 hover:text-rose-300 border border-emerald-500/30 cursor-pointer"
+                                  : "bg-rose-500/20 hover:bg-emerald-500/20 text-rose-300 hover:text-emerald-300 border border-rose-500/30 cursor-pointer"
+                              }`}
+                              title={isOwnerUser ? "حساب المالك نشط دائماً" : "اضغط لتبديل حالة الحساب"}
+                            >
+                              {u.isActive ? "نشط ومفعل ✓" : "معطل ✕"}
+                            </button>
+                          </td>
+                          <td className="py-3 px-3 text-center">
+                            <button
+                              onClick={() => {
+                                setUserModalMode("EDIT");
+                                setUserForm({
+                                  id: u.id,
+                                  name: u.name,
+                                  username: u.username,
+                                  password: "",
+                                  pin: u.pin || "",
+                                  role: u.role,
+                                  outletId: u.outletId || "",
+                                  phone: u.phone || "",
+                                  isActive: u.isActive,
+                                });
+                                setShowUserModal(true);
+                              }}
+                              className="px-3 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500 text-amber-300 hover:text-black font-bold text-[11px] transition cursor-pointer"
+                            >
+                              تعديل وبيانات الدخول ⚙️
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* TAB 9: SETTINGS & BRAND IDENTITY */}
         {activeTab === "settings" && settings && (
           <div className="space-y-6">
@@ -1925,18 +2683,16 @@ export default function AdminDashboardPage() {
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-xs text-slate-400 mb-1.5">
-                      رابط موقع حلواني أبو عادل الرسمي
-                    </label>
-                    <input
-                      type="text"
-                      value={settings.haliyomakUrl || "https://haliyomak.com/"}
-                      onChange={(e) =>
-                        setSettings({ ...settings, haliyomakUrl: e.target.value })
-                      }
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
-                    />
+                  <div className="bg-slate-950/80 border border-amber-500/30 rounded-xl p-3 flex items-start gap-2.5">
+                    <span className="text-amber-400 text-base">🍰</span>
+                    <div>
+                      <div className="text-xs font-bold text-amber-300">
+                        حلواني أبو عادل (كيان مستقل معتمد)
+                      </div>
+                      <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
+                        تشغيل حر ومستقل بذاته تماماً مع نفس معايير الجودة، وليس منفذ بيع لأي موقع خارجي.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1952,9 +2708,329 @@ export default function AdminDashboardPage() {
             </form>
           </div>
         )}
+        {/* Orca Tech Developer Signature */}
+        <footer className="mt-16 mb-4 text-center border-t border-slate-800/80 pt-6 pb-2">
+          <p className="text-[11px] text-slate-400 font-medium">
+            تصميم وتطوير المنظومة الذكية:{" "}
+            <strong className="text-white font-bold">م / حمزة عباس</strong> — شركة{" "}
+            <strong className="text-amber-400 font-black">أوركا للحلول البرمجية والذكاء الاصطناعي (Orca Tech) 🐬</strong>
+          </p>
+          <p className="text-[10px] text-slate-500 font-mono mt-1">
+            خدمة الدعم الفني المباشر وتطوير الأنظمة: 01018671000
+          </p>
+        </footer>
       </main>
 
       {/* 4. MODALS */}
+
+      {/* USER MODAL (ADD / EDIT) */}
+      {showUserModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative text-right">
+            <button
+              onClick={() => setShowUserModal(false)}
+              className="absolute left-4 top-4 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="text-base font-bold text-white mb-4 flex items-center gap-2">
+              <Users className="w-5 h-5 text-amber-400" />
+              <span>{userModalMode === "ADD" ? "إضافة مستخدم / موظف جديد" : "تعديل بيانات وصلاحيات المستخدم"}</span>
+            </h3>
+
+            <form onSubmit={handleSaveUser} className="space-y-4 text-xs">
+              <div>
+                <label className="block text-slate-400 mb-1">الاسم بالكامل *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="مثال: أحمد عبد الله (كاشير)"
+                  value={userForm.name}
+                  onChange={(e) => setUserForm({ ...userForm, name: e.target.value })}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-400 mb-1">اسم المستخدم (Login) *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="cashier-soul2"
+                    value={userForm.username}
+                    onChange={(e) => setUserForm({ ...userForm, username: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-400 mb-1">رقم الموبايل</label>
+                  <input
+                    type="tel"
+                    placeholder="010XXXXXXXX"
+                    value={userForm.phone}
+                    onChange={(e) => setUserForm({ ...userForm, phone: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-400 mb-1">
+                    {userModalMode === "ADD" ? "كلمة المرور *" : "كلمة المرور الجديدة (اختياري)"}
+                  </label>
+                  <input
+                    type="password"
+                    required={userModalMode === "ADD"}
+                    placeholder={userModalMode === "EDIT" ? "اتركها فارغة للإبقاء عليها" : "••••••••"}
+                    value={userForm.password}
+                    onChange={(e) => setUserForm({ ...userForm, password: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-400 mb-1">رمز الـ PIN السريع (للكاشير) *</label>
+                  <input
+                    type="text"
+                    required
+                    maxLength={6}
+                    placeholder="159920"
+                    value={userForm.pin}
+                    onChange={(e) => setUserForm({ ...userForm, pin: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-amber-300 font-mono font-bold focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-400 mb-1">الدور / الصلاحية *</label>
+                  <select
+                    value={userForm.role}
+                    onChange={(e) => setUserForm({ ...userForm, role: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500"
+                  >
+                    <option value="cashier">💳 كاشير (POS)</option>
+                    <option value="barista">☕ باريستا (KDS)</option>
+                    <option value="branch_manager">🏢 مدير فرع</option>
+                    <option value="general_manager">⭐ المدير العام</option>
+                    <option value="owner">👑 المالك (Maestro)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 mb-1">الفرع التابع له *</label>
+                  <select
+                    value={userForm.outletId}
+                    onChange={(e) => setUserForm({ ...userForm, outletId: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500"
+                  >
+                    <option value="">الإدارة المركزية العامة</option>
+                    {outlets.map((o) => (
+                      <option key={o.id} value={o.id}>
+                        {o.code === "SOULMATE_CAFE" ? "☕ سول ميت كافيه VIP" : "🍰 حلواني أبو عادل"}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowUserModal(false)}
+                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black transition shadow"
+                >
+                  {userModalMode === "ADD" ? "إضافة المستخدم" : "حفظ التعديلات"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MENU ITEM MODAL (ADD / EDIT WITH IMGBB UPLOAD) */}
+      {showMenuItemModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative text-right max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={() => setShowMenuItemModal(false)}
+              className="absolute left-4 top-4 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="text-base font-bold text-white mb-4 flex items-center gap-2">
+              <Package className="w-5 h-5 text-amber-400" />
+              <span>{menuItemModalMode === "ADD" ? "إضافة صنف جديد للقائمة" : "تعديل بيانات الصنف والصورة"}</span>
+            </h3>
+
+            <form onSubmit={handleSaveMenuItem} className="space-y-4 text-xs">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-400 mb-1">اسم الصنف (عربي) *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="مثال: سبانش لاتيه مثلج"
+                    value={menuItemForm.nameAr}
+                    onChange={(e) => setMenuItemForm({ ...menuItemForm, nameAr: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-400 mb-1">الاسم بالإنجليزي (اختياري)</label>
+                  <input
+                    type="text"
+                    placeholder="Iced Spanish Latte"
+                    value={menuItemForm.nameEn}
+                    onChange={(e) => setMenuItemForm({ ...menuItemForm, nameEn: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-400 mb-1">المنفذ / الفرع التابع له *</label>
+                  <select
+                    value={menuItemForm.outletId}
+                    onChange={(e) => setMenuItemForm({ ...menuItemForm, outletId: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500"
+                  >
+                    {outlets.map((o) => (
+                      <option key={o.id} value={o.id}>
+                        {o.code === "SOULMATE_CAFE" ? "☕ سول ميت كافيه VIP" : "🍰 حلواني أبو عادل"}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 mb-1">التصنيف *</label>
+                  <select
+                    value={menuItemForm.category}
+                    onChange={(e) => setMenuItemForm({ ...menuItemForm, category: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500"
+                  >
+                    <option value="HOT_COFFEE">☕ قهوة ساخنة</option>
+                    <option value="COLD_COFFEE">🧊 قهوة مثلجة وموهيتو</option>
+                    <option value="BEVERAGES">🥤 مشروبات وميلك شيك</option>
+                    <option value="WAFFLES_PANCAKES">🧇 وافل وبان كيك</option>
+                    <option value="ORIENTAL_SWEETS">🥮 حلويات شرقية</option>
+                    <option value="CAKES_TORTES">🎂 تورت وتريليتشا</option>
+                    <option value="GATEAUX_WESTERN">🧁 جاتوهات وحلويات غربية</option>
+                    <option value="GIFT_BOXES">🎁 علب هدايا وكعك</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-slate-400 mb-1">سعر البيع (ج.م) *</label>
+                  <input
+                    type="number"
+                    step="0.5"
+                    required
+                    placeholder="75"
+                    value={menuItemForm.price}
+                    onChange={(e) => setMenuItemForm({ ...menuItemForm, price: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-amber-400 font-mono font-bold focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-400 mb-1">سعر التكلفة (ج.م)</label>
+                  <input
+                    type="number"
+                    step="0.5"
+                    placeholder="25"
+                    value={menuItemForm.costPrice}
+                    onChange={(e) => setMenuItemForm({ ...menuItemForm, costPrice: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-400 mb-1">المخزون الحالي</label>
+                  <input
+                    type="number"
+                    value={menuItemForm.stockQty}
+                    onChange={(e) => setMenuItemForm({ ...menuItemForm, stockQty: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+              </div>
+
+              {/* Image with Direct ImgBB Upload */}
+              <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+                <label className="block text-slate-400 font-bold">صورة الصنف (رابط مباشر أو رفع جديد)</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="https://..."
+                    value={menuItemForm.image}
+                    onChange={(e) => setMenuItemForm({ ...menuItemForm, image: e.target.value })}
+                    className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono text-[11px] focus:outline-none focus:border-amber-500"
+                  />
+                  <label className="px-3 py-2 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/40 font-bold flex items-center gap-1.5 cursor-pointer">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>{uploadingImage ? "جاري الرفع..." : "رفع صوره"}</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      disabled={uploadingImage}
+                      onChange={handleUploadImgBB}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+                {menuItemForm.image && (
+                  <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-900 border border-slate-800 relative mt-2">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={menuItemForm.image}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-slate-400 mb-1">وصف الصنف والمكونات</label>
+                <textarea
+                  rows={2}
+                  placeholder="وصف مختصر لمكونات وطعم الصنف..."
+                  value={menuItemForm.description}
+                  onChange={(e) => setMenuItemForm({ ...menuItemForm, description: e.target.value })}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowMenuItemModal(false)}
+                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black transition shadow"
+                >
+                  {menuItemModalMode === "ADD" ? "إضافة الصنف" : "حفظ التعديلات"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* EXPENSE MODAL */}
       {showExpenseModal && (

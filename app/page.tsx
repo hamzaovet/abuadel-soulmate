@@ -161,20 +161,14 @@ export default function DualBrandLandingPage() {
             <span>
               {activeBrand === "SOULMATE"
                 ? "☕ مرحباً بك في سول ميت كافيه VIP - قهوة مختصة وأجواء استثنائية مع خدمة الطلب من الترابيزة"
-                : "🍰 حلواني أبو عادل المستقل - حلي يومك مع المذاق المصري الأصيل وتوصيل دليفري (15992)"}
+                : "🍰 حلواني أبو عادل المستقل - حلي يومك مع المذاق المصري الأصيل وتوصيل دليفري (الخط الساخن: 15992)"}
             </span>
           </div>
 
           <div className="flex items-center gap-4 text-[11px]">
-            <a
-              href={settings?.haliyomakUrl || "https://haliyomak.com/"}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:underline flex items-center gap-1 text-slate-300"
-            >
-              <span>موقع حلي يومك الرسمي</span>
-              <ExternalLink className="w-3 h-3" />
-            </a>
+            <span className="text-slate-400">
+              إدارة مركزية مستقلة التشغيل
+            </span>
             <span className="text-slate-600">|</span>
             <Link
               href="/login"
@@ -255,7 +249,7 @@ export default function DualBrandLandingPage() {
               className="flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-amber-400 border border-amber-500/30 px-3.5 py-2 rounded-xl text-xs font-bold transition shadow"
             >
               <QrCode className="w-4 h-4" />
-              <span>كارت الـ 2 QR</span>
+              <span>كارت الـ 3 QR</span>
             </button>
 
             <Link
@@ -517,26 +511,44 @@ export default function DualBrandLandingPage() {
           </div>
         </div>
 
-        {/* Product Cards Grid */}
+        {/* Product Cards Grid with REAL IMAGES */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filteredItems.map((item) => (
             <div
               key={item.id}
-              className="bg-slate-900/90 border border-slate-800 hover:border-slate-700 rounded-2xl p-4 shadow-lg transition flex flex-col justify-between group"
+              className="bg-slate-900/90 border border-slate-800 hover:border-slate-700 rounded-2xl p-3.5 shadow-lg transition flex flex-col justify-between group overflow-hidden"
             >
               <div>
-                <div className="flex items-center justify-between mb-2">
+                {/* Product Card Image Banner */}
+                {item.image && (
+                  <div className="w-full h-40 rounded-xl overflow-hidden mb-3 bg-slate-950 border border-slate-800 relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={item.image}
+                      alt={item.nameAr}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        (e.target as any).src =
+                          item.itemType === "READY_PASTRY"
+                            ? "https://images.unsplash.com/photo-1579372786545-d24232daf58c?w=600"
+                            : "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=600";
+                      }}
+                    />
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between mb-1.5">
                   <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-800 text-slate-300 border border-slate-700">
                     {item.category}
                   </span>
                   {item.loyaltyPointsEarned > 0 && settings?.isLoyaltyEnabled && (
                     <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                      +{item.loyaltyPointsEarned} نقطة ⭐
+                      +{item.loyaltyPointsEarned}★
                     </span>
                   )}
                 </div>
 
-                <h3 className="font-bold text-white text-base group-hover:text-amber-400 transition">
+                <h3 className="font-bold text-white text-sm group-hover:text-amber-400 transition">
                   {item.nameAr}
                 </h3>
                 <p className="text-xs text-slate-400 mt-1 line-clamp-2">
@@ -706,9 +718,9 @@ export default function DualBrandLandingPage() {
         </div>
       )}
 
-      {/* 6. FOOTER & CONTACT */}
-      <footer className="bg-slate-950 border-t border-slate-900 py-8 px-4 text-xs text-slate-400">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      {/* 6. GRAND FOOTER WITH ORCA TECH DEVELOPER SIGNATURE */}
+      <footer className="bg-slate-950 border-t border-slate-900 text-xs text-slate-400">
+        <div className="max-w-7xl mx-auto py-8 px-4 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
               👑
@@ -724,14 +736,6 @@ export default function DualBrandLandingPage() {
           </div>
 
           <div className="flex items-center gap-6 text-[11px]">
-            <a
-              href={settings?.haliyomakUrl || "https://haliyomak.com/"}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-amber-400 transition"
-            >
-              موقع أبو عادل (haliyomak.com)
-            </a>
             <a
               href={settings?.facebookUrl || "https://www.facebook.com/hashtag/soulmate_cafe"}
               target="_blank"
@@ -749,9 +753,27 @@ export default function DualBrandLandingPage() {
             الخط الساخن: 15992 • موبايل: 01099887766
           </div>
         </div>
+
+        {/* 🐬 GRAND ORCA TECH SIGNATURE */}
+        <div className="border-t border-slate-900 bg-black/80 py-5 px-4 text-center space-y-1.5 text-xs">
+          <p className="text-slate-400 font-bold">
+            جميع الحقوق محفوظة © {new Date().getFullYear()} لـ{" "}
+            <span className="text-amber-400 font-black">مجموعة حلواني أبو عادل المستقل & سول ميت كافيه VIP</span>
+          </p>
+
+          <p className="text-[11px] text-amber-300/90 font-medium">
+            تصميم وتطوير المنظومة الذكية:{" "}
+            <strong className="text-white font-black">م / حمزة عباس</strong> — شركة{" "}
+            <strong className="text-amber-400 font-black">أوركا للحلول البرمجية والذكاء الاصطناعي (Orca Tech) 🐬</strong>
+          </p>
+
+          <p className="text-[10px] text-slate-500 font-mono">
+            خدمة الدعم الفني المباشر وتطوير الأنظمة: 01018671000
+          </p>
+        </div>
       </footer>
 
-      {/* 7. MODAL 2-QR CARDS */}
+      {/* 7. MODAL 3-QR CARDS */}
       <CardQRModal
         isOpen={showQRCardModal}
         onClose={() => setShowQRCardModal(false)}
