@@ -22,15 +22,16 @@ model Outlet {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 
-  users        User[]
-  tables       DiningTable[]
-  menuItems    MenuItem[]
-  rawMaterials RawMaterial[]
-  orders       Order[]
-  shifts       Shift[]
-  expenses     Expense[]
-  reservations Reservation[]
-  chatMessages ChatMessage[]
+  users           User[]
+  tables          DiningTable[]
+  menuItems       MenuItem[]
+  rawMaterials    RawMaterial[]
+  orders          Order[]
+  shifts          Shift[]
+  expenses        Expense[]
+  reservations    Reservation[]
+  chatMessages    ChatMessage[]
+  inventoryAudits InventoryAudit[]
 }
 
 // ----------------------------------------------------
@@ -105,7 +106,8 @@ model RawMaterial {
   outletId      String
   outlet        Outlet   @relation(fields: [outletId], references: [id], onDelete: Cascade)
   nameAr        String // بن إسبريسو حبوب، حليب كامل الدسم، سيرب فانيليا، صوص لوتس، أكواب ورقية
-  unit          String   @default("GRAM") // "GRAM", "ML", "PIECE", "PUMP"
+  unit          String   @default("GRAM") // "GRAM", "ML", "PIECE", "PUMP", "KG", "LITER"
+  openingStock  Float    @default(0) // رصيد بداية المدة
   currentStock  Float    @default(1000)
   minStockAlert Float    @default(200)
   costPerUnit   Float    @default(0.5) // EGP per Gram or ML
@@ -114,6 +116,58 @@ model RawMaterial {
   updatedAt     DateTime @default(now()) @updatedAt
 
   recipeUsage RecipeItem[]
+  movements   RawMaterialMovement[]
+}
+
+// ----------------------------------------------------
+// 5.1 RAW MATERIAL MOVEMENTS (حركات توريد واستهلاك وتسوية الخامات)
+// ----------------------------------------------------
+model RawMaterialMovement {
+  id            String      @id @default(cuid())
+  rawMaterialId String
+  rawMaterial   RawMaterial @relation(fields: [rawMaterialId], references: [id], onDelete: Cascade)
+  type          String // "INBOUND" (توريد بضاعة), "CONSUMPTION" (استهلاك ريسيبي مبيعات), "ADJUSTMENT" (تسوية جردية)
+  quantity      Float // Quantity in rawMaterial.unit (positive for inbound/surplus, negative for consumption/deficit)
+  costPerUnit   Float? // Cost per unit at time of movement
+  totalCost     Float? // Total monetary value
+  supplierName  String? // اسم المورد
+  invoiceNumber String? // رقم الفاتورة أو إذن التوريد
+  orderNumber   String? // رقم الطلب لو استهلاك ريسيبي
+  recordedBy    String? // اسم المسؤول
+  notes         String? // ملاحظات الحركة
+  createdAt     DateTime    @default(now())
+}
+
+// ----------------------------------------------------
+// 5.2 INVENTORY RECONCILIATION AUDITS (محاضر الجرد المقارن الفوري)
+// ----------------------------------------------------
+model InventoryAudit {
+  id          String               @id @default(cuid())
+  outletId    String
+  outlet      Outlet               @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  auditorName String               @default("المايسترو")
+  notes       String?
+  items       InventoryAuditItem[]
+  createdAt   DateTime             @default(now())
+}
+
+model InventoryAuditItem {
+  id              String         @id @default(cuid())
+  auditId         String
+  audit           InventoryAudit @relation(fields: [auditId], references: [id], onDelete: Cascade)
+  rawMaterialId   String
+  rawMaterialName String
+  unit            String
+  costPerUnit     Float          @default(0)
+  openingStock    Float          @default(0)
+  totalInbound    Float          @default(0)
+  totalConsumed   Float          @default(0)
+  expectedStock   Float          @default(0)
+  actualStock     Float          @default(0)
+  variance        Float          @default(0) // actual - expected
+  varianceCost    Float          @default(0) // variance * costPerUnit
+  status          String         @default("MATCH") // "MATCH" | "DEFICIT" | "SURPLUS"
+  createdAt       DateTime       @default(now())
 }
 
 // ----------------------------------------------------

@@ -165,10 +165,11 @@ export async function POST(req: Request) {
     for (const it of items) {
       const qty = Number(it.qty) || 1;
 
-      // If Prepared Beverage (Coffee / Drinks) -> Deduct Raw Materials via BOM
+      // If Prepared Beverage (Coffee / Drinks) -> Deduct Raw Materials via BOM & Record Movement
       if (it.itemType === "PREPARED_BEVERAGE" && it.menuItemId) {
         const recipes = await prisma.recipeItem.findMany({
           where: { menuItemId: it.menuItemId },
+          include: { rawMaterial: true },
         });
 
         for (const r of recipes) {
@@ -177,6 +178,24 @@ export async function POST(req: Request) {
             where: { id: r.rawMaterialId },
             data: { currentStock: { decrement: totalDepletion } },
           });
+
+          // Log movement for ERP audit tracking
+          try {
+            await prisma.rawMaterialMovement.create({
+              data: {
+                rawMaterialId: r.rawMaterialId,
+                type: "CONSUMPTION",
+                quantity: -totalDepletion,
+                costPerUnit: r.rawMaterial?.costPerUnit || 0,
+                totalCost: (r.rawMaterial?.costPerUnit || 0) * totalDepletion,
+                orderNumber: order.orderNumber,
+                recordedBy: "نظام الريسيبي الآلي (Soulmate BOM)",
+                notes: `خصم ريسيبي طلب #${order.orderNumber} - صنف: ${it.nameAr || it.name || "مشروب"} (${qty} كوب)`,
+              },
+            });
+          } catch (e) {
+            console.error("Failed to log raw material consumption movement:", e);
+          }
         }
       }
 

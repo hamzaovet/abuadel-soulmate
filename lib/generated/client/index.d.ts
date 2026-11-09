@@ -39,6 +39,21 @@ export type MenuItem = $Result.DefaultSelection<Prisma.$MenuItemPayload>
  */
 export type RawMaterial = $Result.DefaultSelection<Prisma.$RawMaterialPayload>
 /**
+ * Model RawMaterialMovement
+ * 
+ */
+export type RawMaterialMovement = $Result.DefaultSelection<Prisma.$RawMaterialMovementPayload>
+/**
+ * Model InventoryAudit
+ * 
+ */
+export type InventoryAudit = $Result.DefaultSelection<Prisma.$InventoryAuditPayload>
+/**
+ * Model InventoryAuditItem
+ * 
+ */
+export type InventoryAuditItem = $Result.DefaultSelection<Prisma.$InventoryAuditItemPayload>
+/**
  * Model RecipeItem
  * 
  */
@@ -254,6 +269,36 @@ export class PrismaClient<
     * ```
     */
   get rawMaterial(): Prisma.RawMaterialDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.rawMaterialMovement`: Exposes CRUD operations for the **RawMaterialMovement** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RawMaterialMovements
+    * const rawMaterialMovements = await prisma.rawMaterialMovement.findMany()
+    * ```
+    */
+  get rawMaterialMovement(): Prisma.RawMaterialMovementDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.inventoryAudit`: Exposes CRUD operations for the **InventoryAudit** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more InventoryAudits
+    * const inventoryAudits = await prisma.inventoryAudit.findMany()
+    * ```
+    */
+  get inventoryAudit(): Prisma.InventoryAuditDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.inventoryAuditItem`: Exposes CRUD operations for the **InventoryAuditItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more InventoryAuditItems
+    * const inventoryAuditItems = await prisma.inventoryAuditItem.findMany()
+    * ```
+    */
+  get inventoryAuditItem(): Prisma.InventoryAuditItemDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.recipeItem`: Exposes CRUD operations for the **RecipeItem** model.
@@ -796,6 +841,9 @@ export namespace Prisma {
     DiningTable: 'DiningTable',
     MenuItem: 'MenuItem',
     RawMaterial: 'RawMaterial',
+    RawMaterialMovement: 'RawMaterialMovement',
+    InventoryAudit: 'InventoryAudit',
+    InventoryAuditItem: 'InventoryAuditItem',
     RecipeItem: 'RecipeItem',
     Customer: 'Customer',
     Order: 'Order',
@@ -820,7 +868,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "outlet" | "user" | "diningTable" | "menuItem" | "rawMaterial" | "recipeItem" | "customer" | "order" | "kdsTicket" | "shift" | "expense" | "systemSettings" | "reservation" | "chatMessage"
+      modelProps: "outlet" | "user" | "diningTable" | "menuItem" | "rawMaterial" | "rawMaterialMovement" | "inventoryAudit" | "inventoryAuditItem" | "recipeItem" | "customer" | "order" | "kdsTicket" | "shift" | "expense" | "systemSettings" | "reservation" | "chatMessage"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1191,6 +1239,228 @@ export namespace Prisma {
           count: {
             args: Prisma.RawMaterialCountArgs<ExtArgs>
             result: $Utils.Optional<RawMaterialCountAggregateOutputType> | number
+          }
+        }
+      }
+      RawMaterialMovement: {
+        payload: Prisma.$RawMaterialMovementPayload<ExtArgs>
+        fields: Prisma.RawMaterialMovementFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RawMaterialMovementFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RawMaterialMovementPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RawMaterialMovementFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RawMaterialMovementPayload>
+          }
+          findFirst: {
+            args: Prisma.RawMaterialMovementFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RawMaterialMovementPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RawMaterialMovementFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RawMaterialMovementPayload>
+          }
+          findMany: {
+            args: Prisma.RawMaterialMovementFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RawMaterialMovementPayload>[]
+          }
+          create: {
+            args: Prisma.RawMaterialMovementCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RawMaterialMovementPayload>
+          }
+          createMany: {
+            args: Prisma.RawMaterialMovementCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RawMaterialMovementCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RawMaterialMovementPayload>[]
+          }
+          delete: {
+            args: Prisma.RawMaterialMovementDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RawMaterialMovementPayload>
+          }
+          update: {
+            args: Prisma.RawMaterialMovementUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RawMaterialMovementPayload>
+          }
+          deleteMany: {
+            args: Prisma.RawMaterialMovementDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RawMaterialMovementUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RawMaterialMovementUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RawMaterialMovementPayload>[]
+          }
+          upsert: {
+            args: Prisma.RawMaterialMovementUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RawMaterialMovementPayload>
+          }
+          aggregate: {
+            args: Prisma.RawMaterialMovementAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRawMaterialMovement>
+          }
+          groupBy: {
+            args: Prisma.RawMaterialMovementGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RawMaterialMovementGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RawMaterialMovementCountArgs<ExtArgs>
+            result: $Utils.Optional<RawMaterialMovementCountAggregateOutputType> | number
+          }
+        }
+      }
+      InventoryAudit: {
+        payload: Prisma.$InventoryAuditPayload<ExtArgs>
+        fields: Prisma.InventoryAuditFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.InventoryAuditFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.InventoryAuditFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditPayload>
+          }
+          findFirst: {
+            args: Prisma.InventoryAuditFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.InventoryAuditFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditPayload>
+          }
+          findMany: {
+            args: Prisma.InventoryAuditFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditPayload>[]
+          }
+          create: {
+            args: Prisma.InventoryAuditCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditPayload>
+          }
+          createMany: {
+            args: Prisma.InventoryAuditCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.InventoryAuditCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditPayload>[]
+          }
+          delete: {
+            args: Prisma.InventoryAuditDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditPayload>
+          }
+          update: {
+            args: Prisma.InventoryAuditUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditPayload>
+          }
+          deleteMany: {
+            args: Prisma.InventoryAuditDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.InventoryAuditUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.InventoryAuditUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditPayload>[]
+          }
+          upsert: {
+            args: Prisma.InventoryAuditUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditPayload>
+          }
+          aggregate: {
+            args: Prisma.InventoryAuditAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateInventoryAudit>
+          }
+          groupBy: {
+            args: Prisma.InventoryAuditGroupByArgs<ExtArgs>
+            result: $Utils.Optional<InventoryAuditGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.InventoryAuditCountArgs<ExtArgs>
+            result: $Utils.Optional<InventoryAuditCountAggregateOutputType> | number
+          }
+        }
+      }
+      InventoryAuditItem: {
+        payload: Prisma.$InventoryAuditItemPayload<ExtArgs>
+        fields: Prisma.InventoryAuditItemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.InventoryAuditItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditItemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.InventoryAuditItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditItemPayload>
+          }
+          findFirst: {
+            args: Prisma.InventoryAuditItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditItemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.InventoryAuditItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditItemPayload>
+          }
+          findMany: {
+            args: Prisma.InventoryAuditItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditItemPayload>[]
+          }
+          create: {
+            args: Prisma.InventoryAuditItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditItemPayload>
+          }
+          createMany: {
+            args: Prisma.InventoryAuditItemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.InventoryAuditItemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditItemPayload>[]
+          }
+          delete: {
+            args: Prisma.InventoryAuditItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditItemPayload>
+          }
+          update: {
+            args: Prisma.InventoryAuditItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditItemPayload>
+          }
+          deleteMany: {
+            args: Prisma.InventoryAuditItemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.InventoryAuditItemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.InventoryAuditItemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditItemPayload>[]
+          }
+          upsert: {
+            args: Prisma.InventoryAuditItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InventoryAuditItemPayload>
+          }
+          aggregate: {
+            args: Prisma.InventoryAuditItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateInventoryAuditItem>
+          }
+          groupBy: {
+            args: Prisma.InventoryAuditItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<InventoryAuditItemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.InventoryAuditItemCountArgs<ExtArgs>
+            result: $Utils.Optional<InventoryAuditItemCountAggregateOutputType> | number
           }
         }
       }
@@ -1988,6 +2258,9 @@ export namespace Prisma {
     diningTable?: DiningTableOmit
     menuItem?: MenuItemOmit
     rawMaterial?: RawMaterialOmit
+    rawMaterialMovement?: RawMaterialMovementOmit
+    inventoryAudit?: InventoryAuditOmit
+    inventoryAuditItem?: InventoryAuditItemOmit
     recipeItem?: RecipeItemOmit
     customer?: CustomerOmit
     order?: OrderOmit
@@ -2086,6 +2359,7 @@ export namespace Prisma {
     expenses: number
     reservations: number
     chatMessages: number
+    inventoryAudits: number
   }
 
   export type OutletCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2098,6 +2372,7 @@ export namespace Prisma {
     expenses?: boolean | OutletCountOutputTypeCountExpensesArgs
     reservations?: boolean | OutletCountOutputTypeCountReservationsArgs
     chatMessages?: boolean | OutletCountOutputTypeCountChatMessagesArgs
+    inventoryAudits?: boolean | OutletCountOutputTypeCountInventoryAuditsArgs
   }
 
   // Custom InputTypes
@@ -2174,6 +2449,13 @@ export namespace Prisma {
     where?: ChatMessageWhereInput
   }
 
+  /**
+   * OutletCountOutputType without action
+   */
+  export type OutletCountOutputTypeCountInventoryAuditsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InventoryAuditWhereInput
+  }
+
 
   /**
    * Count Type DiningTableCountOutputType
@@ -2243,10 +2525,12 @@ export namespace Prisma {
 
   export type RawMaterialCountOutputType = {
     recipeUsage: number
+    movements: number
   }
 
   export type RawMaterialCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     recipeUsage?: boolean | RawMaterialCountOutputTypeCountRecipeUsageArgs
+    movements?: boolean | RawMaterialCountOutputTypeCountMovementsArgs
   }
 
   // Custom InputTypes
@@ -2265,6 +2549,44 @@ export namespace Prisma {
    */
   export type RawMaterialCountOutputTypeCountRecipeUsageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RecipeItemWhereInput
+  }
+
+  /**
+   * RawMaterialCountOutputType without action
+   */
+  export type RawMaterialCountOutputTypeCountMovementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RawMaterialMovementWhereInput
+  }
+
+
+  /**
+   * Count Type InventoryAuditCountOutputType
+   */
+
+  export type InventoryAuditCountOutputType = {
+    items: number
+  }
+
+  export type InventoryAuditCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    items?: boolean | InventoryAuditCountOutputTypeCountItemsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * InventoryAuditCountOutputType without action
+   */
+  export type InventoryAuditCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAuditCountOutputType
+     */
+    select?: InventoryAuditCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * InventoryAuditCountOutputType without action
+   */
+  export type InventoryAuditCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InventoryAuditItemWhereInput
   }
 
 
@@ -2547,6 +2869,7 @@ export namespace Prisma {
     expenses?: boolean | Outlet$expensesArgs<ExtArgs>
     reservations?: boolean | Outlet$reservationsArgs<ExtArgs>
     chatMessages?: boolean | Outlet$chatMessagesArgs<ExtArgs>
+    inventoryAudits?: boolean | Outlet$inventoryAuditsArgs<ExtArgs>
     _count?: boolean | OutletCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["outlet"]>
 
@@ -2600,6 +2923,7 @@ export namespace Prisma {
     expenses?: boolean | Outlet$expensesArgs<ExtArgs>
     reservations?: boolean | Outlet$reservationsArgs<ExtArgs>
     chatMessages?: boolean | Outlet$chatMessagesArgs<ExtArgs>
+    inventoryAudits?: boolean | Outlet$inventoryAuditsArgs<ExtArgs>
     _count?: boolean | OutletCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OutletIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2617,6 +2941,7 @@ export namespace Prisma {
       expenses: Prisma.$ExpensePayload<ExtArgs>[]
       reservations: Prisma.$ReservationPayload<ExtArgs>[]
       chatMessages: Prisma.$ChatMessagePayload<ExtArgs>[]
+      inventoryAudits: Prisma.$InventoryAuditPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3032,6 +3357,7 @@ export namespace Prisma {
     expenses<T extends Outlet$expensesArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reservations<T extends Outlet$reservationsArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$reservationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReservationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     chatMessages<T extends Outlet$chatMessagesArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$chatMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    inventoryAudits<T extends Outlet$inventoryAuditsArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$inventoryAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InventoryAuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3677,6 +4003,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ChatMessageScalarFieldEnum | ChatMessageScalarFieldEnum[]
+  }
+
+  /**
+   * Outlet.inventoryAudits
+   */
+  export type Outlet$inventoryAuditsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAudit
+     */
+    select?: InventoryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAudit
+     */
+    omit?: InventoryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditInclude<ExtArgs> | null
+    where?: InventoryAuditWhereInput
+    orderBy?: InventoryAuditOrderByWithRelationInput | InventoryAuditOrderByWithRelationInput[]
+    cursor?: InventoryAuditWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InventoryAuditScalarFieldEnum | InventoryAuditScalarFieldEnum[]
   }
 
   /**
@@ -7387,12 +7737,14 @@ export namespace Prisma {
   }
 
   export type RawMaterialAvgAggregateOutputType = {
+    openingStock: number | null
     currentStock: number | null
     minStockAlert: number | null
     costPerUnit: number | null
   }
 
   export type RawMaterialSumAggregateOutputType = {
+    openingStock: number | null
     currentStock: number | null
     minStockAlert: number | null
     costPerUnit: number | null
@@ -7403,6 +7755,7 @@ export namespace Prisma {
     outletId: string | null
     nameAr: string | null
     unit: string | null
+    openingStock: number | null
     currentStock: number | null
     minStockAlert: number | null
     costPerUnit: number | null
@@ -7416,6 +7769,7 @@ export namespace Prisma {
     outletId: string | null
     nameAr: string | null
     unit: string | null
+    openingStock: number | null
     currentStock: number | null
     minStockAlert: number | null
     costPerUnit: number | null
@@ -7429,6 +7783,7 @@ export namespace Prisma {
     outletId: number
     nameAr: number
     unit: number
+    openingStock: number
     currentStock: number
     minStockAlert: number
     costPerUnit: number
@@ -7440,12 +7795,14 @@ export namespace Prisma {
 
 
   export type RawMaterialAvgAggregateInputType = {
+    openingStock?: true
     currentStock?: true
     minStockAlert?: true
     costPerUnit?: true
   }
 
   export type RawMaterialSumAggregateInputType = {
+    openingStock?: true
     currentStock?: true
     minStockAlert?: true
     costPerUnit?: true
@@ -7456,6 +7813,7 @@ export namespace Prisma {
     outletId?: true
     nameAr?: true
     unit?: true
+    openingStock?: true
     currentStock?: true
     minStockAlert?: true
     costPerUnit?: true
@@ -7469,6 +7827,7 @@ export namespace Prisma {
     outletId?: true
     nameAr?: true
     unit?: true
+    openingStock?: true
     currentStock?: true
     minStockAlert?: true
     costPerUnit?: true
@@ -7482,6 +7841,7 @@ export namespace Prisma {
     outletId?: true
     nameAr?: true
     unit?: true
+    openingStock?: true
     currentStock?: true
     minStockAlert?: true
     costPerUnit?: true
@@ -7582,6 +7942,7 @@ export namespace Prisma {
     outletId: string
     nameAr: string
     unit: string
+    openingStock: number
     currentStock: number
     minStockAlert: number
     costPerUnit: number
@@ -7614,6 +7975,7 @@ export namespace Prisma {
     outletId?: boolean
     nameAr?: boolean
     unit?: boolean
+    openingStock?: boolean
     currentStock?: boolean
     minStockAlert?: boolean
     costPerUnit?: boolean
@@ -7622,6 +7984,7 @@ export namespace Prisma {
     updatedAt?: boolean
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     recipeUsage?: boolean | RawMaterial$recipeUsageArgs<ExtArgs>
+    movements?: boolean | RawMaterial$movementsArgs<ExtArgs>
     _count?: boolean | RawMaterialCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["rawMaterial"]>
 
@@ -7630,6 +7993,7 @@ export namespace Prisma {
     outletId?: boolean
     nameAr?: boolean
     unit?: boolean
+    openingStock?: boolean
     currentStock?: boolean
     minStockAlert?: boolean
     costPerUnit?: boolean
@@ -7644,6 +8008,7 @@ export namespace Prisma {
     outletId?: boolean
     nameAr?: boolean
     unit?: boolean
+    openingStock?: boolean
     currentStock?: boolean
     minStockAlert?: boolean
     costPerUnit?: boolean
@@ -7658,6 +8023,7 @@ export namespace Prisma {
     outletId?: boolean
     nameAr?: boolean
     unit?: boolean
+    openingStock?: boolean
     currentStock?: boolean
     minStockAlert?: boolean
     costPerUnit?: boolean
@@ -7666,10 +8032,11 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type RawMaterialOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "nameAr" | "unit" | "currentStock" | "minStockAlert" | "costPerUnit" | "supplierName" | "notes" | "updatedAt", ExtArgs["result"]["rawMaterial"]>
+  export type RawMaterialOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "nameAr" | "unit" | "openingStock" | "currentStock" | "minStockAlert" | "costPerUnit" | "supplierName" | "notes" | "updatedAt", ExtArgs["result"]["rawMaterial"]>
   export type RawMaterialInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     recipeUsage?: boolean | RawMaterial$recipeUsageArgs<ExtArgs>
+    movements?: boolean | RawMaterial$movementsArgs<ExtArgs>
     _count?: boolean | RawMaterialCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type RawMaterialIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7684,12 +8051,14 @@ export namespace Prisma {
     objects: {
       outlet: Prisma.$OutletPayload<ExtArgs>
       recipeUsage: Prisma.$RecipeItemPayload<ExtArgs>[]
+      movements: Prisma.$RawMaterialMovementPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       outletId: string
       nameAr: string
       unit: string
+      openingStock: number
       currentStock: number
       minStockAlert: number
       costPerUnit: number
@@ -8092,6 +8461,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     outlet<T extends OutletDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OutletDefaultArgs<ExtArgs>>): Prisma__OutletClient<$Result.GetResult<Prisma.$OutletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     recipeUsage<T extends RawMaterial$recipeUsageArgs<ExtArgs> = {}>(args?: Subset<T, RawMaterial$recipeUsageArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecipeItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    movements<T extends RawMaterial$movementsArgs<ExtArgs> = {}>(args?: Subset<T, RawMaterial$movementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RawMaterialMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8125,6 +8495,7 @@ export namespace Prisma {
     readonly outletId: FieldRef<"RawMaterial", 'String'>
     readonly nameAr: FieldRef<"RawMaterial", 'String'>
     readonly unit: FieldRef<"RawMaterial", 'String'>
+    readonly openingStock: FieldRef<"RawMaterial", 'Float'>
     readonly currentStock: FieldRef<"RawMaterial", 'Float'>
     readonly minStockAlert: FieldRef<"RawMaterial", 'Float'>
     readonly costPerUnit: FieldRef<"RawMaterial", 'Float'>
@@ -8556,6 +8927,30 @@ export namespace Prisma {
   }
 
   /**
+   * RawMaterial.movements
+   */
+  export type RawMaterial$movementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RawMaterialMovement
+     */
+    select?: RawMaterialMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RawMaterialMovement
+     */
+    omit?: RawMaterialMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RawMaterialMovementInclude<ExtArgs> | null
+    where?: RawMaterialMovementWhereInput
+    orderBy?: RawMaterialMovementOrderByWithRelationInput | RawMaterialMovementOrderByWithRelationInput[]
+    cursor?: RawMaterialMovementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RawMaterialMovementScalarFieldEnum | RawMaterialMovementScalarFieldEnum[]
+  }
+
+  /**
    * RawMaterial without action
    */
   export type RawMaterialDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8571,6 +8966,3550 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: RawMaterialInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model RawMaterialMovement
+   */
+
+  export type AggregateRawMaterialMovement = {
+    _count: RawMaterialMovementCountAggregateOutputType | null
+    _avg: RawMaterialMovementAvgAggregateOutputType | null
+    _sum: RawMaterialMovementSumAggregateOutputType | null
+    _min: RawMaterialMovementMinAggregateOutputType | null
+    _max: RawMaterialMovementMaxAggregateOutputType | null
+  }
+
+  export type RawMaterialMovementAvgAggregateOutputType = {
+    quantity: number | null
+    costPerUnit: number | null
+    totalCost: number | null
+  }
+
+  export type RawMaterialMovementSumAggregateOutputType = {
+    quantity: number | null
+    costPerUnit: number | null
+    totalCost: number | null
+  }
+
+  export type RawMaterialMovementMinAggregateOutputType = {
+    id: string | null
+    rawMaterialId: string | null
+    type: string | null
+    quantity: number | null
+    costPerUnit: number | null
+    totalCost: number | null
+    supplierName: string | null
+    invoiceNumber: string | null
+    orderNumber: string | null
+    recordedBy: string | null
+    notes: string | null
+    createdAt: Date | null
+  }
+
+  export type RawMaterialMovementMaxAggregateOutputType = {
+    id: string | null
+    rawMaterialId: string | null
+    type: string | null
+    quantity: number | null
+    costPerUnit: number | null
+    totalCost: number | null
+    supplierName: string | null
+    invoiceNumber: string | null
+    orderNumber: string | null
+    recordedBy: string | null
+    notes: string | null
+    createdAt: Date | null
+  }
+
+  export type RawMaterialMovementCountAggregateOutputType = {
+    id: number
+    rawMaterialId: number
+    type: number
+    quantity: number
+    costPerUnit: number
+    totalCost: number
+    supplierName: number
+    invoiceNumber: number
+    orderNumber: number
+    recordedBy: number
+    notes: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type RawMaterialMovementAvgAggregateInputType = {
+    quantity?: true
+    costPerUnit?: true
+    totalCost?: true
+  }
+
+  export type RawMaterialMovementSumAggregateInputType = {
+    quantity?: true
+    costPerUnit?: true
+    totalCost?: true
+  }
+
+  export type RawMaterialMovementMinAggregateInputType = {
+    id?: true
+    rawMaterialId?: true
+    type?: true
+    quantity?: true
+    costPerUnit?: true
+    totalCost?: true
+    supplierName?: true
+    invoiceNumber?: true
+    orderNumber?: true
+    recordedBy?: true
+    notes?: true
+    createdAt?: true
+  }
+
+  export type RawMaterialMovementMaxAggregateInputType = {
+    id?: true
+    rawMaterialId?: true
+    type?: true
+    quantity?: true
+    costPerUnit?: true
+    totalCost?: true
+    supplierName?: true
+    invoiceNumber?: true
+    orderNumber?: true
+    recordedBy?: true
+    notes?: true
+    createdAt?: true
+  }
+
+  export type RawMaterialMovementCountAggregateInputType = {
+    id?: true
+    rawMaterialId?: true
+    type?: true
+    quantity?: true
+    costPerUnit?: true
+    totalCost?: true
+    supplierName?: true
+    invoiceNumber?: true
+    orderNumber?: true
+    recordedBy?: true
+    notes?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type RawMaterialMovementAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RawMaterialMovement to aggregate.
+     */
+    where?: RawMaterialMovementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RawMaterialMovements to fetch.
+     */
+    orderBy?: RawMaterialMovementOrderByWithRelationInput | RawMaterialMovementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RawMaterialMovementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RawMaterialMovements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RawMaterialMovements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RawMaterialMovements
+    **/
+    _count?: true | RawMaterialMovementCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RawMaterialMovementAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RawMaterialMovementSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RawMaterialMovementMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RawMaterialMovementMaxAggregateInputType
+  }
+
+  export type GetRawMaterialMovementAggregateType<T extends RawMaterialMovementAggregateArgs> = {
+        [P in keyof T & keyof AggregateRawMaterialMovement]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRawMaterialMovement[P]>
+      : GetScalarType<T[P], AggregateRawMaterialMovement[P]>
+  }
+
+
+
+
+  export type RawMaterialMovementGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RawMaterialMovementWhereInput
+    orderBy?: RawMaterialMovementOrderByWithAggregationInput | RawMaterialMovementOrderByWithAggregationInput[]
+    by: RawMaterialMovementScalarFieldEnum[] | RawMaterialMovementScalarFieldEnum
+    having?: RawMaterialMovementScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RawMaterialMovementCountAggregateInputType | true
+    _avg?: RawMaterialMovementAvgAggregateInputType
+    _sum?: RawMaterialMovementSumAggregateInputType
+    _min?: RawMaterialMovementMinAggregateInputType
+    _max?: RawMaterialMovementMaxAggregateInputType
+  }
+
+  export type RawMaterialMovementGroupByOutputType = {
+    id: string
+    rawMaterialId: string
+    type: string
+    quantity: number
+    costPerUnit: number | null
+    totalCost: number | null
+    supplierName: string | null
+    invoiceNumber: string | null
+    orderNumber: string | null
+    recordedBy: string | null
+    notes: string | null
+    createdAt: Date
+    _count: RawMaterialMovementCountAggregateOutputType | null
+    _avg: RawMaterialMovementAvgAggregateOutputType | null
+    _sum: RawMaterialMovementSumAggregateOutputType | null
+    _min: RawMaterialMovementMinAggregateOutputType | null
+    _max: RawMaterialMovementMaxAggregateOutputType | null
+  }
+
+  type GetRawMaterialMovementGroupByPayload<T extends RawMaterialMovementGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RawMaterialMovementGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RawMaterialMovementGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RawMaterialMovementGroupByOutputType[P]>
+            : GetScalarType<T[P], RawMaterialMovementGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RawMaterialMovementSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    rawMaterialId?: boolean
+    type?: boolean
+    quantity?: boolean
+    costPerUnit?: boolean
+    totalCost?: boolean
+    supplierName?: boolean
+    invoiceNumber?: boolean
+    orderNumber?: boolean
+    recordedBy?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    rawMaterial?: boolean | RawMaterialDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["rawMaterialMovement"]>
+
+  export type RawMaterialMovementSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    rawMaterialId?: boolean
+    type?: boolean
+    quantity?: boolean
+    costPerUnit?: boolean
+    totalCost?: boolean
+    supplierName?: boolean
+    invoiceNumber?: boolean
+    orderNumber?: boolean
+    recordedBy?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    rawMaterial?: boolean | RawMaterialDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["rawMaterialMovement"]>
+
+  export type RawMaterialMovementSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    rawMaterialId?: boolean
+    type?: boolean
+    quantity?: boolean
+    costPerUnit?: boolean
+    totalCost?: boolean
+    supplierName?: boolean
+    invoiceNumber?: boolean
+    orderNumber?: boolean
+    recordedBy?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    rawMaterial?: boolean | RawMaterialDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["rawMaterialMovement"]>
+
+  export type RawMaterialMovementSelectScalar = {
+    id?: boolean
+    rawMaterialId?: boolean
+    type?: boolean
+    quantity?: boolean
+    costPerUnit?: boolean
+    totalCost?: boolean
+    supplierName?: boolean
+    invoiceNumber?: boolean
+    orderNumber?: boolean
+    recordedBy?: boolean
+    notes?: boolean
+    createdAt?: boolean
+  }
+
+  export type RawMaterialMovementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "rawMaterialId" | "type" | "quantity" | "costPerUnit" | "totalCost" | "supplierName" | "invoiceNumber" | "orderNumber" | "recordedBy" | "notes" | "createdAt", ExtArgs["result"]["rawMaterialMovement"]>
+  export type RawMaterialMovementInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    rawMaterial?: boolean | RawMaterialDefaultArgs<ExtArgs>
+  }
+  export type RawMaterialMovementIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    rawMaterial?: boolean | RawMaterialDefaultArgs<ExtArgs>
+  }
+  export type RawMaterialMovementIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    rawMaterial?: boolean | RawMaterialDefaultArgs<ExtArgs>
+  }
+
+  export type $RawMaterialMovementPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RawMaterialMovement"
+    objects: {
+      rawMaterial: Prisma.$RawMaterialPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      rawMaterialId: string
+      type: string
+      quantity: number
+      costPerUnit: number | null
+      totalCost: number | null
+      supplierName: string | null
+      invoiceNumber: string | null
+      orderNumber: string | null
+      recordedBy: string | null
+      notes: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["rawMaterialMovement"]>
+    composites: {}
+  }
+
+  type RawMaterialMovementGetPayload<S extends boolean | null | undefined | RawMaterialMovementDefaultArgs> = $Result.GetResult<Prisma.$RawMaterialMovementPayload, S>
+
+  type RawMaterialMovementCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RawMaterialMovementFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RawMaterialMovementCountAggregateInputType | true
+    }
+
+  export interface RawMaterialMovementDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RawMaterialMovement'], meta: { name: 'RawMaterialMovement' } }
+    /**
+     * Find zero or one RawMaterialMovement that matches the filter.
+     * @param {RawMaterialMovementFindUniqueArgs} args - Arguments to find a RawMaterialMovement
+     * @example
+     * // Get one RawMaterialMovement
+     * const rawMaterialMovement = await prisma.rawMaterialMovement.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RawMaterialMovementFindUniqueArgs>(args: SelectSubset<T, RawMaterialMovementFindUniqueArgs<ExtArgs>>): Prisma__RawMaterialMovementClient<$Result.GetResult<Prisma.$RawMaterialMovementPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RawMaterialMovement that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RawMaterialMovementFindUniqueOrThrowArgs} args - Arguments to find a RawMaterialMovement
+     * @example
+     * // Get one RawMaterialMovement
+     * const rawMaterialMovement = await prisma.rawMaterialMovement.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RawMaterialMovementFindUniqueOrThrowArgs>(args: SelectSubset<T, RawMaterialMovementFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RawMaterialMovementClient<$Result.GetResult<Prisma.$RawMaterialMovementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RawMaterialMovement that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RawMaterialMovementFindFirstArgs} args - Arguments to find a RawMaterialMovement
+     * @example
+     * // Get one RawMaterialMovement
+     * const rawMaterialMovement = await prisma.rawMaterialMovement.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RawMaterialMovementFindFirstArgs>(args?: SelectSubset<T, RawMaterialMovementFindFirstArgs<ExtArgs>>): Prisma__RawMaterialMovementClient<$Result.GetResult<Prisma.$RawMaterialMovementPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RawMaterialMovement that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RawMaterialMovementFindFirstOrThrowArgs} args - Arguments to find a RawMaterialMovement
+     * @example
+     * // Get one RawMaterialMovement
+     * const rawMaterialMovement = await prisma.rawMaterialMovement.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RawMaterialMovementFindFirstOrThrowArgs>(args?: SelectSubset<T, RawMaterialMovementFindFirstOrThrowArgs<ExtArgs>>): Prisma__RawMaterialMovementClient<$Result.GetResult<Prisma.$RawMaterialMovementPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RawMaterialMovements that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RawMaterialMovementFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RawMaterialMovements
+     * const rawMaterialMovements = await prisma.rawMaterialMovement.findMany()
+     * 
+     * // Get first 10 RawMaterialMovements
+     * const rawMaterialMovements = await prisma.rawMaterialMovement.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const rawMaterialMovementWithIdOnly = await prisma.rawMaterialMovement.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RawMaterialMovementFindManyArgs>(args?: SelectSubset<T, RawMaterialMovementFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RawMaterialMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RawMaterialMovement.
+     * @param {RawMaterialMovementCreateArgs} args - Arguments to create a RawMaterialMovement.
+     * @example
+     * // Create one RawMaterialMovement
+     * const RawMaterialMovement = await prisma.rawMaterialMovement.create({
+     *   data: {
+     *     // ... data to create a RawMaterialMovement
+     *   }
+     * })
+     * 
+     */
+    create<T extends RawMaterialMovementCreateArgs>(args: SelectSubset<T, RawMaterialMovementCreateArgs<ExtArgs>>): Prisma__RawMaterialMovementClient<$Result.GetResult<Prisma.$RawMaterialMovementPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RawMaterialMovements.
+     * @param {RawMaterialMovementCreateManyArgs} args - Arguments to create many RawMaterialMovements.
+     * @example
+     * // Create many RawMaterialMovements
+     * const rawMaterialMovement = await prisma.rawMaterialMovement.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RawMaterialMovementCreateManyArgs>(args?: SelectSubset<T, RawMaterialMovementCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RawMaterialMovements and returns the data saved in the database.
+     * @param {RawMaterialMovementCreateManyAndReturnArgs} args - Arguments to create many RawMaterialMovements.
+     * @example
+     * // Create many RawMaterialMovements
+     * const rawMaterialMovement = await prisma.rawMaterialMovement.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RawMaterialMovements and only return the `id`
+     * const rawMaterialMovementWithIdOnly = await prisma.rawMaterialMovement.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RawMaterialMovementCreateManyAndReturnArgs>(args?: SelectSubset<T, RawMaterialMovementCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RawMaterialMovementPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RawMaterialMovement.
+     * @param {RawMaterialMovementDeleteArgs} args - Arguments to delete one RawMaterialMovement.
+     * @example
+     * // Delete one RawMaterialMovement
+     * const RawMaterialMovement = await prisma.rawMaterialMovement.delete({
+     *   where: {
+     *     // ... filter to delete one RawMaterialMovement
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RawMaterialMovementDeleteArgs>(args: SelectSubset<T, RawMaterialMovementDeleteArgs<ExtArgs>>): Prisma__RawMaterialMovementClient<$Result.GetResult<Prisma.$RawMaterialMovementPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RawMaterialMovement.
+     * @param {RawMaterialMovementUpdateArgs} args - Arguments to update one RawMaterialMovement.
+     * @example
+     * // Update one RawMaterialMovement
+     * const rawMaterialMovement = await prisma.rawMaterialMovement.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RawMaterialMovementUpdateArgs>(args: SelectSubset<T, RawMaterialMovementUpdateArgs<ExtArgs>>): Prisma__RawMaterialMovementClient<$Result.GetResult<Prisma.$RawMaterialMovementPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RawMaterialMovements.
+     * @param {RawMaterialMovementDeleteManyArgs} args - Arguments to filter RawMaterialMovements to delete.
+     * @example
+     * // Delete a few RawMaterialMovements
+     * const { count } = await prisma.rawMaterialMovement.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RawMaterialMovementDeleteManyArgs>(args?: SelectSubset<T, RawMaterialMovementDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RawMaterialMovements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RawMaterialMovementUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RawMaterialMovements
+     * const rawMaterialMovement = await prisma.rawMaterialMovement.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RawMaterialMovementUpdateManyArgs>(args: SelectSubset<T, RawMaterialMovementUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RawMaterialMovements and returns the data updated in the database.
+     * @param {RawMaterialMovementUpdateManyAndReturnArgs} args - Arguments to update many RawMaterialMovements.
+     * @example
+     * // Update many RawMaterialMovements
+     * const rawMaterialMovement = await prisma.rawMaterialMovement.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RawMaterialMovements and only return the `id`
+     * const rawMaterialMovementWithIdOnly = await prisma.rawMaterialMovement.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RawMaterialMovementUpdateManyAndReturnArgs>(args: SelectSubset<T, RawMaterialMovementUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RawMaterialMovementPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RawMaterialMovement.
+     * @param {RawMaterialMovementUpsertArgs} args - Arguments to update or create a RawMaterialMovement.
+     * @example
+     * // Update or create a RawMaterialMovement
+     * const rawMaterialMovement = await prisma.rawMaterialMovement.upsert({
+     *   create: {
+     *     // ... data to create a RawMaterialMovement
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RawMaterialMovement we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RawMaterialMovementUpsertArgs>(args: SelectSubset<T, RawMaterialMovementUpsertArgs<ExtArgs>>): Prisma__RawMaterialMovementClient<$Result.GetResult<Prisma.$RawMaterialMovementPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RawMaterialMovements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RawMaterialMovementCountArgs} args - Arguments to filter RawMaterialMovements to count.
+     * @example
+     * // Count the number of RawMaterialMovements
+     * const count = await prisma.rawMaterialMovement.count({
+     *   where: {
+     *     // ... the filter for the RawMaterialMovements we want to count
+     *   }
+     * })
+    **/
+    count<T extends RawMaterialMovementCountArgs>(
+      args?: Subset<T, RawMaterialMovementCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RawMaterialMovementCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RawMaterialMovement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RawMaterialMovementAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RawMaterialMovementAggregateArgs>(args: Subset<T, RawMaterialMovementAggregateArgs>): Prisma.PrismaPromise<GetRawMaterialMovementAggregateType<T>>
+
+    /**
+     * Group by RawMaterialMovement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RawMaterialMovementGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RawMaterialMovementGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RawMaterialMovementGroupByArgs['orderBy'] }
+        : { orderBy?: RawMaterialMovementGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RawMaterialMovementGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRawMaterialMovementGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RawMaterialMovement model
+   */
+  readonly fields: RawMaterialMovementFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RawMaterialMovement.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RawMaterialMovementClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    rawMaterial<T extends RawMaterialDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RawMaterialDefaultArgs<ExtArgs>>): Prisma__RawMaterialClient<$Result.GetResult<Prisma.$RawMaterialPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RawMaterialMovement model
+   */
+  interface RawMaterialMovementFieldRefs {
+    readonly id: FieldRef<"RawMaterialMovement", 'String'>
+    readonly rawMaterialId: FieldRef<"RawMaterialMovement", 'String'>
+    readonly type: FieldRef<"RawMaterialMovement", 'String'>
+    readonly quantity: FieldRef<"RawMaterialMovement", 'Float'>
+    readonly costPerUnit: FieldRef<"RawMaterialMovement", 'Float'>
+    readonly totalCost: FieldRef<"RawMaterialMovement", 'Float'>
+    readonly supplierName: FieldRef<"RawMaterialMovement", 'String'>
+    readonly invoiceNumber: FieldRef<"RawMaterialMovement", 'String'>
+    readonly orderNumber: FieldRef<"RawMaterialMovement", 'String'>
+    readonly recordedBy: FieldRef<"RawMaterialMovement", 'String'>
+    readonly notes: FieldRef<"RawMaterialMovement", 'String'>
+    readonly createdAt: FieldRef<"RawMaterialMovement", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RawMaterialMovement findUnique
+   */
+  export type RawMaterialMovementFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RawMaterialMovement
+     */
+    select?: RawMaterialMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RawMaterialMovement
+     */
+    omit?: RawMaterialMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RawMaterialMovementInclude<ExtArgs> | null
+    /**
+     * Filter, which RawMaterialMovement to fetch.
+     */
+    where: RawMaterialMovementWhereUniqueInput
+  }
+
+  /**
+   * RawMaterialMovement findUniqueOrThrow
+   */
+  export type RawMaterialMovementFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RawMaterialMovement
+     */
+    select?: RawMaterialMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RawMaterialMovement
+     */
+    omit?: RawMaterialMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RawMaterialMovementInclude<ExtArgs> | null
+    /**
+     * Filter, which RawMaterialMovement to fetch.
+     */
+    where: RawMaterialMovementWhereUniqueInput
+  }
+
+  /**
+   * RawMaterialMovement findFirst
+   */
+  export type RawMaterialMovementFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RawMaterialMovement
+     */
+    select?: RawMaterialMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RawMaterialMovement
+     */
+    omit?: RawMaterialMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RawMaterialMovementInclude<ExtArgs> | null
+    /**
+     * Filter, which RawMaterialMovement to fetch.
+     */
+    where?: RawMaterialMovementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RawMaterialMovements to fetch.
+     */
+    orderBy?: RawMaterialMovementOrderByWithRelationInput | RawMaterialMovementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RawMaterialMovements.
+     */
+    cursor?: RawMaterialMovementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RawMaterialMovements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RawMaterialMovements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RawMaterialMovements.
+     */
+    distinct?: RawMaterialMovementScalarFieldEnum | RawMaterialMovementScalarFieldEnum[]
+  }
+
+  /**
+   * RawMaterialMovement findFirstOrThrow
+   */
+  export type RawMaterialMovementFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RawMaterialMovement
+     */
+    select?: RawMaterialMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RawMaterialMovement
+     */
+    omit?: RawMaterialMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RawMaterialMovementInclude<ExtArgs> | null
+    /**
+     * Filter, which RawMaterialMovement to fetch.
+     */
+    where?: RawMaterialMovementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RawMaterialMovements to fetch.
+     */
+    orderBy?: RawMaterialMovementOrderByWithRelationInput | RawMaterialMovementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RawMaterialMovements.
+     */
+    cursor?: RawMaterialMovementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RawMaterialMovements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RawMaterialMovements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RawMaterialMovements.
+     */
+    distinct?: RawMaterialMovementScalarFieldEnum | RawMaterialMovementScalarFieldEnum[]
+  }
+
+  /**
+   * RawMaterialMovement findMany
+   */
+  export type RawMaterialMovementFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RawMaterialMovement
+     */
+    select?: RawMaterialMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RawMaterialMovement
+     */
+    omit?: RawMaterialMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RawMaterialMovementInclude<ExtArgs> | null
+    /**
+     * Filter, which RawMaterialMovements to fetch.
+     */
+    where?: RawMaterialMovementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RawMaterialMovements to fetch.
+     */
+    orderBy?: RawMaterialMovementOrderByWithRelationInput | RawMaterialMovementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RawMaterialMovements.
+     */
+    cursor?: RawMaterialMovementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RawMaterialMovements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RawMaterialMovements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RawMaterialMovements.
+     */
+    distinct?: RawMaterialMovementScalarFieldEnum | RawMaterialMovementScalarFieldEnum[]
+  }
+
+  /**
+   * RawMaterialMovement create
+   */
+  export type RawMaterialMovementCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RawMaterialMovement
+     */
+    select?: RawMaterialMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RawMaterialMovement
+     */
+    omit?: RawMaterialMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RawMaterialMovementInclude<ExtArgs> | null
+    /**
+     * The data needed to create a RawMaterialMovement.
+     */
+    data: XOR<RawMaterialMovementCreateInput, RawMaterialMovementUncheckedCreateInput>
+  }
+
+  /**
+   * RawMaterialMovement createMany
+   */
+  export type RawMaterialMovementCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RawMaterialMovements.
+     */
+    data: RawMaterialMovementCreateManyInput | RawMaterialMovementCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RawMaterialMovement createManyAndReturn
+   */
+  export type RawMaterialMovementCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RawMaterialMovement
+     */
+    select?: RawMaterialMovementSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RawMaterialMovement
+     */
+    omit?: RawMaterialMovementOmit<ExtArgs> | null
+    /**
+     * The data used to create many RawMaterialMovements.
+     */
+    data: RawMaterialMovementCreateManyInput | RawMaterialMovementCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RawMaterialMovementIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RawMaterialMovement update
+   */
+  export type RawMaterialMovementUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RawMaterialMovement
+     */
+    select?: RawMaterialMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RawMaterialMovement
+     */
+    omit?: RawMaterialMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RawMaterialMovementInclude<ExtArgs> | null
+    /**
+     * The data needed to update a RawMaterialMovement.
+     */
+    data: XOR<RawMaterialMovementUpdateInput, RawMaterialMovementUncheckedUpdateInput>
+    /**
+     * Choose, which RawMaterialMovement to update.
+     */
+    where: RawMaterialMovementWhereUniqueInput
+  }
+
+  /**
+   * RawMaterialMovement updateMany
+   */
+  export type RawMaterialMovementUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RawMaterialMovements.
+     */
+    data: XOR<RawMaterialMovementUpdateManyMutationInput, RawMaterialMovementUncheckedUpdateManyInput>
+    /**
+     * Filter which RawMaterialMovements to update
+     */
+    where?: RawMaterialMovementWhereInput
+    /**
+     * Limit how many RawMaterialMovements to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RawMaterialMovement updateManyAndReturn
+   */
+  export type RawMaterialMovementUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RawMaterialMovement
+     */
+    select?: RawMaterialMovementSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RawMaterialMovement
+     */
+    omit?: RawMaterialMovementOmit<ExtArgs> | null
+    /**
+     * The data used to update RawMaterialMovements.
+     */
+    data: XOR<RawMaterialMovementUpdateManyMutationInput, RawMaterialMovementUncheckedUpdateManyInput>
+    /**
+     * Filter which RawMaterialMovements to update
+     */
+    where?: RawMaterialMovementWhereInput
+    /**
+     * Limit how many RawMaterialMovements to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RawMaterialMovementIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RawMaterialMovement upsert
+   */
+  export type RawMaterialMovementUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RawMaterialMovement
+     */
+    select?: RawMaterialMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RawMaterialMovement
+     */
+    omit?: RawMaterialMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RawMaterialMovementInclude<ExtArgs> | null
+    /**
+     * The filter to search for the RawMaterialMovement to update in case it exists.
+     */
+    where: RawMaterialMovementWhereUniqueInput
+    /**
+     * In case the RawMaterialMovement found by the `where` argument doesn't exist, create a new RawMaterialMovement with this data.
+     */
+    create: XOR<RawMaterialMovementCreateInput, RawMaterialMovementUncheckedCreateInput>
+    /**
+     * In case the RawMaterialMovement was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RawMaterialMovementUpdateInput, RawMaterialMovementUncheckedUpdateInput>
+  }
+
+  /**
+   * RawMaterialMovement delete
+   */
+  export type RawMaterialMovementDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RawMaterialMovement
+     */
+    select?: RawMaterialMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RawMaterialMovement
+     */
+    omit?: RawMaterialMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RawMaterialMovementInclude<ExtArgs> | null
+    /**
+     * Filter which RawMaterialMovement to delete.
+     */
+    where: RawMaterialMovementWhereUniqueInput
+  }
+
+  /**
+   * RawMaterialMovement deleteMany
+   */
+  export type RawMaterialMovementDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RawMaterialMovements to delete
+     */
+    where?: RawMaterialMovementWhereInput
+    /**
+     * Limit how many RawMaterialMovements to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RawMaterialMovement without action
+   */
+  export type RawMaterialMovementDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RawMaterialMovement
+     */
+    select?: RawMaterialMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RawMaterialMovement
+     */
+    omit?: RawMaterialMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RawMaterialMovementInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model InventoryAudit
+   */
+
+  export type AggregateInventoryAudit = {
+    _count: InventoryAuditCountAggregateOutputType | null
+    _min: InventoryAuditMinAggregateOutputType | null
+    _max: InventoryAuditMaxAggregateOutputType | null
+  }
+
+  export type InventoryAuditMinAggregateOutputType = {
+    id: string | null
+    outletId: string | null
+    auditorName: string | null
+    notes: string | null
+    createdAt: Date | null
+  }
+
+  export type InventoryAuditMaxAggregateOutputType = {
+    id: string | null
+    outletId: string | null
+    auditorName: string | null
+    notes: string | null
+    createdAt: Date | null
+  }
+
+  export type InventoryAuditCountAggregateOutputType = {
+    id: number
+    outletId: number
+    auditorName: number
+    notes: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type InventoryAuditMinAggregateInputType = {
+    id?: true
+    outletId?: true
+    auditorName?: true
+    notes?: true
+    createdAt?: true
+  }
+
+  export type InventoryAuditMaxAggregateInputType = {
+    id?: true
+    outletId?: true
+    auditorName?: true
+    notes?: true
+    createdAt?: true
+  }
+
+  export type InventoryAuditCountAggregateInputType = {
+    id?: true
+    outletId?: true
+    auditorName?: true
+    notes?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type InventoryAuditAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InventoryAudit to aggregate.
+     */
+    where?: InventoryAuditWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InventoryAudits to fetch.
+     */
+    orderBy?: InventoryAuditOrderByWithRelationInput | InventoryAuditOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: InventoryAuditWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InventoryAudits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InventoryAudits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned InventoryAudits
+    **/
+    _count?: true | InventoryAuditCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: InventoryAuditMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: InventoryAuditMaxAggregateInputType
+  }
+
+  export type GetInventoryAuditAggregateType<T extends InventoryAuditAggregateArgs> = {
+        [P in keyof T & keyof AggregateInventoryAudit]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateInventoryAudit[P]>
+      : GetScalarType<T[P], AggregateInventoryAudit[P]>
+  }
+
+
+
+
+  export type InventoryAuditGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InventoryAuditWhereInput
+    orderBy?: InventoryAuditOrderByWithAggregationInput | InventoryAuditOrderByWithAggregationInput[]
+    by: InventoryAuditScalarFieldEnum[] | InventoryAuditScalarFieldEnum
+    having?: InventoryAuditScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: InventoryAuditCountAggregateInputType | true
+    _min?: InventoryAuditMinAggregateInputType
+    _max?: InventoryAuditMaxAggregateInputType
+  }
+
+  export type InventoryAuditGroupByOutputType = {
+    id: string
+    outletId: string
+    auditorName: string
+    notes: string | null
+    createdAt: Date
+    _count: InventoryAuditCountAggregateOutputType | null
+    _min: InventoryAuditMinAggregateOutputType | null
+    _max: InventoryAuditMaxAggregateOutputType | null
+  }
+
+  type GetInventoryAuditGroupByPayload<T extends InventoryAuditGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<InventoryAuditGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof InventoryAuditGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], InventoryAuditGroupByOutputType[P]>
+            : GetScalarType<T[P], InventoryAuditGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type InventoryAuditSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    auditorName?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+    items?: boolean | InventoryAudit$itemsArgs<ExtArgs>
+    _count?: boolean | InventoryAuditCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["inventoryAudit"]>
+
+  export type InventoryAuditSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    auditorName?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["inventoryAudit"]>
+
+  export type InventoryAuditSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    auditorName?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["inventoryAudit"]>
+
+  export type InventoryAuditSelectScalar = {
+    id?: boolean
+    outletId?: boolean
+    auditorName?: boolean
+    notes?: boolean
+    createdAt?: boolean
+  }
+
+  export type InventoryAuditOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "auditorName" | "notes" | "createdAt", ExtArgs["result"]["inventoryAudit"]>
+  export type InventoryAuditInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+    items?: boolean | InventoryAudit$itemsArgs<ExtArgs>
+    _count?: boolean | InventoryAuditCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type InventoryAuditIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }
+  export type InventoryAuditIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }
+
+  export type $InventoryAuditPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "InventoryAudit"
+    objects: {
+      outlet: Prisma.$OutletPayload<ExtArgs>
+      items: Prisma.$InventoryAuditItemPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      outletId: string
+      auditorName: string
+      notes: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["inventoryAudit"]>
+    composites: {}
+  }
+
+  type InventoryAuditGetPayload<S extends boolean | null | undefined | InventoryAuditDefaultArgs> = $Result.GetResult<Prisma.$InventoryAuditPayload, S>
+
+  type InventoryAuditCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<InventoryAuditFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: InventoryAuditCountAggregateInputType | true
+    }
+
+  export interface InventoryAuditDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['InventoryAudit'], meta: { name: 'InventoryAudit' } }
+    /**
+     * Find zero or one InventoryAudit that matches the filter.
+     * @param {InventoryAuditFindUniqueArgs} args - Arguments to find a InventoryAudit
+     * @example
+     * // Get one InventoryAudit
+     * const inventoryAudit = await prisma.inventoryAudit.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends InventoryAuditFindUniqueArgs>(args: SelectSubset<T, InventoryAuditFindUniqueArgs<ExtArgs>>): Prisma__InventoryAuditClient<$Result.GetResult<Prisma.$InventoryAuditPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one InventoryAudit that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {InventoryAuditFindUniqueOrThrowArgs} args - Arguments to find a InventoryAudit
+     * @example
+     * // Get one InventoryAudit
+     * const inventoryAudit = await prisma.inventoryAudit.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends InventoryAuditFindUniqueOrThrowArgs>(args: SelectSubset<T, InventoryAuditFindUniqueOrThrowArgs<ExtArgs>>): Prisma__InventoryAuditClient<$Result.GetResult<Prisma.$InventoryAuditPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InventoryAudit that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InventoryAuditFindFirstArgs} args - Arguments to find a InventoryAudit
+     * @example
+     * // Get one InventoryAudit
+     * const inventoryAudit = await prisma.inventoryAudit.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends InventoryAuditFindFirstArgs>(args?: SelectSubset<T, InventoryAuditFindFirstArgs<ExtArgs>>): Prisma__InventoryAuditClient<$Result.GetResult<Prisma.$InventoryAuditPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InventoryAudit that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InventoryAuditFindFirstOrThrowArgs} args - Arguments to find a InventoryAudit
+     * @example
+     * // Get one InventoryAudit
+     * const inventoryAudit = await prisma.inventoryAudit.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends InventoryAuditFindFirstOrThrowArgs>(args?: SelectSubset<T, InventoryAuditFindFirstOrThrowArgs<ExtArgs>>): Prisma__InventoryAuditClient<$Result.GetResult<Prisma.$InventoryAuditPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more InventoryAudits that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InventoryAuditFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all InventoryAudits
+     * const inventoryAudits = await prisma.inventoryAudit.findMany()
+     * 
+     * // Get first 10 InventoryAudits
+     * const inventoryAudits = await prisma.inventoryAudit.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const inventoryAuditWithIdOnly = await prisma.inventoryAudit.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends InventoryAuditFindManyArgs>(args?: SelectSubset<T, InventoryAuditFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InventoryAuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a InventoryAudit.
+     * @param {InventoryAuditCreateArgs} args - Arguments to create a InventoryAudit.
+     * @example
+     * // Create one InventoryAudit
+     * const InventoryAudit = await prisma.inventoryAudit.create({
+     *   data: {
+     *     // ... data to create a InventoryAudit
+     *   }
+     * })
+     * 
+     */
+    create<T extends InventoryAuditCreateArgs>(args: SelectSubset<T, InventoryAuditCreateArgs<ExtArgs>>): Prisma__InventoryAuditClient<$Result.GetResult<Prisma.$InventoryAuditPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many InventoryAudits.
+     * @param {InventoryAuditCreateManyArgs} args - Arguments to create many InventoryAudits.
+     * @example
+     * // Create many InventoryAudits
+     * const inventoryAudit = await prisma.inventoryAudit.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends InventoryAuditCreateManyArgs>(args?: SelectSubset<T, InventoryAuditCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many InventoryAudits and returns the data saved in the database.
+     * @param {InventoryAuditCreateManyAndReturnArgs} args - Arguments to create many InventoryAudits.
+     * @example
+     * // Create many InventoryAudits
+     * const inventoryAudit = await prisma.inventoryAudit.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many InventoryAudits and only return the `id`
+     * const inventoryAuditWithIdOnly = await prisma.inventoryAudit.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends InventoryAuditCreateManyAndReturnArgs>(args?: SelectSubset<T, InventoryAuditCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InventoryAuditPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a InventoryAudit.
+     * @param {InventoryAuditDeleteArgs} args - Arguments to delete one InventoryAudit.
+     * @example
+     * // Delete one InventoryAudit
+     * const InventoryAudit = await prisma.inventoryAudit.delete({
+     *   where: {
+     *     // ... filter to delete one InventoryAudit
+     *   }
+     * })
+     * 
+     */
+    delete<T extends InventoryAuditDeleteArgs>(args: SelectSubset<T, InventoryAuditDeleteArgs<ExtArgs>>): Prisma__InventoryAuditClient<$Result.GetResult<Prisma.$InventoryAuditPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one InventoryAudit.
+     * @param {InventoryAuditUpdateArgs} args - Arguments to update one InventoryAudit.
+     * @example
+     * // Update one InventoryAudit
+     * const inventoryAudit = await prisma.inventoryAudit.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends InventoryAuditUpdateArgs>(args: SelectSubset<T, InventoryAuditUpdateArgs<ExtArgs>>): Prisma__InventoryAuditClient<$Result.GetResult<Prisma.$InventoryAuditPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more InventoryAudits.
+     * @param {InventoryAuditDeleteManyArgs} args - Arguments to filter InventoryAudits to delete.
+     * @example
+     * // Delete a few InventoryAudits
+     * const { count } = await prisma.inventoryAudit.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends InventoryAuditDeleteManyArgs>(args?: SelectSubset<T, InventoryAuditDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InventoryAudits.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InventoryAuditUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many InventoryAudits
+     * const inventoryAudit = await prisma.inventoryAudit.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends InventoryAuditUpdateManyArgs>(args: SelectSubset<T, InventoryAuditUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InventoryAudits and returns the data updated in the database.
+     * @param {InventoryAuditUpdateManyAndReturnArgs} args - Arguments to update many InventoryAudits.
+     * @example
+     * // Update many InventoryAudits
+     * const inventoryAudit = await prisma.inventoryAudit.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more InventoryAudits and only return the `id`
+     * const inventoryAuditWithIdOnly = await prisma.inventoryAudit.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends InventoryAuditUpdateManyAndReturnArgs>(args: SelectSubset<T, InventoryAuditUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InventoryAuditPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one InventoryAudit.
+     * @param {InventoryAuditUpsertArgs} args - Arguments to update or create a InventoryAudit.
+     * @example
+     * // Update or create a InventoryAudit
+     * const inventoryAudit = await prisma.inventoryAudit.upsert({
+     *   create: {
+     *     // ... data to create a InventoryAudit
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the InventoryAudit we want to update
+     *   }
+     * })
+     */
+    upsert<T extends InventoryAuditUpsertArgs>(args: SelectSubset<T, InventoryAuditUpsertArgs<ExtArgs>>): Prisma__InventoryAuditClient<$Result.GetResult<Prisma.$InventoryAuditPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of InventoryAudits.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InventoryAuditCountArgs} args - Arguments to filter InventoryAudits to count.
+     * @example
+     * // Count the number of InventoryAudits
+     * const count = await prisma.inventoryAudit.count({
+     *   where: {
+     *     // ... the filter for the InventoryAudits we want to count
+     *   }
+     * })
+    **/
+    count<T extends InventoryAuditCountArgs>(
+      args?: Subset<T, InventoryAuditCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], InventoryAuditCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a InventoryAudit.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InventoryAuditAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends InventoryAuditAggregateArgs>(args: Subset<T, InventoryAuditAggregateArgs>): Prisma.PrismaPromise<GetInventoryAuditAggregateType<T>>
+
+    /**
+     * Group by InventoryAudit.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InventoryAuditGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends InventoryAuditGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: InventoryAuditGroupByArgs['orderBy'] }
+        : { orderBy?: InventoryAuditGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, InventoryAuditGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetInventoryAuditGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the InventoryAudit model
+   */
+  readonly fields: InventoryAuditFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for InventoryAudit.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__InventoryAuditClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    outlet<T extends OutletDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OutletDefaultArgs<ExtArgs>>): Prisma__OutletClient<$Result.GetResult<Prisma.$OutletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    items<T extends InventoryAudit$itemsArgs<ExtArgs> = {}>(args?: Subset<T, InventoryAudit$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InventoryAuditItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the InventoryAudit model
+   */
+  interface InventoryAuditFieldRefs {
+    readonly id: FieldRef<"InventoryAudit", 'String'>
+    readonly outletId: FieldRef<"InventoryAudit", 'String'>
+    readonly auditorName: FieldRef<"InventoryAudit", 'String'>
+    readonly notes: FieldRef<"InventoryAudit", 'String'>
+    readonly createdAt: FieldRef<"InventoryAudit", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * InventoryAudit findUnique
+   */
+  export type InventoryAuditFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAudit
+     */
+    select?: InventoryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAudit
+     */
+    omit?: InventoryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditInclude<ExtArgs> | null
+    /**
+     * Filter, which InventoryAudit to fetch.
+     */
+    where: InventoryAuditWhereUniqueInput
+  }
+
+  /**
+   * InventoryAudit findUniqueOrThrow
+   */
+  export type InventoryAuditFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAudit
+     */
+    select?: InventoryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAudit
+     */
+    omit?: InventoryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditInclude<ExtArgs> | null
+    /**
+     * Filter, which InventoryAudit to fetch.
+     */
+    where: InventoryAuditWhereUniqueInput
+  }
+
+  /**
+   * InventoryAudit findFirst
+   */
+  export type InventoryAuditFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAudit
+     */
+    select?: InventoryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAudit
+     */
+    omit?: InventoryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditInclude<ExtArgs> | null
+    /**
+     * Filter, which InventoryAudit to fetch.
+     */
+    where?: InventoryAuditWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InventoryAudits to fetch.
+     */
+    orderBy?: InventoryAuditOrderByWithRelationInput | InventoryAuditOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InventoryAudits.
+     */
+    cursor?: InventoryAuditWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InventoryAudits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InventoryAudits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InventoryAudits.
+     */
+    distinct?: InventoryAuditScalarFieldEnum | InventoryAuditScalarFieldEnum[]
+  }
+
+  /**
+   * InventoryAudit findFirstOrThrow
+   */
+  export type InventoryAuditFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAudit
+     */
+    select?: InventoryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAudit
+     */
+    omit?: InventoryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditInclude<ExtArgs> | null
+    /**
+     * Filter, which InventoryAudit to fetch.
+     */
+    where?: InventoryAuditWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InventoryAudits to fetch.
+     */
+    orderBy?: InventoryAuditOrderByWithRelationInput | InventoryAuditOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InventoryAudits.
+     */
+    cursor?: InventoryAuditWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InventoryAudits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InventoryAudits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InventoryAudits.
+     */
+    distinct?: InventoryAuditScalarFieldEnum | InventoryAuditScalarFieldEnum[]
+  }
+
+  /**
+   * InventoryAudit findMany
+   */
+  export type InventoryAuditFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAudit
+     */
+    select?: InventoryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAudit
+     */
+    omit?: InventoryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditInclude<ExtArgs> | null
+    /**
+     * Filter, which InventoryAudits to fetch.
+     */
+    where?: InventoryAuditWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InventoryAudits to fetch.
+     */
+    orderBy?: InventoryAuditOrderByWithRelationInput | InventoryAuditOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing InventoryAudits.
+     */
+    cursor?: InventoryAuditWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InventoryAudits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InventoryAudits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InventoryAudits.
+     */
+    distinct?: InventoryAuditScalarFieldEnum | InventoryAuditScalarFieldEnum[]
+  }
+
+  /**
+   * InventoryAudit create
+   */
+  export type InventoryAuditCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAudit
+     */
+    select?: InventoryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAudit
+     */
+    omit?: InventoryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditInclude<ExtArgs> | null
+    /**
+     * The data needed to create a InventoryAudit.
+     */
+    data: XOR<InventoryAuditCreateInput, InventoryAuditUncheckedCreateInput>
+  }
+
+  /**
+   * InventoryAudit createMany
+   */
+  export type InventoryAuditCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many InventoryAudits.
+     */
+    data: InventoryAuditCreateManyInput | InventoryAuditCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * InventoryAudit createManyAndReturn
+   */
+  export type InventoryAuditCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAudit
+     */
+    select?: InventoryAuditSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAudit
+     */
+    omit?: InventoryAuditOmit<ExtArgs> | null
+    /**
+     * The data used to create many InventoryAudits.
+     */
+    data: InventoryAuditCreateManyInput | InventoryAuditCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InventoryAudit update
+   */
+  export type InventoryAuditUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAudit
+     */
+    select?: InventoryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAudit
+     */
+    omit?: InventoryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditInclude<ExtArgs> | null
+    /**
+     * The data needed to update a InventoryAudit.
+     */
+    data: XOR<InventoryAuditUpdateInput, InventoryAuditUncheckedUpdateInput>
+    /**
+     * Choose, which InventoryAudit to update.
+     */
+    where: InventoryAuditWhereUniqueInput
+  }
+
+  /**
+   * InventoryAudit updateMany
+   */
+  export type InventoryAuditUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update InventoryAudits.
+     */
+    data: XOR<InventoryAuditUpdateManyMutationInput, InventoryAuditUncheckedUpdateManyInput>
+    /**
+     * Filter which InventoryAudits to update
+     */
+    where?: InventoryAuditWhereInput
+    /**
+     * Limit how many InventoryAudits to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * InventoryAudit updateManyAndReturn
+   */
+  export type InventoryAuditUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAudit
+     */
+    select?: InventoryAuditSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAudit
+     */
+    omit?: InventoryAuditOmit<ExtArgs> | null
+    /**
+     * The data used to update InventoryAudits.
+     */
+    data: XOR<InventoryAuditUpdateManyMutationInput, InventoryAuditUncheckedUpdateManyInput>
+    /**
+     * Filter which InventoryAudits to update
+     */
+    where?: InventoryAuditWhereInput
+    /**
+     * Limit how many InventoryAudits to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InventoryAudit upsert
+   */
+  export type InventoryAuditUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAudit
+     */
+    select?: InventoryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAudit
+     */
+    omit?: InventoryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditInclude<ExtArgs> | null
+    /**
+     * The filter to search for the InventoryAudit to update in case it exists.
+     */
+    where: InventoryAuditWhereUniqueInput
+    /**
+     * In case the InventoryAudit found by the `where` argument doesn't exist, create a new InventoryAudit with this data.
+     */
+    create: XOR<InventoryAuditCreateInput, InventoryAuditUncheckedCreateInput>
+    /**
+     * In case the InventoryAudit was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<InventoryAuditUpdateInput, InventoryAuditUncheckedUpdateInput>
+  }
+
+  /**
+   * InventoryAudit delete
+   */
+  export type InventoryAuditDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAudit
+     */
+    select?: InventoryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAudit
+     */
+    omit?: InventoryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditInclude<ExtArgs> | null
+    /**
+     * Filter which InventoryAudit to delete.
+     */
+    where: InventoryAuditWhereUniqueInput
+  }
+
+  /**
+   * InventoryAudit deleteMany
+   */
+  export type InventoryAuditDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InventoryAudits to delete
+     */
+    where?: InventoryAuditWhereInput
+    /**
+     * Limit how many InventoryAudits to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * InventoryAudit.items
+   */
+  export type InventoryAudit$itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAuditItem
+     */
+    select?: InventoryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAuditItem
+     */
+    omit?: InventoryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditItemInclude<ExtArgs> | null
+    where?: InventoryAuditItemWhereInput
+    orderBy?: InventoryAuditItemOrderByWithRelationInput | InventoryAuditItemOrderByWithRelationInput[]
+    cursor?: InventoryAuditItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InventoryAuditItemScalarFieldEnum | InventoryAuditItemScalarFieldEnum[]
+  }
+
+  /**
+   * InventoryAudit without action
+   */
+  export type InventoryAuditDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAudit
+     */
+    select?: InventoryAuditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAudit
+     */
+    omit?: InventoryAuditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model InventoryAuditItem
+   */
+
+  export type AggregateInventoryAuditItem = {
+    _count: InventoryAuditItemCountAggregateOutputType | null
+    _avg: InventoryAuditItemAvgAggregateOutputType | null
+    _sum: InventoryAuditItemSumAggregateOutputType | null
+    _min: InventoryAuditItemMinAggregateOutputType | null
+    _max: InventoryAuditItemMaxAggregateOutputType | null
+  }
+
+  export type InventoryAuditItemAvgAggregateOutputType = {
+    costPerUnit: number | null
+    openingStock: number | null
+    totalInbound: number | null
+    totalConsumed: number | null
+    expectedStock: number | null
+    actualStock: number | null
+    variance: number | null
+    varianceCost: number | null
+  }
+
+  export type InventoryAuditItemSumAggregateOutputType = {
+    costPerUnit: number | null
+    openingStock: number | null
+    totalInbound: number | null
+    totalConsumed: number | null
+    expectedStock: number | null
+    actualStock: number | null
+    variance: number | null
+    varianceCost: number | null
+  }
+
+  export type InventoryAuditItemMinAggregateOutputType = {
+    id: string | null
+    auditId: string | null
+    rawMaterialId: string | null
+    rawMaterialName: string | null
+    unit: string | null
+    costPerUnit: number | null
+    openingStock: number | null
+    totalInbound: number | null
+    totalConsumed: number | null
+    expectedStock: number | null
+    actualStock: number | null
+    variance: number | null
+    varianceCost: number | null
+    status: string | null
+    createdAt: Date | null
+  }
+
+  export type InventoryAuditItemMaxAggregateOutputType = {
+    id: string | null
+    auditId: string | null
+    rawMaterialId: string | null
+    rawMaterialName: string | null
+    unit: string | null
+    costPerUnit: number | null
+    openingStock: number | null
+    totalInbound: number | null
+    totalConsumed: number | null
+    expectedStock: number | null
+    actualStock: number | null
+    variance: number | null
+    varianceCost: number | null
+    status: string | null
+    createdAt: Date | null
+  }
+
+  export type InventoryAuditItemCountAggregateOutputType = {
+    id: number
+    auditId: number
+    rawMaterialId: number
+    rawMaterialName: number
+    unit: number
+    costPerUnit: number
+    openingStock: number
+    totalInbound: number
+    totalConsumed: number
+    expectedStock: number
+    actualStock: number
+    variance: number
+    varianceCost: number
+    status: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type InventoryAuditItemAvgAggregateInputType = {
+    costPerUnit?: true
+    openingStock?: true
+    totalInbound?: true
+    totalConsumed?: true
+    expectedStock?: true
+    actualStock?: true
+    variance?: true
+    varianceCost?: true
+  }
+
+  export type InventoryAuditItemSumAggregateInputType = {
+    costPerUnit?: true
+    openingStock?: true
+    totalInbound?: true
+    totalConsumed?: true
+    expectedStock?: true
+    actualStock?: true
+    variance?: true
+    varianceCost?: true
+  }
+
+  export type InventoryAuditItemMinAggregateInputType = {
+    id?: true
+    auditId?: true
+    rawMaterialId?: true
+    rawMaterialName?: true
+    unit?: true
+    costPerUnit?: true
+    openingStock?: true
+    totalInbound?: true
+    totalConsumed?: true
+    expectedStock?: true
+    actualStock?: true
+    variance?: true
+    varianceCost?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type InventoryAuditItemMaxAggregateInputType = {
+    id?: true
+    auditId?: true
+    rawMaterialId?: true
+    rawMaterialName?: true
+    unit?: true
+    costPerUnit?: true
+    openingStock?: true
+    totalInbound?: true
+    totalConsumed?: true
+    expectedStock?: true
+    actualStock?: true
+    variance?: true
+    varianceCost?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type InventoryAuditItemCountAggregateInputType = {
+    id?: true
+    auditId?: true
+    rawMaterialId?: true
+    rawMaterialName?: true
+    unit?: true
+    costPerUnit?: true
+    openingStock?: true
+    totalInbound?: true
+    totalConsumed?: true
+    expectedStock?: true
+    actualStock?: true
+    variance?: true
+    varianceCost?: true
+    status?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type InventoryAuditItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InventoryAuditItem to aggregate.
+     */
+    where?: InventoryAuditItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InventoryAuditItems to fetch.
+     */
+    orderBy?: InventoryAuditItemOrderByWithRelationInput | InventoryAuditItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: InventoryAuditItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InventoryAuditItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InventoryAuditItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned InventoryAuditItems
+    **/
+    _count?: true | InventoryAuditItemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: InventoryAuditItemAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: InventoryAuditItemSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: InventoryAuditItemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: InventoryAuditItemMaxAggregateInputType
+  }
+
+  export type GetInventoryAuditItemAggregateType<T extends InventoryAuditItemAggregateArgs> = {
+        [P in keyof T & keyof AggregateInventoryAuditItem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateInventoryAuditItem[P]>
+      : GetScalarType<T[P], AggregateInventoryAuditItem[P]>
+  }
+
+
+
+
+  export type InventoryAuditItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InventoryAuditItemWhereInput
+    orderBy?: InventoryAuditItemOrderByWithAggregationInput | InventoryAuditItemOrderByWithAggregationInput[]
+    by: InventoryAuditItemScalarFieldEnum[] | InventoryAuditItemScalarFieldEnum
+    having?: InventoryAuditItemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: InventoryAuditItemCountAggregateInputType | true
+    _avg?: InventoryAuditItemAvgAggregateInputType
+    _sum?: InventoryAuditItemSumAggregateInputType
+    _min?: InventoryAuditItemMinAggregateInputType
+    _max?: InventoryAuditItemMaxAggregateInputType
+  }
+
+  export type InventoryAuditItemGroupByOutputType = {
+    id: string
+    auditId: string
+    rawMaterialId: string
+    rawMaterialName: string
+    unit: string
+    costPerUnit: number
+    openingStock: number
+    totalInbound: number
+    totalConsumed: number
+    expectedStock: number
+    actualStock: number
+    variance: number
+    varianceCost: number
+    status: string
+    createdAt: Date
+    _count: InventoryAuditItemCountAggregateOutputType | null
+    _avg: InventoryAuditItemAvgAggregateOutputType | null
+    _sum: InventoryAuditItemSumAggregateOutputType | null
+    _min: InventoryAuditItemMinAggregateOutputType | null
+    _max: InventoryAuditItemMaxAggregateOutputType | null
+  }
+
+  type GetInventoryAuditItemGroupByPayload<T extends InventoryAuditItemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<InventoryAuditItemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof InventoryAuditItemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], InventoryAuditItemGroupByOutputType[P]>
+            : GetScalarType<T[P], InventoryAuditItemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type InventoryAuditItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    auditId?: boolean
+    rawMaterialId?: boolean
+    rawMaterialName?: boolean
+    unit?: boolean
+    costPerUnit?: boolean
+    openingStock?: boolean
+    totalInbound?: boolean
+    totalConsumed?: boolean
+    expectedStock?: boolean
+    actualStock?: boolean
+    variance?: boolean
+    varianceCost?: boolean
+    status?: boolean
+    createdAt?: boolean
+    audit?: boolean | InventoryAuditDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["inventoryAuditItem"]>
+
+  export type InventoryAuditItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    auditId?: boolean
+    rawMaterialId?: boolean
+    rawMaterialName?: boolean
+    unit?: boolean
+    costPerUnit?: boolean
+    openingStock?: boolean
+    totalInbound?: boolean
+    totalConsumed?: boolean
+    expectedStock?: boolean
+    actualStock?: boolean
+    variance?: boolean
+    varianceCost?: boolean
+    status?: boolean
+    createdAt?: boolean
+    audit?: boolean | InventoryAuditDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["inventoryAuditItem"]>
+
+  export type InventoryAuditItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    auditId?: boolean
+    rawMaterialId?: boolean
+    rawMaterialName?: boolean
+    unit?: boolean
+    costPerUnit?: boolean
+    openingStock?: boolean
+    totalInbound?: boolean
+    totalConsumed?: boolean
+    expectedStock?: boolean
+    actualStock?: boolean
+    variance?: boolean
+    varianceCost?: boolean
+    status?: boolean
+    createdAt?: boolean
+    audit?: boolean | InventoryAuditDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["inventoryAuditItem"]>
+
+  export type InventoryAuditItemSelectScalar = {
+    id?: boolean
+    auditId?: boolean
+    rawMaterialId?: boolean
+    rawMaterialName?: boolean
+    unit?: boolean
+    costPerUnit?: boolean
+    openingStock?: boolean
+    totalInbound?: boolean
+    totalConsumed?: boolean
+    expectedStock?: boolean
+    actualStock?: boolean
+    variance?: boolean
+    varianceCost?: boolean
+    status?: boolean
+    createdAt?: boolean
+  }
+
+  export type InventoryAuditItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "auditId" | "rawMaterialId" | "rawMaterialName" | "unit" | "costPerUnit" | "openingStock" | "totalInbound" | "totalConsumed" | "expectedStock" | "actualStock" | "variance" | "varianceCost" | "status" | "createdAt", ExtArgs["result"]["inventoryAuditItem"]>
+  export type InventoryAuditItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    audit?: boolean | InventoryAuditDefaultArgs<ExtArgs>
+  }
+  export type InventoryAuditItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    audit?: boolean | InventoryAuditDefaultArgs<ExtArgs>
+  }
+  export type InventoryAuditItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    audit?: boolean | InventoryAuditDefaultArgs<ExtArgs>
+  }
+
+  export type $InventoryAuditItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "InventoryAuditItem"
+    objects: {
+      audit: Prisma.$InventoryAuditPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      auditId: string
+      rawMaterialId: string
+      rawMaterialName: string
+      unit: string
+      costPerUnit: number
+      openingStock: number
+      totalInbound: number
+      totalConsumed: number
+      expectedStock: number
+      actualStock: number
+      variance: number
+      varianceCost: number
+      status: string
+      createdAt: Date
+    }, ExtArgs["result"]["inventoryAuditItem"]>
+    composites: {}
+  }
+
+  type InventoryAuditItemGetPayload<S extends boolean | null | undefined | InventoryAuditItemDefaultArgs> = $Result.GetResult<Prisma.$InventoryAuditItemPayload, S>
+
+  type InventoryAuditItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<InventoryAuditItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: InventoryAuditItemCountAggregateInputType | true
+    }
+
+  export interface InventoryAuditItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['InventoryAuditItem'], meta: { name: 'InventoryAuditItem' } }
+    /**
+     * Find zero or one InventoryAuditItem that matches the filter.
+     * @param {InventoryAuditItemFindUniqueArgs} args - Arguments to find a InventoryAuditItem
+     * @example
+     * // Get one InventoryAuditItem
+     * const inventoryAuditItem = await prisma.inventoryAuditItem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends InventoryAuditItemFindUniqueArgs>(args: SelectSubset<T, InventoryAuditItemFindUniqueArgs<ExtArgs>>): Prisma__InventoryAuditItemClient<$Result.GetResult<Prisma.$InventoryAuditItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one InventoryAuditItem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {InventoryAuditItemFindUniqueOrThrowArgs} args - Arguments to find a InventoryAuditItem
+     * @example
+     * // Get one InventoryAuditItem
+     * const inventoryAuditItem = await prisma.inventoryAuditItem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends InventoryAuditItemFindUniqueOrThrowArgs>(args: SelectSubset<T, InventoryAuditItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__InventoryAuditItemClient<$Result.GetResult<Prisma.$InventoryAuditItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InventoryAuditItem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InventoryAuditItemFindFirstArgs} args - Arguments to find a InventoryAuditItem
+     * @example
+     * // Get one InventoryAuditItem
+     * const inventoryAuditItem = await prisma.inventoryAuditItem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends InventoryAuditItemFindFirstArgs>(args?: SelectSubset<T, InventoryAuditItemFindFirstArgs<ExtArgs>>): Prisma__InventoryAuditItemClient<$Result.GetResult<Prisma.$InventoryAuditItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InventoryAuditItem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InventoryAuditItemFindFirstOrThrowArgs} args - Arguments to find a InventoryAuditItem
+     * @example
+     * // Get one InventoryAuditItem
+     * const inventoryAuditItem = await prisma.inventoryAuditItem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends InventoryAuditItemFindFirstOrThrowArgs>(args?: SelectSubset<T, InventoryAuditItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__InventoryAuditItemClient<$Result.GetResult<Prisma.$InventoryAuditItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more InventoryAuditItems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InventoryAuditItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all InventoryAuditItems
+     * const inventoryAuditItems = await prisma.inventoryAuditItem.findMany()
+     * 
+     * // Get first 10 InventoryAuditItems
+     * const inventoryAuditItems = await prisma.inventoryAuditItem.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const inventoryAuditItemWithIdOnly = await prisma.inventoryAuditItem.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends InventoryAuditItemFindManyArgs>(args?: SelectSubset<T, InventoryAuditItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InventoryAuditItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a InventoryAuditItem.
+     * @param {InventoryAuditItemCreateArgs} args - Arguments to create a InventoryAuditItem.
+     * @example
+     * // Create one InventoryAuditItem
+     * const InventoryAuditItem = await prisma.inventoryAuditItem.create({
+     *   data: {
+     *     // ... data to create a InventoryAuditItem
+     *   }
+     * })
+     * 
+     */
+    create<T extends InventoryAuditItemCreateArgs>(args: SelectSubset<T, InventoryAuditItemCreateArgs<ExtArgs>>): Prisma__InventoryAuditItemClient<$Result.GetResult<Prisma.$InventoryAuditItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many InventoryAuditItems.
+     * @param {InventoryAuditItemCreateManyArgs} args - Arguments to create many InventoryAuditItems.
+     * @example
+     * // Create many InventoryAuditItems
+     * const inventoryAuditItem = await prisma.inventoryAuditItem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends InventoryAuditItemCreateManyArgs>(args?: SelectSubset<T, InventoryAuditItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many InventoryAuditItems and returns the data saved in the database.
+     * @param {InventoryAuditItemCreateManyAndReturnArgs} args - Arguments to create many InventoryAuditItems.
+     * @example
+     * // Create many InventoryAuditItems
+     * const inventoryAuditItem = await prisma.inventoryAuditItem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many InventoryAuditItems and only return the `id`
+     * const inventoryAuditItemWithIdOnly = await prisma.inventoryAuditItem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends InventoryAuditItemCreateManyAndReturnArgs>(args?: SelectSubset<T, InventoryAuditItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InventoryAuditItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a InventoryAuditItem.
+     * @param {InventoryAuditItemDeleteArgs} args - Arguments to delete one InventoryAuditItem.
+     * @example
+     * // Delete one InventoryAuditItem
+     * const InventoryAuditItem = await prisma.inventoryAuditItem.delete({
+     *   where: {
+     *     // ... filter to delete one InventoryAuditItem
+     *   }
+     * })
+     * 
+     */
+    delete<T extends InventoryAuditItemDeleteArgs>(args: SelectSubset<T, InventoryAuditItemDeleteArgs<ExtArgs>>): Prisma__InventoryAuditItemClient<$Result.GetResult<Prisma.$InventoryAuditItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one InventoryAuditItem.
+     * @param {InventoryAuditItemUpdateArgs} args - Arguments to update one InventoryAuditItem.
+     * @example
+     * // Update one InventoryAuditItem
+     * const inventoryAuditItem = await prisma.inventoryAuditItem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends InventoryAuditItemUpdateArgs>(args: SelectSubset<T, InventoryAuditItemUpdateArgs<ExtArgs>>): Prisma__InventoryAuditItemClient<$Result.GetResult<Prisma.$InventoryAuditItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more InventoryAuditItems.
+     * @param {InventoryAuditItemDeleteManyArgs} args - Arguments to filter InventoryAuditItems to delete.
+     * @example
+     * // Delete a few InventoryAuditItems
+     * const { count } = await prisma.inventoryAuditItem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends InventoryAuditItemDeleteManyArgs>(args?: SelectSubset<T, InventoryAuditItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InventoryAuditItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InventoryAuditItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many InventoryAuditItems
+     * const inventoryAuditItem = await prisma.inventoryAuditItem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends InventoryAuditItemUpdateManyArgs>(args: SelectSubset<T, InventoryAuditItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InventoryAuditItems and returns the data updated in the database.
+     * @param {InventoryAuditItemUpdateManyAndReturnArgs} args - Arguments to update many InventoryAuditItems.
+     * @example
+     * // Update many InventoryAuditItems
+     * const inventoryAuditItem = await prisma.inventoryAuditItem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more InventoryAuditItems and only return the `id`
+     * const inventoryAuditItemWithIdOnly = await prisma.inventoryAuditItem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends InventoryAuditItemUpdateManyAndReturnArgs>(args: SelectSubset<T, InventoryAuditItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InventoryAuditItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one InventoryAuditItem.
+     * @param {InventoryAuditItemUpsertArgs} args - Arguments to update or create a InventoryAuditItem.
+     * @example
+     * // Update or create a InventoryAuditItem
+     * const inventoryAuditItem = await prisma.inventoryAuditItem.upsert({
+     *   create: {
+     *     // ... data to create a InventoryAuditItem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the InventoryAuditItem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends InventoryAuditItemUpsertArgs>(args: SelectSubset<T, InventoryAuditItemUpsertArgs<ExtArgs>>): Prisma__InventoryAuditItemClient<$Result.GetResult<Prisma.$InventoryAuditItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of InventoryAuditItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InventoryAuditItemCountArgs} args - Arguments to filter InventoryAuditItems to count.
+     * @example
+     * // Count the number of InventoryAuditItems
+     * const count = await prisma.inventoryAuditItem.count({
+     *   where: {
+     *     // ... the filter for the InventoryAuditItems we want to count
+     *   }
+     * })
+    **/
+    count<T extends InventoryAuditItemCountArgs>(
+      args?: Subset<T, InventoryAuditItemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], InventoryAuditItemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a InventoryAuditItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InventoryAuditItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends InventoryAuditItemAggregateArgs>(args: Subset<T, InventoryAuditItemAggregateArgs>): Prisma.PrismaPromise<GetInventoryAuditItemAggregateType<T>>
+
+    /**
+     * Group by InventoryAuditItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InventoryAuditItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends InventoryAuditItemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: InventoryAuditItemGroupByArgs['orderBy'] }
+        : { orderBy?: InventoryAuditItemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, InventoryAuditItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetInventoryAuditItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the InventoryAuditItem model
+   */
+  readonly fields: InventoryAuditItemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for InventoryAuditItem.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__InventoryAuditItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    audit<T extends InventoryAuditDefaultArgs<ExtArgs> = {}>(args?: Subset<T, InventoryAuditDefaultArgs<ExtArgs>>): Prisma__InventoryAuditClient<$Result.GetResult<Prisma.$InventoryAuditPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the InventoryAuditItem model
+   */
+  interface InventoryAuditItemFieldRefs {
+    readonly id: FieldRef<"InventoryAuditItem", 'String'>
+    readonly auditId: FieldRef<"InventoryAuditItem", 'String'>
+    readonly rawMaterialId: FieldRef<"InventoryAuditItem", 'String'>
+    readonly rawMaterialName: FieldRef<"InventoryAuditItem", 'String'>
+    readonly unit: FieldRef<"InventoryAuditItem", 'String'>
+    readonly costPerUnit: FieldRef<"InventoryAuditItem", 'Float'>
+    readonly openingStock: FieldRef<"InventoryAuditItem", 'Float'>
+    readonly totalInbound: FieldRef<"InventoryAuditItem", 'Float'>
+    readonly totalConsumed: FieldRef<"InventoryAuditItem", 'Float'>
+    readonly expectedStock: FieldRef<"InventoryAuditItem", 'Float'>
+    readonly actualStock: FieldRef<"InventoryAuditItem", 'Float'>
+    readonly variance: FieldRef<"InventoryAuditItem", 'Float'>
+    readonly varianceCost: FieldRef<"InventoryAuditItem", 'Float'>
+    readonly status: FieldRef<"InventoryAuditItem", 'String'>
+    readonly createdAt: FieldRef<"InventoryAuditItem", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * InventoryAuditItem findUnique
+   */
+  export type InventoryAuditItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAuditItem
+     */
+    select?: InventoryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAuditItem
+     */
+    omit?: InventoryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditItemInclude<ExtArgs> | null
+    /**
+     * Filter, which InventoryAuditItem to fetch.
+     */
+    where: InventoryAuditItemWhereUniqueInput
+  }
+
+  /**
+   * InventoryAuditItem findUniqueOrThrow
+   */
+  export type InventoryAuditItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAuditItem
+     */
+    select?: InventoryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAuditItem
+     */
+    omit?: InventoryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditItemInclude<ExtArgs> | null
+    /**
+     * Filter, which InventoryAuditItem to fetch.
+     */
+    where: InventoryAuditItemWhereUniqueInput
+  }
+
+  /**
+   * InventoryAuditItem findFirst
+   */
+  export type InventoryAuditItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAuditItem
+     */
+    select?: InventoryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAuditItem
+     */
+    omit?: InventoryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditItemInclude<ExtArgs> | null
+    /**
+     * Filter, which InventoryAuditItem to fetch.
+     */
+    where?: InventoryAuditItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InventoryAuditItems to fetch.
+     */
+    orderBy?: InventoryAuditItemOrderByWithRelationInput | InventoryAuditItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InventoryAuditItems.
+     */
+    cursor?: InventoryAuditItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InventoryAuditItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InventoryAuditItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InventoryAuditItems.
+     */
+    distinct?: InventoryAuditItemScalarFieldEnum | InventoryAuditItemScalarFieldEnum[]
+  }
+
+  /**
+   * InventoryAuditItem findFirstOrThrow
+   */
+  export type InventoryAuditItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAuditItem
+     */
+    select?: InventoryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAuditItem
+     */
+    omit?: InventoryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditItemInclude<ExtArgs> | null
+    /**
+     * Filter, which InventoryAuditItem to fetch.
+     */
+    where?: InventoryAuditItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InventoryAuditItems to fetch.
+     */
+    orderBy?: InventoryAuditItemOrderByWithRelationInput | InventoryAuditItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InventoryAuditItems.
+     */
+    cursor?: InventoryAuditItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InventoryAuditItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InventoryAuditItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InventoryAuditItems.
+     */
+    distinct?: InventoryAuditItemScalarFieldEnum | InventoryAuditItemScalarFieldEnum[]
+  }
+
+  /**
+   * InventoryAuditItem findMany
+   */
+  export type InventoryAuditItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAuditItem
+     */
+    select?: InventoryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAuditItem
+     */
+    omit?: InventoryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditItemInclude<ExtArgs> | null
+    /**
+     * Filter, which InventoryAuditItems to fetch.
+     */
+    where?: InventoryAuditItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InventoryAuditItems to fetch.
+     */
+    orderBy?: InventoryAuditItemOrderByWithRelationInput | InventoryAuditItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing InventoryAuditItems.
+     */
+    cursor?: InventoryAuditItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InventoryAuditItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InventoryAuditItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InventoryAuditItems.
+     */
+    distinct?: InventoryAuditItemScalarFieldEnum | InventoryAuditItemScalarFieldEnum[]
+  }
+
+  /**
+   * InventoryAuditItem create
+   */
+  export type InventoryAuditItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAuditItem
+     */
+    select?: InventoryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAuditItem
+     */
+    omit?: InventoryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditItemInclude<ExtArgs> | null
+    /**
+     * The data needed to create a InventoryAuditItem.
+     */
+    data: XOR<InventoryAuditItemCreateInput, InventoryAuditItemUncheckedCreateInput>
+  }
+
+  /**
+   * InventoryAuditItem createMany
+   */
+  export type InventoryAuditItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many InventoryAuditItems.
+     */
+    data: InventoryAuditItemCreateManyInput | InventoryAuditItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * InventoryAuditItem createManyAndReturn
+   */
+  export type InventoryAuditItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAuditItem
+     */
+    select?: InventoryAuditItemSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAuditItem
+     */
+    omit?: InventoryAuditItemOmit<ExtArgs> | null
+    /**
+     * The data used to create many InventoryAuditItems.
+     */
+    data: InventoryAuditItemCreateManyInput | InventoryAuditItemCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditItemIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InventoryAuditItem update
+   */
+  export type InventoryAuditItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAuditItem
+     */
+    select?: InventoryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAuditItem
+     */
+    omit?: InventoryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditItemInclude<ExtArgs> | null
+    /**
+     * The data needed to update a InventoryAuditItem.
+     */
+    data: XOR<InventoryAuditItemUpdateInput, InventoryAuditItemUncheckedUpdateInput>
+    /**
+     * Choose, which InventoryAuditItem to update.
+     */
+    where: InventoryAuditItemWhereUniqueInput
+  }
+
+  /**
+   * InventoryAuditItem updateMany
+   */
+  export type InventoryAuditItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update InventoryAuditItems.
+     */
+    data: XOR<InventoryAuditItemUpdateManyMutationInput, InventoryAuditItemUncheckedUpdateManyInput>
+    /**
+     * Filter which InventoryAuditItems to update
+     */
+    where?: InventoryAuditItemWhereInput
+    /**
+     * Limit how many InventoryAuditItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * InventoryAuditItem updateManyAndReturn
+   */
+  export type InventoryAuditItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAuditItem
+     */
+    select?: InventoryAuditItemSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAuditItem
+     */
+    omit?: InventoryAuditItemOmit<ExtArgs> | null
+    /**
+     * The data used to update InventoryAuditItems.
+     */
+    data: XOR<InventoryAuditItemUpdateManyMutationInput, InventoryAuditItemUncheckedUpdateManyInput>
+    /**
+     * Filter which InventoryAuditItems to update
+     */
+    where?: InventoryAuditItemWhereInput
+    /**
+     * Limit how many InventoryAuditItems to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditItemIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InventoryAuditItem upsert
+   */
+  export type InventoryAuditItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAuditItem
+     */
+    select?: InventoryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAuditItem
+     */
+    omit?: InventoryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditItemInclude<ExtArgs> | null
+    /**
+     * The filter to search for the InventoryAuditItem to update in case it exists.
+     */
+    where: InventoryAuditItemWhereUniqueInput
+    /**
+     * In case the InventoryAuditItem found by the `where` argument doesn't exist, create a new InventoryAuditItem with this data.
+     */
+    create: XOR<InventoryAuditItemCreateInput, InventoryAuditItemUncheckedCreateInput>
+    /**
+     * In case the InventoryAuditItem was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<InventoryAuditItemUpdateInput, InventoryAuditItemUncheckedUpdateInput>
+  }
+
+  /**
+   * InventoryAuditItem delete
+   */
+  export type InventoryAuditItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAuditItem
+     */
+    select?: InventoryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAuditItem
+     */
+    omit?: InventoryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditItemInclude<ExtArgs> | null
+    /**
+     * Filter which InventoryAuditItem to delete.
+     */
+    where: InventoryAuditItemWhereUniqueInput
+  }
+
+  /**
+   * InventoryAuditItem deleteMany
+   */
+  export type InventoryAuditItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InventoryAuditItems to delete
+     */
+    where?: InventoryAuditItemWhereInput
+    /**
+     * Limit how many InventoryAuditItems to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * InventoryAuditItem without action
+   */
+  export type InventoryAuditItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InventoryAuditItem
+     */
+    select?: InventoryAuditItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InventoryAuditItem
+     */
+    omit?: InventoryAuditItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InventoryAuditItemInclude<ExtArgs> | null
   }
 
 
@@ -19670,6 +23609,7 @@ export namespace Prisma {
     outletId: 'outletId',
     nameAr: 'nameAr',
     unit: 'unit',
+    openingStock: 'openingStock',
     currentStock: 'currentStock',
     minStockAlert: 'minStockAlert',
     costPerUnit: 'costPerUnit',
@@ -19679,6 +23619,56 @@ export namespace Prisma {
   };
 
   export type RawMaterialScalarFieldEnum = (typeof RawMaterialScalarFieldEnum)[keyof typeof RawMaterialScalarFieldEnum]
+
+
+  export const RawMaterialMovementScalarFieldEnum: {
+    id: 'id',
+    rawMaterialId: 'rawMaterialId',
+    type: 'type',
+    quantity: 'quantity',
+    costPerUnit: 'costPerUnit',
+    totalCost: 'totalCost',
+    supplierName: 'supplierName',
+    invoiceNumber: 'invoiceNumber',
+    orderNumber: 'orderNumber',
+    recordedBy: 'recordedBy',
+    notes: 'notes',
+    createdAt: 'createdAt'
+  };
+
+  export type RawMaterialMovementScalarFieldEnum = (typeof RawMaterialMovementScalarFieldEnum)[keyof typeof RawMaterialMovementScalarFieldEnum]
+
+
+  export const InventoryAuditScalarFieldEnum: {
+    id: 'id',
+    outletId: 'outletId',
+    auditorName: 'auditorName',
+    notes: 'notes',
+    createdAt: 'createdAt'
+  };
+
+  export type InventoryAuditScalarFieldEnum = (typeof InventoryAuditScalarFieldEnum)[keyof typeof InventoryAuditScalarFieldEnum]
+
+
+  export const InventoryAuditItemScalarFieldEnum: {
+    id: 'id',
+    auditId: 'auditId',
+    rawMaterialId: 'rawMaterialId',
+    rawMaterialName: 'rawMaterialName',
+    unit: 'unit',
+    costPerUnit: 'costPerUnit',
+    openingStock: 'openingStock',
+    totalInbound: 'totalInbound',
+    totalConsumed: 'totalConsumed',
+    expectedStock: 'expectedStock',
+    actualStock: 'actualStock',
+    variance: 'variance',
+    varianceCost: 'varianceCost',
+    status: 'status',
+    createdAt: 'createdAt'
+  };
+
+  export type InventoryAuditItemScalarFieldEnum = (typeof InventoryAuditItemScalarFieldEnum)[keyof typeof InventoryAuditItemScalarFieldEnum]
 
 
   export const RecipeItemScalarFieldEnum: {
@@ -19980,6 +23970,7 @@ export namespace Prisma {
     expenses?: ExpenseListRelationFilter
     reservations?: ReservationListRelationFilter
     chatMessages?: ChatMessageListRelationFilter
+    inventoryAudits?: InventoryAuditListRelationFilter
   }
 
   export type OutletOrderByWithRelationInput = {
@@ -20002,6 +23993,7 @@ export namespace Prisma {
     expenses?: ExpenseOrderByRelationAggregateInput
     reservations?: ReservationOrderByRelationAggregateInput
     chatMessages?: ChatMessageOrderByRelationAggregateInput
+    inventoryAudits?: InventoryAuditOrderByRelationAggregateInput
   }
 
   export type OutletWhereUniqueInput = Prisma.AtLeast<{
@@ -20027,6 +24019,7 @@ export namespace Prisma {
     expenses?: ExpenseListRelationFilter
     reservations?: ReservationListRelationFilter
     chatMessages?: ChatMessageListRelationFilter
+    inventoryAudits?: InventoryAuditListRelationFilter
   }, "id" | "code">
 
   export type OutletOrderByWithAggregationInput = {
@@ -20364,6 +24357,7 @@ export namespace Prisma {
     outletId?: StringFilter<"RawMaterial"> | string
     nameAr?: StringFilter<"RawMaterial"> | string
     unit?: StringFilter<"RawMaterial"> | string
+    openingStock?: FloatFilter<"RawMaterial"> | number
     currentStock?: FloatFilter<"RawMaterial"> | number
     minStockAlert?: FloatFilter<"RawMaterial"> | number
     costPerUnit?: FloatFilter<"RawMaterial"> | number
@@ -20372,6 +24366,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"RawMaterial"> | Date | string
     outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
     recipeUsage?: RecipeItemListRelationFilter
+    movements?: RawMaterialMovementListRelationFilter
   }
 
   export type RawMaterialOrderByWithRelationInput = {
@@ -20379,6 +24374,7 @@ export namespace Prisma {
     outletId?: SortOrder
     nameAr?: SortOrder
     unit?: SortOrder
+    openingStock?: SortOrder
     currentStock?: SortOrder
     minStockAlert?: SortOrder
     costPerUnit?: SortOrder
@@ -20387,6 +24383,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     outlet?: OutletOrderByWithRelationInput
     recipeUsage?: RecipeItemOrderByRelationAggregateInput
+    movements?: RawMaterialMovementOrderByRelationAggregateInput
   }
 
   export type RawMaterialWhereUniqueInput = Prisma.AtLeast<{
@@ -20397,6 +24394,7 @@ export namespace Prisma {
     outletId?: StringFilter<"RawMaterial"> | string
     nameAr?: StringFilter<"RawMaterial"> | string
     unit?: StringFilter<"RawMaterial"> | string
+    openingStock?: FloatFilter<"RawMaterial"> | number
     currentStock?: FloatFilter<"RawMaterial"> | number
     minStockAlert?: FloatFilter<"RawMaterial"> | number
     costPerUnit?: FloatFilter<"RawMaterial"> | number
@@ -20405,6 +24403,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"RawMaterial"> | Date | string
     outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
     recipeUsage?: RecipeItemListRelationFilter
+    movements?: RawMaterialMovementListRelationFilter
   }, "id">
 
   export type RawMaterialOrderByWithAggregationInput = {
@@ -20412,6 +24411,7 @@ export namespace Prisma {
     outletId?: SortOrder
     nameAr?: SortOrder
     unit?: SortOrder
+    openingStock?: SortOrder
     currentStock?: SortOrder
     minStockAlert?: SortOrder
     costPerUnit?: SortOrder
@@ -20433,12 +24433,270 @@ export namespace Prisma {
     outletId?: StringWithAggregatesFilter<"RawMaterial"> | string
     nameAr?: StringWithAggregatesFilter<"RawMaterial"> | string
     unit?: StringWithAggregatesFilter<"RawMaterial"> | string
+    openingStock?: FloatWithAggregatesFilter<"RawMaterial"> | number
     currentStock?: FloatWithAggregatesFilter<"RawMaterial"> | number
     minStockAlert?: FloatWithAggregatesFilter<"RawMaterial"> | number
     costPerUnit?: FloatWithAggregatesFilter<"RawMaterial"> | number
     supplierName?: StringNullableWithAggregatesFilter<"RawMaterial"> | string | null
     notes?: StringNullableWithAggregatesFilter<"RawMaterial"> | string | null
     updatedAt?: DateTimeWithAggregatesFilter<"RawMaterial"> | Date | string
+  }
+
+  export type RawMaterialMovementWhereInput = {
+    AND?: RawMaterialMovementWhereInput | RawMaterialMovementWhereInput[]
+    OR?: RawMaterialMovementWhereInput[]
+    NOT?: RawMaterialMovementWhereInput | RawMaterialMovementWhereInput[]
+    id?: StringFilter<"RawMaterialMovement"> | string
+    rawMaterialId?: StringFilter<"RawMaterialMovement"> | string
+    type?: StringFilter<"RawMaterialMovement"> | string
+    quantity?: FloatFilter<"RawMaterialMovement"> | number
+    costPerUnit?: FloatNullableFilter<"RawMaterialMovement"> | number | null
+    totalCost?: FloatNullableFilter<"RawMaterialMovement"> | number | null
+    supplierName?: StringNullableFilter<"RawMaterialMovement"> | string | null
+    invoiceNumber?: StringNullableFilter<"RawMaterialMovement"> | string | null
+    orderNumber?: StringNullableFilter<"RawMaterialMovement"> | string | null
+    recordedBy?: StringNullableFilter<"RawMaterialMovement"> | string | null
+    notes?: StringNullableFilter<"RawMaterialMovement"> | string | null
+    createdAt?: DateTimeFilter<"RawMaterialMovement"> | Date | string
+    rawMaterial?: XOR<RawMaterialScalarRelationFilter, RawMaterialWhereInput>
+  }
+
+  export type RawMaterialMovementOrderByWithRelationInput = {
+    id?: SortOrder
+    rawMaterialId?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    costPerUnit?: SortOrderInput | SortOrder
+    totalCost?: SortOrderInput | SortOrder
+    supplierName?: SortOrderInput | SortOrder
+    invoiceNumber?: SortOrderInput | SortOrder
+    orderNumber?: SortOrderInput | SortOrder
+    recordedBy?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    rawMaterial?: RawMaterialOrderByWithRelationInput
+  }
+
+  export type RawMaterialMovementWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: RawMaterialMovementWhereInput | RawMaterialMovementWhereInput[]
+    OR?: RawMaterialMovementWhereInput[]
+    NOT?: RawMaterialMovementWhereInput | RawMaterialMovementWhereInput[]
+    rawMaterialId?: StringFilter<"RawMaterialMovement"> | string
+    type?: StringFilter<"RawMaterialMovement"> | string
+    quantity?: FloatFilter<"RawMaterialMovement"> | number
+    costPerUnit?: FloatNullableFilter<"RawMaterialMovement"> | number | null
+    totalCost?: FloatNullableFilter<"RawMaterialMovement"> | number | null
+    supplierName?: StringNullableFilter<"RawMaterialMovement"> | string | null
+    invoiceNumber?: StringNullableFilter<"RawMaterialMovement"> | string | null
+    orderNumber?: StringNullableFilter<"RawMaterialMovement"> | string | null
+    recordedBy?: StringNullableFilter<"RawMaterialMovement"> | string | null
+    notes?: StringNullableFilter<"RawMaterialMovement"> | string | null
+    createdAt?: DateTimeFilter<"RawMaterialMovement"> | Date | string
+    rawMaterial?: XOR<RawMaterialScalarRelationFilter, RawMaterialWhereInput>
+  }, "id">
+
+  export type RawMaterialMovementOrderByWithAggregationInput = {
+    id?: SortOrder
+    rawMaterialId?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    costPerUnit?: SortOrderInput | SortOrder
+    totalCost?: SortOrderInput | SortOrder
+    supplierName?: SortOrderInput | SortOrder
+    invoiceNumber?: SortOrderInput | SortOrder
+    orderNumber?: SortOrderInput | SortOrder
+    recordedBy?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: RawMaterialMovementCountOrderByAggregateInput
+    _avg?: RawMaterialMovementAvgOrderByAggregateInput
+    _max?: RawMaterialMovementMaxOrderByAggregateInput
+    _min?: RawMaterialMovementMinOrderByAggregateInput
+    _sum?: RawMaterialMovementSumOrderByAggregateInput
+  }
+
+  export type RawMaterialMovementScalarWhereWithAggregatesInput = {
+    AND?: RawMaterialMovementScalarWhereWithAggregatesInput | RawMaterialMovementScalarWhereWithAggregatesInput[]
+    OR?: RawMaterialMovementScalarWhereWithAggregatesInput[]
+    NOT?: RawMaterialMovementScalarWhereWithAggregatesInput | RawMaterialMovementScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"RawMaterialMovement"> | string
+    rawMaterialId?: StringWithAggregatesFilter<"RawMaterialMovement"> | string
+    type?: StringWithAggregatesFilter<"RawMaterialMovement"> | string
+    quantity?: FloatWithAggregatesFilter<"RawMaterialMovement"> | number
+    costPerUnit?: FloatNullableWithAggregatesFilter<"RawMaterialMovement"> | number | null
+    totalCost?: FloatNullableWithAggregatesFilter<"RawMaterialMovement"> | number | null
+    supplierName?: StringNullableWithAggregatesFilter<"RawMaterialMovement"> | string | null
+    invoiceNumber?: StringNullableWithAggregatesFilter<"RawMaterialMovement"> | string | null
+    orderNumber?: StringNullableWithAggregatesFilter<"RawMaterialMovement"> | string | null
+    recordedBy?: StringNullableWithAggregatesFilter<"RawMaterialMovement"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"RawMaterialMovement"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"RawMaterialMovement"> | Date | string
+  }
+
+  export type InventoryAuditWhereInput = {
+    AND?: InventoryAuditWhereInput | InventoryAuditWhereInput[]
+    OR?: InventoryAuditWhereInput[]
+    NOT?: InventoryAuditWhereInput | InventoryAuditWhereInput[]
+    id?: StringFilter<"InventoryAudit"> | string
+    outletId?: StringFilter<"InventoryAudit"> | string
+    auditorName?: StringFilter<"InventoryAudit"> | string
+    notes?: StringNullableFilter<"InventoryAudit"> | string | null
+    createdAt?: DateTimeFilter<"InventoryAudit"> | Date | string
+    outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
+    items?: InventoryAuditItemListRelationFilter
+  }
+
+  export type InventoryAuditOrderByWithRelationInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    auditorName?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    outlet?: OutletOrderByWithRelationInput
+    items?: InventoryAuditItemOrderByRelationAggregateInput
+  }
+
+  export type InventoryAuditWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: InventoryAuditWhereInput | InventoryAuditWhereInput[]
+    OR?: InventoryAuditWhereInput[]
+    NOT?: InventoryAuditWhereInput | InventoryAuditWhereInput[]
+    outletId?: StringFilter<"InventoryAudit"> | string
+    auditorName?: StringFilter<"InventoryAudit"> | string
+    notes?: StringNullableFilter<"InventoryAudit"> | string | null
+    createdAt?: DateTimeFilter<"InventoryAudit"> | Date | string
+    outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
+    items?: InventoryAuditItemListRelationFilter
+  }, "id">
+
+  export type InventoryAuditOrderByWithAggregationInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    auditorName?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: InventoryAuditCountOrderByAggregateInput
+    _max?: InventoryAuditMaxOrderByAggregateInput
+    _min?: InventoryAuditMinOrderByAggregateInput
+  }
+
+  export type InventoryAuditScalarWhereWithAggregatesInput = {
+    AND?: InventoryAuditScalarWhereWithAggregatesInput | InventoryAuditScalarWhereWithAggregatesInput[]
+    OR?: InventoryAuditScalarWhereWithAggregatesInput[]
+    NOT?: InventoryAuditScalarWhereWithAggregatesInput | InventoryAuditScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"InventoryAudit"> | string
+    outletId?: StringWithAggregatesFilter<"InventoryAudit"> | string
+    auditorName?: StringWithAggregatesFilter<"InventoryAudit"> | string
+    notes?: StringNullableWithAggregatesFilter<"InventoryAudit"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"InventoryAudit"> | Date | string
+  }
+
+  export type InventoryAuditItemWhereInput = {
+    AND?: InventoryAuditItemWhereInput | InventoryAuditItemWhereInput[]
+    OR?: InventoryAuditItemWhereInput[]
+    NOT?: InventoryAuditItemWhereInput | InventoryAuditItemWhereInput[]
+    id?: StringFilter<"InventoryAuditItem"> | string
+    auditId?: StringFilter<"InventoryAuditItem"> | string
+    rawMaterialId?: StringFilter<"InventoryAuditItem"> | string
+    rawMaterialName?: StringFilter<"InventoryAuditItem"> | string
+    unit?: StringFilter<"InventoryAuditItem"> | string
+    costPerUnit?: FloatFilter<"InventoryAuditItem"> | number
+    openingStock?: FloatFilter<"InventoryAuditItem"> | number
+    totalInbound?: FloatFilter<"InventoryAuditItem"> | number
+    totalConsumed?: FloatFilter<"InventoryAuditItem"> | number
+    expectedStock?: FloatFilter<"InventoryAuditItem"> | number
+    actualStock?: FloatFilter<"InventoryAuditItem"> | number
+    variance?: FloatFilter<"InventoryAuditItem"> | number
+    varianceCost?: FloatFilter<"InventoryAuditItem"> | number
+    status?: StringFilter<"InventoryAuditItem"> | string
+    createdAt?: DateTimeFilter<"InventoryAuditItem"> | Date | string
+    audit?: XOR<InventoryAuditScalarRelationFilter, InventoryAuditWhereInput>
+  }
+
+  export type InventoryAuditItemOrderByWithRelationInput = {
+    id?: SortOrder
+    auditId?: SortOrder
+    rawMaterialId?: SortOrder
+    rawMaterialName?: SortOrder
+    unit?: SortOrder
+    costPerUnit?: SortOrder
+    openingStock?: SortOrder
+    totalInbound?: SortOrder
+    totalConsumed?: SortOrder
+    expectedStock?: SortOrder
+    actualStock?: SortOrder
+    variance?: SortOrder
+    varianceCost?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    audit?: InventoryAuditOrderByWithRelationInput
+  }
+
+  export type InventoryAuditItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: InventoryAuditItemWhereInput | InventoryAuditItemWhereInput[]
+    OR?: InventoryAuditItemWhereInput[]
+    NOT?: InventoryAuditItemWhereInput | InventoryAuditItemWhereInput[]
+    auditId?: StringFilter<"InventoryAuditItem"> | string
+    rawMaterialId?: StringFilter<"InventoryAuditItem"> | string
+    rawMaterialName?: StringFilter<"InventoryAuditItem"> | string
+    unit?: StringFilter<"InventoryAuditItem"> | string
+    costPerUnit?: FloatFilter<"InventoryAuditItem"> | number
+    openingStock?: FloatFilter<"InventoryAuditItem"> | number
+    totalInbound?: FloatFilter<"InventoryAuditItem"> | number
+    totalConsumed?: FloatFilter<"InventoryAuditItem"> | number
+    expectedStock?: FloatFilter<"InventoryAuditItem"> | number
+    actualStock?: FloatFilter<"InventoryAuditItem"> | number
+    variance?: FloatFilter<"InventoryAuditItem"> | number
+    varianceCost?: FloatFilter<"InventoryAuditItem"> | number
+    status?: StringFilter<"InventoryAuditItem"> | string
+    createdAt?: DateTimeFilter<"InventoryAuditItem"> | Date | string
+    audit?: XOR<InventoryAuditScalarRelationFilter, InventoryAuditWhereInput>
+  }, "id">
+
+  export type InventoryAuditItemOrderByWithAggregationInput = {
+    id?: SortOrder
+    auditId?: SortOrder
+    rawMaterialId?: SortOrder
+    rawMaterialName?: SortOrder
+    unit?: SortOrder
+    costPerUnit?: SortOrder
+    openingStock?: SortOrder
+    totalInbound?: SortOrder
+    totalConsumed?: SortOrder
+    expectedStock?: SortOrder
+    actualStock?: SortOrder
+    variance?: SortOrder
+    varianceCost?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    _count?: InventoryAuditItemCountOrderByAggregateInput
+    _avg?: InventoryAuditItemAvgOrderByAggregateInput
+    _max?: InventoryAuditItemMaxOrderByAggregateInput
+    _min?: InventoryAuditItemMinOrderByAggregateInput
+    _sum?: InventoryAuditItemSumOrderByAggregateInput
+  }
+
+  export type InventoryAuditItemScalarWhereWithAggregatesInput = {
+    AND?: InventoryAuditItemScalarWhereWithAggregatesInput | InventoryAuditItemScalarWhereWithAggregatesInput[]
+    OR?: InventoryAuditItemScalarWhereWithAggregatesInput[]
+    NOT?: InventoryAuditItemScalarWhereWithAggregatesInput | InventoryAuditItemScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"InventoryAuditItem"> | string
+    auditId?: StringWithAggregatesFilter<"InventoryAuditItem"> | string
+    rawMaterialId?: StringWithAggregatesFilter<"InventoryAuditItem"> | string
+    rawMaterialName?: StringWithAggregatesFilter<"InventoryAuditItem"> | string
+    unit?: StringWithAggregatesFilter<"InventoryAuditItem"> | string
+    costPerUnit?: FloatWithAggregatesFilter<"InventoryAuditItem"> | number
+    openingStock?: FloatWithAggregatesFilter<"InventoryAuditItem"> | number
+    totalInbound?: FloatWithAggregatesFilter<"InventoryAuditItem"> | number
+    totalConsumed?: FloatWithAggregatesFilter<"InventoryAuditItem"> | number
+    expectedStock?: FloatWithAggregatesFilter<"InventoryAuditItem"> | number
+    actualStock?: FloatWithAggregatesFilter<"InventoryAuditItem"> | number
+    variance?: FloatWithAggregatesFilter<"InventoryAuditItem"> | number
+    varianceCost?: FloatWithAggregatesFilter<"InventoryAuditItem"> | number
+    status?: StringWithAggregatesFilter<"InventoryAuditItem"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"InventoryAuditItem"> | Date | string
   }
 
   export type RecipeItemWhereInput = {
@@ -21390,6 +25648,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateInput = {
@@ -21412,6 +25671,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUpdateInput = {
@@ -21434,6 +25694,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateInput = {
@@ -21456,6 +25717,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateManyInput = {
@@ -21842,6 +26104,7 @@ export namespace Prisma {
     id?: string
     nameAr: string
     unit?: string
+    openingStock?: number
     currentStock?: number
     minStockAlert?: number
     costPerUnit?: number
@@ -21850,6 +26113,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     outlet: OutletCreateNestedOneWithoutRawMaterialsInput
     recipeUsage?: RecipeItemCreateNestedManyWithoutRawMaterialInput
+    movements?: RawMaterialMovementCreateNestedManyWithoutRawMaterialInput
   }
 
   export type RawMaterialUncheckedCreateInput = {
@@ -21857,6 +26121,7 @@ export namespace Prisma {
     outletId: string
     nameAr: string
     unit?: string
+    openingStock?: number
     currentStock?: number
     minStockAlert?: number
     costPerUnit?: number
@@ -21864,12 +26129,14 @@ export namespace Prisma {
     notes?: string | null
     updatedAt?: Date | string
     recipeUsage?: RecipeItemUncheckedCreateNestedManyWithoutRawMaterialInput
+    movements?: RawMaterialMovementUncheckedCreateNestedManyWithoutRawMaterialInput
   }
 
   export type RawMaterialUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     nameAr?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
     currentStock?: FloatFieldUpdateOperationsInput | number
     minStockAlert?: FloatFieldUpdateOperationsInput | number
     costPerUnit?: FloatFieldUpdateOperationsInput | number
@@ -21878,6 +26145,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outlet?: OutletUpdateOneRequiredWithoutRawMaterialsNestedInput
     recipeUsage?: RecipeItemUpdateManyWithoutRawMaterialNestedInput
+    movements?: RawMaterialMovementUpdateManyWithoutRawMaterialNestedInput
   }
 
   export type RawMaterialUncheckedUpdateInput = {
@@ -21885,6 +26153,7 @@ export namespace Prisma {
     outletId?: StringFieldUpdateOperationsInput | string
     nameAr?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
     currentStock?: FloatFieldUpdateOperationsInput | number
     minStockAlert?: FloatFieldUpdateOperationsInput | number
     costPerUnit?: FloatFieldUpdateOperationsInput | number
@@ -21892,6 +26161,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recipeUsage?: RecipeItemUncheckedUpdateManyWithoutRawMaterialNestedInput
+    movements?: RawMaterialMovementUncheckedUpdateManyWithoutRawMaterialNestedInput
   }
 
   export type RawMaterialCreateManyInput = {
@@ -21899,6 +26169,7 @@ export namespace Prisma {
     outletId: string
     nameAr: string
     unit?: string
+    openingStock?: number
     currentStock?: number
     minStockAlert?: number
     costPerUnit?: number
@@ -21911,6 +26182,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nameAr?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
     currentStock?: FloatFieldUpdateOperationsInput | number
     minStockAlert?: FloatFieldUpdateOperationsInput | number
     costPerUnit?: FloatFieldUpdateOperationsInput | number
@@ -21924,12 +26196,301 @@ export namespace Prisma {
     outletId?: StringFieldUpdateOperationsInput | string
     nameAr?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
     currentStock?: FloatFieldUpdateOperationsInput | number
     minStockAlert?: FloatFieldUpdateOperationsInput | number
     costPerUnit?: FloatFieldUpdateOperationsInput | number
     supplierName?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RawMaterialMovementCreateInput = {
+    id?: string
+    type: string
+    quantity: number
+    costPerUnit?: number | null
+    totalCost?: number | null
+    supplierName?: string | null
+    invoiceNumber?: string | null
+    orderNumber?: string | null
+    recordedBy?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    rawMaterial: RawMaterialCreateNestedOneWithoutMovementsInput
+  }
+
+  export type RawMaterialMovementUncheckedCreateInput = {
+    id?: string
+    rawMaterialId: string
+    type: string
+    quantity: number
+    costPerUnit?: number | null
+    totalCost?: number | null
+    supplierName?: string | null
+    invoiceNumber?: string | null
+    orderNumber?: string | null
+    recordedBy?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type RawMaterialMovementUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    costPerUnit?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierName?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rawMaterial?: RawMaterialUpdateOneRequiredWithoutMovementsNestedInput
+  }
+
+  export type RawMaterialMovementUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rawMaterialId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    costPerUnit?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierName?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RawMaterialMovementCreateManyInput = {
+    id?: string
+    rawMaterialId: string
+    type: string
+    quantity: number
+    costPerUnit?: number | null
+    totalCost?: number | null
+    supplierName?: string | null
+    invoiceNumber?: string | null
+    orderNumber?: string | null
+    recordedBy?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type RawMaterialMovementUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    costPerUnit?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierName?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RawMaterialMovementUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rawMaterialId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    costPerUnit?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierName?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InventoryAuditCreateInput = {
+    id?: string
+    auditorName?: string
+    notes?: string | null
+    createdAt?: Date | string
+    outlet: OutletCreateNestedOneWithoutInventoryAuditsInput
+    items?: InventoryAuditItemCreateNestedManyWithoutAuditInput
+  }
+
+  export type InventoryAuditUncheckedCreateInput = {
+    id?: string
+    outletId: string
+    auditorName?: string
+    notes?: string | null
+    createdAt?: Date | string
+    items?: InventoryAuditItemUncheckedCreateNestedManyWithoutAuditInput
+  }
+
+  export type InventoryAuditUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    auditorName?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outlet?: OutletUpdateOneRequiredWithoutInventoryAuditsNestedInput
+    items?: InventoryAuditItemUpdateManyWithoutAuditNestedInput
+  }
+
+  export type InventoryAuditUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    auditorName?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: InventoryAuditItemUncheckedUpdateManyWithoutAuditNestedInput
+  }
+
+  export type InventoryAuditCreateManyInput = {
+    id?: string
+    outletId: string
+    auditorName?: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type InventoryAuditUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    auditorName?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InventoryAuditUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    auditorName?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InventoryAuditItemCreateInput = {
+    id?: string
+    rawMaterialId: string
+    rawMaterialName: string
+    unit: string
+    costPerUnit?: number
+    openingStock?: number
+    totalInbound?: number
+    totalConsumed?: number
+    expectedStock?: number
+    actualStock?: number
+    variance?: number
+    varianceCost?: number
+    status?: string
+    createdAt?: Date | string
+    audit: InventoryAuditCreateNestedOneWithoutItemsInput
+  }
+
+  export type InventoryAuditItemUncheckedCreateInput = {
+    id?: string
+    auditId: string
+    rawMaterialId: string
+    rawMaterialName: string
+    unit: string
+    costPerUnit?: number
+    openingStock?: number
+    totalInbound?: number
+    totalConsumed?: number
+    expectedStock?: number
+    actualStock?: number
+    variance?: number
+    varianceCost?: number
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type InventoryAuditItemUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rawMaterialId?: StringFieldUpdateOperationsInput | string
+    rawMaterialName?: StringFieldUpdateOperationsInput | string
+    unit?: StringFieldUpdateOperationsInput | string
+    costPerUnit?: FloatFieldUpdateOperationsInput | number
+    openingStock?: FloatFieldUpdateOperationsInput | number
+    totalInbound?: FloatFieldUpdateOperationsInput | number
+    totalConsumed?: FloatFieldUpdateOperationsInput | number
+    expectedStock?: FloatFieldUpdateOperationsInput | number
+    actualStock?: FloatFieldUpdateOperationsInput | number
+    variance?: FloatFieldUpdateOperationsInput | number
+    varianceCost?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    audit?: InventoryAuditUpdateOneRequiredWithoutItemsNestedInput
+  }
+
+  export type InventoryAuditItemUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    auditId?: StringFieldUpdateOperationsInput | string
+    rawMaterialId?: StringFieldUpdateOperationsInput | string
+    rawMaterialName?: StringFieldUpdateOperationsInput | string
+    unit?: StringFieldUpdateOperationsInput | string
+    costPerUnit?: FloatFieldUpdateOperationsInput | number
+    openingStock?: FloatFieldUpdateOperationsInput | number
+    totalInbound?: FloatFieldUpdateOperationsInput | number
+    totalConsumed?: FloatFieldUpdateOperationsInput | number
+    expectedStock?: FloatFieldUpdateOperationsInput | number
+    actualStock?: FloatFieldUpdateOperationsInput | number
+    variance?: FloatFieldUpdateOperationsInput | number
+    varianceCost?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InventoryAuditItemCreateManyInput = {
+    id?: string
+    auditId: string
+    rawMaterialId: string
+    rawMaterialName: string
+    unit: string
+    costPerUnit?: number
+    openingStock?: number
+    totalInbound?: number
+    totalConsumed?: number
+    expectedStock?: number
+    actualStock?: number
+    variance?: number
+    varianceCost?: number
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type InventoryAuditItemUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rawMaterialId?: StringFieldUpdateOperationsInput | string
+    rawMaterialName?: StringFieldUpdateOperationsInput | string
+    unit?: StringFieldUpdateOperationsInput | string
+    costPerUnit?: FloatFieldUpdateOperationsInput | number
+    openingStock?: FloatFieldUpdateOperationsInput | number
+    totalInbound?: FloatFieldUpdateOperationsInput | number
+    totalConsumed?: FloatFieldUpdateOperationsInput | number
+    expectedStock?: FloatFieldUpdateOperationsInput | number
+    actualStock?: FloatFieldUpdateOperationsInput | number
+    variance?: FloatFieldUpdateOperationsInput | number
+    varianceCost?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InventoryAuditItemUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    auditId?: StringFieldUpdateOperationsInput | string
+    rawMaterialId?: StringFieldUpdateOperationsInput | string
+    rawMaterialName?: StringFieldUpdateOperationsInput | string
+    unit?: StringFieldUpdateOperationsInput | string
+    costPerUnit?: FloatFieldUpdateOperationsInput | number
+    openingStock?: FloatFieldUpdateOperationsInput | number
+    totalInbound?: FloatFieldUpdateOperationsInput | number
+    totalConsumed?: FloatFieldUpdateOperationsInput | number
+    expectedStock?: FloatFieldUpdateOperationsInput | number
+    actualStock?: FloatFieldUpdateOperationsInput | number
+    variance?: FloatFieldUpdateOperationsInput | number
+    varianceCost?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RecipeItemCreateInput = {
@@ -23108,6 +27669,12 @@ export namespace Prisma {
     none?: ChatMessageWhereInput
   }
 
+  export type InventoryAuditListRelationFilter = {
+    every?: InventoryAuditWhereInput
+    some?: InventoryAuditWhereInput
+    none?: InventoryAuditWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -23146,6 +27713,10 @@ export namespace Prisma {
   }
 
   export type ChatMessageOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type InventoryAuditOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -23494,11 +28065,22 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type RawMaterialMovementListRelationFilter = {
+    every?: RawMaterialMovementWhereInput
+    some?: RawMaterialMovementWhereInput
+    none?: RawMaterialMovementWhereInput
+  }
+
+  export type RawMaterialMovementOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type RawMaterialCountOrderByAggregateInput = {
     id?: SortOrder
     outletId?: SortOrder
     nameAr?: SortOrder
     unit?: SortOrder
+    openingStock?: SortOrder
     currentStock?: SortOrder
     minStockAlert?: SortOrder
     costPerUnit?: SortOrder
@@ -23508,6 +28090,7 @@ export namespace Prisma {
   }
 
   export type RawMaterialAvgOrderByAggregateInput = {
+    openingStock?: SortOrder
     currentStock?: SortOrder
     minStockAlert?: SortOrder
     costPerUnit?: SortOrder
@@ -23518,6 +28101,7 @@ export namespace Prisma {
     outletId?: SortOrder
     nameAr?: SortOrder
     unit?: SortOrder
+    openingStock?: SortOrder
     currentStock?: SortOrder
     minStockAlert?: SortOrder
     costPerUnit?: SortOrder
@@ -23531,6 +28115,7 @@ export namespace Prisma {
     outletId?: SortOrder
     nameAr?: SortOrder
     unit?: SortOrder
+    openingStock?: SortOrder
     currentStock?: SortOrder
     minStockAlert?: SortOrder
     costPerUnit?: SortOrder
@@ -23540,19 +28125,219 @@ export namespace Prisma {
   }
 
   export type RawMaterialSumOrderByAggregateInput = {
+    openingStock?: SortOrder
     currentStock?: SortOrder
     minStockAlert?: SortOrder
     costPerUnit?: SortOrder
   }
 
-  export type MenuItemScalarRelationFilter = {
-    is?: MenuItemWhereInput
-    isNot?: MenuItemWhereInput
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type RawMaterialScalarRelationFilter = {
     is?: RawMaterialWhereInput
     isNot?: RawMaterialWhereInput
+  }
+
+  export type RawMaterialMovementCountOrderByAggregateInput = {
+    id?: SortOrder
+    rawMaterialId?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    costPerUnit?: SortOrder
+    totalCost?: SortOrder
+    supplierName?: SortOrder
+    invoiceNumber?: SortOrder
+    orderNumber?: SortOrder
+    recordedBy?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RawMaterialMovementAvgOrderByAggregateInput = {
+    quantity?: SortOrder
+    costPerUnit?: SortOrder
+    totalCost?: SortOrder
+  }
+
+  export type RawMaterialMovementMaxOrderByAggregateInput = {
+    id?: SortOrder
+    rawMaterialId?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    costPerUnit?: SortOrder
+    totalCost?: SortOrder
+    supplierName?: SortOrder
+    invoiceNumber?: SortOrder
+    orderNumber?: SortOrder
+    recordedBy?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RawMaterialMovementMinOrderByAggregateInput = {
+    id?: SortOrder
+    rawMaterialId?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    costPerUnit?: SortOrder
+    totalCost?: SortOrder
+    supplierName?: SortOrder
+    invoiceNumber?: SortOrder
+    orderNumber?: SortOrder
+    recordedBy?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RawMaterialMovementSumOrderByAggregateInput = {
+    quantity?: SortOrder
+    costPerUnit?: SortOrder
+    totalCost?: SortOrder
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type InventoryAuditItemListRelationFilter = {
+    every?: InventoryAuditItemWhereInput
+    some?: InventoryAuditItemWhereInput
+    none?: InventoryAuditItemWhereInput
+  }
+
+  export type InventoryAuditItemOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type InventoryAuditCountOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    auditorName?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type InventoryAuditMaxOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    auditorName?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type InventoryAuditMinOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    auditorName?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type InventoryAuditScalarRelationFilter = {
+    is?: InventoryAuditWhereInput
+    isNot?: InventoryAuditWhereInput
+  }
+
+  export type InventoryAuditItemCountOrderByAggregateInput = {
+    id?: SortOrder
+    auditId?: SortOrder
+    rawMaterialId?: SortOrder
+    rawMaterialName?: SortOrder
+    unit?: SortOrder
+    costPerUnit?: SortOrder
+    openingStock?: SortOrder
+    totalInbound?: SortOrder
+    totalConsumed?: SortOrder
+    expectedStock?: SortOrder
+    actualStock?: SortOrder
+    variance?: SortOrder
+    varianceCost?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type InventoryAuditItemAvgOrderByAggregateInput = {
+    costPerUnit?: SortOrder
+    openingStock?: SortOrder
+    totalInbound?: SortOrder
+    totalConsumed?: SortOrder
+    expectedStock?: SortOrder
+    actualStock?: SortOrder
+    variance?: SortOrder
+    varianceCost?: SortOrder
+  }
+
+  export type InventoryAuditItemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    auditId?: SortOrder
+    rawMaterialId?: SortOrder
+    rawMaterialName?: SortOrder
+    unit?: SortOrder
+    costPerUnit?: SortOrder
+    openingStock?: SortOrder
+    totalInbound?: SortOrder
+    totalConsumed?: SortOrder
+    expectedStock?: SortOrder
+    actualStock?: SortOrder
+    variance?: SortOrder
+    varianceCost?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type InventoryAuditItemMinOrderByAggregateInput = {
+    id?: SortOrder
+    auditId?: SortOrder
+    rawMaterialId?: SortOrder
+    rawMaterialName?: SortOrder
+    unit?: SortOrder
+    costPerUnit?: SortOrder
+    openingStock?: SortOrder
+    totalInbound?: SortOrder
+    totalConsumed?: SortOrder
+    expectedStock?: SortOrder
+    actualStock?: SortOrder
+    variance?: SortOrder
+    varianceCost?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type InventoryAuditItemSumOrderByAggregateInput = {
+    costPerUnit?: SortOrder
+    openingStock?: SortOrder
+    totalInbound?: SortOrder
+    totalConsumed?: SortOrder
+    expectedStock?: SortOrder
+    actualStock?: SortOrder
+    variance?: SortOrder
+    varianceCost?: SortOrder
+  }
+
+  export type MenuItemScalarRelationFilter = {
+    is?: MenuItemWhereInput
+    isNot?: MenuItemWhereInput
   }
 
   export type RecipeItemMenuItemIdRawMaterialIdCompoundUniqueInput = {
@@ -24237,6 +29022,13 @@ export namespace Prisma {
     connect?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[]
   }
 
+  export type InventoryAuditCreateNestedManyWithoutOutletInput = {
+    create?: XOR<InventoryAuditCreateWithoutOutletInput, InventoryAuditUncheckedCreateWithoutOutletInput> | InventoryAuditCreateWithoutOutletInput[] | InventoryAuditUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: InventoryAuditCreateOrConnectWithoutOutletInput | InventoryAuditCreateOrConnectWithoutOutletInput[]
+    createMany?: InventoryAuditCreateManyOutletInputEnvelope
+    connect?: InventoryAuditWhereUniqueInput | InventoryAuditWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutOutletInput = {
     create?: XOR<UserCreateWithoutOutletInput, UserUncheckedCreateWithoutOutletInput> | UserCreateWithoutOutletInput[] | UserUncheckedCreateWithoutOutletInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOutletInput | UserCreateOrConnectWithoutOutletInput[]
@@ -24298,6 +29090,13 @@ export namespace Prisma {
     connectOrCreate?: ChatMessageCreateOrConnectWithoutOutletInput | ChatMessageCreateOrConnectWithoutOutletInput[]
     createMany?: ChatMessageCreateManyOutletInputEnvelope
     connect?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[]
+  }
+
+  export type InventoryAuditUncheckedCreateNestedManyWithoutOutletInput = {
+    create?: XOR<InventoryAuditCreateWithoutOutletInput, InventoryAuditUncheckedCreateWithoutOutletInput> | InventoryAuditCreateWithoutOutletInput[] | InventoryAuditUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: InventoryAuditCreateOrConnectWithoutOutletInput | InventoryAuditCreateOrConnectWithoutOutletInput[]
+    createMany?: InventoryAuditCreateManyOutletInputEnvelope
+    connect?: InventoryAuditWhereUniqueInput | InventoryAuditWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -24442,6 +29241,20 @@ export namespace Prisma {
     deleteMany?: ChatMessageScalarWhereInput | ChatMessageScalarWhereInput[]
   }
 
+  export type InventoryAuditUpdateManyWithoutOutletNestedInput = {
+    create?: XOR<InventoryAuditCreateWithoutOutletInput, InventoryAuditUncheckedCreateWithoutOutletInput> | InventoryAuditCreateWithoutOutletInput[] | InventoryAuditUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: InventoryAuditCreateOrConnectWithoutOutletInput | InventoryAuditCreateOrConnectWithoutOutletInput[]
+    upsert?: InventoryAuditUpsertWithWhereUniqueWithoutOutletInput | InventoryAuditUpsertWithWhereUniqueWithoutOutletInput[]
+    createMany?: InventoryAuditCreateManyOutletInputEnvelope
+    set?: InventoryAuditWhereUniqueInput | InventoryAuditWhereUniqueInput[]
+    disconnect?: InventoryAuditWhereUniqueInput | InventoryAuditWhereUniqueInput[]
+    delete?: InventoryAuditWhereUniqueInput | InventoryAuditWhereUniqueInput[]
+    connect?: InventoryAuditWhereUniqueInput | InventoryAuditWhereUniqueInput[]
+    update?: InventoryAuditUpdateWithWhereUniqueWithoutOutletInput | InventoryAuditUpdateWithWhereUniqueWithoutOutletInput[]
+    updateMany?: InventoryAuditUpdateManyWithWhereWithoutOutletInput | InventoryAuditUpdateManyWithWhereWithoutOutletInput[]
+    deleteMany?: InventoryAuditScalarWhereInput | InventoryAuditScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutOutletNestedInput = {
     create?: XOR<UserCreateWithoutOutletInput, UserUncheckedCreateWithoutOutletInput> | UserCreateWithoutOutletInput[] | UserUncheckedCreateWithoutOutletInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOutletInput | UserCreateOrConnectWithoutOutletInput[]
@@ -24566,6 +29379,20 @@ export namespace Prisma {
     update?: ChatMessageUpdateWithWhereUniqueWithoutOutletInput | ChatMessageUpdateWithWhereUniqueWithoutOutletInput[]
     updateMany?: ChatMessageUpdateManyWithWhereWithoutOutletInput | ChatMessageUpdateManyWithWhereWithoutOutletInput[]
     deleteMany?: ChatMessageScalarWhereInput | ChatMessageScalarWhereInput[]
+  }
+
+  export type InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput = {
+    create?: XOR<InventoryAuditCreateWithoutOutletInput, InventoryAuditUncheckedCreateWithoutOutletInput> | InventoryAuditCreateWithoutOutletInput[] | InventoryAuditUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: InventoryAuditCreateOrConnectWithoutOutletInput | InventoryAuditCreateOrConnectWithoutOutletInput[]
+    upsert?: InventoryAuditUpsertWithWhereUniqueWithoutOutletInput | InventoryAuditUpsertWithWhereUniqueWithoutOutletInput[]
+    createMany?: InventoryAuditCreateManyOutletInputEnvelope
+    set?: InventoryAuditWhereUniqueInput | InventoryAuditWhereUniqueInput[]
+    disconnect?: InventoryAuditWhereUniqueInput | InventoryAuditWhereUniqueInput[]
+    delete?: InventoryAuditWhereUniqueInput | InventoryAuditWhereUniqueInput[]
+    connect?: InventoryAuditWhereUniqueInput | InventoryAuditWhereUniqueInput[]
+    update?: InventoryAuditUpdateWithWhereUniqueWithoutOutletInput | InventoryAuditUpdateWithWhereUniqueWithoutOutletInput[]
+    updateMany?: InventoryAuditUpdateManyWithWhereWithoutOutletInput | InventoryAuditUpdateManyWithWhereWithoutOutletInput[]
+    deleteMany?: InventoryAuditScalarWhereInput | InventoryAuditScalarWhereInput[]
   }
 
   export type OutletCreateNestedOneWithoutUsersInput = {
@@ -24725,11 +29552,25 @@ export namespace Prisma {
     connect?: RecipeItemWhereUniqueInput | RecipeItemWhereUniqueInput[]
   }
 
+  export type RawMaterialMovementCreateNestedManyWithoutRawMaterialInput = {
+    create?: XOR<RawMaterialMovementCreateWithoutRawMaterialInput, RawMaterialMovementUncheckedCreateWithoutRawMaterialInput> | RawMaterialMovementCreateWithoutRawMaterialInput[] | RawMaterialMovementUncheckedCreateWithoutRawMaterialInput[]
+    connectOrCreate?: RawMaterialMovementCreateOrConnectWithoutRawMaterialInput | RawMaterialMovementCreateOrConnectWithoutRawMaterialInput[]
+    createMany?: RawMaterialMovementCreateManyRawMaterialInputEnvelope
+    connect?: RawMaterialMovementWhereUniqueInput | RawMaterialMovementWhereUniqueInput[]
+  }
+
   export type RecipeItemUncheckedCreateNestedManyWithoutRawMaterialInput = {
     create?: XOR<RecipeItemCreateWithoutRawMaterialInput, RecipeItemUncheckedCreateWithoutRawMaterialInput> | RecipeItemCreateWithoutRawMaterialInput[] | RecipeItemUncheckedCreateWithoutRawMaterialInput[]
     connectOrCreate?: RecipeItemCreateOrConnectWithoutRawMaterialInput | RecipeItemCreateOrConnectWithoutRawMaterialInput[]
     createMany?: RecipeItemCreateManyRawMaterialInputEnvelope
     connect?: RecipeItemWhereUniqueInput | RecipeItemWhereUniqueInput[]
+  }
+
+  export type RawMaterialMovementUncheckedCreateNestedManyWithoutRawMaterialInput = {
+    create?: XOR<RawMaterialMovementCreateWithoutRawMaterialInput, RawMaterialMovementUncheckedCreateWithoutRawMaterialInput> | RawMaterialMovementCreateWithoutRawMaterialInput[] | RawMaterialMovementUncheckedCreateWithoutRawMaterialInput[]
+    connectOrCreate?: RawMaterialMovementCreateOrConnectWithoutRawMaterialInput | RawMaterialMovementCreateOrConnectWithoutRawMaterialInput[]
+    createMany?: RawMaterialMovementCreateManyRawMaterialInputEnvelope
+    connect?: RawMaterialMovementWhereUniqueInput | RawMaterialMovementWhereUniqueInput[]
   }
 
   export type OutletUpdateOneRequiredWithoutRawMaterialsNestedInput = {
@@ -24754,6 +29595,20 @@ export namespace Prisma {
     deleteMany?: RecipeItemScalarWhereInput | RecipeItemScalarWhereInput[]
   }
 
+  export type RawMaterialMovementUpdateManyWithoutRawMaterialNestedInput = {
+    create?: XOR<RawMaterialMovementCreateWithoutRawMaterialInput, RawMaterialMovementUncheckedCreateWithoutRawMaterialInput> | RawMaterialMovementCreateWithoutRawMaterialInput[] | RawMaterialMovementUncheckedCreateWithoutRawMaterialInput[]
+    connectOrCreate?: RawMaterialMovementCreateOrConnectWithoutRawMaterialInput | RawMaterialMovementCreateOrConnectWithoutRawMaterialInput[]
+    upsert?: RawMaterialMovementUpsertWithWhereUniqueWithoutRawMaterialInput | RawMaterialMovementUpsertWithWhereUniqueWithoutRawMaterialInput[]
+    createMany?: RawMaterialMovementCreateManyRawMaterialInputEnvelope
+    set?: RawMaterialMovementWhereUniqueInput | RawMaterialMovementWhereUniqueInput[]
+    disconnect?: RawMaterialMovementWhereUniqueInput | RawMaterialMovementWhereUniqueInput[]
+    delete?: RawMaterialMovementWhereUniqueInput | RawMaterialMovementWhereUniqueInput[]
+    connect?: RawMaterialMovementWhereUniqueInput | RawMaterialMovementWhereUniqueInput[]
+    update?: RawMaterialMovementUpdateWithWhereUniqueWithoutRawMaterialInput | RawMaterialMovementUpdateWithWhereUniqueWithoutRawMaterialInput[]
+    updateMany?: RawMaterialMovementUpdateManyWithWhereWithoutRawMaterialInput | RawMaterialMovementUpdateManyWithWhereWithoutRawMaterialInput[]
+    deleteMany?: RawMaterialMovementScalarWhereInput | RawMaterialMovementScalarWhereInput[]
+  }
+
   export type RecipeItemUncheckedUpdateManyWithoutRawMaterialNestedInput = {
     create?: XOR<RecipeItemCreateWithoutRawMaterialInput, RecipeItemUncheckedCreateWithoutRawMaterialInput> | RecipeItemCreateWithoutRawMaterialInput[] | RecipeItemUncheckedCreateWithoutRawMaterialInput[]
     connectOrCreate?: RecipeItemCreateOrConnectWithoutRawMaterialInput | RecipeItemCreateOrConnectWithoutRawMaterialInput[]
@@ -24766,6 +29621,112 @@ export namespace Prisma {
     update?: RecipeItemUpdateWithWhereUniqueWithoutRawMaterialInput | RecipeItemUpdateWithWhereUniqueWithoutRawMaterialInput[]
     updateMany?: RecipeItemUpdateManyWithWhereWithoutRawMaterialInput | RecipeItemUpdateManyWithWhereWithoutRawMaterialInput[]
     deleteMany?: RecipeItemScalarWhereInput | RecipeItemScalarWhereInput[]
+  }
+
+  export type RawMaterialMovementUncheckedUpdateManyWithoutRawMaterialNestedInput = {
+    create?: XOR<RawMaterialMovementCreateWithoutRawMaterialInput, RawMaterialMovementUncheckedCreateWithoutRawMaterialInput> | RawMaterialMovementCreateWithoutRawMaterialInput[] | RawMaterialMovementUncheckedCreateWithoutRawMaterialInput[]
+    connectOrCreate?: RawMaterialMovementCreateOrConnectWithoutRawMaterialInput | RawMaterialMovementCreateOrConnectWithoutRawMaterialInput[]
+    upsert?: RawMaterialMovementUpsertWithWhereUniqueWithoutRawMaterialInput | RawMaterialMovementUpsertWithWhereUniqueWithoutRawMaterialInput[]
+    createMany?: RawMaterialMovementCreateManyRawMaterialInputEnvelope
+    set?: RawMaterialMovementWhereUniqueInput | RawMaterialMovementWhereUniqueInput[]
+    disconnect?: RawMaterialMovementWhereUniqueInput | RawMaterialMovementWhereUniqueInput[]
+    delete?: RawMaterialMovementWhereUniqueInput | RawMaterialMovementWhereUniqueInput[]
+    connect?: RawMaterialMovementWhereUniqueInput | RawMaterialMovementWhereUniqueInput[]
+    update?: RawMaterialMovementUpdateWithWhereUniqueWithoutRawMaterialInput | RawMaterialMovementUpdateWithWhereUniqueWithoutRawMaterialInput[]
+    updateMany?: RawMaterialMovementUpdateManyWithWhereWithoutRawMaterialInput | RawMaterialMovementUpdateManyWithWhereWithoutRawMaterialInput[]
+    deleteMany?: RawMaterialMovementScalarWhereInput | RawMaterialMovementScalarWhereInput[]
+  }
+
+  export type RawMaterialCreateNestedOneWithoutMovementsInput = {
+    create?: XOR<RawMaterialCreateWithoutMovementsInput, RawMaterialUncheckedCreateWithoutMovementsInput>
+    connectOrCreate?: RawMaterialCreateOrConnectWithoutMovementsInput
+    connect?: RawMaterialWhereUniqueInput
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type RawMaterialUpdateOneRequiredWithoutMovementsNestedInput = {
+    create?: XOR<RawMaterialCreateWithoutMovementsInput, RawMaterialUncheckedCreateWithoutMovementsInput>
+    connectOrCreate?: RawMaterialCreateOrConnectWithoutMovementsInput
+    upsert?: RawMaterialUpsertWithoutMovementsInput
+    connect?: RawMaterialWhereUniqueInput
+    update?: XOR<XOR<RawMaterialUpdateToOneWithWhereWithoutMovementsInput, RawMaterialUpdateWithoutMovementsInput>, RawMaterialUncheckedUpdateWithoutMovementsInput>
+  }
+
+  export type OutletCreateNestedOneWithoutInventoryAuditsInput = {
+    create?: XOR<OutletCreateWithoutInventoryAuditsInput, OutletUncheckedCreateWithoutInventoryAuditsInput>
+    connectOrCreate?: OutletCreateOrConnectWithoutInventoryAuditsInput
+    connect?: OutletWhereUniqueInput
+  }
+
+  export type InventoryAuditItemCreateNestedManyWithoutAuditInput = {
+    create?: XOR<InventoryAuditItemCreateWithoutAuditInput, InventoryAuditItemUncheckedCreateWithoutAuditInput> | InventoryAuditItemCreateWithoutAuditInput[] | InventoryAuditItemUncheckedCreateWithoutAuditInput[]
+    connectOrCreate?: InventoryAuditItemCreateOrConnectWithoutAuditInput | InventoryAuditItemCreateOrConnectWithoutAuditInput[]
+    createMany?: InventoryAuditItemCreateManyAuditInputEnvelope
+    connect?: InventoryAuditItemWhereUniqueInput | InventoryAuditItemWhereUniqueInput[]
+  }
+
+  export type InventoryAuditItemUncheckedCreateNestedManyWithoutAuditInput = {
+    create?: XOR<InventoryAuditItemCreateWithoutAuditInput, InventoryAuditItemUncheckedCreateWithoutAuditInput> | InventoryAuditItemCreateWithoutAuditInput[] | InventoryAuditItemUncheckedCreateWithoutAuditInput[]
+    connectOrCreate?: InventoryAuditItemCreateOrConnectWithoutAuditInput | InventoryAuditItemCreateOrConnectWithoutAuditInput[]
+    createMany?: InventoryAuditItemCreateManyAuditInputEnvelope
+    connect?: InventoryAuditItemWhereUniqueInput | InventoryAuditItemWhereUniqueInput[]
+  }
+
+  export type OutletUpdateOneRequiredWithoutInventoryAuditsNestedInput = {
+    create?: XOR<OutletCreateWithoutInventoryAuditsInput, OutletUncheckedCreateWithoutInventoryAuditsInput>
+    connectOrCreate?: OutletCreateOrConnectWithoutInventoryAuditsInput
+    upsert?: OutletUpsertWithoutInventoryAuditsInput
+    connect?: OutletWhereUniqueInput
+    update?: XOR<XOR<OutletUpdateToOneWithWhereWithoutInventoryAuditsInput, OutletUpdateWithoutInventoryAuditsInput>, OutletUncheckedUpdateWithoutInventoryAuditsInput>
+  }
+
+  export type InventoryAuditItemUpdateManyWithoutAuditNestedInput = {
+    create?: XOR<InventoryAuditItemCreateWithoutAuditInput, InventoryAuditItemUncheckedCreateWithoutAuditInput> | InventoryAuditItemCreateWithoutAuditInput[] | InventoryAuditItemUncheckedCreateWithoutAuditInput[]
+    connectOrCreate?: InventoryAuditItemCreateOrConnectWithoutAuditInput | InventoryAuditItemCreateOrConnectWithoutAuditInput[]
+    upsert?: InventoryAuditItemUpsertWithWhereUniqueWithoutAuditInput | InventoryAuditItemUpsertWithWhereUniqueWithoutAuditInput[]
+    createMany?: InventoryAuditItemCreateManyAuditInputEnvelope
+    set?: InventoryAuditItemWhereUniqueInput | InventoryAuditItemWhereUniqueInput[]
+    disconnect?: InventoryAuditItemWhereUniqueInput | InventoryAuditItemWhereUniqueInput[]
+    delete?: InventoryAuditItemWhereUniqueInput | InventoryAuditItemWhereUniqueInput[]
+    connect?: InventoryAuditItemWhereUniqueInput | InventoryAuditItemWhereUniqueInput[]
+    update?: InventoryAuditItemUpdateWithWhereUniqueWithoutAuditInput | InventoryAuditItemUpdateWithWhereUniqueWithoutAuditInput[]
+    updateMany?: InventoryAuditItemUpdateManyWithWhereWithoutAuditInput | InventoryAuditItemUpdateManyWithWhereWithoutAuditInput[]
+    deleteMany?: InventoryAuditItemScalarWhereInput | InventoryAuditItemScalarWhereInput[]
+  }
+
+  export type InventoryAuditItemUncheckedUpdateManyWithoutAuditNestedInput = {
+    create?: XOR<InventoryAuditItemCreateWithoutAuditInput, InventoryAuditItemUncheckedCreateWithoutAuditInput> | InventoryAuditItemCreateWithoutAuditInput[] | InventoryAuditItemUncheckedCreateWithoutAuditInput[]
+    connectOrCreate?: InventoryAuditItemCreateOrConnectWithoutAuditInput | InventoryAuditItemCreateOrConnectWithoutAuditInput[]
+    upsert?: InventoryAuditItemUpsertWithWhereUniqueWithoutAuditInput | InventoryAuditItemUpsertWithWhereUniqueWithoutAuditInput[]
+    createMany?: InventoryAuditItemCreateManyAuditInputEnvelope
+    set?: InventoryAuditItemWhereUniqueInput | InventoryAuditItemWhereUniqueInput[]
+    disconnect?: InventoryAuditItemWhereUniqueInput | InventoryAuditItemWhereUniqueInput[]
+    delete?: InventoryAuditItemWhereUniqueInput | InventoryAuditItemWhereUniqueInput[]
+    connect?: InventoryAuditItemWhereUniqueInput | InventoryAuditItemWhereUniqueInput[]
+    update?: InventoryAuditItemUpdateWithWhereUniqueWithoutAuditInput | InventoryAuditItemUpdateWithWhereUniqueWithoutAuditInput[]
+    updateMany?: InventoryAuditItemUpdateManyWithWhereWithoutAuditInput | InventoryAuditItemUpdateManyWithWhereWithoutAuditInput[]
+    deleteMany?: InventoryAuditItemScalarWhereInput | InventoryAuditItemScalarWhereInput[]
+  }
+
+  export type InventoryAuditCreateNestedOneWithoutItemsInput = {
+    create?: XOR<InventoryAuditCreateWithoutItemsInput, InventoryAuditUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: InventoryAuditCreateOrConnectWithoutItemsInput
+    connect?: InventoryAuditWhereUniqueInput
+  }
+
+  export type InventoryAuditUpdateOneRequiredWithoutItemsNestedInput = {
+    create?: XOR<InventoryAuditCreateWithoutItemsInput, InventoryAuditUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: InventoryAuditCreateOrConnectWithoutItemsInput
+    upsert?: InventoryAuditUpsertWithoutItemsInput
+    connect?: InventoryAuditWhereUniqueInput
+    update?: XOR<XOR<InventoryAuditUpdateToOneWithWhereWithoutItemsInput, InventoryAuditUpdateWithoutItemsInput>, InventoryAuditUncheckedUpdateWithoutItemsInput>
   }
 
   export type MenuItemCreateNestedOneWithoutRecipesInput = {
@@ -25165,6 +30126,33 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -25318,6 +30306,7 @@ export namespace Prisma {
     id?: string
     nameAr: string
     unit?: string
+    openingStock?: number
     currentStock?: number
     minStockAlert?: number
     costPerUnit?: number
@@ -25325,12 +30314,14 @@ export namespace Prisma {
     notes?: string | null
     updatedAt?: Date | string
     recipeUsage?: RecipeItemCreateNestedManyWithoutRawMaterialInput
+    movements?: RawMaterialMovementCreateNestedManyWithoutRawMaterialInput
   }
 
   export type RawMaterialUncheckedCreateWithoutOutletInput = {
     id?: string
     nameAr: string
     unit?: string
+    openingStock?: number
     currentStock?: number
     minStockAlert?: number
     costPerUnit?: number
@@ -25338,6 +30329,7 @@ export namespace Prisma {
     notes?: string | null
     updatedAt?: Date | string
     recipeUsage?: RecipeItemUncheckedCreateNestedManyWithoutRawMaterialInput
+    movements?: RawMaterialMovementUncheckedCreateNestedManyWithoutRawMaterialInput
   }
 
   export type RawMaterialCreateOrConnectWithoutOutletInput = {
@@ -25584,6 +30576,32 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type InventoryAuditCreateWithoutOutletInput = {
+    id?: string
+    auditorName?: string
+    notes?: string | null
+    createdAt?: Date | string
+    items?: InventoryAuditItemCreateNestedManyWithoutAuditInput
+  }
+
+  export type InventoryAuditUncheckedCreateWithoutOutletInput = {
+    id?: string
+    auditorName?: string
+    notes?: string | null
+    createdAt?: Date | string
+    items?: InventoryAuditItemUncheckedCreateNestedManyWithoutAuditInput
+  }
+
+  export type InventoryAuditCreateOrConnectWithoutOutletInput = {
+    where: InventoryAuditWhereUniqueInput
+    create: XOR<InventoryAuditCreateWithoutOutletInput, InventoryAuditUncheckedCreateWithoutOutletInput>
+  }
+
+  export type InventoryAuditCreateManyOutletInputEnvelope = {
+    data: InventoryAuditCreateManyOutletInput | InventoryAuditCreateManyOutletInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithWhereUniqueWithoutOutletInput = {
     where: UserWhereUniqueInput
     update: XOR<UserUpdateWithoutOutletInput, UserUncheckedUpdateWithoutOutletInput>
@@ -25713,6 +30731,7 @@ export namespace Prisma {
     outletId?: StringFilter<"RawMaterial"> | string
     nameAr?: StringFilter<"RawMaterial"> | string
     unit?: StringFilter<"RawMaterial"> | string
+    openingStock?: FloatFilter<"RawMaterial"> | number
     currentStock?: FloatFilter<"RawMaterial"> | number
     minStockAlert?: FloatFilter<"RawMaterial"> | number
     costPerUnit?: FloatFilter<"RawMaterial"> | number
@@ -25912,6 +30931,33 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"ChatMessage"> | Date | string
   }
 
+  export type InventoryAuditUpsertWithWhereUniqueWithoutOutletInput = {
+    where: InventoryAuditWhereUniqueInput
+    update: XOR<InventoryAuditUpdateWithoutOutletInput, InventoryAuditUncheckedUpdateWithoutOutletInput>
+    create: XOR<InventoryAuditCreateWithoutOutletInput, InventoryAuditUncheckedCreateWithoutOutletInput>
+  }
+
+  export type InventoryAuditUpdateWithWhereUniqueWithoutOutletInput = {
+    where: InventoryAuditWhereUniqueInput
+    data: XOR<InventoryAuditUpdateWithoutOutletInput, InventoryAuditUncheckedUpdateWithoutOutletInput>
+  }
+
+  export type InventoryAuditUpdateManyWithWhereWithoutOutletInput = {
+    where: InventoryAuditScalarWhereInput
+    data: XOR<InventoryAuditUpdateManyMutationInput, InventoryAuditUncheckedUpdateManyWithoutOutletInput>
+  }
+
+  export type InventoryAuditScalarWhereInput = {
+    AND?: InventoryAuditScalarWhereInput | InventoryAuditScalarWhereInput[]
+    OR?: InventoryAuditScalarWhereInput[]
+    NOT?: InventoryAuditScalarWhereInput | InventoryAuditScalarWhereInput[]
+    id?: StringFilter<"InventoryAudit"> | string
+    outletId?: StringFilter<"InventoryAudit"> | string
+    auditorName?: StringFilter<"InventoryAudit"> | string
+    notes?: StringNullableFilter<"InventoryAudit"> | string | null
+    createdAt?: DateTimeFilter<"InventoryAudit"> | Date | string
+  }
+
   export type OutletCreateWithoutUsersInput = {
     id?: string
     name: string
@@ -25931,6 +30977,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutUsersInput = {
@@ -25952,6 +30999,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutUsersInput = {
@@ -25989,6 +31037,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutUsersInput = {
@@ -26010,6 +31059,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateWithoutTablesInput = {
@@ -26031,6 +31081,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutTablesInput = {
@@ -26052,6 +31103,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutTablesInput = {
@@ -26163,6 +31215,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutTablesInput = {
@@ -26184,6 +31237,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OrderUpsertWithWhereUniqueWithoutTableInput = {
@@ -26221,6 +31275,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutMenuItemsInput = {
@@ -26242,6 +31297,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutMenuItemsInput = {
@@ -26303,6 +31359,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutMenuItemsInput = {
@@ -26324,6 +31381,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type RecipeItemUpsertWithWhereUniqueWithoutMenuItemInput = {
@@ -26372,6 +31430,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutRawMaterialsInput = {
@@ -26393,6 +31452,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutRawMaterialsInput = {
@@ -26421,6 +31481,44 @@ export namespace Prisma {
 
   export type RecipeItemCreateManyRawMaterialInputEnvelope = {
     data: RecipeItemCreateManyRawMaterialInput | RecipeItemCreateManyRawMaterialInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type RawMaterialMovementCreateWithoutRawMaterialInput = {
+    id?: string
+    type: string
+    quantity: number
+    costPerUnit?: number | null
+    totalCost?: number | null
+    supplierName?: string | null
+    invoiceNumber?: string | null
+    orderNumber?: string | null
+    recordedBy?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type RawMaterialMovementUncheckedCreateWithoutRawMaterialInput = {
+    id?: string
+    type: string
+    quantity: number
+    costPerUnit?: number | null
+    totalCost?: number | null
+    supplierName?: string | null
+    invoiceNumber?: string | null
+    orderNumber?: string | null
+    recordedBy?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type RawMaterialMovementCreateOrConnectWithoutRawMaterialInput = {
+    where: RawMaterialMovementWhereUniqueInput
+    create: XOR<RawMaterialMovementCreateWithoutRawMaterialInput, RawMaterialMovementUncheckedCreateWithoutRawMaterialInput>
+  }
+
+  export type RawMaterialMovementCreateManyRawMaterialInputEnvelope = {
+    data: RawMaterialMovementCreateManyRawMaterialInput | RawMaterialMovementCreateManyRawMaterialInput[]
     skipDuplicates?: boolean
   }
 
@@ -26454,6 +31552,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutRawMaterialsInput = {
@@ -26475,6 +31574,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type RecipeItemUpsertWithWhereUniqueWithoutRawMaterialInput = {
@@ -26491,6 +31591,349 @@ export namespace Prisma {
   export type RecipeItemUpdateManyWithWhereWithoutRawMaterialInput = {
     where: RecipeItemScalarWhereInput
     data: XOR<RecipeItemUpdateManyMutationInput, RecipeItemUncheckedUpdateManyWithoutRawMaterialInput>
+  }
+
+  export type RawMaterialMovementUpsertWithWhereUniqueWithoutRawMaterialInput = {
+    where: RawMaterialMovementWhereUniqueInput
+    update: XOR<RawMaterialMovementUpdateWithoutRawMaterialInput, RawMaterialMovementUncheckedUpdateWithoutRawMaterialInput>
+    create: XOR<RawMaterialMovementCreateWithoutRawMaterialInput, RawMaterialMovementUncheckedCreateWithoutRawMaterialInput>
+  }
+
+  export type RawMaterialMovementUpdateWithWhereUniqueWithoutRawMaterialInput = {
+    where: RawMaterialMovementWhereUniqueInput
+    data: XOR<RawMaterialMovementUpdateWithoutRawMaterialInput, RawMaterialMovementUncheckedUpdateWithoutRawMaterialInput>
+  }
+
+  export type RawMaterialMovementUpdateManyWithWhereWithoutRawMaterialInput = {
+    where: RawMaterialMovementScalarWhereInput
+    data: XOR<RawMaterialMovementUpdateManyMutationInput, RawMaterialMovementUncheckedUpdateManyWithoutRawMaterialInput>
+  }
+
+  export type RawMaterialMovementScalarWhereInput = {
+    AND?: RawMaterialMovementScalarWhereInput | RawMaterialMovementScalarWhereInput[]
+    OR?: RawMaterialMovementScalarWhereInput[]
+    NOT?: RawMaterialMovementScalarWhereInput | RawMaterialMovementScalarWhereInput[]
+    id?: StringFilter<"RawMaterialMovement"> | string
+    rawMaterialId?: StringFilter<"RawMaterialMovement"> | string
+    type?: StringFilter<"RawMaterialMovement"> | string
+    quantity?: FloatFilter<"RawMaterialMovement"> | number
+    costPerUnit?: FloatNullableFilter<"RawMaterialMovement"> | number | null
+    totalCost?: FloatNullableFilter<"RawMaterialMovement"> | number | null
+    supplierName?: StringNullableFilter<"RawMaterialMovement"> | string | null
+    invoiceNumber?: StringNullableFilter<"RawMaterialMovement"> | string | null
+    orderNumber?: StringNullableFilter<"RawMaterialMovement"> | string | null
+    recordedBy?: StringNullableFilter<"RawMaterialMovement"> | string | null
+    notes?: StringNullableFilter<"RawMaterialMovement"> | string | null
+    createdAt?: DateTimeFilter<"RawMaterialMovement"> | Date | string
+  }
+
+  export type RawMaterialCreateWithoutMovementsInput = {
+    id?: string
+    nameAr: string
+    unit?: string
+    openingStock?: number
+    currentStock?: number
+    minStockAlert?: number
+    costPerUnit?: number
+    supplierName?: string | null
+    notes?: string | null
+    updatedAt?: Date | string
+    outlet: OutletCreateNestedOneWithoutRawMaterialsInput
+    recipeUsage?: RecipeItemCreateNestedManyWithoutRawMaterialInput
+  }
+
+  export type RawMaterialUncheckedCreateWithoutMovementsInput = {
+    id?: string
+    outletId: string
+    nameAr: string
+    unit?: string
+    openingStock?: number
+    currentStock?: number
+    minStockAlert?: number
+    costPerUnit?: number
+    supplierName?: string | null
+    notes?: string | null
+    updatedAt?: Date | string
+    recipeUsage?: RecipeItemUncheckedCreateNestedManyWithoutRawMaterialInput
+  }
+
+  export type RawMaterialCreateOrConnectWithoutMovementsInput = {
+    where: RawMaterialWhereUniqueInput
+    create: XOR<RawMaterialCreateWithoutMovementsInput, RawMaterialUncheckedCreateWithoutMovementsInput>
+  }
+
+  export type RawMaterialUpsertWithoutMovementsInput = {
+    update: XOR<RawMaterialUpdateWithoutMovementsInput, RawMaterialUncheckedUpdateWithoutMovementsInput>
+    create: XOR<RawMaterialCreateWithoutMovementsInput, RawMaterialUncheckedCreateWithoutMovementsInput>
+    where?: RawMaterialWhereInput
+  }
+
+  export type RawMaterialUpdateToOneWithWhereWithoutMovementsInput = {
+    where?: RawMaterialWhereInput
+    data: XOR<RawMaterialUpdateWithoutMovementsInput, RawMaterialUncheckedUpdateWithoutMovementsInput>
+  }
+
+  export type RawMaterialUpdateWithoutMovementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nameAr?: StringFieldUpdateOperationsInput | string
+    unit?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
+    currentStock?: FloatFieldUpdateOperationsInput | number
+    minStockAlert?: FloatFieldUpdateOperationsInput | number
+    costPerUnit?: FloatFieldUpdateOperationsInput | number
+    supplierName?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outlet?: OutletUpdateOneRequiredWithoutRawMaterialsNestedInput
+    recipeUsage?: RecipeItemUpdateManyWithoutRawMaterialNestedInput
+  }
+
+  export type RawMaterialUncheckedUpdateWithoutMovementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    nameAr?: StringFieldUpdateOperationsInput | string
+    unit?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
+    currentStock?: FloatFieldUpdateOperationsInput | number
+    minStockAlert?: FloatFieldUpdateOperationsInput | number
+    costPerUnit?: FloatFieldUpdateOperationsInput | number
+    supplierName?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    recipeUsage?: RecipeItemUncheckedUpdateManyWithoutRawMaterialNestedInput
+  }
+
+  export type OutletCreateWithoutInventoryAuditsInput = {
+    id?: string
+    name: string
+    code: string
+    type?: string
+    address: string
+    phone: string
+    whatsapp?: string | null
+    logoUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    users?: UserCreateNestedManyWithoutOutletInput
+    tables?: DiningTableCreateNestedManyWithoutOutletInput
+    menuItems?: MenuItemCreateNestedManyWithoutOutletInput
+    rawMaterials?: RawMaterialCreateNestedManyWithoutOutletInput
+    orders?: OrderCreateNestedManyWithoutOutletInput
+    shifts?: ShiftCreateNestedManyWithoutOutletInput
+    expenses?: ExpenseCreateNestedManyWithoutOutletInput
+    reservations?: ReservationCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
+  }
+
+  export type OutletUncheckedCreateWithoutInventoryAuditsInput = {
+    id?: string
+    name: string
+    code: string
+    type?: string
+    address: string
+    phone: string
+    whatsapp?: string | null
+    logoUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutOutletInput
+    tables?: DiningTableUncheckedCreateNestedManyWithoutOutletInput
+    menuItems?: MenuItemUncheckedCreateNestedManyWithoutOutletInput
+    rawMaterials?: RawMaterialUncheckedCreateNestedManyWithoutOutletInput
+    orders?: OrderUncheckedCreateNestedManyWithoutOutletInput
+    shifts?: ShiftUncheckedCreateNestedManyWithoutOutletInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
+    reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
+  }
+
+  export type OutletCreateOrConnectWithoutInventoryAuditsInput = {
+    where: OutletWhereUniqueInput
+    create: XOR<OutletCreateWithoutInventoryAuditsInput, OutletUncheckedCreateWithoutInventoryAuditsInput>
+  }
+
+  export type InventoryAuditItemCreateWithoutAuditInput = {
+    id?: string
+    rawMaterialId: string
+    rawMaterialName: string
+    unit: string
+    costPerUnit?: number
+    openingStock?: number
+    totalInbound?: number
+    totalConsumed?: number
+    expectedStock?: number
+    actualStock?: number
+    variance?: number
+    varianceCost?: number
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type InventoryAuditItemUncheckedCreateWithoutAuditInput = {
+    id?: string
+    rawMaterialId: string
+    rawMaterialName: string
+    unit: string
+    costPerUnit?: number
+    openingStock?: number
+    totalInbound?: number
+    totalConsumed?: number
+    expectedStock?: number
+    actualStock?: number
+    variance?: number
+    varianceCost?: number
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type InventoryAuditItemCreateOrConnectWithoutAuditInput = {
+    where: InventoryAuditItemWhereUniqueInput
+    create: XOR<InventoryAuditItemCreateWithoutAuditInput, InventoryAuditItemUncheckedCreateWithoutAuditInput>
+  }
+
+  export type InventoryAuditItemCreateManyAuditInputEnvelope = {
+    data: InventoryAuditItemCreateManyAuditInput | InventoryAuditItemCreateManyAuditInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OutletUpsertWithoutInventoryAuditsInput = {
+    update: XOR<OutletUpdateWithoutInventoryAuditsInput, OutletUncheckedUpdateWithoutInventoryAuditsInput>
+    create: XOR<OutletCreateWithoutInventoryAuditsInput, OutletUncheckedCreateWithoutInventoryAuditsInput>
+    where?: OutletWhereInput
+  }
+
+  export type OutletUpdateToOneWithWhereWithoutInventoryAuditsInput = {
+    where?: OutletWhereInput
+    data: XOR<OutletUpdateWithoutInventoryAuditsInput, OutletUncheckedUpdateWithoutInventoryAuditsInput>
+  }
+
+  export type OutletUpdateWithoutInventoryAuditsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutOutletNestedInput
+    tables?: DiningTableUpdateManyWithoutOutletNestedInput
+    menuItems?: MenuItemUpdateManyWithoutOutletNestedInput
+    rawMaterials?: RawMaterialUpdateManyWithoutOutletNestedInput
+    orders?: OrderUpdateManyWithoutOutletNestedInput
+    shifts?: ShiftUpdateManyWithoutOutletNestedInput
+    expenses?: ExpenseUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
+  }
+
+  export type OutletUncheckedUpdateWithoutInventoryAuditsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutOutletNestedInput
+    tables?: DiningTableUncheckedUpdateManyWithoutOutletNestedInput
+    menuItems?: MenuItemUncheckedUpdateManyWithoutOutletNestedInput
+    rawMaterials?: RawMaterialUncheckedUpdateManyWithoutOutletNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutOutletNestedInput
+    shifts?: ShiftUncheckedUpdateManyWithoutOutletNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
+  }
+
+  export type InventoryAuditItemUpsertWithWhereUniqueWithoutAuditInput = {
+    where: InventoryAuditItemWhereUniqueInput
+    update: XOR<InventoryAuditItemUpdateWithoutAuditInput, InventoryAuditItemUncheckedUpdateWithoutAuditInput>
+    create: XOR<InventoryAuditItemCreateWithoutAuditInput, InventoryAuditItemUncheckedCreateWithoutAuditInput>
+  }
+
+  export type InventoryAuditItemUpdateWithWhereUniqueWithoutAuditInput = {
+    where: InventoryAuditItemWhereUniqueInput
+    data: XOR<InventoryAuditItemUpdateWithoutAuditInput, InventoryAuditItemUncheckedUpdateWithoutAuditInput>
+  }
+
+  export type InventoryAuditItemUpdateManyWithWhereWithoutAuditInput = {
+    where: InventoryAuditItemScalarWhereInput
+    data: XOR<InventoryAuditItemUpdateManyMutationInput, InventoryAuditItemUncheckedUpdateManyWithoutAuditInput>
+  }
+
+  export type InventoryAuditItemScalarWhereInput = {
+    AND?: InventoryAuditItemScalarWhereInput | InventoryAuditItemScalarWhereInput[]
+    OR?: InventoryAuditItemScalarWhereInput[]
+    NOT?: InventoryAuditItemScalarWhereInput | InventoryAuditItemScalarWhereInput[]
+    id?: StringFilter<"InventoryAuditItem"> | string
+    auditId?: StringFilter<"InventoryAuditItem"> | string
+    rawMaterialId?: StringFilter<"InventoryAuditItem"> | string
+    rawMaterialName?: StringFilter<"InventoryAuditItem"> | string
+    unit?: StringFilter<"InventoryAuditItem"> | string
+    costPerUnit?: FloatFilter<"InventoryAuditItem"> | number
+    openingStock?: FloatFilter<"InventoryAuditItem"> | number
+    totalInbound?: FloatFilter<"InventoryAuditItem"> | number
+    totalConsumed?: FloatFilter<"InventoryAuditItem"> | number
+    expectedStock?: FloatFilter<"InventoryAuditItem"> | number
+    actualStock?: FloatFilter<"InventoryAuditItem"> | number
+    variance?: FloatFilter<"InventoryAuditItem"> | number
+    varianceCost?: FloatFilter<"InventoryAuditItem"> | number
+    status?: StringFilter<"InventoryAuditItem"> | string
+    createdAt?: DateTimeFilter<"InventoryAuditItem"> | Date | string
+  }
+
+  export type InventoryAuditCreateWithoutItemsInput = {
+    id?: string
+    auditorName?: string
+    notes?: string | null
+    createdAt?: Date | string
+    outlet: OutletCreateNestedOneWithoutInventoryAuditsInput
+  }
+
+  export type InventoryAuditUncheckedCreateWithoutItemsInput = {
+    id?: string
+    outletId: string
+    auditorName?: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type InventoryAuditCreateOrConnectWithoutItemsInput = {
+    where: InventoryAuditWhereUniqueInput
+    create: XOR<InventoryAuditCreateWithoutItemsInput, InventoryAuditUncheckedCreateWithoutItemsInput>
+  }
+
+  export type InventoryAuditUpsertWithoutItemsInput = {
+    update: XOR<InventoryAuditUpdateWithoutItemsInput, InventoryAuditUncheckedUpdateWithoutItemsInput>
+    create: XOR<InventoryAuditCreateWithoutItemsInput, InventoryAuditUncheckedCreateWithoutItemsInput>
+    where?: InventoryAuditWhereInput
+  }
+
+  export type InventoryAuditUpdateToOneWithWhereWithoutItemsInput = {
+    where?: InventoryAuditWhereInput
+    data: XOR<InventoryAuditUpdateWithoutItemsInput, InventoryAuditUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type InventoryAuditUpdateWithoutItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    auditorName?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outlet?: OutletUpdateOneRequiredWithoutInventoryAuditsNestedInput
+  }
+
+  export type InventoryAuditUncheckedUpdateWithoutItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    auditorName?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MenuItemCreateWithoutRecipesInput = {
@@ -26546,6 +31989,7 @@ export namespace Prisma {
     id?: string
     nameAr: string
     unit?: string
+    openingStock?: number
     currentStock?: number
     minStockAlert?: number
     costPerUnit?: number
@@ -26553,6 +31997,7 @@ export namespace Prisma {
     notes?: string | null
     updatedAt?: Date | string
     outlet: OutletCreateNestedOneWithoutRawMaterialsInput
+    movements?: RawMaterialMovementCreateNestedManyWithoutRawMaterialInput
   }
 
   export type RawMaterialUncheckedCreateWithoutRecipeUsageInput = {
@@ -26560,12 +32005,14 @@ export namespace Prisma {
     outletId: string
     nameAr: string
     unit?: string
+    openingStock?: number
     currentStock?: number
     minStockAlert?: number
     costPerUnit?: number
     supplierName?: string | null
     notes?: string | null
     updatedAt?: Date | string
+    movements?: RawMaterialMovementUncheckedCreateNestedManyWithoutRawMaterialInput
   }
 
   export type RawMaterialCreateOrConnectWithoutRecipeUsageInput = {
@@ -26643,6 +32090,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nameAr?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
     currentStock?: FloatFieldUpdateOperationsInput | number
     minStockAlert?: FloatFieldUpdateOperationsInput | number
     costPerUnit?: FloatFieldUpdateOperationsInput | number
@@ -26650,6 +32098,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outlet?: OutletUpdateOneRequiredWithoutRawMaterialsNestedInput
+    movements?: RawMaterialMovementUpdateManyWithoutRawMaterialNestedInput
   }
 
   export type RawMaterialUncheckedUpdateWithoutRecipeUsageInput = {
@@ -26657,12 +32106,14 @@ export namespace Prisma {
     outletId?: StringFieldUpdateOperationsInput | string
     nameAr?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
     currentStock?: FloatFieldUpdateOperationsInput | number
     minStockAlert?: FloatFieldUpdateOperationsInput | number
     costPerUnit?: FloatFieldUpdateOperationsInput | number
     supplierName?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    movements?: RawMaterialMovementUncheckedUpdateManyWithoutRawMaterialNestedInput
   }
 
   export type OrderCreateWithoutCustomerInput = {
@@ -26774,6 +32225,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutOrdersInput = {
@@ -26795,6 +32247,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutOrdersInput = {
@@ -26930,6 +32383,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutOrdersInput = {
@@ -26951,6 +32405,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type DiningTableUpsertWithoutOrdersInput = {
@@ -27227,6 +32682,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutShiftsInput = {
@@ -27248,6 +32704,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutShiftsInput = {
@@ -27285,6 +32742,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutShiftsInput = {
@@ -27306,6 +32764,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateWithoutExpensesInput = {
@@ -27327,6 +32786,7 @@ export namespace Prisma {
     shifts?: ShiftCreateNestedManyWithoutOutletInput
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutExpensesInput = {
@@ -27348,6 +32808,7 @@ export namespace Prisma {
     shifts?: ShiftUncheckedCreateNestedManyWithoutOutletInput
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutExpensesInput = {
@@ -27385,6 +32846,7 @@ export namespace Prisma {
     shifts?: ShiftUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutExpensesInput = {
@@ -27406,6 +32868,7 @@ export namespace Prisma {
     shifts?: ShiftUncheckedUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateWithoutReservationsInput = {
@@ -27427,6 +32890,7 @@ export namespace Prisma {
     shifts?: ShiftCreateNestedManyWithoutOutletInput
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutReservationsInput = {
@@ -27448,6 +32912,7 @@ export namespace Prisma {
     shifts?: ShiftUncheckedCreateNestedManyWithoutOutletInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutReservationsInput = {
@@ -27485,6 +32950,7 @@ export namespace Prisma {
     shifts?: ShiftUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutReservationsInput = {
@@ -27506,6 +32972,7 @@ export namespace Prisma {
     shifts?: ShiftUncheckedUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateWithoutChatMessagesInput = {
@@ -27527,6 +32994,7 @@ export namespace Prisma {
     shifts?: ShiftCreateNestedManyWithoutOutletInput
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
     reservations?: ReservationCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutChatMessagesInput = {
@@ -27548,6 +33016,7 @@ export namespace Prisma {
     shifts?: ShiftUncheckedCreateNestedManyWithoutOutletInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutChatMessagesInput = {
@@ -27585,6 +33054,7 @@ export namespace Prisma {
     shifts?: ShiftUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutChatMessagesInput = {
@@ -27606,6 +33076,7 @@ export namespace Prisma {
     shifts?: ShiftUncheckedUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type UserCreateManyOutletInput = {
@@ -27657,6 +33128,7 @@ export namespace Prisma {
     id?: string
     nameAr: string
     unit?: string
+    openingStock?: number
     currentStock?: number
     minStockAlert?: number
     costPerUnit?: number
@@ -27753,6 +33225,13 @@ export namespace Prisma {
     orderNumber?: string | null
     message: string
     isRead?: boolean
+    createdAt?: Date | string
+  }
+
+  export type InventoryAuditCreateManyOutletInput = {
+    id?: string
+    auditorName?: string
+    notes?: string | null
     createdAt?: Date | string
   }
 
@@ -27899,6 +33378,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nameAr?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
     currentStock?: FloatFieldUpdateOperationsInput | number
     minStockAlert?: FloatFieldUpdateOperationsInput | number
     costPerUnit?: FloatFieldUpdateOperationsInput | number
@@ -27906,12 +33386,14 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recipeUsage?: RecipeItemUpdateManyWithoutRawMaterialNestedInput
+    movements?: RawMaterialMovementUpdateManyWithoutRawMaterialNestedInput
   }
 
   export type RawMaterialUncheckedUpdateWithoutOutletInput = {
     id?: StringFieldUpdateOperationsInput | string
     nameAr?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
     currentStock?: FloatFieldUpdateOperationsInput | number
     minStockAlert?: FloatFieldUpdateOperationsInput | number
     costPerUnit?: FloatFieldUpdateOperationsInput | number
@@ -27919,12 +33401,14 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recipeUsage?: RecipeItemUncheckedUpdateManyWithoutRawMaterialNestedInput
+    movements?: RawMaterialMovementUncheckedUpdateManyWithoutRawMaterialNestedInput
   }
 
   export type RawMaterialUncheckedUpdateManyWithoutOutletInput = {
     id?: StringFieldUpdateOperationsInput | string
     nameAr?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    openingStock?: FloatFieldUpdateOperationsInput | number
     currentStock?: FloatFieldUpdateOperationsInput | number
     minStockAlert?: FloatFieldUpdateOperationsInput | number
     costPerUnit?: FloatFieldUpdateOperationsInput | number
@@ -28208,6 +33692,29 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type InventoryAuditUpdateWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    auditorName?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: InventoryAuditItemUpdateManyWithoutAuditNestedInput
+  }
+
+  export type InventoryAuditUncheckedUpdateWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    auditorName?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: InventoryAuditItemUncheckedUpdateManyWithoutAuditNestedInput
+  }
+
+  export type InventoryAuditUncheckedUpdateManyWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    auditorName?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type OrderCreateManyTableInput = {
     id?: string
     outletId: string
@@ -28369,6 +33876,20 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type RawMaterialMovementCreateManyRawMaterialInput = {
+    id?: string
+    type: string
+    quantity: number
+    costPerUnit?: number | null
+    totalCost?: number | null
+    supplierName?: string | null
+    invoiceNumber?: string | null
+    orderNumber?: string | null
+    recordedBy?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
   export type RecipeItemUpdateWithoutRawMaterialInput = {
     id?: StringFieldUpdateOperationsInput | string
     qtyRequired?: FloatFieldUpdateOperationsInput | number
@@ -28387,6 +33908,116 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     menuItemId?: StringFieldUpdateOperationsInput | string
     qtyRequired?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RawMaterialMovementUpdateWithoutRawMaterialInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    costPerUnit?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierName?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RawMaterialMovementUncheckedUpdateWithoutRawMaterialInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    costPerUnit?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierName?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RawMaterialMovementUncheckedUpdateManyWithoutRawMaterialInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    costPerUnit?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierName?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InventoryAuditItemCreateManyAuditInput = {
+    id?: string
+    rawMaterialId: string
+    rawMaterialName: string
+    unit: string
+    costPerUnit?: number
+    openingStock?: number
+    totalInbound?: number
+    totalConsumed?: number
+    expectedStock?: number
+    actualStock?: number
+    variance?: number
+    varianceCost?: number
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type InventoryAuditItemUpdateWithoutAuditInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rawMaterialId?: StringFieldUpdateOperationsInput | string
+    rawMaterialName?: StringFieldUpdateOperationsInput | string
+    unit?: StringFieldUpdateOperationsInput | string
+    costPerUnit?: FloatFieldUpdateOperationsInput | number
+    openingStock?: FloatFieldUpdateOperationsInput | number
+    totalInbound?: FloatFieldUpdateOperationsInput | number
+    totalConsumed?: FloatFieldUpdateOperationsInput | number
+    expectedStock?: FloatFieldUpdateOperationsInput | number
+    actualStock?: FloatFieldUpdateOperationsInput | number
+    variance?: FloatFieldUpdateOperationsInput | number
+    varianceCost?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InventoryAuditItemUncheckedUpdateWithoutAuditInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rawMaterialId?: StringFieldUpdateOperationsInput | string
+    rawMaterialName?: StringFieldUpdateOperationsInput | string
+    unit?: StringFieldUpdateOperationsInput | string
+    costPerUnit?: FloatFieldUpdateOperationsInput | number
+    openingStock?: FloatFieldUpdateOperationsInput | number
+    totalInbound?: FloatFieldUpdateOperationsInput | number
+    totalConsumed?: FloatFieldUpdateOperationsInput | number
+    expectedStock?: FloatFieldUpdateOperationsInput | number
+    actualStock?: FloatFieldUpdateOperationsInput | number
+    variance?: FloatFieldUpdateOperationsInput | number
+    varianceCost?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InventoryAuditItemUncheckedUpdateManyWithoutAuditInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rawMaterialId?: StringFieldUpdateOperationsInput | string
+    rawMaterialName?: StringFieldUpdateOperationsInput | string
+    unit?: StringFieldUpdateOperationsInput | string
+    costPerUnit?: FloatFieldUpdateOperationsInput | number
+    openingStock?: FloatFieldUpdateOperationsInput | number
+    totalInbound?: FloatFieldUpdateOperationsInput | number
+    totalConsumed?: FloatFieldUpdateOperationsInput | number
+    expectedStock?: FloatFieldUpdateOperationsInput | number
+    actualStock?: FloatFieldUpdateOperationsInput | number
+    variance?: FloatFieldUpdateOperationsInput | number
+    varianceCost?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

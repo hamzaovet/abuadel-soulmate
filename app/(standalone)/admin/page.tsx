@@ -48,6 +48,11 @@ import {
   Truck,
   Upload,
   Image as ImageIcon,
+  History,
+  ClipboardCheck,
+  ArrowUpRight,
+  ArrowDownLeft,
+  Scale,
 } from "lucide-react";
 
 interface Toast {
@@ -136,9 +141,18 @@ export default function AdminDashboardPage() {
   const [showQRModal, setShowQRModal] = useState(false);
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [showRawMaterialModal, setShowRawMaterialModal] = useState(false);
+  const [showInboundModal, setShowInboundModal] = useState(false);
+  const [selectedRawForInbound, setSelectedRawForInbound] = useState<any>(null);
+  const [showMovementsModal, setShowMovementsModal] = useState(false);
+  const [selectedRawForMovements, setSelectedRawForMovements] = useState<any>(null);
   const [showRecipeModal, setShowRecipeModal] = useState(false);
   const [showPastryModal, setShowPastryModal] = useState(false);
   const [selectedMenuItemForRecipe, setSelectedMenuItemForRecipe] = useState<any>(null);
+
+  // Sub-tabs for Recipes / Inventory Tab
+  const [recipeSubTab, setRecipeSubTab] = useState<"cards" | "audit" | "bom">("cards");
+  const [auditCounts, setAuditCounts] = useState<Record<string, string>>({});
+  const [isSubmittingAudit, setIsSubmittingAudit] = useState(false);
 
   // Forms
   const [expenseForm, setExpenseForm] = useState({
@@ -151,11 +165,20 @@ export default function AdminDashboardPage() {
   const [rawForm, setRawForm] = useState({
     nameAr: "",
     unit: "GRAM",
-    currentStock: "",
+    openingStock: "1000",
     minStockAlert: "200",
     costPerUnit: "0.5",
     supplierName: "",
+    notes: "",
     outletId: "",
+  });
+
+  const [inboundForm, setInboundForm] = useState({
+    quantity: "",
+    costPerUnit: "",
+    supplierName: "",
+    invoiceNumber: "",
+    notes: "",
   });
 
   const [pastryForm, setPastryForm] = useState({
@@ -654,33 +677,7 @@ export default function AdminDashboardPage() {
     }
   };
 
-  // Quick Restock Raw Material
-  const handleRestockRaw = async (rawId: string, addQty: number) => {
-    try {
-      const raw = rawMaterials.find((r) => r.id === rawId);
-      if (!raw) return;
-      const res = await fetch("/api/recipes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "RESTOCK",
-          rawMaterialId: rawId,
-          addStock: addQty,
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        addToast("success", `تم تزويد رصيد ${raw.nameAr} بنجاح (+${addQty} ${raw.unit})`);
-        fetchDashboardData();
-      } else {
-        addToast("error", data.error || "فشل التزويد");
-      }
-    } catch {
-      addToast("error", "حدث خطأ في الاتصال");
-    }
-  };
-
-  // Add New Raw Material
+  // Add New Raw Material (ERP Item Card)
   const handleAddRawMaterial = async (e: React.FormEvent) => {
     e.preventDefault();
     const targetOutlet =
@@ -696,31 +693,125 @@ export default function AdminDashboardPage() {
           outletId: targetOutlet,
           nameAr: rawForm.nameAr,
           unit: rawForm.unit,
-          currentStock: parseFloat(rawForm.currentStock) || 0,
-          minStockAlert: parseFloat(rawForm.minStockAlert) || 100,
-          costPerUnit: parseFloat(rawForm.costPerUnit) || 0.1,
+          openingStock: parseFloat(rawForm.openingStock) || 0,
+          minStockAlert: parseFloat(rawForm.minStockAlert) || 200,
+          costPerUnit: parseFloat(rawForm.costPerUnit) || 0.5,
           supplierName: rawForm.supplierName,
+          notes: rawForm.notes,
         }),
       });
       const data = await res.json();
       if (data.success) {
-        addToast("success", "تمت إضافة الخامة الجديدة بنجاح");
+        addToast("success", data.message || "تم إنشاء كارت صنف الخامة بنجاح");
         setShowRawMaterialModal(false);
         setRawForm({
           nameAr: "",
           unit: "GRAM",
-          currentStock: "",
+          openingStock: "1000",
           minStockAlert: "200",
           costPerUnit: "0.5",
           supplierName: "",
+          notes: "",
           outletId: "",
         });
         fetchDashboardData();
       } else {
-        addToast("error", data.error || "فشل حفظ الخامة");
+        addToast("error", data.error || "فشل حفظ كارت صنف الخامة");
       }
     } catch {
-      addToast("error", "حدث خطأ أثناء الحفظ");
+      addToast("error", "حدث خطأ أثناء حفظ الخامة");
+    }
+  };
+
+  // Record Separate Inbound Stock Movement (توريد خامات منفصلة)
+  const handleRecordInboundMovement = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedRawForInbound) return;
+    const qty = parseFloat(inboundForm.quantity);
+    if (!qty || qty <= 0) {
+      addToast("error", "يرجى إدخال كمية توريد صحيحة أكبر من صفر");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/recipes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "ADD_MOVEMENT",
+          rawMaterialId: selectedRawForInbound.id,
+          quantity: qty,
+          costPerUnit: inboundForm.costPerUnit ? parseFloat(inboundForm.costPerUnit) : undefined,
+          supplierName: inboundForm.supplierName,
+          invoiceNumber: inboundForm.invoiceNumber,
+          recordedBy: currentUser?.name || "المايسترو",
+          notes: inboundForm.notes,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast("success", data.message || "تم تسجيل حركة التوريد بنجاح 📦");
+        setShowInboundModal(false);
+        setSelectedRawForInbound(null);
+        setInboundForm({
+          quantity: "",
+          costPerUnit: "",
+          supplierName: "",
+          invoiceNumber: "",
+          notes: "",
+        });
+        fetchDashboardData();
+      } else {
+        addToast("error", data.error || "فشل تسجيل حركة التوريد");
+      }
+    } catch {
+      addToast("error", "حدث خطأ أثناء الاتصال بالخادم");
+    }
+  };
+
+  // Submit Inventory Audit Reconciliation (اعتماد وتسوية الجرد المقارن)
+  const handleSaveInventoryAudit = async () => {
+    const targetOutlet =
+      outlets.find((o) => o.code === "SOULMATE_CAFE")?.id ||
+      (selectedOutletId !== "ALL" ? selectedOutletId : outlets[0]?.id);
+
+    try {
+      setIsSubmittingAudit(true);
+      const auditItems = rawMaterials.map((r) => {
+        const enteredVal = auditCounts[r.id];
+        const actual = enteredVal !== undefined && enteredVal !== "" ? parseFloat(enteredVal) : (r.expectedStock ?? r.currentStock);
+        return {
+          rawMaterialId: r.id,
+          actualStock: actual,
+          expectedStock: r.expectedStock ?? r.currentStock,
+          totalInbound: r.totalInbound || 0,
+          totalConsumed: r.totalConsumed || 0,
+        };
+      });
+
+      const res = await fetch("/api/recipes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "RECORD_AUDIT",
+          outletId: targetOutlet,
+          auditorName: currentUser?.name || "المايسترو",
+          notes: "محضر جرد فعلي وتسوية دفتري وسحابي",
+          auditItems,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast("success", "تم اعتماد محضر الجرد وتسوية الأرصدة الدفترية بنجاح 📋✅");
+        setAuditCounts({});
+        fetchDashboardData();
+      } else {
+        addToast("error", data.error || "فشل اعتماد محضر الجرد");
+      }
+    } catch {
+      addToast("error", "حدث خطأ أثناء حفظ محضر الجرد");
+    } finally {
+      setIsSubmittingAudit(false);
     }
   };
 
@@ -732,14 +823,14 @@ export default function AdminDashboardPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          action: "UPDATE_RECIPE",
+          action: "SAVE_RECIPE",
           menuItemId: selectedMenuItemForRecipe.id,
           ingredients: recipeFormItems.filter((i) => i.qtyRequired > 0),
         }),
       });
       const data = await res.json();
       if (data.success) {
-        addToast("success", "تم تحديث الريسيبي وحساب تكلفة الكوب بدقة");
+        addToast("success", data.message || "تم حفظ ريسيبي الصنف وتحديث تكلفة الكوب بدقة");
         setShowRecipeModal(false);
         fetchDashboardData();
       } else {
@@ -1784,173 +1875,457 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        {/* TAB 3: RECIPES & BARISTA COSTING ENGINE */}
+        {/* TAB 3: RECIPES & BARISTA COSTING ENGINE & INVENTORY AUDIT */}
         {activeTab === "recipes" && (
           <div className="space-y-6">
-            <div className="bg-amber-950/20 border border-amber-500/30 rounded-2xl p-4 flex items-start gap-3">
-              <Flame className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
-              <div className="text-xs">
-                <h4 className="font-bold text-amber-300 mb-1">
-                  محرك الريسيبي وتكاليف المشروبات (Soulmate Cafe BOM Engine)
-                </h4>
-                <p className="text-slate-300 leading-relaxed">
-                  ربط كل مشروب بمكوناته من البن (جرام)، الحليب (مل)، السيرب والنكهات.
-                  عند بيع أي مشروب، يتم أوتوماتيكياً خصم الجرامات وحساب تكلفة الكوب ونسبة الربح الصافي لحظياً!
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-              <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-                <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
-                  <Boxes className="w-4 h-4 text-amber-400" />
-                  <span>مخزن خامات البار ومؤشرات الرصيد</span>
-                </h3>
+            {/* Top Sub-Navigation Tabs */}
+            <div className="flex items-center justify-between flex-wrap gap-3 bg-slate-900 border border-slate-800 p-2 rounded-2xl">
+              <div className="flex items-center gap-1.5 flex-wrap">
                 <button
-                  onClick={() => setShowRawMaterialModal(true)}
-                  className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-black font-bold px-3 py-1.5 rounded-xl text-xs shadow transition"
+                  type="button"
+                  onClick={() => setRecipeSubTab("cards")}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                    recipeSubTab === "cards"
+                      ? "bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 font-black"
+                      : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                  }`}
                 >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>إضافة خامة بار جديدة</span>
+                  <Boxes className="w-4 h-4" />
+                  <span>كروت أصناف الخامات والمخزن</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setRecipeSubTab("audit")}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                    recipeSubTab === "audit"
+                      ? "bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 font-black"
+                      : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                  }`}
+                >
+                  <Scale className="w-4 h-4" />
+                  <span>الجرد المقارن الفوري والتسوية السحابية</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setRecipeSubTab("bom")}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                    recipeSubTab === "bom"
+                      ? "bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 font-black"
+                      : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                  }`}
+                >
+                  <Coffee className="w-4 h-4" />
+                  <span>ريسيبي المشروبات وحساب تكلفة الكوب</span>
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {rawMaterials.map((raw) => {
-                  const isLow = raw.currentStock <= raw.minStockAlert;
-                  return (
-                    <div
-                      key={raw.id}
-                      className={`p-4 rounded-xl border transition ${
-                        isLow
-                          ? "bg-rose-950/20 border-rose-600/40"
-                          : "bg-slate-950/70 border-slate-800 hover:border-slate-700"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-bold text-sm text-white">{raw.nameAr}</span>
-                        {isLow && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] bg-rose-500 text-white font-bold flex items-center gap-1">
-                            <AlertTriangle className="w-3 h-3" />
-                            نواقص
-                          </span>
-                        )}
-                      </div>
+              {recipeSubTab === "cards" && (
+                <button
+                  onClick={() => setShowRawMaterialModal(true)}
+                  className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-amber-500/20 transition cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>إضافة كارت صنف خامة جديدة</span>
+                </button>
+              )}
 
-                      <div className="text-xl font-black text-amber-400 font-mono mt-2">
-                        {raw.currentStock.toLocaleString()}{" "}
-                        <span className="text-xs font-normal text-slate-400">
-                          {raw.unit === "GRAM" ? "جرام" : raw.unit === "ML" ? "مل" : "قطعة"}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-slate-800">
-                        <button
-                          onClick={() => handleRestockRaw(raw.id, 500)}
-                          className="flex-1 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-200 border border-slate-700 transition"
-                        >
-                          +500
-                        </button>
-                        <button
-                          onClick={() => handleRestockRaw(raw.id, 1000)}
-                          className="flex-1 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-200 border border-slate-700 transition"
-                        >
-                          +1000
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+              {recipeSubTab === "audit" && (
+                <button
+                  onClick={handleSaveInventoryAudit}
+                  disabled={isSubmittingAudit}
+                  className="flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-emerald-500/20 transition cursor-pointer"
+                >
+                  <ClipboardCheck className="w-4 h-4" />
+                  <span>{isSubmittingAudit ? "جاري التسوية والاعتماد..." : "اعتماد وتسوية محضر الجرد 📋✅"}</span>
+                </button>
+              )}
             </div>
 
-            {/* Beverage Recipe BOM Table */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-              <h3 className="text-sm font-bold text-slate-200 mb-4 flex items-center gap-2">
-                <Coffee className="w-4 h-4 text-amber-400" />
-                <span>قائمة المشروبات وتكلفة الكوب وهامش الربح</span>
-              </h3>
+            {/* SUB-TAB 1: ERP RAW MATERIAL ITEM CARDS */}
+            {recipeSubTab === "cards" && (
+              <div className="space-y-4">
+                <div className="bg-amber-950/20 border border-amber-500/30 rounded-2xl p-4 flex items-start gap-3">
+                  <Flame className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                  <div className="text-xs">
+                    <h4 className="font-bold text-amber-300 mb-1">
+                      كروت أصناف خامات البار (ERP Raw Material Ledger)
+                    </h4>
+                    <p className="text-slate-300 leading-relaxed">
+                      كل كارت صنف يحتوي على سعر الوحدة، رصيد بداية المدة، إجمالي الوارد بحركات توريد منفصلة، والمستهلك الفعلي تلقائياً بناءً على مبيعات الريسيبي.
+                      لتزويد رصيد خامة، اضغط على زر <strong>توريد كمية جديدة</strong> لتسجيل حركة توريد تفصيلية برقم الفاتورة واسم المورد.
+                    </p>
+                  </div>
+                </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-right text-xs">
-                  <thead className="bg-slate-950/60 text-slate-400 border-b border-slate-800">
-                    <tr>
-                      <th className="py-2.5 px-3">اسم المشروب</th>
-                      <th className="py-2.5 px-3">سعر البيع</th>
-                      <th className="py-2.5 px-3">تكلفة الخامات (Food Cost)</th>
-                      <th className="py-2.5 px-3">هامش الربح الإجمالي</th>
-                      <th className="py-2.5 px-3">المكونات المسجلة</th>
-                      <th className="py-2.5 px-3 text-center">إجراءات</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-800">
-                    {menuItems
-                      .filter((m) => m.itemType === "PREPARED_BEVERAGE")
-                      .map((item) => {
-                        const calculatedCost = (item.recipes || []).reduce(
-                          (sum: number, r: any) =>
-                            sum + r.qtyRequired * (r.rawMaterial?.costPerUnit || 0),
-                          0
-                        );
-                        const effectiveCost = calculatedCost > 0 ? calculatedCost : item.costPrice;
-                        const profitMargin =
-                          item.price > 0
-                            ? Math.round(((item.price - effectiveCost) / item.price) * 100)
-                            : 0;
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {rawMaterials.map((raw) => {
+                    const isLow = raw.currentStock <= raw.minStockAlert;
+                    const unitLabel =
+                      raw.unit === "GRAM"
+                        ? "جرام"
+                        : raw.unit === "ML"
+                        ? "مل"
+                        : raw.unit === "KG"
+                        ? "كجم"
+                        : raw.unit === "LITER"
+                        ? "لتر"
+                        : "قطعة";
 
-                        return (
-                          <tr key={item.id} className="hover:bg-slate-800/40">
-                            <td className="py-3 px-3 font-bold text-white flex items-center gap-2">
-                              <Coffee className="w-4 h-4 text-amber-400" />
-                              <span>{item.nameAr}</span>
-                            </td>
-                            <td className="py-3 px-3 font-bold text-amber-400 font-mono">
-                              {item.price} ج.م
-                            </td>
-                            <td className="py-3 px-3 font-bold text-emerald-400 font-mono">
-                              {effectiveCost.toFixed(2)} ج.م
-                            </td>
-                            <td className="py-3 px-3">
-                              <span className="px-2 py-0.5 rounded-full font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                                {profitMargin}% ربح
+                    return (
+                      <div
+                        key={raw.id}
+                        className={`p-4 rounded-2xl border transition shadow-lg flex flex-col justify-between ${
+                          isLow
+                            ? "bg-rose-950/20 border-rose-600/40 hover:border-rose-500/60"
+                            : "bg-slate-900 border-slate-800 hover:border-amber-500/40"
+                        }`}
+                      >
+                        {/* Header & Badges */}
+                        <div>
+                          <div className="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                              <h4 className="font-black text-sm text-white flex items-center gap-1.5">
+                                <span>{raw.nameAr}</span>
+                              </h4>
+                              <span className="text-[10px] text-slate-400 font-mono">
+                                وحدة القياس: {unitLabel}
                               </span>
-                            </td>
-                            <td className="py-3 px-3 text-slate-300">
-                              <div className="flex flex-wrap gap-1">
-                                {(item.recipes || []).map((r: any) => (
-                                  <span
-                                    key={r.id}
-                                    className="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] text-slate-300 border border-slate-700"
-                                  >
-                                    {r.rawMaterial?.nameAr}: {r.qtyRequired}
-                                  </span>
-                                ))}
-                              </div>
-                            </td>
-                            <td className="py-3 px-3 text-center">
-                              <button
-                                onClick={() => {
-                                  setSelectedMenuItemForRecipe(item);
-                                  setRecipeFormItems(
-                                    (item.recipes || []).map((r: any) => ({
-                                      rawMaterialId: r.rawMaterialId,
-                                      qtyRequired: r.qtyRequired,
-                                    }))
-                                  );
-                                  setShowRecipeModal(true);
-                                }}
-                                className="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 text-xs font-bold border border-amber-500/40 transition"
-                              >
-                                تعديل الريسيبي
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                  </tbody>
-                </table>
+                            </div>
+                            <div className="flex flex-col items-end gap-1">
+                              {isLow ? (
+                                <span className="px-2 py-0.5 rounded-full text-[10px] bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold flex items-center gap-1">
+                                  <AlertTriangle className="w-3 h-3" />
+                                  <span>نواقص</span>
+                                </span>
+                              ) : (
+                                <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold">
+                                  متوفر
+                                </span>
+                              )}
+                              <span className="text-[10px] text-amber-400 font-mono font-bold">
+                                {raw.costPerUnit} ج.م / {unitLabel}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* 4-Stat ERP Ledger Matrix */}
+                          <div className="grid grid-cols-2 gap-2 my-3 bg-slate-950/70 border border-slate-800/80 rounded-xl p-2.5 text-[11px]">
+                            <div>
+                              <span className="text-slate-400 block text-[10px]">رصيد بداية المدة:</span>
+                              <span className="font-mono font-bold text-slate-200">
+                                {(raw.openingStock || 0).toLocaleString()} {unitLabel}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="text-slate-400 block text-[10px]">إجمالي الوارد:</span>
+                              <span className="font-mono font-bold text-emerald-400">
+                                +{(raw.totalInbound || 0).toLocaleString()} {unitLabel}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="text-slate-400 block text-[10px]">مستهلك الريسيبي:</span>
+                              <span className="font-mono font-bold text-rose-400">
+                                -{(raw.totalConsumed || 0).toLocaleString()} {unitLabel}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="text-slate-400 block text-[10px]">الرصيد الدفتري المتوقع:</span>
+                              <span className="font-mono font-black text-amber-400">
+                                {(raw.expectedStock ?? raw.currentStock).toLocaleString()} {unitLabel}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Main Current Stock Number */}
+                          <div className="flex items-baseline justify-between pt-1 pb-3">
+                            <span className="text-xs text-slate-400 font-bold">الرصيد الفعلي الحالي:</span>
+                            <span className="text-xl font-black text-white font-mono">
+                              {raw.currentStock.toLocaleString()}{" "}
+                              <span className="text-xs font-normal text-amber-400 font-sans">{unitLabel}</span>
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Card Action Buttons */}
+                        <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedRawForInbound(raw);
+                              setInboundForm({
+                                quantity: "",
+                                costPerUnit: String(raw.costPerUnit || ""),
+                                supplierName: raw.supplierName || "",
+                                invoiceNumber: "",
+                                notes: "",
+                              });
+                              setShowInboundModal(true);
+                            }}
+                            className="py-1.5 px-2 rounded-xl bg-amber-500/15 hover:bg-amber-500 text-amber-300 hover:text-black font-bold text-[11px] border border-amber-500/30 transition flex items-center justify-center gap-1 cursor-pointer"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                            <span>توريد كمية ➕</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedRawForMovements(raw);
+                              setShowMovementsModal(true);
+                            }}
+                            className="py-1.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-[11px] border border-slate-700 transition flex items-center justify-center gap-1 cursor-pointer"
+                          >
+                            <History className="w-3.5 h-3.5" />
+                            <span>سجل الحركات</span>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* SUB-TAB 2: LIVE INVENTORY AUDIT & RECONCILIATION */}
+            {recipeSubTab === "audit" && (
+              <div className="space-y-4">
+                <div className="bg-emerald-950/20 border border-emerald-500/30 rounded-2xl p-4 flex items-start justify-between flex-wrap gap-3">
+                  <div className="flex items-start gap-3">
+                    <Scale className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    <div className="text-xs">
+                      <h4 className="font-bold text-emerald-300 mb-1">
+                        شاشة الجرد المقارن الفوري والتسوية السحابية (Instant Stock Reconciliation)
+                      </h4>
+                      <p className="text-slate-300 leading-relaxed">
+                        تقارن هذه الشاشة بين <strong>الرصيد الدفتري المتوقع</strong> (رصيد بداية المدة + إجمالي الوارد - المستهلك من الريسيبي)
+                        وبين <strong>الرصيد الفعلي</strong> الذي تقوم بعدّه على الرف.
+                        يتم حساب الفارق (عجز أو زيادة) وقيمته المالية بالجنيه فوراً، وعند اعتماد المحضر يتم تسوية الأرصدة تلقائياً.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleSaveInventoryAudit}
+                    disabled={isSubmittingAudit}
+                    className="flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-emerald-500/20 transition cursor-pointer"
+                  >
+                    <ClipboardCheck className="w-4 h-4" />
+                    <span>{isSubmittingAudit ? "جاري التسوية..." : "اعتماد وتسوية المحضر 📋✅"}</span>
+                  </button>
+                </div>
+
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-xs">
+                      <thead className="bg-slate-950 text-slate-400 border-b border-slate-800 font-bold">
+                        <tr>
+                          <th className="py-3 px-3">الخامة</th>
+                          <th className="py-3 px-2">الوحدة</th>
+                          <th className="py-3 px-2">سعر الوحدة</th>
+                          <th className="py-3 px-2">رصيد البداية</th>
+                          <th className="py-3 px-2 text-emerald-400">+ إجمالي الوارد</th>
+                          <th className="py-3 px-2 text-rose-400">- مستهلك الريسيبي</th>
+                          <th className="py-3 px-3 text-amber-400 font-black">الرصيد الدفتري</th>
+                          <th className="py-3 px-3 text-white font-black bg-slate-800/60">
+                            الرصيد الفعلي (العدّ)
+                          </th>
+                          <th className="py-3 px-3 text-center">الفارق (عجز / زيادة)</th>
+                          <th className="py-3 px-3">القيمة المالية للفارق</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800 font-mono">
+                        {rawMaterials.map((raw) => {
+                          const unitLabel =
+                            raw.unit === "GRAM"
+                              ? "جرام"
+                              : raw.unit === "ML"
+                              ? "مل"
+                              : raw.unit === "KG"
+                              ? "كجم"
+                              : raw.unit === "LITER"
+                              ? "لتر"
+                              : "قطعة";
+
+                          const expected = raw.expectedStock ?? raw.currentStock;
+                          const entered = auditCounts[raw.id];
+                          const actual = entered !== undefined && entered !== "" ? parseFloat(entered) : expected;
+                          const variance = actual - expected;
+                          const varianceCost = variance * (raw.costPerUnit || 0);
+
+                          return (
+                            <tr key={raw.id} className="hover:bg-slate-800/40">
+                              <td className="py-3 px-3 font-bold text-white font-sans flex items-center gap-1.5">
+                                <Boxes className="w-3.5 h-3.5 text-amber-400" />
+                                <span>{raw.nameAr}</span>
+                              </td>
+                              <td className="py-3 px-2 text-slate-400 font-sans text-[11px]">{unitLabel}</td>
+                              <td className="py-3 px-2 text-amber-400">{raw.costPerUnit} ج.م</td>
+                              <td className="py-3 px-2 text-slate-300">{(raw.openingStock || 0).toLocaleString()}</td>
+                              <td className="py-3 px-2 text-emerald-400 font-bold">+{(raw.totalInbound || 0).toLocaleString()}</td>
+                              <td className="py-3 px-2 text-rose-400 font-bold">-{(raw.totalConsumed || 0).toLocaleString()}</td>
+                              <td className="py-3 px-3 font-black text-amber-300 bg-amber-500/5">
+                                {expected.toLocaleString()}
+                              </td>
+                              <td className="py-2 px-3 bg-slate-800/40">
+                                <input
+                                  type="number"
+                                  step="any"
+                                  placeholder={String(expected)}
+                                  value={auditCounts[raw.id] !== undefined ? auditCounts[raw.id] : ""}
+                                  onChange={(e) =>
+                                    setAuditCounts({ ...auditCounts, [raw.id]: e.target.value })
+                                  }
+                                  className="w-28 bg-black/80 border border-amber-500/40 rounded-lg px-2.5 py-1 text-center font-mono font-black text-xs text-white focus:outline-none focus:border-amber-400"
+                                />
+                              </td>
+                              <td className="py-3 px-3 text-center">
+                                {variance === 0 ? (
+                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-sans">
+                                    مطابق وسليم ✅
+                                  </span>
+                                ) : variance < 0 ? (
+                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 font-sans flex items-center justify-center gap-1">
+                                    <AlertTriangle className="w-3 h-3" />
+                                    <span>عجز ({variance.toLocaleString()})</span>
+                                  </span>
+                                ) : (
+                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/40 font-sans">
+                                    زيادة (+{variance.toLocaleString()})
+                                  </span>
+                                )}
+                              </td>
+                              <td className="py-3 px-3">
+                                {variance === 0 ? (
+                                  <span className="text-slate-500 text-[11px]">0.00 ج.م</span>
+                                ) : variance < 0 ? (
+                                  <span className="font-bold text-rose-400">
+                                    {varianceCost.toFixed(2)} ج.م
+                                  </span>
+                                ) : (
+                                  <span className="font-bold text-blue-400">
+                                    +{varianceCost.toFixed(2)} ج.م
+                                  </span>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SUB-TAB 3: BEVERAGE RECIPE BOM TABLE */}
+            {recipeSubTab === "bom" && (
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
+                <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                  <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
+                    <Coffee className="w-4 h-4 text-amber-400" />
+                    <span>قائمة المشروبات وتكلفة الكوب وهامش الربح الفعلي</span>
+                  </h3>
+                  <span className="text-xs text-slate-400">
+                    إجمالي المشروبات: {menuItems.filter((m) => m.itemType === "PREPARED_BEVERAGE").length} صنف
+                  </span>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-right text-xs">
+                    <thead className="bg-slate-950/60 text-slate-400 border-b border-slate-800">
+                      <tr>
+                        <th className="py-2.5 px-3">اسم المشروب</th>
+                        <th className="py-2.5 px-3">سعر البيع</th>
+                        <th className="py-2.5 px-3">تكلفة الخامات (Food Cost)</th>
+                        <th className="py-2.5 px-3">هامش الربح الإجمالي</th>
+                        <th className="py-2.5 px-3">المكونات المسجلة بالريسيبي</th>
+                        <th className="py-2.5 px-3 text-center">إجراءات</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-800">
+                      {menuItems
+                        .filter((m) => m.itemType === "PREPARED_BEVERAGE")
+                        .map((item) => {
+                          const calculatedCost = (item.recipes || []).reduce(
+                            (sum: number, r: any) =>
+                              sum + r.qtyRequired * (r.rawMaterial?.costPerUnit || 0),
+                            0
+                          );
+                          const effectiveCost = calculatedCost > 0 ? calculatedCost : item.costPrice;
+                          const profitMargin =
+                            item.price > 0
+                              ? Math.round(((item.price - effectiveCost) / item.price) * 100)
+                              : 0;
+
+                          return (
+                            <tr key={item.id} className="hover:bg-slate-800/40">
+                              <td className="py-3 px-3 font-bold text-white flex items-center gap-2">
+                                <Coffee className="w-4 h-4 text-amber-400" />
+                                <div>
+                                  <span>{item.nameAr}</span>
+                                  {item.nameEn && (
+                                    <span className="text-[10px] text-slate-400 block font-normal">
+                                      {item.nameEn}
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="py-3 px-3 font-bold text-amber-400 font-mono">
+                                {item.price} ج.م
+                              </td>
+                              <td className="py-3 px-3 font-bold text-emerald-400 font-mono">
+                                {effectiveCost.toFixed(2)} ج.م
+                              </td>
+                              <td className="py-3 px-3">
+                                <span className="px-2 py-0.5 rounded-full font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                  {profitMargin}% ربح
+                                </span>
+                              </td>
+                              <td className="py-3 px-3 text-slate-300">
+                                <div className="flex flex-wrap gap-1">
+                                  {(item.recipes || []).length > 0 ? (
+                                    (item.recipes || []).map((r: any) => (
+                                      <span
+                                        key={r.id || r.rawMaterialId}
+                                        className="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] text-slate-300 border border-slate-700"
+                                      >
+                                        {r.rawMaterial?.nameAr || "خامة"}: {r.qtyRequired}
+                                      </span>
+                                    ))
+                                  ) : (
+                                    <span className="text-slate-500 text-[11px] italic">
+                                      لم يتم ربط ريسيبي بعد
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="py-3 px-3 text-center">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedMenuItemForRecipe(item);
+                                    setRecipeFormItems(
+                                      (item.recipes || []).map((r: any) => ({
+                                        rawMaterialId: r.rawMaterialId,
+                                        qtyRequired: r.qtyRequired,
+                                      }))
+                                    );
+                                    setShowRecipeModal(true);
+                                  }}
+                                  className="px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-black text-xs font-bold border border-amber-500/40 transition cursor-pointer"
+                                >
+                                  تعديل الريسيبي ⚙️
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -3278,6 +3653,534 @@ export default function AdminDashboardPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* 1. RAW MATERIAL ITEM CARD MODAL */}
+      {showRawMaterialModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative text-right">
+            <button
+              onClick={() => setShowRawMaterialModal(false)}
+              className="absolute left-4 top-4 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="text-base font-black text-white mb-1 flex items-center gap-2">
+              <Boxes className="w-5 h-5 text-amber-400" />
+              <span>إضافة كارت صنف خامة بار جديدة (Soulmate Cafe)</span>
+            </h3>
+            <p className="text-xs text-slate-400 mb-4">
+              تسجيل خامة جديدة وتحديد رصيد بداية المدة وسعر الوحدة لخصم الريسيبي تلقائياً.
+            </p>
+
+            <form onSubmit={handleAddRawMaterial} className="space-y-3.5 text-xs">
+              <div>
+                <label className="block text-slate-300 font-bold mb-1">اسم الخامة *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="مثال: بن إسبريسو كولومبي، حليب كامل الدسم، صوص بستاشيو..."
+                  value={rawForm.nameAr}
+                  onChange={(e) => setRawForm({ ...rawForm, nameAr: e.target.value })}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">وحدة القياس *</label>
+                  <select
+                    value={rawForm.unit}
+                    onChange={(e) => setRawForm({ ...rawForm, unit: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-400"
+                  >
+                    <option value="GRAM">جرام (GRAM)</option>
+                    <option value="ML">مل (ML)</option>
+                    <option value="PIECE">قطعة (PIECE)</option>
+                    <option value="KG">كيلو جرام (KG)</option>
+                    <option value="LITER">لتر (LITER)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">سعر تكلفة الوحدة (ج.م) *</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    required
+                    placeholder="0.5"
+                    value={rawForm.costPerUnit}
+                    onChange={(e) => setRawForm({ ...rawForm, costPerUnit: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">رصيد بداية المدة (الافتتاحي) *</label>
+                  <input
+                    type="number"
+                    step="any"
+                    required
+                    placeholder="1000"
+                    value={rawForm.openingStock}
+                    onChange={(e) => setRawForm({ ...rawForm, openingStock: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">حد الأمان (تنبيه النواقص)</label>
+                  <input
+                    type="number"
+                    step="any"
+                    placeholder="200"
+                    value={rawForm.minStockAlert}
+                    onChange={(e) => setRawForm({ ...rawForm, minStockAlert: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">اسم المورد الافتراضي</label>
+                  <input
+                    type="text"
+                    placeholder="مثال: شركة البن البرازيلي"
+                    value={rawForm.supplierName}
+                    onChange={(e) => setRawForm({ ...rawForm, supplierName: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">ملاحظات إضافية</label>
+                  <input
+                    type="text"
+                    placeholder="ملاحظات الحفظ أو التخزين..."
+                    value={rawForm.notes}
+                    onChange={(e) => setRawForm({ ...rawForm, notes: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setShowRawMaterialModal(false)}
+                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700 transition"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black transition shadow-lg shadow-amber-500/20"
+                >
+                  حفظ كارت الصنف
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 2. INBOUND STOCK MOVEMENT MODAL (حركة توريد منفصلة) */}
+      {showInboundModal && selectedRawForInbound && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative text-right">
+            <button
+              onClick={() => {
+                setShowInboundModal(false);
+                setSelectedRawForInbound(null);
+              }}
+              className="absolute left-4 top-4 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <h3 className="text-base font-black text-white mb-1 flex items-center gap-2">
+              <Plus className="w-5 h-5 text-emerald-400" />
+              <span>تسجيل حركة توريد بضاعة جديدة (شحنة خامات)</span>
+            </h3>
+            <p className="text-xs text-amber-300 font-bold mb-4">
+              خامة: {selectedRawForInbound.nameAr} • الرصيد الحالي: {selectedRawForInbound.currentStock.toLocaleString()} {selectedRawForInbound.unit}
+            </p>
+
+            <form onSubmit={handleRecordInboundMovement} className="space-y-3.5 text-xs">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">
+                    كمية التوريد ({selectedRawForInbound.unit}) *
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    required
+                    autoFocus
+                    placeholder="500"
+                    value={inboundForm.quantity}
+                    onChange={(e) => setInboundForm({ ...inboundForm, quantity: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono text-sm font-bold focus:outline-none focus:border-emerald-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">سعر الشراء للوحدة (ج.م)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder={String(selectedRawForInbound.costPerUnit || "")}
+                    value={inboundForm.costPerUnit}
+                    onChange={(e) => setInboundForm({ ...inboundForm, costPerUnit: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono text-sm focus:outline-none focus:border-emerald-400"
+                  />
+                </div>
+              </div>
+
+              {/* Total Invoice Value Calculation */}
+              {Number(inboundForm.quantity) > 0 && (
+                <div className="bg-emerald-950/20 border border-emerald-500/30 rounded-xl p-2.5 flex items-center justify-between text-xs font-bold text-emerald-300">
+                  <span>إجمالي قيمة فاتورة التوريد:</span>
+                  <span className="font-mono text-sm">
+                    {(
+                      Number(inboundForm.quantity) *
+                      (Number(inboundForm.costPerUnit) || selectedRawForInbound.costPerUnit || 0)
+                    ).toFixed(2)}{" "}
+                    ج.م
+                  </span>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">اسم المورد</label>
+                  <input
+                    type="text"
+                    placeholder="اسم المورد أو الشركة..."
+                    value={inboundForm.supplierName}
+                    onChange={(e) => setInboundForm({ ...inboundForm, supplierName: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">رقم الفاتورة / إذن الاستلام</label>
+                  <input
+                    type="text"
+                    placeholder="INV-9921"
+                    value={inboundForm.invoiceNumber}
+                    onChange={(e) => setInboundForm({ ...inboundForm, invoiceNumber: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-emerald-400"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-slate-300 font-bold mb-1">ملاحظات التوريد</label>
+                <input
+                  type="text"
+                  placeholder="ملاحظات الشحنة أو تاريخ الصلاحية..."
+                  value={inboundForm.notes}
+                  onChange={(e) => setInboundForm({ ...inboundForm, notes: e.target.value })}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-400"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowInboundModal(false);
+                    setSelectedRawForInbound(null);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700 transition"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black transition shadow-lg shadow-emerald-500/20"
+                >
+                  تأكيد حركة التوريد
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 3. MOVEMENTS HISTORY MODAL (سجل حركات الخامة) */}
+      {showMovementsModal && selectedRawForMovements && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl p-6 shadow-2xl relative text-right max-h-[85vh] flex flex-col">
+            <button
+              onClick={() => {
+                setShowMovementsModal(false);
+                setSelectedRawForMovements(null);
+              }}
+              className="absolute left-4 top-4 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="mb-4">
+              <h3 className="text-base font-black text-white flex items-center gap-2">
+                <History className="w-5 h-5 text-amber-400" />
+                <span>سجل حركات كارت الصنف (Movements Audit Ledger)</span>
+              </h3>
+              <p className="text-xs text-amber-300 font-bold">
+                خامة: {selectedRawForMovements.nameAr} ({selectedRawForMovements.unit})
+              </p>
+            </div>
+
+            {/* Quick Stat Pill */}
+            <div className="grid grid-cols-4 gap-2 bg-slate-950 p-2.5 rounded-xl border border-slate-800 mb-4 text-center text-xs">
+              <div>
+                <span className="text-slate-400 text-[10px] block">رصيد البداية:</span>
+                <span className="font-mono font-bold text-white">{(selectedRawForMovements.openingStock || 0).toLocaleString()}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 text-[10px] block">إجمالي الوارد:</span>
+                <span className="font-mono font-bold text-emerald-400">+{(selectedRawForMovements.totalInbound || 0).toLocaleString()}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 text-[10px] block">مستهلك الريسيبي:</span>
+                <span className="font-mono font-bold text-rose-400">-{(selectedRawForMovements.totalConsumed || 0).toLocaleString()}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 text-[10px] block">الرصيد الفعلي:</span>
+                <span className="font-mono font-black text-amber-400">{selectedRawForMovements.currentStock.toLocaleString()}</span>
+              </div>
+            </div>
+
+            {/* Movements List Table */}
+            <div className="overflow-y-auto flex-1 border border-slate-800 rounded-xl">
+              <table className="w-full text-right text-xs">
+                <thead className="bg-slate-950 text-slate-400 border-b border-slate-800 sticky top-0">
+                  <tr>
+                    <th className="py-2.5 px-3">التاريخ والوقت</th>
+                    <th className="py-2.5 px-3">نوع الحركة</th>
+                    <th className="py-2.5 px-3">الكمية</th>
+                    <th className="py-2.5 px-3">التكلفة</th>
+                    <th className="py-2.5 px-3">المستند / البيان</th>
+                    <th className="py-2.5 px-3">المسؤول</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800 font-mono">
+                  {(selectedRawForMovements.movements || []).length > 0 ? (
+                    selectedRawForMovements.movements.map((m: any) => (
+                      <tr key={m.id} className="hover:bg-slate-800/40">
+                        <td className="py-2 px-3 text-slate-400 text-[11px]">
+                          {new Date(m.createdAt).toLocaleString("ar-EG")}
+                        </td>
+                        <td className="py-2 px-3 font-sans">
+                          {m.type === "INBOUND" ? (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                              وارد 📥
+                            </span>
+                          ) : m.type === "CONSUMPTION" ? (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/15 text-rose-300 border border-rose-500/30">
+                              استهلاك ريسيبي ☕
+                            </span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/15 text-blue-300 border border-blue-500/30">
+                              تسوية جردية ⚖️
+                            </span>
+                          )}
+                        </td>
+                        <td className={`py-2 px-3 font-bold ${m.quantity > 0 ? "text-emerald-400" : "text-rose-400"}`}>
+                          {m.quantity > 0 ? `+${m.quantity}` : m.quantity} {selectedRawForMovements.unit}
+                        </td>
+                        <td className="py-2 px-3 text-slate-300">
+                          {m.totalCost ? `${m.totalCost.toFixed(2)} ج.م` : "-"}
+                        </td>
+                        <td className="py-2 px-3 font-sans text-slate-300 text-[11px]">
+                          {m.invoiceNumber ? `فاتورة: ${m.invoiceNumber}` : m.orderNumber ? `طلب #${m.orderNumber}` : m.notes || "-"}
+                        </td>
+                        <td className="py-2 px-3 font-sans text-slate-400 text-[11px]">
+                          {m.recordedBy || "المايسترو"}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={6} className="py-6 text-center text-slate-500 font-sans">
+                        لا توجد حركات مسجلة حتى الآن
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="pt-3 mt-3 border-t border-slate-800 flex justify-end">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowMovementsModal(false);
+                  setSelectedRawForMovements(null);
+                }}
+                className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700 transition"
+              >
+                إغلاق
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 4. RECIPE BOM EDIT MODAL (تعديل ريسيبي المشروب) */}
+      {showRecipeModal && selectedMenuItemForRecipe && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative text-right">
+            <button
+              onClick={() => {
+                setShowRecipeModal(false);
+                setSelectedMenuItemForRecipe(null);
+              }}
+              className="absolute left-4 top-4 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <h3 className="text-base font-black text-white mb-1 flex items-center gap-2">
+              <Coffee className="w-5 h-5 text-amber-400" />
+              <span>تعديل ريسيبي المشروب وحساب تكلفة الكوب (BOM)</span>
+            </h3>
+            <p className="text-xs text-amber-300 font-bold mb-3">
+              الصنف: {selectedMenuItemForRecipe.nameAr} • سعر البيع للزبون: {selectedMenuItemForRecipe.price} ج.م
+            </p>
+
+            {/* Live Cost & Margin Calculator */}
+            {(() => {
+              const liveCost = recipeFormItems.reduce((sum, item) => {
+                const raw = rawMaterials.find((r) => r.id === item.rawMaterialId);
+                return sum + (Number(item.qtyRequired) || 0) * (raw?.costPerUnit || 0);
+              }, 0);
+              const margin =
+                selectedMenuItemForRecipe.price > 0
+                  ? Math.round(((selectedMenuItemForRecipe.price - liveCost) / selectedMenuItemForRecipe.price) * 100)
+                  : 0;
+
+              return (
+                <div className="grid grid-cols-2 gap-2 bg-slate-950 p-3 rounded-xl border border-amber-500/20 mb-4 text-xs font-bold">
+                  <div>
+                    <span className="text-slate-400 block text-[10px]">تكلفة الكوب المباشرة (Food Cost):</span>
+                    <span className="font-mono text-emerald-400 text-sm font-black">{liveCost.toFixed(2)} ج.م</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 block text-[10px]">هامش الربح المتوقع:</span>
+                    <span className="font-mono text-amber-400 text-sm font-black">{margin}% ربح</span>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* List of Ingredients */}
+            <div className="space-y-2 mb-4 max-h-56 overflow-y-auto">
+              <label className="block text-xs font-bold text-slate-300 mb-1">
+                المكونات المحددة بالريسيبي:
+              </label>
+              {recipeFormItems.map((item, idx) => {
+                const raw = rawMaterials.find((r) => r.id === item.rawMaterialId);
+                const itemCost = (Number(item.qtyRequired) || 0) * (raw?.costPerUnit || 0);
+
+                return (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-2 bg-slate-950/80 border border-slate-800 p-2 rounded-xl text-xs"
+                  >
+                    <select
+                      value={item.rawMaterialId}
+                      onChange={(e) => {
+                        const updated = [...recipeFormItems];
+                        updated[idx].rawMaterialId = e.target.value;
+                        setRecipeFormItems(updated);
+                      }}
+                      className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-white text-xs font-bold"
+                    >
+                      {rawMaterials.map((r) => (
+                        <option key={r.id} value={r.id}>
+                          {r.nameAr} ({r.costPerUnit} ج.م / {r.unit})
+                        </option>
+                      ))}
+                    </select>
+
+                    <input
+                      type="number"
+                      step="any"
+                      min="0"
+                      value={item.qtyRequired}
+                      onChange={(e) => {
+                        const updated = [...recipeFormItems];
+                        updated[idx].qtyRequired = parseFloat(e.target.value) || 0;
+                        setRecipeFormItems(updated);
+                      }}
+                      className="w-20 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-white font-mono text-center text-xs font-bold"
+                    />
+
+                    <span className="text-slate-400 text-[11px] w-10 font-sans">
+                      {raw?.unit === "GRAM" ? "جرام" : raw?.unit === "ML" ? "مل" : "قطعة"}
+                    </span>
+
+                    <span className="font-mono text-emerald-400 text-xs w-16 text-left">
+                      {itemCost.toFixed(2)} ج.م
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRecipeFormItems(recipeFormItems.filter((_, i) => i !== idx));
+                      }}
+                      className="p-1 rounded bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white transition"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                );
+              })}
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (rawMaterials.length > 0) {
+                    setRecipeFormItems([
+                      ...recipeFormItems,
+                      { rawMaterialId: rawMaterials[0].id, qtyRequired: 10 },
+                    ]);
+                  }
+                }}
+                className="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-300 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>إضافة مكون خام جديد للريسيبي</span>
+              </button>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowRecipeModal(false);
+                  setSelectedMenuItemForRecipe(null);
+                }}
+                className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700 transition"
+              >
+                إلغاء
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveRecipeBOM}
+                className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black transition shadow-lg shadow-amber-500/20"
+              >
+                حفظ الريسيبي وتحديث تكلفة الكوب 📋☕
+              </button>
+            </div>
           </div>
         </div>
       )}
