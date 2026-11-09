@@ -29,6 +29,8 @@ model Outlet {
   orders       Order[]
   shifts       Shift[]
   expenses     Expense[]
+  reservations Reservation[]
+  chatMessages ChatMessage[]
 }
 
 // ----------------------------------------------------
@@ -133,15 +135,20 @@ model RecipeItem {
 // 7. CUSTOMERS & LOYALTY CRM (قاعدة العملاء وبرنامج الولاء)
 // ----------------------------------------------------
 model Customer {
-  id            String   @id @default(cuid())
-  name          String
-  phone         String   @unique
-  email         String?
-  loyaltyPoints Int      @default(0)
-  totalSpent    Float    @default(0)
-  visitCount    Int      @default(0)
-  notes         String?
-  createdAt     DateTime @default(now())
+  id               String   @id @default(cuid())
+  name             String
+  phone            String   @unique
+  email            String?
+  passwordHash     String?
+  isVerified       Boolean  @default(false)
+  verificationCode String?
+  address          String?
+  city             String?
+  loyaltyPoints    Int      @default(0)
+  totalSpent       Float    @default(0)
+  visitCount       Int      @default(0)
+  notes            String?
+  createdAt        DateTime @default(now())
 
   orders Order[]
 }
@@ -150,17 +157,20 @@ model Customer {
 // 8. ORDERS & TICKETS (الطلبات والشيكات والفواتير)
 // ----------------------------------------------------
 model Order {
-  id            String       @id @default(cuid())
-  outletId      String
-  outlet        Outlet       @relation(fields: [outletId], references: [id], onDelete: Cascade)
-  orderNumber   String       @unique // "SOUL-1001" or "ADEL-1001"
-  orderType     String       @default("DINE_IN") // "DINE_IN", "TAKEAWAY", "DELIVERY"
-  tableId       String?
-  table         DiningTable? @relation(fields: [tableId], references: [id], onDelete: SetNull)
-  tableNumber   String?
-  status        String       @default("NEW_PENDING") // "NEW_PENDING", "PREPARING", "READY_TO_SERVE", "COMPLETED", "CANCELLED"
-  paymentStatus String       @default("PENDING") // "PENDING", "PAID"
-  paymentMethod String       @default("CASH") // "CASH", "CARD", "INSTAPAY", "VODAFONE_CASH", "SPLIT"
+  id              String       @id @default(cuid())
+  outletId        String
+  outlet          Outlet       @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  orderNumber     String       @unique // "SOUL-1001" or "ADEL-1001"
+  orderType       String       @default("DINE_IN") // "DINE_IN", "TAKEAWAY", "DELIVERY"
+  tableId         String?
+  table           DiningTable? @relation(fields: [tableId], references: [id], onDelete: SetNull)
+  tableNumber     String?
+  deliveryAddress String?
+  deliveryPhone   String?
+  deliveryNotes   String?
+  status          String       @default("NEW_PENDING") // "NEW_PENDING", "PREPARING", "READY_TO_SERVE", "COMPLETED", "CANCELLED"
+  paymentStatus   String       @default("PENDING") // "PENDING", "PAID"
+  paymentMethod   String       @default("CASH") // "CASH", "CARD", "INSTAPAY", "VODAFONE_CASH", "SPLIT"
 
   subtotal       Float @default(0)
   serviceCharge  Float @default(0)
@@ -274,4 +284,41 @@ model SystemSettings {
   systemLocked       Boolean  @default(false)
   lockMessage        String   @default("النظام مغلق مؤقتاً لأعمال الجرد والصيانة الدورية.")
   updatedAt          DateTime @default(now()) @updatedAt
+}
+
+// ----------------------------------------------------
+// 13. RESERVATIONS & EVENT BOOKINGS (حجز الترابيزات والحفلات)
+// ----------------------------------------------------
+model Reservation {
+  id              String   @id @default(cuid())
+  outletId        String
+  outlet          Outlet   @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  customerName    String
+  customerPhone   String
+  customerEmail   String?
+  reservationType String   @default("TABLE") // "TABLE" (ترابيزة عادية) | "PARTY" (حفلة / عيد ميلاد / مناسبة)
+  guestCount      Int      @default(2)
+  bookingDate     DateTime
+  timeSlot        String // "07:00 PM"
+  zonePreference  String? // "INDOOR", "OUTDOOR_TERRACE", "VIP_LOUNGE"
+  specialRequests String?
+  status          String   @default("PENDING") // "PENDING", "CONFIRMED", "CANCELLED", "COMPLETED"
+  createdAt       DateTime @default(now())
+}
+
+// ----------------------------------------------------
+// 14. INTERNAL LIVE CHAT (الشات الداخلي بين الزبون والباريستا/الإدارة)
+// ----------------------------------------------------
+model ChatMessage {
+  id          String   @id @default(cuid())
+  outletId    String
+  outlet      Outlet   @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  senderType  String // "CUSTOMER" | "STAFF"
+  senderName  String
+  senderPhone String?
+  tableNumber String?
+  orderNumber String?
+  message     String
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
 }

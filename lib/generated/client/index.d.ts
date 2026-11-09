@@ -73,6 +73,16 @@ export type Expense = $Result.DefaultSelection<Prisma.$ExpensePayload>
  * 
  */
 export type SystemSettings = $Result.DefaultSelection<Prisma.$SystemSettingsPayload>
+/**
+ * Model Reservation
+ * 
+ */
+export type Reservation = $Result.DefaultSelection<Prisma.$ReservationPayload>
+/**
+ * Model ChatMessage
+ * 
+ */
+export type ChatMessage = $Result.DefaultSelection<Prisma.$ChatMessagePayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -314,6 +324,26 @@ export class PrismaClient<
     * ```
     */
   get systemSettings(): Prisma.SystemSettingsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.reservation`: Exposes CRUD operations for the **Reservation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Reservations
+    * const reservations = await prisma.reservation.findMany()
+    * ```
+    */
+  get reservation(): Prisma.ReservationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.chatMessage`: Exposes CRUD operations for the **ChatMessage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ChatMessages
+    * const chatMessages = await prisma.chatMessage.findMany()
+    * ```
+    */
+  get chatMessage(): Prisma.ChatMessageDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -772,7 +802,9 @@ export namespace Prisma {
     KdsTicket: 'KdsTicket',
     Shift: 'Shift',
     Expense: 'Expense',
-    SystemSettings: 'SystemSettings'
+    SystemSettings: 'SystemSettings',
+    Reservation: 'Reservation',
+    ChatMessage: 'ChatMessage'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -788,7 +820,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "outlet" | "user" | "diningTable" | "menuItem" | "rawMaterial" | "recipeItem" | "customer" | "order" | "kdsTicket" | "shift" | "expense" | "systemSettings"
+      modelProps: "outlet" | "user" | "diningTable" | "menuItem" | "rawMaterial" | "recipeItem" | "customer" | "order" | "kdsTicket" | "shift" | "expense" | "systemSettings" | "reservation" | "chatMessage"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1680,6 +1712,154 @@ export namespace Prisma {
           }
         }
       }
+      Reservation: {
+        payload: Prisma.$ReservationPayload<ExtArgs>
+        fields: Prisma.ReservationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReservationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReservationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservationPayload>
+          }
+          findFirst: {
+            args: Prisma.ReservationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReservationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservationPayload>
+          }
+          findMany: {
+            args: Prisma.ReservationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservationPayload>[]
+          }
+          create: {
+            args: Prisma.ReservationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservationPayload>
+          }
+          createMany: {
+            args: Prisma.ReservationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReservationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservationPayload>[]
+          }
+          delete: {
+            args: Prisma.ReservationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservationPayload>
+          }
+          update: {
+            args: Prisma.ReservationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservationPayload>
+          }
+          deleteMany: {
+            args: Prisma.ReservationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReservationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReservationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservationPayload>[]
+          }
+          upsert: {
+            args: Prisma.ReservationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReservationPayload>
+          }
+          aggregate: {
+            args: Prisma.ReservationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReservation>
+          }
+          groupBy: {
+            args: Prisma.ReservationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReservationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReservationCountArgs<ExtArgs>
+            result: $Utils.Optional<ReservationCountAggregateOutputType> | number
+          }
+        }
+      }
+      ChatMessage: {
+        payload: Prisma.$ChatMessagePayload<ExtArgs>
+        fields: Prisma.ChatMessageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ChatMessageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatMessagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ChatMessageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+          }
+          findFirst: {
+            args: Prisma.ChatMessageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatMessagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ChatMessageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+          }
+          findMany: {
+            args: Prisma.ChatMessageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatMessagePayload>[]
+          }
+          create: {
+            args: Prisma.ChatMessageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+          }
+          createMany: {
+            args: Prisma.ChatMessageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ChatMessageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatMessagePayload>[]
+          }
+          delete: {
+            args: Prisma.ChatMessageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+          }
+          update: {
+            args: Prisma.ChatMessageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+          }
+          deleteMany: {
+            args: Prisma.ChatMessageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ChatMessageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ChatMessageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatMessagePayload>[]
+          }
+          upsert: {
+            args: Prisma.ChatMessageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+          }
+          aggregate: {
+            args: Prisma.ChatMessageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateChatMessage>
+          }
+          groupBy: {
+            args: Prisma.ChatMessageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ChatMessageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ChatMessageCountArgs<ExtArgs>
+            result: $Utils.Optional<ChatMessageCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1815,6 +1995,8 @@ export namespace Prisma {
     shift?: ShiftOmit
     expense?: ExpenseOmit
     systemSettings?: SystemSettingsOmit
+    reservation?: ReservationOmit
+    chatMessage?: ChatMessageOmit
   }
 
   /* Types for Logging */
@@ -1902,6 +2084,8 @@ export namespace Prisma {
     orders: number
     shifts: number
     expenses: number
+    reservations: number
+    chatMessages: number
   }
 
   export type OutletCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1912,6 +2096,8 @@ export namespace Prisma {
     orders?: boolean | OutletCountOutputTypeCountOrdersArgs
     shifts?: boolean | OutletCountOutputTypeCountShiftsArgs
     expenses?: boolean | OutletCountOutputTypeCountExpensesArgs
+    reservations?: boolean | OutletCountOutputTypeCountReservationsArgs
+    chatMessages?: boolean | OutletCountOutputTypeCountChatMessagesArgs
   }
 
   // Custom InputTypes
@@ -1972,6 +2158,20 @@ export namespace Prisma {
    */
   export type OutletCountOutputTypeCountExpensesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ExpenseWhereInput
+  }
+
+  /**
+   * OutletCountOutputType without action
+   */
+  export type OutletCountOutputTypeCountReservationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReservationWhereInput
+  }
+
+  /**
+   * OutletCountOutputType without action
+   */
+  export type OutletCountOutputTypeCountChatMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChatMessageWhereInput
   }
 
 
@@ -2345,6 +2545,8 @@ export namespace Prisma {
     orders?: boolean | Outlet$ordersArgs<ExtArgs>
     shifts?: boolean | Outlet$shiftsArgs<ExtArgs>
     expenses?: boolean | Outlet$expensesArgs<ExtArgs>
+    reservations?: boolean | Outlet$reservationsArgs<ExtArgs>
+    chatMessages?: boolean | Outlet$chatMessagesArgs<ExtArgs>
     _count?: boolean | OutletCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["outlet"]>
 
@@ -2396,6 +2598,8 @@ export namespace Prisma {
     orders?: boolean | Outlet$ordersArgs<ExtArgs>
     shifts?: boolean | Outlet$shiftsArgs<ExtArgs>
     expenses?: boolean | Outlet$expensesArgs<ExtArgs>
+    reservations?: boolean | Outlet$reservationsArgs<ExtArgs>
+    chatMessages?: boolean | Outlet$chatMessagesArgs<ExtArgs>
     _count?: boolean | OutletCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OutletIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2411,6 +2615,8 @@ export namespace Prisma {
       orders: Prisma.$OrderPayload<ExtArgs>[]
       shifts: Prisma.$ShiftPayload<ExtArgs>[]
       expenses: Prisma.$ExpensePayload<ExtArgs>[]
+      reservations: Prisma.$ReservationPayload<ExtArgs>[]
+      chatMessages: Prisma.$ChatMessagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2824,6 +3030,8 @@ export namespace Prisma {
     orders<T extends Outlet$ordersArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     shifts<T extends Outlet$shiftsArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$shiftsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShiftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     expenses<T extends Outlet$expensesArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reservations<T extends Outlet$reservationsArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$reservationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReservationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    chatMessages<T extends Outlet$chatMessagesArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$chatMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3421,6 +3629,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ExpenseScalarFieldEnum | ExpenseScalarFieldEnum[]
+  }
+
+  /**
+   * Outlet.reservations
+   */
+  export type Outlet$reservationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reservation
+     */
+    select?: ReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reservation
+     */
+    omit?: ReservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservationInclude<ExtArgs> | null
+    where?: ReservationWhereInput
+    orderBy?: ReservationOrderByWithRelationInput | ReservationOrderByWithRelationInput[]
+    cursor?: ReservationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReservationScalarFieldEnum | ReservationScalarFieldEnum[]
+  }
+
+  /**
+   * Outlet.chatMessages
+   */
+  export type Outlet$chatMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatMessage
+     */
+    select?: ChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChatMessage
+     */
+    omit?: ChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatMessageInclude<ExtArgs> | null
+    where?: ChatMessageWhereInput
+    orderBy?: ChatMessageOrderByWithRelationInput | ChatMessageOrderByWithRelationInput[]
+    cursor?: ChatMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChatMessageScalarFieldEnum | ChatMessageScalarFieldEnum[]
   }
 
   /**
@@ -9452,6 +9708,11 @@ export namespace Prisma {
     name: string | null
     phone: string | null
     email: string | null
+    passwordHash: string | null
+    isVerified: boolean | null
+    verificationCode: string | null
+    address: string | null
+    city: string | null
     loyaltyPoints: number | null
     totalSpent: number | null
     visitCount: number | null
@@ -9464,6 +9725,11 @@ export namespace Prisma {
     name: string | null
     phone: string | null
     email: string | null
+    passwordHash: string | null
+    isVerified: boolean | null
+    verificationCode: string | null
+    address: string | null
+    city: string | null
     loyaltyPoints: number | null
     totalSpent: number | null
     visitCount: number | null
@@ -9476,6 +9742,11 @@ export namespace Prisma {
     name: number
     phone: number
     email: number
+    passwordHash: number
+    isVerified: number
+    verificationCode: number
+    address: number
+    city: number
     loyaltyPoints: number
     totalSpent: number
     visitCount: number
@@ -9502,6 +9773,11 @@ export namespace Prisma {
     name?: true
     phone?: true
     email?: true
+    passwordHash?: true
+    isVerified?: true
+    verificationCode?: true
+    address?: true
+    city?: true
     loyaltyPoints?: true
     totalSpent?: true
     visitCount?: true
@@ -9514,6 +9790,11 @@ export namespace Prisma {
     name?: true
     phone?: true
     email?: true
+    passwordHash?: true
+    isVerified?: true
+    verificationCode?: true
+    address?: true
+    city?: true
     loyaltyPoints?: true
     totalSpent?: true
     visitCount?: true
@@ -9526,6 +9807,11 @@ export namespace Prisma {
     name?: true
     phone?: true
     email?: true
+    passwordHash?: true
+    isVerified?: true
+    verificationCode?: true
+    address?: true
+    city?: true
     loyaltyPoints?: true
     totalSpent?: true
     visitCount?: true
@@ -9625,6 +9911,11 @@ export namespace Prisma {
     name: string
     phone: string
     email: string | null
+    passwordHash: string | null
+    isVerified: boolean
+    verificationCode: string | null
+    address: string | null
+    city: string | null
     loyaltyPoints: number
     totalSpent: number
     visitCount: number
@@ -9656,6 +9947,11 @@ export namespace Prisma {
     name?: boolean
     phone?: boolean
     email?: boolean
+    passwordHash?: boolean
+    isVerified?: boolean
+    verificationCode?: boolean
+    address?: boolean
+    city?: boolean
     loyaltyPoints?: boolean
     totalSpent?: boolean
     visitCount?: boolean
@@ -9670,6 +9966,11 @@ export namespace Prisma {
     name?: boolean
     phone?: boolean
     email?: boolean
+    passwordHash?: boolean
+    isVerified?: boolean
+    verificationCode?: boolean
+    address?: boolean
+    city?: boolean
     loyaltyPoints?: boolean
     totalSpent?: boolean
     visitCount?: boolean
@@ -9682,6 +9983,11 @@ export namespace Prisma {
     name?: boolean
     phone?: boolean
     email?: boolean
+    passwordHash?: boolean
+    isVerified?: boolean
+    verificationCode?: boolean
+    address?: boolean
+    city?: boolean
     loyaltyPoints?: boolean
     totalSpent?: boolean
     visitCount?: boolean
@@ -9694,6 +10000,11 @@ export namespace Prisma {
     name?: boolean
     phone?: boolean
     email?: boolean
+    passwordHash?: boolean
+    isVerified?: boolean
+    verificationCode?: boolean
+    address?: boolean
+    city?: boolean
     loyaltyPoints?: boolean
     totalSpent?: boolean
     visitCount?: boolean
@@ -9701,7 +10012,7 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "phone" | "email" | "loyaltyPoints" | "totalSpent" | "visitCount" | "notes" | "createdAt", ExtArgs["result"]["customer"]>
+  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "phone" | "email" | "passwordHash" | "isVerified" | "verificationCode" | "address" | "city" | "loyaltyPoints" | "totalSpent" | "visitCount" | "notes" | "createdAt", ExtArgs["result"]["customer"]>
   export type CustomerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | Customer$ordersArgs<ExtArgs>
     _count?: boolean | CustomerCountOutputTypeDefaultArgs<ExtArgs>
@@ -9719,6 +10030,11 @@ export namespace Prisma {
       name: string
       phone: string
       email: string | null
+      passwordHash: string | null
+      isVerified: boolean
+      verificationCode: string | null
+      address: string | null
+      city: string | null
       loyaltyPoints: number
       totalSpent: number
       visitCount: number
@@ -10152,6 +10468,11 @@ export namespace Prisma {
     readonly name: FieldRef<"Customer", 'String'>
     readonly phone: FieldRef<"Customer", 'String'>
     readonly email: FieldRef<"Customer", 'String'>
+    readonly passwordHash: FieldRef<"Customer", 'String'>
+    readonly isVerified: FieldRef<"Customer", 'Boolean'>
+    readonly verificationCode: FieldRef<"Customer", 'String'>
+    readonly address: FieldRef<"Customer", 'String'>
+    readonly city: FieldRef<"Customer", 'String'>
     readonly loyaltyPoints: FieldRef<"Customer", 'Int'>
     readonly totalSpent: FieldRef<"Customer", 'Float'>
     readonly visitCount: FieldRef<"Customer", 'Int'>
@@ -10633,6 +10954,9 @@ export namespace Prisma {
     orderType: string | null
     tableId: string | null
     tableNumber: string | null
+    deliveryAddress: string | null
+    deliveryPhone: string | null
+    deliveryNotes: string | null
     status: string | null
     paymentStatus: string | null
     paymentMethod: string | null
@@ -10662,6 +10986,9 @@ export namespace Prisma {
     orderType: string | null
     tableId: string | null
     tableNumber: string | null
+    deliveryAddress: string | null
+    deliveryPhone: string | null
+    deliveryNotes: string | null
     status: string | null
     paymentStatus: string | null
     paymentMethod: string | null
@@ -10691,6 +11018,9 @@ export namespace Prisma {
     orderType: number
     tableId: number
     tableNumber: number
+    deliveryAddress: number
+    deliveryPhone: number
+    deliveryNotes: number
     status: number
     paymentStatus: number
     paymentMethod: number
@@ -10744,6 +11074,9 @@ export namespace Prisma {
     orderType?: true
     tableId?: true
     tableNumber?: true
+    deliveryAddress?: true
+    deliveryPhone?: true
+    deliveryNotes?: true
     status?: true
     paymentStatus?: true
     paymentMethod?: true
@@ -10773,6 +11106,9 @@ export namespace Prisma {
     orderType?: true
     tableId?: true
     tableNumber?: true
+    deliveryAddress?: true
+    deliveryPhone?: true
+    deliveryNotes?: true
     status?: true
     paymentStatus?: true
     paymentMethod?: true
@@ -10802,6 +11138,9 @@ export namespace Prisma {
     orderType?: true
     tableId?: true
     tableNumber?: true
+    deliveryAddress?: true
+    deliveryPhone?: true
+    deliveryNotes?: true
     status?: true
     paymentStatus?: true
     paymentMethod?: true
@@ -10918,6 +11257,9 @@ export namespace Prisma {
     orderType: string
     tableId: string | null
     tableNumber: string | null
+    deliveryAddress: string | null
+    deliveryPhone: string | null
+    deliveryNotes: string | null
     status: string
     paymentStatus: string
     paymentMethod: string
@@ -10966,6 +11308,9 @@ export namespace Prisma {
     orderType?: boolean
     tableId?: boolean
     tableNumber?: boolean
+    deliveryAddress?: boolean
+    deliveryPhone?: boolean
+    deliveryNotes?: boolean
     status?: boolean
     paymentStatus?: boolean
     paymentMethod?: boolean
@@ -11000,6 +11345,9 @@ export namespace Prisma {
     orderType?: boolean
     tableId?: boolean
     tableNumber?: boolean
+    deliveryAddress?: boolean
+    deliveryPhone?: boolean
+    deliveryNotes?: boolean
     status?: boolean
     paymentStatus?: boolean
     paymentMethod?: boolean
@@ -11032,6 +11380,9 @@ export namespace Prisma {
     orderType?: boolean
     tableId?: boolean
     tableNumber?: boolean
+    deliveryAddress?: boolean
+    deliveryPhone?: boolean
+    deliveryNotes?: boolean
     status?: boolean
     paymentStatus?: boolean
     paymentMethod?: boolean
@@ -11064,6 +11415,9 @@ export namespace Prisma {
     orderType?: boolean
     tableId?: boolean
     tableNumber?: boolean
+    deliveryAddress?: boolean
+    deliveryPhone?: boolean
+    deliveryNotes?: boolean
     status?: boolean
     paymentStatus?: boolean
     paymentMethod?: boolean
@@ -11086,7 +11440,7 @@ export namespace Prisma {
     settledAt?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "orderNumber" | "orderType" | "tableId" | "tableNumber" | "status" | "paymentStatus" | "paymentMethod" | "subtotal" | "serviceCharge" | "taxAmount" | "discountAmount" | "tipAmount" | "finalAmount" | "cashierName" | "waiterName" | "customerName" | "customerPhone" | "customerId" | "pointsEarned" | "pointsRedeemed" | "notes" | "items" | "createdAt" | "settledAt", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "orderNumber" | "orderType" | "tableId" | "tableNumber" | "deliveryAddress" | "deliveryPhone" | "deliveryNotes" | "status" | "paymentStatus" | "paymentMethod" | "subtotal" | "serviceCharge" | "taxAmount" | "discountAmount" | "tipAmount" | "finalAmount" | "cashierName" | "waiterName" | "customerName" | "customerPhone" | "customerId" | "pointsEarned" | "pointsRedeemed" | "notes" | "items" | "createdAt" | "settledAt", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     table?: boolean | Order$tableArgs<ExtArgs>
@@ -11120,6 +11474,9 @@ export namespace Prisma {
       orderType: string
       tableId: string | null
       tableNumber: string | null
+      deliveryAddress: string | null
+      deliveryPhone: string | null
+      deliveryNotes: string | null
       status: string
       paymentStatus: string
       paymentMethod: string
@@ -11573,6 +11930,9 @@ export namespace Prisma {
     readonly orderType: FieldRef<"Order", 'String'>
     readonly tableId: FieldRef<"Order", 'String'>
     readonly tableNumber: FieldRef<"Order", 'String'>
+    readonly deliveryAddress: FieldRef<"Order", 'String'>
+    readonly deliveryPhone: FieldRef<"Order", 'String'>
+    readonly deliveryNotes: FieldRef<"Order", 'String'>
     readonly status: FieldRef<"Order", 'String'>
     readonly paymentStatus: FieldRef<"Order", 'String'>
     readonly paymentMethod: FieldRef<"Order", 'String'>
@@ -16890,6 +17250,2335 @@ export namespace Prisma {
 
 
   /**
+   * Model Reservation
+   */
+
+  export type AggregateReservation = {
+    _count: ReservationCountAggregateOutputType | null
+    _avg: ReservationAvgAggregateOutputType | null
+    _sum: ReservationSumAggregateOutputType | null
+    _min: ReservationMinAggregateOutputType | null
+    _max: ReservationMaxAggregateOutputType | null
+  }
+
+  export type ReservationAvgAggregateOutputType = {
+    guestCount: number | null
+  }
+
+  export type ReservationSumAggregateOutputType = {
+    guestCount: number | null
+  }
+
+  export type ReservationMinAggregateOutputType = {
+    id: string | null
+    outletId: string | null
+    customerName: string | null
+    customerPhone: string | null
+    customerEmail: string | null
+    reservationType: string | null
+    guestCount: number | null
+    bookingDate: Date | null
+    timeSlot: string | null
+    zonePreference: string | null
+    specialRequests: string | null
+    status: string | null
+    createdAt: Date | null
+  }
+
+  export type ReservationMaxAggregateOutputType = {
+    id: string | null
+    outletId: string | null
+    customerName: string | null
+    customerPhone: string | null
+    customerEmail: string | null
+    reservationType: string | null
+    guestCount: number | null
+    bookingDate: Date | null
+    timeSlot: string | null
+    zonePreference: string | null
+    specialRequests: string | null
+    status: string | null
+    createdAt: Date | null
+  }
+
+  export type ReservationCountAggregateOutputType = {
+    id: number
+    outletId: number
+    customerName: number
+    customerPhone: number
+    customerEmail: number
+    reservationType: number
+    guestCount: number
+    bookingDate: number
+    timeSlot: number
+    zonePreference: number
+    specialRequests: number
+    status: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ReservationAvgAggregateInputType = {
+    guestCount?: true
+  }
+
+  export type ReservationSumAggregateInputType = {
+    guestCount?: true
+  }
+
+  export type ReservationMinAggregateInputType = {
+    id?: true
+    outletId?: true
+    customerName?: true
+    customerPhone?: true
+    customerEmail?: true
+    reservationType?: true
+    guestCount?: true
+    bookingDate?: true
+    timeSlot?: true
+    zonePreference?: true
+    specialRequests?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type ReservationMaxAggregateInputType = {
+    id?: true
+    outletId?: true
+    customerName?: true
+    customerPhone?: true
+    customerEmail?: true
+    reservationType?: true
+    guestCount?: true
+    bookingDate?: true
+    timeSlot?: true
+    zonePreference?: true
+    specialRequests?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type ReservationCountAggregateInputType = {
+    id?: true
+    outletId?: true
+    customerName?: true
+    customerPhone?: true
+    customerEmail?: true
+    reservationType?: true
+    guestCount?: true
+    bookingDate?: true
+    timeSlot?: true
+    zonePreference?: true
+    specialRequests?: true
+    status?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ReservationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Reservation to aggregate.
+     */
+    where?: ReservationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reservations to fetch.
+     */
+    orderBy?: ReservationOrderByWithRelationInput | ReservationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReservationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reservations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reservations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Reservations
+    **/
+    _count?: true | ReservationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ReservationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ReservationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReservationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReservationMaxAggregateInputType
+  }
+
+  export type GetReservationAggregateType<T extends ReservationAggregateArgs> = {
+        [P in keyof T & keyof AggregateReservation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReservation[P]>
+      : GetScalarType<T[P], AggregateReservation[P]>
+  }
+
+
+
+
+  export type ReservationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReservationWhereInput
+    orderBy?: ReservationOrderByWithAggregationInput | ReservationOrderByWithAggregationInput[]
+    by: ReservationScalarFieldEnum[] | ReservationScalarFieldEnum
+    having?: ReservationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReservationCountAggregateInputType | true
+    _avg?: ReservationAvgAggregateInputType
+    _sum?: ReservationSumAggregateInputType
+    _min?: ReservationMinAggregateInputType
+    _max?: ReservationMaxAggregateInputType
+  }
+
+  export type ReservationGroupByOutputType = {
+    id: string
+    outletId: string
+    customerName: string
+    customerPhone: string
+    customerEmail: string | null
+    reservationType: string
+    guestCount: number
+    bookingDate: Date
+    timeSlot: string
+    zonePreference: string | null
+    specialRequests: string | null
+    status: string
+    createdAt: Date
+    _count: ReservationCountAggregateOutputType | null
+    _avg: ReservationAvgAggregateOutputType | null
+    _sum: ReservationSumAggregateOutputType | null
+    _min: ReservationMinAggregateOutputType | null
+    _max: ReservationMaxAggregateOutputType | null
+  }
+
+  type GetReservationGroupByPayload<T extends ReservationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReservationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReservationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReservationGroupByOutputType[P]>
+            : GetScalarType<T[P], ReservationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReservationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    customerName?: boolean
+    customerPhone?: boolean
+    customerEmail?: boolean
+    reservationType?: boolean
+    guestCount?: boolean
+    bookingDate?: boolean
+    timeSlot?: boolean
+    zonePreference?: boolean
+    specialRequests?: boolean
+    status?: boolean
+    createdAt?: boolean
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reservation"]>
+
+  export type ReservationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    customerName?: boolean
+    customerPhone?: boolean
+    customerEmail?: boolean
+    reservationType?: boolean
+    guestCount?: boolean
+    bookingDate?: boolean
+    timeSlot?: boolean
+    zonePreference?: boolean
+    specialRequests?: boolean
+    status?: boolean
+    createdAt?: boolean
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reservation"]>
+
+  export type ReservationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    customerName?: boolean
+    customerPhone?: boolean
+    customerEmail?: boolean
+    reservationType?: boolean
+    guestCount?: boolean
+    bookingDate?: boolean
+    timeSlot?: boolean
+    zonePreference?: boolean
+    specialRequests?: boolean
+    status?: boolean
+    createdAt?: boolean
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reservation"]>
+
+  export type ReservationSelectScalar = {
+    id?: boolean
+    outletId?: boolean
+    customerName?: boolean
+    customerPhone?: boolean
+    customerEmail?: boolean
+    reservationType?: boolean
+    guestCount?: boolean
+    bookingDate?: boolean
+    timeSlot?: boolean
+    zonePreference?: boolean
+    specialRequests?: boolean
+    status?: boolean
+    createdAt?: boolean
+  }
+
+  export type ReservationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "customerName" | "customerPhone" | "customerEmail" | "reservationType" | "guestCount" | "bookingDate" | "timeSlot" | "zonePreference" | "specialRequests" | "status" | "createdAt", ExtArgs["result"]["reservation"]>
+  export type ReservationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }
+  export type ReservationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }
+  export type ReservationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }
+
+  export type $ReservationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Reservation"
+    objects: {
+      outlet: Prisma.$OutletPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      outletId: string
+      customerName: string
+      customerPhone: string
+      customerEmail: string | null
+      reservationType: string
+      guestCount: number
+      bookingDate: Date
+      timeSlot: string
+      zonePreference: string | null
+      specialRequests: string | null
+      status: string
+      createdAt: Date
+    }, ExtArgs["result"]["reservation"]>
+    composites: {}
+  }
+
+  type ReservationGetPayload<S extends boolean | null | undefined | ReservationDefaultArgs> = $Result.GetResult<Prisma.$ReservationPayload, S>
+
+  type ReservationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReservationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReservationCountAggregateInputType | true
+    }
+
+  export interface ReservationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Reservation'], meta: { name: 'Reservation' } }
+    /**
+     * Find zero or one Reservation that matches the filter.
+     * @param {ReservationFindUniqueArgs} args - Arguments to find a Reservation
+     * @example
+     * // Get one Reservation
+     * const reservation = await prisma.reservation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReservationFindUniqueArgs>(args: SelectSubset<T, ReservationFindUniqueArgs<ExtArgs>>): Prisma__ReservationClient<$Result.GetResult<Prisma.$ReservationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Reservation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReservationFindUniqueOrThrowArgs} args - Arguments to find a Reservation
+     * @example
+     * // Get one Reservation
+     * const reservation = await prisma.reservation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReservationFindUniqueOrThrowArgs>(args: SelectSubset<T, ReservationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReservationClient<$Result.GetResult<Prisma.$ReservationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Reservation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReservationFindFirstArgs} args - Arguments to find a Reservation
+     * @example
+     * // Get one Reservation
+     * const reservation = await prisma.reservation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReservationFindFirstArgs>(args?: SelectSubset<T, ReservationFindFirstArgs<ExtArgs>>): Prisma__ReservationClient<$Result.GetResult<Prisma.$ReservationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Reservation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReservationFindFirstOrThrowArgs} args - Arguments to find a Reservation
+     * @example
+     * // Get one Reservation
+     * const reservation = await prisma.reservation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReservationFindFirstOrThrowArgs>(args?: SelectSubset<T, ReservationFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReservationClient<$Result.GetResult<Prisma.$ReservationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Reservations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReservationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Reservations
+     * const reservations = await prisma.reservation.findMany()
+     * 
+     * // Get first 10 Reservations
+     * const reservations = await prisma.reservation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reservationWithIdOnly = await prisma.reservation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReservationFindManyArgs>(args?: SelectSubset<T, ReservationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReservationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Reservation.
+     * @param {ReservationCreateArgs} args - Arguments to create a Reservation.
+     * @example
+     * // Create one Reservation
+     * const Reservation = await prisma.reservation.create({
+     *   data: {
+     *     // ... data to create a Reservation
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReservationCreateArgs>(args: SelectSubset<T, ReservationCreateArgs<ExtArgs>>): Prisma__ReservationClient<$Result.GetResult<Prisma.$ReservationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Reservations.
+     * @param {ReservationCreateManyArgs} args - Arguments to create many Reservations.
+     * @example
+     * // Create many Reservations
+     * const reservation = await prisma.reservation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReservationCreateManyArgs>(args?: SelectSubset<T, ReservationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Reservations and returns the data saved in the database.
+     * @param {ReservationCreateManyAndReturnArgs} args - Arguments to create many Reservations.
+     * @example
+     * // Create many Reservations
+     * const reservation = await prisma.reservation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Reservations and only return the `id`
+     * const reservationWithIdOnly = await prisma.reservation.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReservationCreateManyAndReturnArgs>(args?: SelectSubset<T, ReservationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReservationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Reservation.
+     * @param {ReservationDeleteArgs} args - Arguments to delete one Reservation.
+     * @example
+     * // Delete one Reservation
+     * const Reservation = await prisma.reservation.delete({
+     *   where: {
+     *     // ... filter to delete one Reservation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReservationDeleteArgs>(args: SelectSubset<T, ReservationDeleteArgs<ExtArgs>>): Prisma__ReservationClient<$Result.GetResult<Prisma.$ReservationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Reservation.
+     * @param {ReservationUpdateArgs} args - Arguments to update one Reservation.
+     * @example
+     * // Update one Reservation
+     * const reservation = await prisma.reservation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReservationUpdateArgs>(args: SelectSubset<T, ReservationUpdateArgs<ExtArgs>>): Prisma__ReservationClient<$Result.GetResult<Prisma.$ReservationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Reservations.
+     * @param {ReservationDeleteManyArgs} args - Arguments to filter Reservations to delete.
+     * @example
+     * // Delete a few Reservations
+     * const { count } = await prisma.reservation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReservationDeleteManyArgs>(args?: SelectSubset<T, ReservationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Reservations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReservationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Reservations
+     * const reservation = await prisma.reservation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReservationUpdateManyArgs>(args: SelectSubset<T, ReservationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Reservations and returns the data updated in the database.
+     * @param {ReservationUpdateManyAndReturnArgs} args - Arguments to update many Reservations.
+     * @example
+     * // Update many Reservations
+     * const reservation = await prisma.reservation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Reservations and only return the `id`
+     * const reservationWithIdOnly = await prisma.reservation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReservationUpdateManyAndReturnArgs>(args: SelectSubset<T, ReservationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReservationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Reservation.
+     * @param {ReservationUpsertArgs} args - Arguments to update or create a Reservation.
+     * @example
+     * // Update or create a Reservation
+     * const reservation = await prisma.reservation.upsert({
+     *   create: {
+     *     // ... data to create a Reservation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Reservation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReservationUpsertArgs>(args: SelectSubset<T, ReservationUpsertArgs<ExtArgs>>): Prisma__ReservationClient<$Result.GetResult<Prisma.$ReservationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Reservations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReservationCountArgs} args - Arguments to filter Reservations to count.
+     * @example
+     * // Count the number of Reservations
+     * const count = await prisma.reservation.count({
+     *   where: {
+     *     // ... the filter for the Reservations we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReservationCountArgs>(
+      args?: Subset<T, ReservationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReservationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Reservation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReservationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReservationAggregateArgs>(args: Subset<T, ReservationAggregateArgs>): Prisma.PrismaPromise<GetReservationAggregateType<T>>
+
+    /**
+     * Group by Reservation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReservationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReservationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReservationGroupByArgs['orderBy'] }
+        : { orderBy?: ReservationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReservationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReservationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Reservation model
+   */
+  readonly fields: ReservationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Reservation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReservationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    outlet<T extends OutletDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OutletDefaultArgs<ExtArgs>>): Prisma__OutletClient<$Result.GetResult<Prisma.$OutletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Reservation model
+   */
+  interface ReservationFieldRefs {
+    readonly id: FieldRef<"Reservation", 'String'>
+    readonly outletId: FieldRef<"Reservation", 'String'>
+    readonly customerName: FieldRef<"Reservation", 'String'>
+    readonly customerPhone: FieldRef<"Reservation", 'String'>
+    readonly customerEmail: FieldRef<"Reservation", 'String'>
+    readonly reservationType: FieldRef<"Reservation", 'String'>
+    readonly guestCount: FieldRef<"Reservation", 'Int'>
+    readonly bookingDate: FieldRef<"Reservation", 'DateTime'>
+    readonly timeSlot: FieldRef<"Reservation", 'String'>
+    readonly zonePreference: FieldRef<"Reservation", 'String'>
+    readonly specialRequests: FieldRef<"Reservation", 'String'>
+    readonly status: FieldRef<"Reservation", 'String'>
+    readonly createdAt: FieldRef<"Reservation", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Reservation findUnique
+   */
+  export type ReservationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reservation
+     */
+    select?: ReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reservation
+     */
+    omit?: ReservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservationInclude<ExtArgs> | null
+    /**
+     * Filter, which Reservation to fetch.
+     */
+    where: ReservationWhereUniqueInput
+  }
+
+  /**
+   * Reservation findUniqueOrThrow
+   */
+  export type ReservationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reservation
+     */
+    select?: ReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reservation
+     */
+    omit?: ReservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservationInclude<ExtArgs> | null
+    /**
+     * Filter, which Reservation to fetch.
+     */
+    where: ReservationWhereUniqueInput
+  }
+
+  /**
+   * Reservation findFirst
+   */
+  export type ReservationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reservation
+     */
+    select?: ReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reservation
+     */
+    omit?: ReservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservationInclude<ExtArgs> | null
+    /**
+     * Filter, which Reservation to fetch.
+     */
+    where?: ReservationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reservations to fetch.
+     */
+    orderBy?: ReservationOrderByWithRelationInput | ReservationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Reservations.
+     */
+    cursor?: ReservationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reservations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reservations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Reservations.
+     */
+    distinct?: ReservationScalarFieldEnum | ReservationScalarFieldEnum[]
+  }
+
+  /**
+   * Reservation findFirstOrThrow
+   */
+  export type ReservationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reservation
+     */
+    select?: ReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reservation
+     */
+    omit?: ReservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservationInclude<ExtArgs> | null
+    /**
+     * Filter, which Reservation to fetch.
+     */
+    where?: ReservationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reservations to fetch.
+     */
+    orderBy?: ReservationOrderByWithRelationInput | ReservationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Reservations.
+     */
+    cursor?: ReservationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reservations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reservations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Reservations.
+     */
+    distinct?: ReservationScalarFieldEnum | ReservationScalarFieldEnum[]
+  }
+
+  /**
+   * Reservation findMany
+   */
+  export type ReservationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reservation
+     */
+    select?: ReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reservation
+     */
+    omit?: ReservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservationInclude<ExtArgs> | null
+    /**
+     * Filter, which Reservations to fetch.
+     */
+    where?: ReservationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reservations to fetch.
+     */
+    orderBy?: ReservationOrderByWithRelationInput | ReservationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Reservations.
+     */
+    cursor?: ReservationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reservations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reservations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Reservations.
+     */
+    distinct?: ReservationScalarFieldEnum | ReservationScalarFieldEnum[]
+  }
+
+  /**
+   * Reservation create
+   */
+  export type ReservationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reservation
+     */
+    select?: ReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reservation
+     */
+    omit?: ReservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Reservation.
+     */
+    data: XOR<ReservationCreateInput, ReservationUncheckedCreateInput>
+  }
+
+  /**
+   * Reservation createMany
+   */
+  export type ReservationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Reservations.
+     */
+    data: ReservationCreateManyInput | ReservationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Reservation createManyAndReturn
+   */
+  export type ReservationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reservation
+     */
+    select?: ReservationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reservation
+     */
+    omit?: ReservationOmit<ExtArgs> | null
+    /**
+     * The data used to create many Reservations.
+     */
+    data: ReservationCreateManyInput | ReservationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Reservation update
+   */
+  export type ReservationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reservation
+     */
+    select?: ReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reservation
+     */
+    omit?: ReservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Reservation.
+     */
+    data: XOR<ReservationUpdateInput, ReservationUncheckedUpdateInput>
+    /**
+     * Choose, which Reservation to update.
+     */
+    where: ReservationWhereUniqueInput
+  }
+
+  /**
+   * Reservation updateMany
+   */
+  export type ReservationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Reservations.
+     */
+    data: XOR<ReservationUpdateManyMutationInput, ReservationUncheckedUpdateManyInput>
+    /**
+     * Filter which Reservations to update
+     */
+    where?: ReservationWhereInput
+    /**
+     * Limit how many Reservations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Reservation updateManyAndReturn
+   */
+  export type ReservationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reservation
+     */
+    select?: ReservationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reservation
+     */
+    omit?: ReservationOmit<ExtArgs> | null
+    /**
+     * The data used to update Reservations.
+     */
+    data: XOR<ReservationUpdateManyMutationInput, ReservationUncheckedUpdateManyInput>
+    /**
+     * Filter which Reservations to update
+     */
+    where?: ReservationWhereInput
+    /**
+     * Limit how many Reservations to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Reservation upsert
+   */
+  export type ReservationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reservation
+     */
+    select?: ReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reservation
+     */
+    omit?: ReservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Reservation to update in case it exists.
+     */
+    where: ReservationWhereUniqueInput
+    /**
+     * In case the Reservation found by the `where` argument doesn't exist, create a new Reservation with this data.
+     */
+    create: XOR<ReservationCreateInput, ReservationUncheckedCreateInput>
+    /**
+     * In case the Reservation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReservationUpdateInput, ReservationUncheckedUpdateInput>
+  }
+
+  /**
+   * Reservation delete
+   */
+  export type ReservationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reservation
+     */
+    select?: ReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reservation
+     */
+    omit?: ReservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservationInclude<ExtArgs> | null
+    /**
+     * Filter which Reservation to delete.
+     */
+    where: ReservationWhereUniqueInput
+  }
+
+  /**
+   * Reservation deleteMany
+   */
+  export type ReservationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Reservations to delete
+     */
+    where?: ReservationWhereInput
+    /**
+     * Limit how many Reservations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Reservation without action
+   */
+  export type ReservationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reservation
+     */
+    select?: ReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reservation
+     */
+    omit?: ReservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReservationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ChatMessage
+   */
+
+  export type AggregateChatMessage = {
+    _count: ChatMessageCountAggregateOutputType | null
+    _min: ChatMessageMinAggregateOutputType | null
+    _max: ChatMessageMaxAggregateOutputType | null
+  }
+
+  export type ChatMessageMinAggregateOutputType = {
+    id: string | null
+    outletId: string | null
+    senderType: string | null
+    senderName: string | null
+    senderPhone: string | null
+    tableNumber: string | null
+    orderNumber: string | null
+    message: string | null
+    isRead: boolean | null
+    createdAt: Date | null
+  }
+
+  export type ChatMessageMaxAggregateOutputType = {
+    id: string | null
+    outletId: string | null
+    senderType: string | null
+    senderName: string | null
+    senderPhone: string | null
+    tableNumber: string | null
+    orderNumber: string | null
+    message: string | null
+    isRead: boolean | null
+    createdAt: Date | null
+  }
+
+  export type ChatMessageCountAggregateOutputType = {
+    id: number
+    outletId: number
+    senderType: number
+    senderName: number
+    senderPhone: number
+    tableNumber: number
+    orderNumber: number
+    message: number
+    isRead: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ChatMessageMinAggregateInputType = {
+    id?: true
+    outletId?: true
+    senderType?: true
+    senderName?: true
+    senderPhone?: true
+    tableNumber?: true
+    orderNumber?: true
+    message?: true
+    isRead?: true
+    createdAt?: true
+  }
+
+  export type ChatMessageMaxAggregateInputType = {
+    id?: true
+    outletId?: true
+    senderType?: true
+    senderName?: true
+    senderPhone?: true
+    tableNumber?: true
+    orderNumber?: true
+    message?: true
+    isRead?: true
+    createdAt?: true
+  }
+
+  export type ChatMessageCountAggregateInputType = {
+    id?: true
+    outletId?: true
+    senderType?: true
+    senderName?: true
+    senderPhone?: true
+    tableNumber?: true
+    orderNumber?: true
+    message?: true
+    isRead?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ChatMessageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChatMessage to aggregate.
+     */
+    where?: ChatMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChatMessages to fetch.
+     */
+    orderBy?: ChatMessageOrderByWithRelationInput | ChatMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ChatMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChatMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChatMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ChatMessages
+    **/
+    _count?: true | ChatMessageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ChatMessageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ChatMessageMaxAggregateInputType
+  }
+
+  export type GetChatMessageAggregateType<T extends ChatMessageAggregateArgs> = {
+        [P in keyof T & keyof AggregateChatMessage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateChatMessage[P]>
+      : GetScalarType<T[P], AggregateChatMessage[P]>
+  }
+
+
+
+
+  export type ChatMessageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChatMessageWhereInput
+    orderBy?: ChatMessageOrderByWithAggregationInput | ChatMessageOrderByWithAggregationInput[]
+    by: ChatMessageScalarFieldEnum[] | ChatMessageScalarFieldEnum
+    having?: ChatMessageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ChatMessageCountAggregateInputType | true
+    _min?: ChatMessageMinAggregateInputType
+    _max?: ChatMessageMaxAggregateInputType
+  }
+
+  export type ChatMessageGroupByOutputType = {
+    id: string
+    outletId: string
+    senderType: string
+    senderName: string
+    senderPhone: string | null
+    tableNumber: string | null
+    orderNumber: string | null
+    message: string
+    isRead: boolean
+    createdAt: Date
+    _count: ChatMessageCountAggregateOutputType | null
+    _min: ChatMessageMinAggregateOutputType | null
+    _max: ChatMessageMaxAggregateOutputType | null
+  }
+
+  type GetChatMessageGroupByPayload<T extends ChatMessageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ChatMessageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ChatMessageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ChatMessageGroupByOutputType[P]>
+            : GetScalarType<T[P], ChatMessageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ChatMessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    senderType?: boolean
+    senderName?: boolean
+    senderPhone?: boolean
+    tableNumber?: boolean
+    orderNumber?: boolean
+    message?: boolean
+    isRead?: boolean
+    createdAt?: boolean
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["chatMessage"]>
+
+  export type ChatMessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    senderType?: boolean
+    senderName?: boolean
+    senderPhone?: boolean
+    tableNumber?: boolean
+    orderNumber?: boolean
+    message?: boolean
+    isRead?: boolean
+    createdAt?: boolean
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["chatMessage"]>
+
+  export type ChatMessageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    senderType?: boolean
+    senderName?: boolean
+    senderPhone?: boolean
+    tableNumber?: boolean
+    orderNumber?: boolean
+    message?: boolean
+    isRead?: boolean
+    createdAt?: boolean
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["chatMessage"]>
+
+  export type ChatMessageSelectScalar = {
+    id?: boolean
+    outletId?: boolean
+    senderType?: boolean
+    senderName?: boolean
+    senderPhone?: boolean
+    tableNumber?: boolean
+    orderNumber?: boolean
+    message?: boolean
+    isRead?: boolean
+    createdAt?: boolean
+  }
+
+  export type ChatMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "senderType" | "senderName" | "senderPhone" | "tableNumber" | "orderNumber" | "message" | "isRead" | "createdAt", ExtArgs["result"]["chatMessage"]>
+  export type ChatMessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }
+  export type ChatMessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }
+  export type ChatMessageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }
+
+  export type $ChatMessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ChatMessage"
+    objects: {
+      outlet: Prisma.$OutletPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      outletId: string
+      senderType: string
+      senderName: string
+      senderPhone: string | null
+      tableNumber: string | null
+      orderNumber: string | null
+      message: string
+      isRead: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["chatMessage"]>
+    composites: {}
+  }
+
+  type ChatMessageGetPayload<S extends boolean | null | undefined | ChatMessageDefaultArgs> = $Result.GetResult<Prisma.$ChatMessagePayload, S>
+
+  type ChatMessageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ChatMessageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ChatMessageCountAggregateInputType | true
+    }
+
+  export interface ChatMessageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ChatMessage'], meta: { name: 'ChatMessage' } }
+    /**
+     * Find zero or one ChatMessage that matches the filter.
+     * @param {ChatMessageFindUniqueArgs} args - Arguments to find a ChatMessage
+     * @example
+     * // Get one ChatMessage
+     * const chatMessage = await prisma.chatMessage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ChatMessageFindUniqueArgs>(args: SelectSubset<T, ChatMessageFindUniqueArgs<ExtArgs>>): Prisma__ChatMessageClient<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ChatMessage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ChatMessageFindUniqueOrThrowArgs} args - Arguments to find a ChatMessage
+     * @example
+     * // Get one ChatMessage
+     * const chatMessage = await prisma.chatMessage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ChatMessageFindUniqueOrThrowArgs>(args: SelectSubset<T, ChatMessageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ChatMessageClient<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ChatMessage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChatMessageFindFirstArgs} args - Arguments to find a ChatMessage
+     * @example
+     * // Get one ChatMessage
+     * const chatMessage = await prisma.chatMessage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ChatMessageFindFirstArgs>(args?: SelectSubset<T, ChatMessageFindFirstArgs<ExtArgs>>): Prisma__ChatMessageClient<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ChatMessage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChatMessageFindFirstOrThrowArgs} args - Arguments to find a ChatMessage
+     * @example
+     * // Get one ChatMessage
+     * const chatMessage = await prisma.chatMessage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ChatMessageFindFirstOrThrowArgs>(args?: SelectSubset<T, ChatMessageFindFirstOrThrowArgs<ExtArgs>>): Prisma__ChatMessageClient<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ChatMessages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChatMessageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ChatMessages
+     * const chatMessages = await prisma.chatMessage.findMany()
+     * 
+     * // Get first 10 ChatMessages
+     * const chatMessages = await prisma.chatMessage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const chatMessageWithIdOnly = await prisma.chatMessage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ChatMessageFindManyArgs>(args?: SelectSubset<T, ChatMessageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ChatMessage.
+     * @param {ChatMessageCreateArgs} args - Arguments to create a ChatMessage.
+     * @example
+     * // Create one ChatMessage
+     * const ChatMessage = await prisma.chatMessage.create({
+     *   data: {
+     *     // ... data to create a ChatMessage
+     *   }
+     * })
+     * 
+     */
+    create<T extends ChatMessageCreateArgs>(args: SelectSubset<T, ChatMessageCreateArgs<ExtArgs>>): Prisma__ChatMessageClient<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ChatMessages.
+     * @param {ChatMessageCreateManyArgs} args - Arguments to create many ChatMessages.
+     * @example
+     * // Create many ChatMessages
+     * const chatMessage = await prisma.chatMessage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ChatMessageCreateManyArgs>(args?: SelectSubset<T, ChatMessageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ChatMessages and returns the data saved in the database.
+     * @param {ChatMessageCreateManyAndReturnArgs} args - Arguments to create many ChatMessages.
+     * @example
+     * // Create many ChatMessages
+     * const chatMessage = await prisma.chatMessage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ChatMessages and only return the `id`
+     * const chatMessageWithIdOnly = await prisma.chatMessage.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ChatMessageCreateManyAndReturnArgs>(args?: SelectSubset<T, ChatMessageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ChatMessage.
+     * @param {ChatMessageDeleteArgs} args - Arguments to delete one ChatMessage.
+     * @example
+     * // Delete one ChatMessage
+     * const ChatMessage = await prisma.chatMessage.delete({
+     *   where: {
+     *     // ... filter to delete one ChatMessage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ChatMessageDeleteArgs>(args: SelectSubset<T, ChatMessageDeleteArgs<ExtArgs>>): Prisma__ChatMessageClient<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ChatMessage.
+     * @param {ChatMessageUpdateArgs} args - Arguments to update one ChatMessage.
+     * @example
+     * // Update one ChatMessage
+     * const chatMessage = await prisma.chatMessage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ChatMessageUpdateArgs>(args: SelectSubset<T, ChatMessageUpdateArgs<ExtArgs>>): Prisma__ChatMessageClient<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ChatMessages.
+     * @param {ChatMessageDeleteManyArgs} args - Arguments to filter ChatMessages to delete.
+     * @example
+     * // Delete a few ChatMessages
+     * const { count } = await prisma.chatMessage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ChatMessageDeleteManyArgs>(args?: SelectSubset<T, ChatMessageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChatMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChatMessageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ChatMessages
+     * const chatMessage = await prisma.chatMessage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ChatMessageUpdateManyArgs>(args: SelectSubset<T, ChatMessageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChatMessages and returns the data updated in the database.
+     * @param {ChatMessageUpdateManyAndReturnArgs} args - Arguments to update many ChatMessages.
+     * @example
+     * // Update many ChatMessages
+     * const chatMessage = await prisma.chatMessage.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ChatMessages and only return the `id`
+     * const chatMessageWithIdOnly = await prisma.chatMessage.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ChatMessageUpdateManyAndReturnArgs>(args: SelectSubset<T, ChatMessageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ChatMessage.
+     * @param {ChatMessageUpsertArgs} args - Arguments to update or create a ChatMessage.
+     * @example
+     * // Update or create a ChatMessage
+     * const chatMessage = await prisma.chatMessage.upsert({
+     *   create: {
+     *     // ... data to create a ChatMessage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ChatMessage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ChatMessageUpsertArgs>(args: SelectSubset<T, ChatMessageUpsertArgs<ExtArgs>>): Prisma__ChatMessageClient<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ChatMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChatMessageCountArgs} args - Arguments to filter ChatMessages to count.
+     * @example
+     * // Count the number of ChatMessages
+     * const count = await prisma.chatMessage.count({
+     *   where: {
+     *     // ... the filter for the ChatMessages we want to count
+     *   }
+     * })
+    **/
+    count<T extends ChatMessageCountArgs>(
+      args?: Subset<T, ChatMessageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ChatMessageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ChatMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChatMessageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ChatMessageAggregateArgs>(args: Subset<T, ChatMessageAggregateArgs>): Prisma.PrismaPromise<GetChatMessageAggregateType<T>>
+
+    /**
+     * Group by ChatMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChatMessageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ChatMessageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ChatMessageGroupByArgs['orderBy'] }
+        : { orderBy?: ChatMessageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ChatMessageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetChatMessageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ChatMessage model
+   */
+  readonly fields: ChatMessageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ChatMessage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ChatMessageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    outlet<T extends OutletDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OutletDefaultArgs<ExtArgs>>): Prisma__OutletClient<$Result.GetResult<Prisma.$OutletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ChatMessage model
+   */
+  interface ChatMessageFieldRefs {
+    readonly id: FieldRef<"ChatMessage", 'String'>
+    readonly outletId: FieldRef<"ChatMessage", 'String'>
+    readonly senderType: FieldRef<"ChatMessage", 'String'>
+    readonly senderName: FieldRef<"ChatMessage", 'String'>
+    readonly senderPhone: FieldRef<"ChatMessage", 'String'>
+    readonly tableNumber: FieldRef<"ChatMessage", 'String'>
+    readonly orderNumber: FieldRef<"ChatMessage", 'String'>
+    readonly message: FieldRef<"ChatMessage", 'String'>
+    readonly isRead: FieldRef<"ChatMessage", 'Boolean'>
+    readonly createdAt: FieldRef<"ChatMessage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ChatMessage findUnique
+   */
+  export type ChatMessageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatMessage
+     */
+    select?: ChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChatMessage
+     */
+    omit?: ChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which ChatMessage to fetch.
+     */
+    where: ChatMessageWhereUniqueInput
+  }
+
+  /**
+   * ChatMessage findUniqueOrThrow
+   */
+  export type ChatMessageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatMessage
+     */
+    select?: ChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChatMessage
+     */
+    omit?: ChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which ChatMessage to fetch.
+     */
+    where: ChatMessageWhereUniqueInput
+  }
+
+  /**
+   * ChatMessage findFirst
+   */
+  export type ChatMessageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatMessage
+     */
+    select?: ChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChatMessage
+     */
+    omit?: ChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which ChatMessage to fetch.
+     */
+    where?: ChatMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChatMessages to fetch.
+     */
+    orderBy?: ChatMessageOrderByWithRelationInput | ChatMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ChatMessages.
+     */
+    cursor?: ChatMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChatMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChatMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ChatMessages.
+     */
+    distinct?: ChatMessageScalarFieldEnum | ChatMessageScalarFieldEnum[]
+  }
+
+  /**
+   * ChatMessage findFirstOrThrow
+   */
+  export type ChatMessageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatMessage
+     */
+    select?: ChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChatMessage
+     */
+    omit?: ChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which ChatMessage to fetch.
+     */
+    where?: ChatMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChatMessages to fetch.
+     */
+    orderBy?: ChatMessageOrderByWithRelationInput | ChatMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ChatMessages.
+     */
+    cursor?: ChatMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChatMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChatMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ChatMessages.
+     */
+    distinct?: ChatMessageScalarFieldEnum | ChatMessageScalarFieldEnum[]
+  }
+
+  /**
+   * ChatMessage findMany
+   */
+  export type ChatMessageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatMessage
+     */
+    select?: ChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChatMessage
+     */
+    omit?: ChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which ChatMessages to fetch.
+     */
+    where?: ChatMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChatMessages to fetch.
+     */
+    orderBy?: ChatMessageOrderByWithRelationInput | ChatMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ChatMessages.
+     */
+    cursor?: ChatMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChatMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChatMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ChatMessages.
+     */
+    distinct?: ChatMessageScalarFieldEnum | ChatMessageScalarFieldEnum[]
+  }
+
+  /**
+   * ChatMessage create
+   */
+  export type ChatMessageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatMessage
+     */
+    select?: ChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChatMessage
+     */
+    omit?: ChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ChatMessage.
+     */
+    data: XOR<ChatMessageCreateInput, ChatMessageUncheckedCreateInput>
+  }
+
+  /**
+   * ChatMessage createMany
+   */
+  export type ChatMessageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ChatMessages.
+     */
+    data: ChatMessageCreateManyInput | ChatMessageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ChatMessage createManyAndReturn
+   */
+  export type ChatMessageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatMessage
+     */
+    select?: ChatMessageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChatMessage
+     */
+    omit?: ChatMessageOmit<ExtArgs> | null
+    /**
+     * The data used to create many ChatMessages.
+     */
+    data: ChatMessageCreateManyInput | ChatMessageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatMessageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ChatMessage update
+   */
+  export type ChatMessageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatMessage
+     */
+    select?: ChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChatMessage
+     */
+    omit?: ChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ChatMessage.
+     */
+    data: XOR<ChatMessageUpdateInput, ChatMessageUncheckedUpdateInput>
+    /**
+     * Choose, which ChatMessage to update.
+     */
+    where: ChatMessageWhereUniqueInput
+  }
+
+  /**
+   * ChatMessage updateMany
+   */
+  export type ChatMessageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ChatMessages.
+     */
+    data: XOR<ChatMessageUpdateManyMutationInput, ChatMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which ChatMessages to update
+     */
+    where?: ChatMessageWhereInput
+    /**
+     * Limit how many ChatMessages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChatMessage updateManyAndReturn
+   */
+  export type ChatMessageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatMessage
+     */
+    select?: ChatMessageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChatMessage
+     */
+    omit?: ChatMessageOmit<ExtArgs> | null
+    /**
+     * The data used to update ChatMessages.
+     */
+    data: XOR<ChatMessageUpdateManyMutationInput, ChatMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which ChatMessages to update
+     */
+    where?: ChatMessageWhereInput
+    /**
+     * Limit how many ChatMessages to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatMessageIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ChatMessage upsert
+   */
+  export type ChatMessageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatMessage
+     */
+    select?: ChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChatMessage
+     */
+    omit?: ChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatMessageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ChatMessage to update in case it exists.
+     */
+    where: ChatMessageWhereUniqueInput
+    /**
+     * In case the ChatMessage found by the `where` argument doesn't exist, create a new ChatMessage with this data.
+     */
+    create: XOR<ChatMessageCreateInput, ChatMessageUncheckedCreateInput>
+    /**
+     * In case the ChatMessage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ChatMessageUpdateInput, ChatMessageUncheckedUpdateInput>
+  }
+
+  /**
+   * ChatMessage delete
+   */
+  export type ChatMessageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatMessage
+     */
+    select?: ChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChatMessage
+     */
+    omit?: ChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatMessageInclude<ExtArgs> | null
+    /**
+     * Filter which ChatMessage to delete.
+     */
+    where: ChatMessageWhereUniqueInput
+  }
+
+  /**
+   * ChatMessage deleteMany
+   */
+  export type ChatMessageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChatMessages to delete
+     */
+    where?: ChatMessageWhereInput
+    /**
+     * Limit how many ChatMessages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChatMessage without action
+   */
+  export type ChatMessageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatMessage
+     */
+    select?: ChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChatMessage
+     */
+    omit?: ChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatMessageInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -17008,6 +19697,11 @@ export namespace Prisma {
     name: 'name',
     phone: 'phone',
     email: 'email',
+    passwordHash: 'passwordHash',
+    isVerified: 'isVerified',
+    verificationCode: 'verificationCode',
+    address: 'address',
+    city: 'city',
     loyaltyPoints: 'loyaltyPoints',
     totalSpent: 'totalSpent',
     visitCount: 'visitCount',
@@ -17025,6 +19719,9 @@ export namespace Prisma {
     orderType: 'orderType',
     tableId: 'tableId',
     tableNumber: 'tableNumber',
+    deliveryAddress: 'deliveryAddress',
+    deliveryPhone: 'deliveryPhone',
+    deliveryNotes: 'deliveryNotes',
     status: 'status',
     paymentStatus: 'paymentStatus',
     paymentMethod: 'paymentMethod',
@@ -17128,6 +19825,41 @@ export namespace Prisma {
   };
 
   export type SystemSettingsScalarFieldEnum = (typeof SystemSettingsScalarFieldEnum)[keyof typeof SystemSettingsScalarFieldEnum]
+
+
+  export const ReservationScalarFieldEnum: {
+    id: 'id',
+    outletId: 'outletId',
+    customerName: 'customerName',
+    customerPhone: 'customerPhone',
+    customerEmail: 'customerEmail',
+    reservationType: 'reservationType',
+    guestCount: 'guestCount',
+    bookingDate: 'bookingDate',
+    timeSlot: 'timeSlot',
+    zonePreference: 'zonePreference',
+    specialRequests: 'specialRequests',
+    status: 'status',
+    createdAt: 'createdAt'
+  };
+
+  export type ReservationScalarFieldEnum = (typeof ReservationScalarFieldEnum)[keyof typeof ReservationScalarFieldEnum]
+
+
+  export const ChatMessageScalarFieldEnum: {
+    id: 'id',
+    outletId: 'outletId',
+    senderType: 'senderType',
+    senderName: 'senderName',
+    senderPhone: 'senderPhone',
+    tableNumber: 'tableNumber',
+    orderNumber: 'orderNumber',
+    message: 'message',
+    isRead: 'isRead',
+    createdAt: 'createdAt'
+  };
+
+  export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -17246,6 +19978,8 @@ export namespace Prisma {
     orders?: OrderListRelationFilter
     shifts?: ShiftListRelationFilter
     expenses?: ExpenseListRelationFilter
+    reservations?: ReservationListRelationFilter
+    chatMessages?: ChatMessageListRelationFilter
   }
 
   export type OutletOrderByWithRelationInput = {
@@ -17266,6 +20000,8 @@ export namespace Prisma {
     orders?: OrderOrderByRelationAggregateInput
     shifts?: ShiftOrderByRelationAggregateInput
     expenses?: ExpenseOrderByRelationAggregateInput
+    reservations?: ReservationOrderByRelationAggregateInput
+    chatMessages?: ChatMessageOrderByRelationAggregateInput
   }
 
   export type OutletWhereUniqueInput = Prisma.AtLeast<{
@@ -17289,6 +20025,8 @@ export namespace Prisma {
     orders?: OrderListRelationFilter
     shifts?: ShiftListRelationFilter
     expenses?: ExpenseListRelationFilter
+    reservations?: ReservationListRelationFilter
+    chatMessages?: ChatMessageListRelationFilter
   }, "id" | "code">
 
   export type OutletOrderByWithAggregationInput = {
@@ -17772,6 +20510,11 @@ export namespace Prisma {
     name?: StringFilter<"Customer"> | string
     phone?: StringFilter<"Customer"> | string
     email?: StringNullableFilter<"Customer"> | string | null
+    passwordHash?: StringNullableFilter<"Customer"> | string | null
+    isVerified?: BoolFilter<"Customer"> | boolean
+    verificationCode?: StringNullableFilter<"Customer"> | string | null
+    address?: StringNullableFilter<"Customer"> | string | null
+    city?: StringNullableFilter<"Customer"> | string | null
     loyaltyPoints?: IntFilter<"Customer"> | number
     totalSpent?: FloatFilter<"Customer"> | number
     visitCount?: IntFilter<"Customer"> | number
@@ -17785,6 +20528,11 @@ export namespace Prisma {
     name?: SortOrder
     phone?: SortOrder
     email?: SortOrderInput | SortOrder
+    passwordHash?: SortOrderInput | SortOrder
+    isVerified?: SortOrder
+    verificationCode?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
     loyaltyPoints?: SortOrder
     totalSpent?: SortOrder
     visitCount?: SortOrder
@@ -17801,6 +20549,11 @@ export namespace Prisma {
     NOT?: CustomerWhereInput | CustomerWhereInput[]
     name?: StringFilter<"Customer"> | string
     email?: StringNullableFilter<"Customer"> | string | null
+    passwordHash?: StringNullableFilter<"Customer"> | string | null
+    isVerified?: BoolFilter<"Customer"> | boolean
+    verificationCode?: StringNullableFilter<"Customer"> | string | null
+    address?: StringNullableFilter<"Customer"> | string | null
+    city?: StringNullableFilter<"Customer"> | string | null
     loyaltyPoints?: IntFilter<"Customer"> | number
     totalSpent?: FloatFilter<"Customer"> | number
     visitCount?: IntFilter<"Customer"> | number
@@ -17814,6 +20567,11 @@ export namespace Prisma {
     name?: SortOrder
     phone?: SortOrder
     email?: SortOrderInput | SortOrder
+    passwordHash?: SortOrderInput | SortOrder
+    isVerified?: SortOrder
+    verificationCode?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
     loyaltyPoints?: SortOrder
     totalSpent?: SortOrder
     visitCount?: SortOrder
@@ -17834,6 +20592,11 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Customer"> | string
     phone?: StringWithAggregatesFilter<"Customer"> | string
     email?: StringNullableWithAggregatesFilter<"Customer"> | string | null
+    passwordHash?: StringNullableWithAggregatesFilter<"Customer"> | string | null
+    isVerified?: BoolWithAggregatesFilter<"Customer"> | boolean
+    verificationCode?: StringNullableWithAggregatesFilter<"Customer"> | string | null
+    address?: StringNullableWithAggregatesFilter<"Customer"> | string | null
+    city?: StringNullableWithAggregatesFilter<"Customer"> | string | null
     loyaltyPoints?: IntWithAggregatesFilter<"Customer"> | number
     totalSpent?: FloatWithAggregatesFilter<"Customer"> | number
     visitCount?: IntWithAggregatesFilter<"Customer"> | number
@@ -17851,6 +20614,9 @@ export namespace Prisma {
     orderType?: StringFilter<"Order"> | string
     tableId?: StringNullableFilter<"Order"> | string | null
     tableNumber?: StringNullableFilter<"Order"> | string | null
+    deliveryAddress?: StringNullableFilter<"Order"> | string | null
+    deliveryPhone?: StringNullableFilter<"Order"> | string | null
+    deliveryNotes?: StringNullableFilter<"Order"> | string | null
     status?: StringFilter<"Order"> | string
     paymentStatus?: StringFilter<"Order"> | string
     paymentMethod?: StringFilter<"Order"> | string
@@ -17884,6 +20650,9 @@ export namespace Prisma {
     orderType?: SortOrder
     tableId?: SortOrderInput | SortOrder
     tableNumber?: SortOrderInput | SortOrder
+    deliveryAddress?: SortOrderInput | SortOrder
+    deliveryPhone?: SortOrderInput | SortOrder
+    deliveryNotes?: SortOrderInput | SortOrder
     status?: SortOrder
     paymentStatus?: SortOrder
     paymentMethod?: SortOrder
@@ -17920,6 +20689,9 @@ export namespace Prisma {
     orderType?: StringFilter<"Order"> | string
     tableId?: StringNullableFilter<"Order"> | string | null
     tableNumber?: StringNullableFilter<"Order"> | string | null
+    deliveryAddress?: StringNullableFilter<"Order"> | string | null
+    deliveryPhone?: StringNullableFilter<"Order"> | string | null
+    deliveryNotes?: StringNullableFilter<"Order"> | string | null
     status?: StringFilter<"Order"> | string
     paymentStatus?: StringFilter<"Order"> | string
     paymentMethod?: StringFilter<"Order"> | string
@@ -17953,6 +20725,9 @@ export namespace Prisma {
     orderType?: SortOrder
     tableId?: SortOrderInput | SortOrder
     tableNumber?: SortOrderInput | SortOrder
+    deliveryAddress?: SortOrderInput | SortOrder
+    deliveryPhone?: SortOrderInput | SortOrder
+    deliveryNotes?: SortOrderInput | SortOrder
     status?: SortOrder
     paymentStatus?: SortOrder
     paymentMethod?: SortOrder
@@ -17990,6 +20765,9 @@ export namespace Prisma {
     orderType?: StringWithAggregatesFilter<"Order"> | string
     tableId?: StringNullableWithAggregatesFilter<"Order"> | string | null
     tableNumber?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    deliveryAddress?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    deliveryPhone?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    deliveryNotes?: StringNullableWithAggregatesFilter<"Order"> | string | null
     status?: StringWithAggregatesFilter<"Order"> | string
     paymentStatus?: StringWithAggregatesFilter<"Order"> | string
     paymentMethod?: StringWithAggregatesFilter<"Order"> | string
@@ -18415,6 +21193,183 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"SystemSettings"> | Date | string
   }
 
+  export type ReservationWhereInput = {
+    AND?: ReservationWhereInput | ReservationWhereInput[]
+    OR?: ReservationWhereInput[]
+    NOT?: ReservationWhereInput | ReservationWhereInput[]
+    id?: StringFilter<"Reservation"> | string
+    outletId?: StringFilter<"Reservation"> | string
+    customerName?: StringFilter<"Reservation"> | string
+    customerPhone?: StringFilter<"Reservation"> | string
+    customerEmail?: StringNullableFilter<"Reservation"> | string | null
+    reservationType?: StringFilter<"Reservation"> | string
+    guestCount?: IntFilter<"Reservation"> | number
+    bookingDate?: DateTimeFilter<"Reservation"> | Date | string
+    timeSlot?: StringFilter<"Reservation"> | string
+    zonePreference?: StringNullableFilter<"Reservation"> | string | null
+    specialRequests?: StringNullableFilter<"Reservation"> | string | null
+    status?: StringFilter<"Reservation"> | string
+    createdAt?: DateTimeFilter<"Reservation"> | Date | string
+    outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
+  }
+
+  export type ReservationOrderByWithRelationInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    customerName?: SortOrder
+    customerPhone?: SortOrder
+    customerEmail?: SortOrderInput | SortOrder
+    reservationType?: SortOrder
+    guestCount?: SortOrder
+    bookingDate?: SortOrder
+    timeSlot?: SortOrder
+    zonePreference?: SortOrderInput | SortOrder
+    specialRequests?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    outlet?: OutletOrderByWithRelationInput
+  }
+
+  export type ReservationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ReservationWhereInput | ReservationWhereInput[]
+    OR?: ReservationWhereInput[]
+    NOT?: ReservationWhereInput | ReservationWhereInput[]
+    outletId?: StringFilter<"Reservation"> | string
+    customerName?: StringFilter<"Reservation"> | string
+    customerPhone?: StringFilter<"Reservation"> | string
+    customerEmail?: StringNullableFilter<"Reservation"> | string | null
+    reservationType?: StringFilter<"Reservation"> | string
+    guestCount?: IntFilter<"Reservation"> | number
+    bookingDate?: DateTimeFilter<"Reservation"> | Date | string
+    timeSlot?: StringFilter<"Reservation"> | string
+    zonePreference?: StringNullableFilter<"Reservation"> | string | null
+    specialRequests?: StringNullableFilter<"Reservation"> | string | null
+    status?: StringFilter<"Reservation"> | string
+    createdAt?: DateTimeFilter<"Reservation"> | Date | string
+    outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
+  }, "id">
+
+  export type ReservationOrderByWithAggregationInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    customerName?: SortOrder
+    customerPhone?: SortOrder
+    customerEmail?: SortOrderInput | SortOrder
+    reservationType?: SortOrder
+    guestCount?: SortOrder
+    bookingDate?: SortOrder
+    timeSlot?: SortOrder
+    zonePreference?: SortOrderInput | SortOrder
+    specialRequests?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    _count?: ReservationCountOrderByAggregateInput
+    _avg?: ReservationAvgOrderByAggregateInput
+    _max?: ReservationMaxOrderByAggregateInput
+    _min?: ReservationMinOrderByAggregateInput
+    _sum?: ReservationSumOrderByAggregateInput
+  }
+
+  export type ReservationScalarWhereWithAggregatesInput = {
+    AND?: ReservationScalarWhereWithAggregatesInput | ReservationScalarWhereWithAggregatesInput[]
+    OR?: ReservationScalarWhereWithAggregatesInput[]
+    NOT?: ReservationScalarWhereWithAggregatesInput | ReservationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Reservation"> | string
+    outletId?: StringWithAggregatesFilter<"Reservation"> | string
+    customerName?: StringWithAggregatesFilter<"Reservation"> | string
+    customerPhone?: StringWithAggregatesFilter<"Reservation"> | string
+    customerEmail?: StringNullableWithAggregatesFilter<"Reservation"> | string | null
+    reservationType?: StringWithAggregatesFilter<"Reservation"> | string
+    guestCount?: IntWithAggregatesFilter<"Reservation"> | number
+    bookingDate?: DateTimeWithAggregatesFilter<"Reservation"> | Date | string
+    timeSlot?: StringWithAggregatesFilter<"Reservation"> | string
+    zonePreference?: StringNullableWithAggregatesFilter<"Reservation"> | string | null
+    specialRequests?: StringNullableWithAggregatesFilter<"Reservation"> | string | null
+    status?: StringWithAggregatesFilter<"Reservation"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Reservation"> | Date | string
+  }
+
+  export type ChatMessageWhereInput = {
+    AND?: ChatMessageWhereInput | ChatMessageWhereInput[]
+    OR?: ChatMessageWhereInput[]
+    NOT?: ChatMessageWhereInput | ChatMessageWhereInput[]
+    id?: StringFilter<"ChatMessage"> | string
+    outletId?: StringFilter<"ChatMessage"> | string
+    senderType?: StringFilter<"ChatMessage"> | string
+    senderName?: StringFilter<"ChatMessage"> | string
+    senderPhone?: StringNullableFilter<"ChatMessage"> | string | null
+    tableNumber?: StringNullableFilter<"ChatMessage"> | string | null
+    orderNumber?: StringNullableFilter<"ChatMessage"> | string | null
+    message?: StringFilter<"ChatMessage"> | string
+    isRead?: BoolFilter<"ChatMessage"> | boolean
+    createdAt?: DateTimeFilter<"ChatMessage"> | Date | string
+    outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
+  }
+
+  export type ChatMessageOrderByWithRelationInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    senderType?: SortOrder
+    senderName?: SortOrder
+    senderPhone?: SortOrderInput | SortOrder
+    tableNumber?: SortOrderInput | SortOrder
+    orderNumber?: SortOrderInput | SortOrder
+    message?: SortOrder
+    isRead?: SortOrder
+    createdAt?: SortOrder
+    outlet?: OutletOrderByWithRelationInput
+  }
+
+  export type ChatMessageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ChatMessageWhereInput | ChatMessageWhereInput[]
+    OR?: ChatMessageWhereInput[]
+    NOT?: ChatMessageWhereInput | ChatMessageWhereInput[]
+    outletId?: StringFilter<"ChatMessage"> | string
+    senderType?: StringFilter<"ChatMessage"> | string
+    senderName?: StringFilter<"ChatMessage"> | string
+    senderPhone?: StringNullableFilter<"ChatMessage"> | string | null
+    tableNumber?: StringNullableFilter<"ChatMessage"> | string | null
+    orderNumber?: StringNullableFilter<"ChatMessage"> | string | null
+    message?: StringFilter<"ChatMessage"> | string
+    isRead?: BoolFilter<"ChatMessage"> | boolean
+    createdAt?: DateTimeFilter<"ChatMessage"> | Date | string
+    outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
+  }, "id">
+
+  export type ChatMessageOrderByWithAggregationInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    senderType?: SortOrder
+    senderName?: SortOrder
+    senderPhone?: SortOrderInput | SortOrder
+    tableNumber?: SortOrderInput | SortOrder
+    orderNumber?: SortOrderInput | SortOrder
+    message?: SortOrder
+    isRead?: SortOrder
+    createdAt?: SortOrder
+    _count?: ChatMessageCountOrderByAggregateInput
+    _max?: ChatMessageMaxOrderByAggregateInput
+    _min?: ChatMessageMinOrderByAggregateInput
+  }
+
+  export type ChatMessageScalarWhereWithAggregatesInput = {
+    AND?: ChatMessageScalarWhereWithAggregatesInput | ChatMessageScalarWhereWithAggregatesInput[]
+    OR?: ChatMessageScalarWhereWithAggregatesInput[]
+    NOT?: ChatMessageScalarWhereWithAggregatesInput | ChatMessageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ChatMessage"> | string
+    outletId?: StringWithAggregatesFilter<"ChatMessage"> | string
+    senderType?: StringWithAggregatesFilter<"ChatMessage"> | string
+    senderName?: StringWithAggregatesFilter<"ChatMessage"> | string
+    senderPhone?: StringNullableWithAggregatesFilter<"ChatMessage"> | string | null
+    tableNumber?: StringNullableWithAggregatesFilter<"ChatMessage"> | string | null
+    orderNumber?: StringNullableWithAggregatesFilter<"ChatMessage"> | string | null
+    message?: StringWithAggregatesFilter<"ChatMessage"> | string
+    isRead?: BoolWithAggregatesFilter<"ChatMessage"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"ChatMessage"> | Date | string
+  }
+
   export type OutletCreateInput = {
     id?: string
     name: string
@@ -18433,6 +21388,8 @@ export namespace Prisma {
     orders?: OrderCreateNestedManyWithoutOutletInput
     shifts?: ShiftCreateNestedManyWithoutOutletInput
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
+    reservations?: ReservationCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateInput = {
@@ -18453,6 +21410,8 @@ export namespace Prisma {
     orders?: OrderUncheckedCreateNestedManyWithoutOutletInput
     shifts?: ShiftUncheckedCreateNestedManyWithoutOutletInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
+    reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUpdateInput = {
@@ -18473,6 +21432,8 @@ export namespace Prisma {
     orders?: OrderUpdateManyWithoutOutletNestedInput
     shifts?: ShiftUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateInput = {
@@ -18493,6 +21454,8 @@ export namespace Prisma {
     orders?: OrderUncheckedUpdateManyWithoutOutletNestedInput
     shifts?: ShiftUncheckedUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateManyInput = {
@@ -19028,6 +21991,11 @@ export namespace Prisma {
     name: string
     phone: string
     email?: string | null
+    passwordHash?: string | null
+    isVerified?: boolean
+    verificationCode?: string | null
+    address?: string | null
+    city?: string | null
     loyaltyPoints?: number
     totalSpent?: number
     visitCount?: number
@@ -19041,6 +22009,11 @@ export namespace Prisma {
     name: string
     phone: string
     email?: string | null
+    passwordHash?: string | null
+    isVerified?: boolean
+    verificationCode?: string | null
+    address?: string | null
+    city?: string | null
     loyaltyPoints?: number
     totalSpent?: number
     visitCount?: number
@@ -19054,6 +22027,11 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyPoints?: IntFieldUpdateOperationsInput | number
     totalSpent?: FloatFieldUpdateOperationsInput | number
     visitCount?: IntFieldUpdateOperationsInput | number
@@ -19067,6 +22045,11 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyPoints?: IntFieldUpdateOperationsInput | number
     totalSpent?: FloatFieldUpdateOperationsInput | number
     visitCount?: IntFieldUpdateOperationsInput | number
@@ -19080,6 +22063,11 @@ export namespace Prisma {
     name: string
     phone: string
     email?: string | null
+    passwordHash?: string | null
+    isVerified?: boolean
+    verificationCode?: string | null
+    address?: string | null
+    city?: string | null
     loyaltyPoints?: number
     totalSpent?: number
     visitCount?: number
@@ -19092,6 +22080,11 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyPoints?: IntFieldUpdateOperationsInput | number
     totalSpent?: FloatFieldUpdateOperationsInput | number
     visitCount?: IntFieldUpdateOperationsInput | number
@@ -19104,6 +22097,11 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyPoints?: IntFieldUpdateOperationsInput | number
     totalSpent?: FloatFieldUpdateOperationsInput | number
     visitCount?: IntFieldUpdateOperationsInput | number
@@ -19116,6 +22114,9 @@ export namespace Prisma {
     orderNumber: string
     orderType?: string
     tableNumber?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -19148,6 +22149,9 @@ export namespace Prisma {
     orderType?: string
     tableId?: string | null
     tableNumber?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -19176,6 +22180,9 @@ export namespace Prisma {
     orderNumber?: StringFieldUpdateOperationsInput | string
     orderType?: StringFieldUpdateOperationsInput | string
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -19208,6 +22215,9 @@ export namespace Prisma {
     orderType?: StringFieldUpdateOperationsInput | string
     tableId?: NullableStringFieldUpdateOperationsInput | string | null
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -19238,6 +22248,9 @@ export namespace Prisma {
     orderType?: string
     tableId?: string | null
     tableNumber?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -19265,6 +22278,9 @@ export namespace Prisma {
     orderNumber?: StringFieldUpdateOperationsInput | string
     orderType?: StringFieldUpdateOperationsInput | string
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -19293,6 +22309,9 @@ export namespace Prisma {
     orderType?: StringFieldUpdateOperationsInput | string
     tableId?: NullableStringFieldUpdateOperationsInput | string | null
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -19788,6 +22807,207 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ReservationCreateInput = {
+    id?: string
+    customerName: string
+    customerPhone: string
+    customerEmail?: string | null
+    reservationType?: string
+    guestCount?: number
+    bookingDate: Date | string
+    timeSlot: string
+    zonePreference?: string | null
+    specialRequests?: string | null
+    status?: string
+    createdAt?: Date | string
+    outlet: OutletCreateNestedOneWithoutReservationsInput
+  }
+
+  export type ReservationUncheckedCreateInput = {
+    id?: string
+    outletId: string
+    customerName: string
+    customerPhone: string
+    customerEmail?: string | null
+    reservationType?: string
+    guestCount?: number
+    bookingDate: Date | string
+    timeSlot: string
+    zonePreference?: string | null
+    specialRequests?: string | null
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type ReservationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    customerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    reservationType?: StringFieldUpdateOperationsInput | string
+    guestCount?: IntFieldUpdateOperationsInput | number
+    bookingDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    timeSlot?: StringFieldUpdateOperationsInput | string
+    zonePreference?: NullableStringFieldUpdateOperationsInput | string | null
+    specialRequests?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outlet?: OutletUpdateOneRequiredWithoutReservationsNestedInput
+  }
+
+  export type ReservationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    customerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    reservationType?: StringFieldUpdateOperationsInput | string
+    guestCount?: IntFieldUpdateOperationsInput | number
+    bookingDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    timeSlot?: StringFieldUpdateOperationsInput | string
+    zonePreference?: NullableStringFieldUpdateOperationsInput | string | null
+    specialRequests?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReservationCreateManyInput = {
+    id?: string
+    outletId: string
+    customerName: string
+    customerPhone: string
+    customerEmail?: string | null
+    reservationType?: string
+    guestCount?: number
+    bookingDate: Date | string
+    timeSlot: string
+    zonePreference?: string | null
+    specialRequests?: string | null
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type ReservationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    customerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    reservationType?: StringFieldUpdateOperationsInput | string
+    guestCount?: IntFieldUpdateOperationsInput | number
+    bookingDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    timeSlot?: StringFieldUpdateOperationsInput | string
+    zonePreference?: NullableStringFieldUpdateOperationsInput | string | null
+    specialRequests?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReservationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    customerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    reservationType?: StringFieldUpdateOperationsInput | string
+    guestCount?: IntFieldUpdateOperationsInput | number
+    bookingDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    timeSlot?: StringFieldUpdateOperationsInput | string
+    zonePreference?: NullableStringFieldUpdateOperationsInput | string | null
+    specialRequests?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChatMessageCreateInput = {
+    id?: string
+    senderType: string
+    senderName: string
+    senderPhone?: string | null
+    tableNumber?: string | null
+    orderNumber?: string | null
+    message: string
+    isRead?: boolean
+    createdAt?: Date | string
+    outlet: OutletCreateNestedOneWithoutChatMessagesInput
+  }
+
+  export type ChatMessageUncheckedCreateInput = {
+    id?: string
+    outletId: string
+    senderType: string
+    senderName: string
+    senderPhone?: string | null
+    tableNumber?: string | null
+    orderNumber?: string | null
+    message: string
+    isRead?: boolean
+    createdAt?: Date | string
+  }
+
+  export type ChatMessageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    message?: StringFieldUpdateOperationsInput | string
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outlet?: OutletUpdateOneRequiredWithoutChatMessagesNestedInput
+  }
+
+  export type ChatMessageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    message?: StringFieldUpdateOperationsInput | string
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChatMessageCreateManyInput = {
+    id?: string
+    outletId: string
+    senderType: string
+    senderName: string
+    senderPhone?: string | null
+    tableNumber?: string | null
+    orderNumber?: string | null
+    message: string
+    isRead?: boolean
+    createdAt?: Date | string
+  }
+
+  export type ChatMessageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    message?: StringFieldUpdateOperationsInput | string
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChatMessageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    message?: StringFieldUpdateOperationsInput | string
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -19876,6 +23096,18 @@ export namespace Prisma {
     none?: ExpenseWhereInput
   }
 
+  export type ReservationListRelationFilter = {
+    every?: ReservationWhereInput
+    some?: ReservationWhereInput
+    none?: ReservationWhereInput
+  }
+
+  export type ChatMessageListRelationFilter = {
+    every?: ChatMessageWhereInput
+    some?: ChatMessageWhereInput
+    none?: ChatMessageWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -19906,6 +23138,14 @@ export namespace Prisma {
   }
 
   export type ExpenseOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ReservationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ChatMessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -20357,6 +23597,11 @@ export namespace Prisma {
     name?: SortOrder
     phone?: SortOrder
     email?: SortOrder
+    passwordHash?: SortOrder
+    isVerified?: SortOrder
+    verificationCode?: SortOrder
+    address?: SortOrder
+    city?: SortOrder
     loyaltyPoints?: SortOrder
     totalSpent?: SortOrder
     visitCount?: SortOrder
@@ -20375,6 +23620,11 @@ export namespace Prisma {
     name?: SortOrder
     phone?: SortOrder
     email?: SortOrder
+    passwordHash?: SortOrder
+    isVerified?: SortOrder
+    verificationCode?: SortOrder
+    address?: SortOrder
+    city?: SortOrder
     loyaltyPoints?: SortOrder
     totalSpent?: SortOrder
     visitCount?: SortOrder
@@ -20387,6 +23637,11 @@ export namespace Prisma {
     name?: SortOrder
     phone?: SortOrder
     email?: SortOrder
+    passwordHash?: SortOrder
+    isVerified?: SortOrder
+    verificationCode?: SortOrder
+    address?: SortOrder
+    city?: SortOrder
     loyaltyPoints?: SortOrder
     totalSpent?: SortOrder
     visitCount?: SortOrder
@@ -20438,6 +23693,9 @@ export namespace Prisma {
     orderType?: SortOrder
     tableId?: SortOrder
     tableNumber?: SortOrder
+    deliveryAddress?: SortOrder
+    deliveryPhone?: SortOrder
+    deliveryNotes?: SortOrder
     status?: SortOrder
     paymentStatus?: SortOrder
     paymentMethod?: SortOrder
@@ -20478,6 +23736,9 @@ export namespace Prisma {
     orderType?: SortOrder
     tableId?: SortOrder
     tableNumber?: SortOrder
+    deliveryAddress?: SortOrder
+    deliveryPhone?: SortOrder
+    deliveryNotes?: SortOrder
     status?: SortOrder
     paymentStatus?: SortOrder
     paymentMethod?: SortOrder
@@ -20507,6 +23768,9 @@ export namespace Prisma {
     orderType?: SortOrder
     tableId?: SortOrder
     tableNumber?: SortOrder
+    deliveryAddress?: SortOrder
+    deliveryPhone?: SortOrder
+    deliveryNotes?: SortOrder
     status?: SortOrder
     paymentStatus?: SortOrder
     paymentMethod?: SortOrder
@@ -20815,6 +24079,101 @@ export namespace Prisma {
     poundValuePerPoint?: SortOrder
   }
 
+  export type ReservationCountOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    customerName?: SortOrder
+    customerPhone?: SortOrder
+    customerEmail?: SortOrder
+    reservationType?: SortOrder
+    guestCount?: SortOrder
+    bookingDate?: SortOrder
+    timeSlot?: SortOrder
+    zonePreference?: SortOrder
+    specialRequests?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ReservationAvgOrderByAggregateInput = {
+    guestCount?: SortOrder
+  }
+
+  export type ReservationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    customerName?: SortOrder
+    customerPhone?: SortOrder
+    customerEmail?: SortOrder
+    reservationType?: SortOrder
+    guestCount?: SortOrder
+    bookingDate?: SortOrder
+    timeSlot?: SortOrder
+    zonePreference?: SortOrder
+    specialRequests?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ReservationMinOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    customerName?: SortOrder
+    customerPhone?: SortOrder
+    customerEmail?: SortOrder
+    reservationType?: SortOrder
+    guestCount?: SortOrder
+    bookingDate?: SortOrder
+    timeSlot?: SortOrder
+    zonePreference?: SortOrder
+    specialRequests?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ReservationSumOrderByAggregateInput = {
+    guestCount?: SortOrder
+  }
+
+  export type ChatMessageCountOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    senderType?: SortOrder
+    senderName?: SortOrder
+    senderPhone?: SortOrder
+    tableNumber?: SortOrder
+    orderNumber?: SortOrder
+    message?: SortOrder
+    isRead?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ChatMessageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    senderType?: SortOrder
+    senderName?: SortOrder
+    senderPhone?: SortOrder
+    tableNumber?: SortOrder
+    orderNumber?: SortOrder
+    message?: SortOrder
+    isRead?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ChatMessageMinOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    senderType?: SortOrder
+    senderName?: SortOrder
+    senderPhone?: SortOrder
+    tableNumber?: SortOrder
+    orderNumber?: SortOrder
+    message?: SortOrder
+    isRead?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type UserCreateNestedManyWithoutOutletInput = {
     create?: XOR<UserCreateWithoutOutletInput, UserUncheckedCreateWithoutOutletInput> | UserCreateWithoutOutletInput[] | UserUncheckedCreateWithoutOutletInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOutletInput | UserCreateOrConnectWithoutOutletInput[]
@@ -20864,6 +24223,20 @@ export namespace Prisma {
     connect?: ExpenseWhereUniqueInput | ExpenseWhereUniqueInput[]
   }
 
+  export type ReservationCreateNestedManyWithoutOutletInput = {
+    create?: XOR<ReservationCreateWithoutOutletInput, ReservationUncheckedCreateWithoutOutletInput> | ReservationCreateWithoutOutletInput[] | ReservationUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: ReservationCreateOrConnectWithoutOutletInput | ReservationCreateOrConnectWithoutOutletInput[]
+    createMany?: ReservationCreateManyOutletInputEnvelope
+    connect?: ReservationWhereUniqueInput | ReservationWhereUniqueInput[]
+  }
+
+  export type ChatMessageCreateNestedManyWithoutOutletInput = {
+    create?: XOR<ChatMessageCreateWithoutOutletInput, ChatMessageUncheckedCreateWithoutOutletInput> | ChatMessageCreateWithoutOutletInput[] | ChatMessageUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: ChatMessageCreateOrConnectWithoutOutletInput | ChatMessageCreateOrConnectWithoutOutletInput[]
+    createMany?: ChatMessageCreateManyOutletInputEnvelope
+    connect?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutOutletInput = {
     create?: XOR<UserCreateWithoutOutletInput, UserUncheckedCreateWithoutOutletInput> | UserCreateWithoutOutletInput[] | UserUncheckedCreateWithoutOutletInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOutletInput | UserCreateOrConnectWithoutOutletInput[]
@@ -20911,6 +24284,20 @@ export namespace Prisma {
     connectOrCreate?: ExpenseCreateOrConnectWithoutOutletInput | ExpenseCreateOrConnectWithoutOutletInput[]
     createMany?: ExpenseCreateManyOutletInputEnvelope
     connect?: ExpenseWhereUniqueInput | ExpenseWhereUniqueInput[]
+  }
+
+  export type ReservationUncheckedCreateNestedManyWithoutOutletInput = {
+    create?: XOR<ReservationCreateWithoutOutletInput, ReservationUncheckedCreateWithoutOutletInput> | ReservationCreateWithoutOutletInput[] | ReservationUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: ReservationCreateOrConnectWithoutOutletInput | ReservationCreateOrConnectWithoutOutletInput[]
+    createMany?: ReservationCreateManyOutletInputEnvelope
+    connect?: ReservationWhereUniqueInput | ReservationWhereUniqueInput[]
+  }
+
+  export type ChatMessageUncheckedCreateNestedManyWithoutOutletInput = {
+    create?: XOR<ChatMessageCreateWithoutOutletInput, ChatMessageUncheckedCreateWithoutOutletInput> | ChatMessageCreateWithoutOutletInput[] | ChatMessageUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: ChatMessageCreateOrConnectWithoutOutletInput | ChatMessageCreateOrConnectWithoutOutletInput[]
+    createMany?: ChatMessageCreateManyOutletInputEnvelope
+    connect?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -21027,6 +24414,34 @@ export namespace Prisma {
     deleteMany?: ExpenseScalarWhereInput | ExpenseScalarWhereInput[]
   }
 
+  export type ReservationUpdateManyWithoutOutletNestedInput = {
+    create?: XOR<ReservationCreateWithoutOutletInput, ReservationUncheckedCreateWithoutOutletInput> | ReservationCreateWithoutOutletInput[] | ReservationUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: ReservationCreateOrConnectWithoutOutletInput | ReservationCreateOrConnectWithoutOutletInput[]
+    upsert?: ReservationUpsertWithWhereUniqueWithoutOutletInput | ReservationUpsertWithWhereUniqueWithoutOutletInput[]
+    createMany?: ReservationCreateManyOutletInputEnvelope
+    set?: ReservationWhereUniqueInput | ReservationWhereUniqueInput[]
+    disconnect?: ReservationWhereUniqueInput | ReservationWhereUniqueInput[]
+    delete?: ReservationWhereUniqueInput | ReservationWhereUniqueInput[]
+    connect?: ReservationWhereUniqueInput | ReservationWhereUniqueInput[]
+    update?: ReservationUpdateWithWhereUniqueWithoutOutletInput | ReservationUpdateWithWhereUniqueWithoutOutletInput[]
+    updateMany?: ReservationUpdateManyWithWhereWithoutOutletInput | ReservationUpdateManyWithWhereWithoutOutletInput[]
+    deleteMany?: ReservationScalarWhereInput | ReservationScalarWhereInput[]
+  }
+
+  export type ChatMessageUpdateManyWithoutOutletNestedInput = {
+    create?: XOR<ChatMessageCreateWithoutOutletInput, ChatMessageUncheckedCreateWithoutOutletInput> | ChatMessageCreateWithoutOutletInput[] | ChatMessageUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: ChatMessageCreateOrConnectWithoutOutletInput | ChatMessageCreateOrConnectWithoutOutletInput[]
+    upsert?: ChatMessageUpsertWithWhereUniqueWithoutOutletInput | ChatMessageUpsertWithWhereUniqueWithoutOutletInput[]
+    createMany?: ChatMessageCreateManyOutletInputEnvelope
+    set?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[]
+    disconnect?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[]
+    delete?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[]
+    connect?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[]
+    update?: ChatMessageUpdateWithWhereUniqueWithoutOutletInput | ChatMessageUpdateWithWhereUniqueWithoutOutletInput[]
+    updateMany?: ChatMessageUpdateManyWithWhereWithoutOutletInput | ChatMessageUpdateManyWithWhereWithoutOutletInput[]
+    deleteMany?: ChatMessageScalarWhereInput | ChatMessageScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutOutletNestedInput = {
     create?: XOR<UserCreateWithoutOutletInput, UserUncheckedCreateWithoutOutletInput> | UserCreateWithoutOutletInput[] | UserUncheckedCreateWithoutOutletInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOutletInput | UserCreateOrConnectWithoutOutletInput[]
@@ -21123,6 +24538,34 @@ export namespace Prisma {
     update?: ExpenseUpdateWithWhereUniqueWithoutOutletInput | ExpenseUpdateWithWhereUniqueWithoutOutletInput[]
     updateMany?: ExpenseUpdateManyWithWhereWithoutOutletInput | ExpenseUpdateManyWithWhereWithoutOutletInput[]
     deleteMany?: ExpenseScalarWhereInput | ExpenseScalarWhereInput[]
+  }
+
+  export type ReservationUncheckedUpdateManyWithoutOutletNestedInput = {
+    create?: XOR<ReservationCreateWithoutOutletInput, ReservationUncheckedCreateWithoutOutletInput> | ReservationCreateWithoutOutletInput[] | ReservationUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: ReservationCreateOrConnectWithoutOutletInput | ReservationCreateOrConnectWithoutOutletInput[]
+    upsert?: ReservationUpsertWithWhereUniqueWithoutOutletInput | ReservationUpsertWithWhereUniqueWithoutOutletInput[]
+    createMany?: ReservationCreateManyOutletInputEnvelope
+    set?: ReservationWhereUniqueInput | ReservationWhereUniqueInput[]
+    disconnect?: ReservationWhereUniqueInput | ReservationWhereUniqueInput[]
+    delete?: ReservationWhereUniqueInput | ReservationWhereUniqueInput[]
+    connect?: ReservationWhereUniqueInput | ReservationWhereUniqueInput[]
+    update?: ReservationUpdateWithWhereUniqueWithoutOutletInput | ReservationUpdateWithWhereUniqueWithoutOutletInput[]
+    updateMany?: ReservationUpdateManyWithWhereWithoutOutletInput | ReservationUpdateManyWithWhereWithoutOutletInput[]
+    deleteMany?: ReservationScalarWhereInput | ReservationScalarWhereInput[]
+  }
+
+  export type ChatMessageUncheckedUpdateManyWithoutOutletNestedInput = {
+    create?: XOR<ChatMessageCreateWithoutOutletInput, ChatMessageUncheckedCreateWithoutOutletInput> | ChatMessageCreateWithoutOutletInput[] | ChatMessageUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: ChatMessageCreateOrConnectWithoutOutletInput | ChatMessageCreateOrConnectWithoutOutletInput[]
+    upsert?: ChatMessageUpsertWithWhereUniqueWithoutOutletInput | ChatMessageUpsertWithWhereUniqueWithoutOutletInput[]
+    createMany?: ChatMessageCreateManyOutletInputEnvelope
+    set?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[]
+    disconnect?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[]
+    delete?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[]
+    connect?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[]
+    update?: ChatMessageUpdateWithWhereUniqueWithoutOutletInput | ChatMessageUpdateWithWhereUniqueWithoutOutletInput[]
+    updateMany?: ChatMessageUpdateManyWithWhereWithoutOutletInput | ChatMessageUpdateManyWithWhereWithoutOutletInput[]
+    deleteMany?: ChatMessageScalarWhereInput | ChatMessageScalarWhereInput[]
   }
 
   export type OutletCreateNestedOneWithoutUsersInput = {
@@ -21529,6 +24972,34 @@ export namespace Prisma {
     update?: XOR<XOR<OutletUpdateToOneWithWhereWithoutExpensesInput, OutletUpdateWithoutExpensesInput>, OutletUncheckedUpdateWithoutExpensesInput>
   }
 
+  export type OutletCreateNestedOneWithoutReservationsInput = {
+    create?: XOR<OutletCreateWithoutReservationsInput, OutletUncheckedCreateWithoutReservationsInput>
+    connectOrCreate?: OutletCreateOrConnectWithoutReservationsInput
+    connect?: OutletWhereUniqueInput
+  }
+
+  export type OutletUpdateOneRequiredWithoutReservationsNestedInput = {
+    create?: XOR<OutletCreateWithoutReservationsInput, OutletUncheckedCreateWithoutReservationsInput>
+    connectOrCreate?: OutletCreateOrConnectWithoutReservationsInput
+    upsert?: OutletUpsertWithoutReservationsInput
+    connect?: OutletWhereUniqueInput
+    update?: XOR<XOR<OutletUpdateToOneWithWhereWithoutReservationsInput, OutletUpdateWithoutReservationsInput>, OutletUncheckedUpdateWithoutReservationsInput>
+  }
+
+  export type OutletCreateNestedOneWithoutChatMessagesInput = {
+    create?: XOR<OutletCreateWithoutChatMessagesInput, OutletUncheckedCreateWithoutChatMessagesInput>
+    connectOrCreate?: OutletCreateOrConnectWithoutChatMessagesInput
+    connect?: OutletWhereUniqueInput
+  }
+
+  export type OutletUpdateOneRequiredWithoutChatMessagesNestedInput = {
+    create?: XOR<OutletCreateWithoutChatMessagesInput, OutletUncheckedCreateWithoutChatMessagesInput>
+    connectOrCreate?: OutletCreateOrConnectWithoutChatMessagesInput
+    upsert?: OutletUpsertWithoutChatMessagesInput
+    connect?: OutletWhereUniqueInput
+    update?: XOR<XOR<OutletUpdateToOneWithWhereWithoutChatMessagesInput, OutletUpdateWithoutChatMessagesInput>, OutletUncheckedUpdateWithoutChatMessagesInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -21884,6 +25355,9 @@ export namespace Prisma {
     orderNumber: string
     orderType?: string
     tableNumber?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -21914,6 +25388,9 @@ export namespace Prisma {
     orderType?: string
     tableId?: string | null
     tableNumber?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -22030,6 +25507,80 @@ export namespace Prisma {
 
   export type ExpenseCreateManyOutletInputEnvelope = {
     data: ExpenseCreateManyOutletInput | ExpenseCreateManyOutletInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReservationCreateWithoutOutletInput = {
+    id?: string
+    customerName: string
+    customerPhone: string
+    customerEmail?: string | null
+    reservationType?: string
+    guestCount?: number
+    bookingDate: Date | string
+    timeSlot: string
+    zonePreference?: string | null
+    specialRequests?: string | null
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type ReservationUncheckedCreateWithoutOutletInput = {
+    id?: string
+    customerName: string
+    customerPhone: string
+    customerEmail?: string | null
+    reservationType?: string
+    guestCount?: number
+    bookingDate: Date | string
+    timeSlot: string
+    zonePreference?: string | null
+    specialRequests?: string | null
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type ReservationCreateOrConnectWithoutOutletInput = {
+    where: ReservationWhereUniqueInput
+    create: XOR<ReservationCreateWithoutOutletInput, ReservationUncheckedCreateWithoutOutletInput>
+  }
+
+  export type ReservationCreateManyOutletInputEnvelope = {
+    data: ReservationCreateManyOutletInput | ReservationCreateManyOutletInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ChatMessageCreateWithoutOutletInput = {
+    id?: string
+    senderType: string
+    senderName: string
+    senderPhone?: string | null
+    tableNumber?: string | null
+    orderNumber?: string | null
+    message: string
+    isRead?: boolean
+    createdAt?: Date | string
+  }
+
+  export type ChatMessageUncheckedCreateWithoutOutletInput = {
+    id?: string
+    senderType: string
+    senderName: string
+    senderPhone?: string | null
+    tableNumber?: string | null
+    orderNumber?: string | null
+    message: string
+    isRead?: boolean
+    createdAt?: Date | string
+  }
+
+  export type ChatMessageCreateOrConnectWithoutOutletInput = {
+    where: ChatMessageWhereUniqueInput
+    create: XOR<ChatMessageCreateWithoutOutletInput, ChatMessageUncheckedCreateWithoutOutletInput>
+  }
+
+  export type ChatMessageCreateManyOutletInputEnvelope = {
+    data: ChatMessageCreateManyOutletInput | ChatMessageCreateManyOutletInput[]
     skipDuplicates?: boolean
   }
 
@@ -22196,6 +25747,9 @@ export namespace Prisma {
     orderType?: StringFilter<"Order"> | string
     tableId?: StringNullableFilter<"Order"> | string | null
     tableNumber?: StringNullableFilter<"Order"> | string | null
+    deliveryAddress?: StringNullableFilter<"Order"> | string | null
+    deliveryPhone?: StringNullableFilter<"Order"> | string | null
+    deliveryNotes?: StringNullableFilter<"Order"> | string | null
     status?: StringFilter<"Order"> | string
     paymentStatus?: StringFilter<"Order"> | string
     paymentMethod?: StringFilter<"Order"> | string
@@ -22291,6 +25845,73 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Expense"> | Date | string
   }
 
+  export type ReservationUpsertWithWhereUniqueWithoutOutletInput = {
+    where: ReservationWhereUniqueInput
+    update: XOR<ReservationUpdateWithoutOutletInput, ReservationUncheckedUpdateWithoutOutletInput>
+    create: XOR<ReservationCreateWithoutOutletInput, ReservationUncheckedCreateWithoutOutletInput>
+  }
+
+  export type ReservationUpdateWithWhereUniqueWithoutOutletInput = {
+    where: ReservationWhereUniqueInput
+    data: XOR<ReservationUpdateWithoutOutletInput, ReservationUncheckedUpdateWithoutOutletInput>
+  }
+
+  export type ReservationUpdateManyWithWhereWithoutOutletInput = {
+    where: ReservationScalarWhereInput
+    data: XOR<ReservationUpdateManyMutationInput, ReservationUncheckedUpdateManyWithoutOutletInput>
+  }
+
+  export type ReservationScalarWhereInput = {
+    AND?: ReservationScalarWhereInput | ReservationScalarWhereInput[]
+    OR?: ReservationScalarWhereInput[]
+    NOT?: ReservationScalarWhereInput | ReservationScalarWhereInput[]
+    id?: StringFilter<"Reservation"> | string
+    outletId?: StringFilter<"Reservation"> | string
+    customerName?: StringFilter<"Reservation"> | string
+    customerPhone?: StringFilter<"Reservation"> | string
+    customerEmail?: StringNullableFilter<"Reservation"> | string | null
+    reservationType?: StringFilter<"Reservation"> | string
+    guestCount?: IntFilter<"Reservation"> | number
+    bookingDate?: DateTimeFilter<"Reservation"> | Date | string
+    timeSlot?: StringFilter<"Reservation"> | string
+    zonePreference?: StringNullableFilter<"Reservation"> | string | null
+    specialRequests?: StringNullableFilter<"Reservation"> | string | null
+    status?: StringFilter<"Reservation"> | string
+    createdAt?: DateTimeFilter<"Reservation"> | Date | string
+  }
+
+  export type ChatMessageUpsertWithWhereUniqueWithoutOutletInput = {
+    where: ChatMessageWhereUniqueInput
+    update: XOR<ChatMessageUpdateWithoutOutletInput, ChatMessageUncheckedUpdateWithoutOutletInput>
+    create: XOR<ChatMessageCreateWithoutOutletInput, ChatMessageUncheckedCreateWithoutOutletInput>
+  }
+
+  export type ChatMessageUpdateWithWhereUniqueWithoutOutletInput = {
+    where: ChatMessageWhereUniqueInput
+    data: XOR<ChatMessageUpdateWithoutOutletInput, ChatMessageUncheckedUpdateWithoutOutletInput>
+  }
+
+  export type ChatMessageUpdateManyWithWhereWithoutOutletInput = {
+    where: ChatMessageScalarWhereInput
+    data: XOR<ChatMessageUpdateManyMutationInput, ChatMessageUncheckedUpdateManyWithoutOutletInput>
+  }
+
+  export type ChatMessageScalarWhereInput = {
+    AND?: ChatMessageScalarWhereInput | ChatMessageScalarWhereInput[]
+    OR?: ChatMessageScalarWhereInput[]
+    NOT?: ChatMessageScalarWhereInput | ChatMessageScalarWhereInput[]
+    id?: StringFilter<"ChatMessage"> | string
+    outletId?: StringFilter<"ChatMessage"> | string
+    senderType?: StringFilter<"ChatMessage"> | string
+    senderName?: StringFilter<"ChatMessage"> | string
+    senderPhone?: StringNullableFilter<"ChatMessage"> | string | null
+    tableNumber?: StringNullableFilter<"ChatMessage"> | string | null
+    orderNumber?: StringNullableFilter<"ChatMessage"> | string | null
+    message?: StringFilter<"ChatMessage"> | string
+    isRead?: BoolFilter<"ChatMessage"> | boolean
+    createdAt?: DateTimeFilter<"ChatMessage"> | Date | string
+  }
+
   export type OutletCreateWithoutUsersInput = {
     id?: string
     name: string
@@ -22308,6 +25929,8 @@ export namespace Prisma {
     orders?: OrderCreateNestedManyWithoutOutletInput
     shifts?: ShiftCreateNestedManyWithoutOutletInput
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
+    reservations?: ReservationCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutUsersInput = {
@@ -22327,6 +25950,8 @@ export namespace Prisma {
     orders?: OrderUncheckedCreateNestedManyWithoutOutletInput
     shifts?: ShiftUncheckedCreateNestedManyWithoutOutletInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
+    reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutUsersInput = {
@@ -22362,6 +25987,8 @@ export namespace Prisma {
     orders?: OrderUpdateManyWithoutOutletNestedInput
     shifts?: ShiftUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutUsersInput = {
@@ -22381,6 +26008,8 @@ export namespace Prisma {
     orders?: OrderUncheckedUpdateManyWithoutOutletNestedInput
     shifts?: ShiftUncheckedUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateWithoutTablesInput = {
@@ -22400,6 +26029,8 @@ export namespace Prisma {
     orders?: OrderCreateNestedManyWithoutOutletInput
     shifts?: ShiftCreateNestedManyWithoutOutletInput
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
+    reservations?: ReservationCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutTablesInput = {
@@ -22419,6 +26050,8 @@ export namespace Prisma {
     orders?: OrderUncheckedCreateNestedManyWithoutOutletInput
     shifts?: ShiftUncheckedCreateNestedManyWithoutOutletInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
+    reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutTablesInput = {
@@ -22431,6 +26064,9 @@ export namespace Prisma {
     orderNumber: string
     orderType?: string
     tableNumber?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -22461,6 +26097,9 @@ export namespace Prisma {
     orderNumber: string
     orderType?: string
     tableNumber?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -22522,6 +26161,8 @@ export namespace Prisma {
     orders?: OrderUpdateManyWithoutOutletNestedInput
     shifts?: ShiftUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutTablesInput = {
@@ -22541,6 +26182,8 @@ export namespace Prisma {
     orders?: OrderUncheckedUpdateManyWithoutOutletNestedInput
     shifts?: ShiftUncheckedUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OrderUpsertWithWhereUniqueWithoutTableInput = {
@@ -22576,6 +26219,8 @@ export namespace Prisma {
     orders?: OrderCreateNestedManyWithoutOutletInput
     shifts?: ShiftCreateNestedManyWithoutOutletInput
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
+    reservations?: ReservationCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutMenuItemsInput = {
@@ -22595,6 +26240,8 @@ export namespace Prisma {
     orders?: OrderUncheckedCreateNestedManyWithoutOutletInput
     shifts?: ShiftUncheckedCreateNestedManyWithoutOutletInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
+    reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutMenuItemsInput = {
@@ -22654,6 +26301,8 @@ export namespace Prisma {
     orders?: OrderUpdateManyWithoutOutletNestedInput
     shifts?: ShiftUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutMenuItemsInput = {
@@ -22673,6 +26322,8 @@ export namespace Prisma {
     orders?: OrderUncheckedUpdateManyWithoutOutletNestedInput
     shifts?: ShiftUncheckedUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type RecipeItemUpsertWithWhereUniqueWithoutMenuItemInput = {
@@ -22719,6 +26370,8 @@ export namespace Prisma {
     orders?: OrderCreateNestedManyWithoutOutletInput
     shifts?: ShiftCreateNestedManyWithoutOutletInput
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
+    reservations?: ReservationCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutRawMaterialsInput = {
@@ -22738,6 +26391,8 @@ export namespace Prisma {
     orders?: OrderUncheckedCreateNestedManyWithoutOutletInput
     shifts?: ShiftUncheckedCreateNestedManyWithoutOutletInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
+    reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutRawMaterialsInput = {
@@ -22797,6 +26452,8 @@ export namespace Prisma {
     orders?: OrderUpdateManyWithoutOutletNestedInput
     shifts?: ShiftUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutRawMaterialsInput = {
@@ -22816,6 +26473,8 @@ export namespace Prisma {
     orders?: OrderUncheckedUpdateManyWithoutOutletNestedInput
     shifts?: ShiftUncheckedUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type RecipeItemUpsertWithWhereUniqueWithoutRawMaterialInput = {
@@ -23011,6 +26670,9 @@ export namespace Prisma {
     orderNumber: string
     orderType?: string
     tableNumber?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -23042,6 +26704,9 @@ export namespace Prisma {
     orderType?: string
     tableId?: string | null
     tableNumber?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -23107,6 +26772,8 @@ export namespace Prisma {
     rawMaterials?: RawMaterialCreateNestedManyWithoutOutletInput
     shifts?: ShiftCreateNestedManyWithoutOutletInput
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
+    reservations?: ReservationCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutOrdersInput = {
@@ -23126,6 +26793,8 @@ export namespace Prisma {
     rawMaterials?: RawMaterialUncheckedCreateNestedManyWithoutOutletInput
     shifts?: ShiftUncheckedCreateNestedManyWithoutOutletInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
+    reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutOrdersInput = {
@@ -23169,6 +26838,11 @@ export namespace Prisma {
     name: string
     phone: string
     email?: string | null
+    passwordHash?: string | null
+    isVerified?: boolean
+    verificationCode?: string | null
+    address?: string | null
+    city?: string | null
     loyaltyPoints?: number
     totalSpent?: number
     visitCount?: number
@@ -23181,6 +26855,11 @@ export namespace Prisma {
     name: string
     phone: string
     email?: string | null
+    passwordHash?: string | null
+    isVerified?: boolean
+    verificationCode?: string | null
+    address?: string | null
+    city?: string | null
     loyaltyPoints?: number
     totalSpent?: number
     visitCount?: number
@@ -23249,6 +26928,8 @@ export namespace Prisma {
     rawMaterials?: RawMaterialUpdateManyWithoutOutletNestedInput
     shifts?: ShiftUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutOrdersInput = {
@@ -23268,6 +26949,8 @@ export namespace Prisma {
     rawMaterials?: RawMaterialUncheckedUpdateManyWithoutOutletNestedInput
     shifts?: ShiftUncheckedUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type DiningTableUpsertWithoutOrdersInput = {
@@ -23323,6 +27006,11 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyPoints?: IntFieldUpdateOperationsInput | number
     totalSpent?: FloatFieldUpdateOperationsInput | number
     visitCount?: IntFieldUpdateOperationsInput | number
@@ -23335,6 +27023,11 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyPoints?: IntFieldUpdateOperationsInput | number
     totalSpent?: FloatFieldUpdateOperationsInput | number
     visitCount?: IntFieldUpdateOperationsInput | number
@@ -23376,6 +27069,9 @@ export namespace Prisma {
     orderNumber: string
     orderType?: string
     tableNumber?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -23407,6 +27103,9 @@ export namespace Prisma {
     orderType?: string
     tableId?: string | null
     tableNumber?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -23450,6 +27149,9 @@ export namespace Prisma {
     orderNumber?: StringFieldUpdateOperationsInput | string
     orderType?: StringFieldUpdateOperationsInput | string
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -23481,6 +27183,9 @@ export namespace Prisma {
     orderType?: StringFieldUpdateOperationsInput | string
     tableId?: NullableStringFieldUpdateOperationsInput | string | null
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -23520,6 +27225,8 @@ export namespace Prisma {
     rawMaterials?: RawMaterialCreateNestedManyWithoutOutletInput
     orders?: OrderCreateNestedManyWithoutOutletInput
     expenses?: ExpenseCreateNestedManyWithoutOutletInput
+    reservations?: ReservationCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutShiftsInput = {
@@ -23539,6 +27246,8 @@ export namespace Prisma {
     rawMaterials?: RawMaterialUncheckedCreateNestedManyWithoutOutletInput
     orders?: OrderUncheckedCreateNestedManyWithoutOutletInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
+    reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutShiftsInput = {
@@ -23574,6 +27283,8 @@ export namespace Prisma {
     rawMaterials?: RawMaterialUpdateManyWithoutOutletNestedInput
     orders?: OrderUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutShiftsInput = {
@@ -23593,6 +27304,8 @@ export namespace Prisma {
     rawMaterials?: RawMaterialUncheckedUpdateManyWithoutOutletNestedInput
     orders?: OrderUncheckedUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateWithoutExpensesInput = {
@@ -23612,6 +27325,8 @@ export namespace Prisma {
     rawMaterials?: RawMaterialCreateNestedManyWithoutOutletInput
     orders?: OrderCreateNestedManyWithoutOutletInput
     shifts?: ShiftCreateNestedManyWithoutOutletInput
+    reservations?: ReservationCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutExpensesInput = {
@@ -23631,6 +27346,8 @@ export namespace Prisma {
     rawMaterials?: RawMaterialUncheckedCreateNestedManyWithoutOutletInput
     orders?: OrderUncheckedCreateNestedManyWithoutOutletInput
     shifts?: ShiftUncheckedCreateNestedManyWithoutOutletInput
+    reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutExpensesInput = {
@@ -23666,6 +27383,8 @@ export namespace Prisma {
     rawMaterials?: RawMaterialUpdateManyWithoutOutletNestedInput
     orders?: OrderUpdateManyWithoutOutletNestedInput
     shifts?: ShiftUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutExpensesInput = {
@@ -23685,6 +27404,208 @@ export namespace Prisma {
     rawMaterials?: RawMaterialUncheckedUpdateManyWithoutOutletNestedInput
     orders?: OrderUncheckedUpdateManyWithoutOutletNestedInput
     shifts?: ShiftUncheckedUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
+  }
+
+  export type OutletCreateWithoutReservationsInput = {
+    id?: string
+    name: string
+    code: string
+    type?: string
+    address: string
+    phone: string
+    whatsapp?: string | null
+    logoUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    users?: UserCreateNestedManyWithoutOutletInput
+    tables?: DiningTableCreateNestedManyWithoutOutletInput
+    menuItems?: MenuItemCreateNestedManyWithoutOutletInput
+    rawMaterials?: RawMaterialCreateNestedManyWithoutOutletInput
+    orders?: OrderCreateNestedManyWithoutOutletInput
+    shifts?: ShiftCreateNestedManyWithoutOutletInput
+    expenses?: ExpenseCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
+  }
+
+  export type OutletUncheckedCreateWithoutReservationsInput = {
+    id?: string
+    name: string
+    code: string
+    type?: string
+    address: string
+    phone: string
+    whatsapp?: string | null
+    logoUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutOutletInput
+    tables?: DiningTableUncheckedCreateNestedManyWithoutOutletInput
+    menuItems?: MenuItemUncheckedCreateNestedManyWithoutOutletInput
+    rawMaterials?: RawMaterialUncheckedCreateNestedManyWithoutOutletInput
+    orders?: OrderUncheckedCreateNestedManyWithoutOutletInput
+    shifts?: ShiftUncheckedCreateNestedManyWithoutOutletInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
+  }
+
+  export type OutletCreateOrConnectWithoutReservationsInput = {
+    where: OutletWhereUniqueInput
+    create: XOR<OutletCreateWithoutReservationsInput, OutletUncheckedCreateWithoutReservationsInput>
+  }
+
+  export type OutletUpsertWithoutReservationsInput = {
+    update: XOR<OutletUpdateWithoutReservationsInput, OutletUncheckedUpdateWithoutReservationsInput>
+    create: XOR<OutletCreateWithoutReservationsInput, OutletUncheckedCreateWithoutReservationsInput>
+    where?: OutletWhereInput
+  }
+
+  export type OutletUpdateToOneWithWhereWithoutReservationsInput = {
+    where?: OutletWhereInput
+    data: XOR<OutletUpdateWithoutReservationsInput, OutletUncheckedUpdateWithoutReservationsInput>
+  }
+
+  export type OutletUpdateWithoutReservationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutOutletNestedInput
+    tables?: DiningTableUpdateManyWithoutOutletNestedInput
+    menuItems?: MenuItemUpdateManyWithoutOutletNestedInput
+    rawMaterials?: RawMaterialUpdateManyWithoutOutletNestedInput
+    orders?: OrderUpdateManyWithoutOutletNestedInput
+    shifts?: ShiftUpdateManyWithoutOutletNestedInput
+    expenses?: ExpenseUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
+  }
+
+  export type OutletUncheckedUpdateWithoutReservationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutOutletNestedInput
+    tables?: DiningTableUncheckedUpdateManyWithoutOutletNestedInput
+    menuItems?: MenuItemUncheckedUpdateManyWithoutOutletNestedInput
+    rawMaterials?: RawMaterialUncheckedUpdateManyWithoutOutletNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutOutletNestedInput
+    shifts?: ShiftUncheckedUpdateManyWithoutOutletNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
+  }
+
+  export type OutletCreateWithoutChatMessagesInput = {
+    id?: string
+    name: string
+    code: string
+    type?: string
+    address: string
+    phone: string
+    whatsapp?: string | null
+    logoUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    users?: UserCreateNestedManyWithoutOutletInput
+    tables?: DiningTableCreateNestedManyWithoutOutletInput
+    menuItems?: MenuItemCreateNestedManyWithoutOutletInput
+    rawMaterials?: RawMaterialCreateNestedManyWithoutOutletInput
+    orders?: OrderCreateNestedManyWithoutOutletInput
+    shifts?: ShiftCreateNestedManyWithoutOutletInput
+    expenses?: ExpenseCreateNestedManyWithoutOutletInput
+    reservations?: ReservationCreateNestedManyWithoutOutletInput
+  }
+
+  export type OutletUncheckedCreateWithoutChatMessagesInput = {
+    id?: string
+    name: string
+    code: string
+    type?: string
+    address: string
+    phone: string
+    whatsapp?: string | null
+    logoUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutOutletInput
+    tables?: DiningTableUncheckedCreateNestedManyWithoutOutletInput
+    menuItems?: MenuItemUncheckedCreateNestedManyWithoutOutletInput
+    rawMaterials?: RawMaterialUncheckedCreateNestedManyWithoutOutletInput
+    orders?: OrderUncheckedCreateNestedManyWithoutOutletInput
+    shifts?: ShiftUncheckedCreateNestedManyWithoutOutletInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
+    reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
+  }
+
+  export type OutletCreateOrConnectWithoutChatMessagesInput = {
+    where: OutletWhereUniqueInput
+    create: XOR<OutletCreateWithoutChatMessagesInput, OutletUncheckedCreateWithoutChatMessagesInput>
+  }
+
+  export type OutletUpsertWithoutChatMessagesInput = {
+    update: XOR<OutletUpdateWithoutChatMessagesInput, OutletUncheckedUpdateWithoutChatMessagesInput>
+    create: XOR<OutletCreateWithoutChatMessagesInput, OutletUncheckedCreateWithoutChatMessagesInput>
+    where?: OutletWhereInput
+  }
+
+  export type OutletUpdateToOneWithWhereWithoutChatMessagesInput = {
+    where?: OutletWhereInput
+    data: XOR<OutletUpdateWithoutChatMessagesInput, OutletUncheckedUpdateWithoutChatMessagesInput>
+  }
+
+  export type OutletUpdateWithoutChatMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutOutletNestedInput
+    tables?: DiningTableUpdateManyWithoutOutletNestedInput
+    menuItems?: MenuItemUpdateManyWithoutOutletNestedInput
+    rawMaterials?: RawMaterialUpdateManyWithoutOutletNestedInput
+    orders?: OrderUpdateManyWithoutOutletNestedInput
+    shifts?: ShiftUpdateManyWithoutOutletNestedInput
+    expenses?: ExpenseUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUpdateManyWithoutOutletNestedInput
+  }
+
+  export type OutletUncheckedUpdateWithoutChatMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutOutletNestedInput
+    tables?: DiningTableUncheckedUpdateManyWithoutOutletNestedInput
+    menuItems?: MenuItemUncheckedUpdateManyWithoutOutletNestedInput
+    rawMaterials?: RawMaterialUncheckedUpdateManyWithoutOutletNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutOutletNestedInput
+    shifts?: ShiftUncheckedUpdateManyWithoutOutletNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type UserCreateManyOutletInput = {
@@ -23750,6 +27671,9 @@ export namespace Prisma {
     orderType?: string
     tableId?: string | null
     tableNumber?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -23802,6 +27726,33 @@ export namespace Prisma {
     category?: string
     recordedBy: string
     notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ReservationCreateManyOutletInput = {
+    id?: string
+    customerName: string
+    customerPhone: string
+    customerEmail?: string | null
+    reservationType?: string
+    guestCount?: number
+    bookingDate: Date | string
+    timeSlot: string
+    zonePreference?: string | null
+    specialRequests?: string | null
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type ChatMessageCreateManyOutletInput = {
+    id?: string
+    senderType: string
+    senderName: string
+    senderPhone?: string | null
+    tableNumber?: string | null
+    orderNumber?: string | null
+    message: string
+    isRead?: boolean
     createdAt?: Date | string
   }
 
@@ -23987,6 +27938,9 @@ export namespace Prisma {
     orderNumber?: StringFieldUpdateOperationsInput | string
     orderType?: StringFieldUpdateOperationsInput | string
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -24017,6 +27971,9 @@ export namespace Prisma {
     orderType?: StringFieldUpdateOperationsInput | string
     tableId?: NullableStringFieldUpdateOperationsInput | string | null
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -24046,6 +28003,9 @@ export namespace Prisma {
     orderType?: StringFieldUpdateOperationsInput | string
     tableId?: NullableStringFieldUpdateOperationsInput | string | null
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -24167,12 +28127,96 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ReservationUpdateWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    customerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    reservationType?: StringFieldUpdateOperationsInput | string
+    guestCount?: IntFieldUpdateOperationsInput | number
+    bookingDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    timeSlot?: StringFieldUpdateOperationsInput | string
+    zonePreference?: NullableStringFieldUpdateOperationsInput | string | null
+    specialRequests?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReservationUncheckedUpdateWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    customerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    reservationType?: StringFieldUpdateOperationsInput | string
+    guestCount?: IntFieldUpdateOperationsInput | number
+    bookingDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    timeSlot?: StringFieldUpdateOperationsInput | string
+    zonePreference?: NullableStringFieldUpdateOperationsInput | string | null
+    specialRequests?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReservationUncheckedUpdateManyWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    customerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    reservationType?: StringFieldUpdateOperationsInput | string
+    guestCount?: IntFieldUpdateOperationsInput | number
+    bookingDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    timeSlot?: StringFieldUpdateOperationsInput | string
+    zonePreference?: NullableStringFieldUpdateOperationsInput | string | null
+    specialRequests?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChatMessageUpdateWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    message?: StringFieldUpdateOperationsInput | string
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChatMessageUncheckedUpdateWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    message?: StringFieldUpdateOperationsInput | string
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChatMessageUncheckedUpdateManyWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    message?: StringFieldUpdateOperationsInput | string
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type OrderCreateManyTableInput = {
     id?: string
     outletId: string
     orderNumber: string
     orderType?: string
     tableNumber?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -24200,6 +28244,9 @@ export namespace Prisma {
     orderNumber?: StringFieldUpdateOperationsInput | string
     orderType?: StringFieldUpdateOperationsInput | string
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -24230,6 +28277,9 @@ export namespace Prisma {
     orderNumber?: StringFieldUpdateOperationsInput | string
     orderType?: StringFieldUpdateOperationsInput | string
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -24259,6 +28309,9 @@ export namespace Prisma {
     orderNumber?: StringFieldUpdateOperationsInput | string
     orderType?: StringFieldUpdateOperationsInput | string
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -24344,6 +28397,9 @@ export namespace Prisma {
     orderType?: string
     tableId?: string | null
     tableNumber?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -24370,6 +28426,9 @@ export namespace Prisma {
     orderNumber?: StringFieldUpdateOperationsInput | string
     orderType?: StringFieldUpdateOperationsInput | string
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -24401,6 +28460,9 @@ export namespace Prisma {
     orderType?: StringFieldUpdateOperationsInput | string
     tableId?: NullableStringFieldUpdateOperationsInput | string | null
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -24430,6 +28492,9 @@ export namespace Prisma {
     orderType?: StringFieldUpdateOperationsInput | string
     tableId?: NullableStringFieldUpdateOperationsInput | string | null
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string

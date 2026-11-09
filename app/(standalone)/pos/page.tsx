@@ -100,7 +100,9 @@ export default function PosTerminalPage() {
   // Check Staff Auth
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("abuadel_soulmate_user");
+      const saved =
+        localStorage.getItem("abuadel_soulmate_user") ||
+        localStorage.getItem("abuadel_auth_user");
       if (!saved) {
         router.push("/login");
         return;

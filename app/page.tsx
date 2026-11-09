@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import CardQRModal from "@/components/CardQRModal";
 import {
   Coffee,
@@ -12,8 +11,6 @@ import {
   Sparkles,
   ShoppingBag,
   Award,
-  ChevronLeft,
-  ChevronRight,
   Clock,
   MapPin,
   ExternalLink,
@@ -25,6 +22,12 @@ import {
   CheckCircle2,
   DollarSign,
   UtensilsCrossed,
+  Calendar,
+  PartyPopper,
+  X,
+  Truck,
+  Send,
+  MessageCircle,
 } from "lucide-react";
 
 export default function DualBrandLandingPage() {
@@ -34,6 +37,28 @@ export default function DualBrandLandingPage() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
   const [settings, setSettings] = useState<any>(null);
+
+  // Reservation & Party Modal State
+  const [showReservationModal, setShowReservationModal] = useState(false);
+  const [reservationType, setReservationType] = useState<"TABLE" | "PARTY">("TABLE");
+  const [resForm, setResForm] = useState({
+    customerName: "",
+    customerPhone: "",
+    customerEmail: "",
+    guestCount: "2",
+    bookingDate: new Date().toISOString().split("T")[0],
+    timeSlot: "08:00 مساءً",
+    zonePreference: "INDOOR",
+    specialRequests: "",
+  });
+  const [submittingRes, setSubmittingRes] = useState(false);
+
+  // Toasts
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 4500);
+  };
 
   useEffect(() => {
     async function loadData() {
@@ -61,9 +86,53 @@ export default function DualBrandLandingPage() {
     loadData();
   }, []);
 
+  // Submit Reservation
+  const handleReservationSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resForm.customerName || !resForm.customerPhone || !resForm.bookingDate) {
+      showToast("برجاء إدخال الاسم ورقم الهاتف وتاريخ الحجز");
+      return;
+    }
+
+    try {
+      setSubmittingRes(true);
+      const res = await fetch("/api/reservations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...resForm,
+          reservationType,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        showToast(data.message || "تم تسجيل الحجز بنجاح ⭐");
+        setShowReservationModal(false);
+        setResForm({
+          customerName: "",
+          customerPhone: "",
+          customerEmail: "",
+          guestCount: "2",
+          bookingDate: new Date().toISOString().split("T")[0],
+          timeSlot: "08:00 مساءً",
+          zonePreference: "INDOOR",
+          specialRequests: "",
+        });
+      } else {
+        showToast(data.error || "فشل تسجيل الحجز");
+      }
+    } catch {
+      showToast("حدث خطأ أثناء إرسال طلب الحجز");
+    } finally {
+      setSubmittingRes(false);
+    }
+  };
+
   // Filter items based on active brand
   const filteredItems = menuItems.filter((item) => {
-    const isSoulmateItem = item.outlet?.code === "SOULMATE_CAFE" || item.itemType === "PREPARED_BEVERAGE";
+    const isSoulmateItem =
+      item.outlet?.code === "SOULMATE_CAFE" || item.itemType === "PREPARED_BEVERAGE";
     const matchesBrand = activeBrand === "SOULMATE" ? isSoulmateItem : !isSoulmateItem;
     if (!matchesBrand) return false;
     if (selectedCategory === "ALL") return true;
@@ -91,8 +160,8 @@ export default function DualBrandLandingPage() {
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span>
               {activeBrand === "SOULMATE"
-                ? "☕ مرحباً بك في سول ميت كافيه VIP - قهوة مختصة وأجواء ساحرة"
-                : "🍰 حلواني أبو عادل المستقل - حلي يومك مع المذاق المصري الأصيل (الخط الساخن: 15992)"}
+                ? "☕ مرحباً بك في سول ميت كافيه VIP - قهوة مختصة وأجواء استثنائية مع خدمة الطلب من الترابيزة"
+                : "🍰 حلواني أبو عادل المستقل - حلي يومك مع المذاق المصري الأصيل وتوصيل دليفري (15992)"}
             </span>
           </div>
 
@@ -103,7 +172,7 @@ export default function DualBrandLandingPage() {
               rel="noreferrer"
               className="hover:underline flex items-center gap-1 text-slate-300"
             >
-              <span>بوابة حلي يومك</span>
+              <span>موقع حلي يومك الرسمي</span>
               <ExternalLink className="w-3 h-3" />
             </a>
             <span className="text-slate-600">|</span>
@@ -112,7 +181,7 @@ export default function DualBrandLandingPage() {
               className="hover:underline flex items-center gap-1 text-amber-400 font-bold"
             >
               <LogIn className="w-3 h-3" />
-              <span>دخول الموظفين والإدارة</span>
+              <span>دخول الإدارة والتشغيل</span>
             </Link>
           </div>
         </div>
@@ -198,14 +267,14 @@ export default function DualBrandLandingPage() {
               }`}
             >
               <ShoppingBag className="w-4 h-4" />
-              <span>اطلب من ترابيزتك الآن 📱</span>
+              <span>اطلب الآن 📱</span>
             </Link>
           </div>
         </div>
       </header>
 
       {/* 3. HERO SHOWCASE SECTION */}
-      <section className="relative overflow-hidden py-12 md:py-16 border-b border-slate-800">
+      <section className="relative overflow-hidden py-10 md:py-14 border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             {/* Hero Left Text */}
@@ -220,8 +289,8 @@ export default function DualBrandLandingPage() {
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>
                   {activeBrand === "SOULMATE"
-                    ? "قهوة مختصة، باريستا محترف، وطلب ذكي من الترابيزة"
-                    : "حلويات شرقية، تورت، وبوكسات هدايا ومناسبات فاخرة"}
+                    ? "قهوة مختصة، باريستا محترف، وحجز ترابيزات وحفلات راقية"
+                    : "حلويات شرقية بالسمن البلدي، تورت، وبوكسات هدايا وتوصيل دليفري"}
                 </span>
               </div>
 
@@ -241,7 +310,7 @@ export default function DualBrandLandingPage() {
 
               <p className="text-slate-300 text-sm md:text-base leading-relaxed max-w-xl">
                 {activeBrand === "SOULMATE"
-                  ? "امسح الكيو آر كود من ترابيزتك، اختر مشروبك المفضل، ويصل طلبك مباشرة لشاشة الباريستا بدون أي انتظار. واكسب نقاط ولاء حصرية مع كل طلب!"
+                  ? "امسح الكيو آر كود من ترابيزتك، اختر مشروبك المفضل، ويصل طلبك فوراً لشاشة الباريستا بدون أي انتظار. واكسب نقاط ولاء حصرية مع كل طلب!"
                   : "نقدم لكم أرقى تشكيلة من الحلويات الشرقية بالسمن البلدي الفاخر، والتورت والجاتوهات المعدة يومياً بأعلى معايير الجودة لتشارككم أجمل اللحظات."}
               </p>
 
@@ -256,7 +325,7 @@ export default function DualBrandLandingPage() {
                   }`}
                 >
                   <QrCode className="w-4 h-4" />
-                  <span>فتح المنيو والطلب من الترابيزة</span>
+                  <span>الطلب من الترابيزة / دليفري</span>
                 </Link>
 
                 <a
@@ -277,73 +346,54 @@ export default function DualBrandLandingPage() {
               </div>
             </div>
 
-            {/* Hero Right Visual Card */}
-            <div className="relative">
-              <div
-                className={`rounded-3xl p-6 border shadow-2xl relative overflow-hidden ${
-                  activeBrand === "SOULMATE"
-                    ? "bg-gradient-to-br from-stone-900 to-amber-950/40 border-amber-500/30"
-                    : "bg-gradient-to-br from-slate-900 to-emerald-950/40 border-emerald-500/30"
-                }`}
-              >
-                <div className="flex items-center justify-between mb-6">
+            {/* Hero Right Visual: PROMOTIONS & RESERVATIONS BANNER */}
+            <div className="space-y-4">
+              {/* Table Booking Banner */}
+              <div className="bg-gradient-to-br from-stone-900 to-amber-950/50 border border-amber-500/40 rounded-3xl p-5 shadow-2xl flex items-center justify-between gap-4">
+                <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-emerald-400" />
-                    <span className="text-xs font-bold text-slate-300">
-                      مفتوح للخدمة والطلبات اليوم
-                    </span>
+                    <Calendar className="w-4 h-4 text-amber-400" />
+                    <h3 className="text-sm font-bold text-white">
+                      حجز ترابيزة VIP مسبقاً (صالة داخلية أو تراس)
+                    </h3>
                   </div>
-                  <span className="text-xs font-mono font-bold text-amber-400">
-                    {new Date().toLocaleDateString("ar-EG")}
-                  </span>
+                  <p className="text-xs text-slate-300">
+                    اضمن جلوسك بأرقى مكان مع إطلالة هادئة ومشروبات ترحيبية جاهزة فور وصولك.
+                  </p>
                 </div>
+                <button
+                  onClick={() => {
+                    setReservationType("TABLE");
+                    setShowReservationModal(true);
+                  }}
+                  className="flex-shrink-0 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-xs shadow-lg transition"
+                >
+                  احجز ترابيزتك 🥂
+                </button>
+              </div>
 
-                {/* Features highlight */}
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3 p-3 rounded-2xl bg-slate-950/60 border border-slate-800">
-                    <div className="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0">
-                      <QrCode className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-bold text-white">
-                        Digital QR Ordering (طلب ذكي فوري)
-                      </h4>
-                      <p className="text-[11px] text-slate-400">
-                        اطلب مباشرة من هاتفك بالجلوس على أي ترابيزة بدون منيو ورقي ملوث.
-                      </p>
-                    </div>
+              {/* Birthday & Party Booking Banner */}
+              <div className="bg-gradient-to-br from-slate-900 to-purple-950/50 border border-purple-500/40 rounded-3xl p-5 shadow-2xl flex items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <PartyPopper className="w-4 h-4 text-purple-400" />
+                    <h3 className="text-sm font-bold text-white">
+                      إقامة الحفلات والمناسبات وأعياد الميلاد 🎉
+                    </h3>
                   </div>
-
-                  <div className="flex items-start gap-3 p-3 rounded-2xl bg-slate-950/60 border border-slate-800">
-                    <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
-                      <UtensilsCrossed className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-bold text-white">
-                        ربط فوري بشاشة الباريستا (Live KDS)
-                      </h4>
-                      <p className="text-[11px] text-slate-400">
-                        الطلب يطير فوراً لمحطة التحضير مع تنبيه صوتي لضمان أسرع تقديم.
-                      </p>
-                    </div>
-                  </div>
-
-                  {settings?.isLoyaltyEnabled && (
-                    <div className="flex items-start gap-3 p-3 rounded-2xl bg-purple-950/30 border border-purple-500/30">
-                      <div className="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0">
-                        <Award className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-bold text-purple-300">
-                          برنامج ولاء ومكافآت سول ميت ⭐
-                        </h4>
-                        <p className="text-[11px] text-purple-200/80">
-                          كل فنجان قهوة بيقربك من مشروبك المفضل مجاناً مع نقاط Soulmate VIP.
-                        </p>
-                      </div>
-                    </div>
-                  )}
+                  <p className="text-xs text-slate-300">
+                    باقات حفلات متكاملة: تزيين احترافي، موسيقى خاصة، وتورتة حلواني أبو عادل المخصصة!
+                  </p>
                 </div>
+                <button
+                  onClick={() => {
+                    setReservationType("PARTY");
+                    setShowReservationModal(true);
+                  }}
+                  className="flex-shrink-0 px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-black text-xs shadow-lg transition"
+                >
+                  احجز حفلتك 🎂
+                </button>
               </div>
             </div>
           </div>
@@ -380,11 +430,11 @@ export default function DualBrandLandingPage() {
               onClick={() => setSelectedCategory("ALL")}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
                 selectedCategory === "ALL"
-                  ? "bg-slate-100 text-slate-950"
+                  ? "bg-slate-100 text-slate-950 font-black shadow"
                   : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
               }`}
             >
-              جميع الأصناف
+              جميع الأصناف ({filteredItems.length})
             </button>
 
             {activeBrand === "SOULMATE" ? (
@@ -393,7 +443,7 @@ export default function DualBrandLandingPage() {
                   onClick={() => setSelectedCategory("HOT_COFFEE")}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
                     selectedCategory === "HOT_COFFEE"
-                      ? "bg-amber-500 text-black"
+                      ? "bg-amber-500 text-black font-black"
                       : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
                   }`}
                 >
@@ -403,17 +453,17 @@ export default function DualBrandLandingPage() {
                   onClick={() => setSelectedCategory("COLD_COFFEE")}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
                     selectedCategory === "COLD_COFFEE"
-                      ? "bg-amber-500 text-black"
+                      ? "bg-amber-500 text-black font-black"
                       : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
                   }`}
                 >
-                  مشروبات مثلجة ومثلجات 🧊
+                  مثلجات وفرابيه وموهيتو 🧊
                 </button>
                 <button
                   onClick={() => setSelectedCategory("WAFFLES_PANCAKES")}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
                     selectedCategory === "WAFFLES_PANCAKES"
-                      ? "bg-amber-500 text-black"
+                      ? "bg-amber-500 text-black font-black"
                       : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
                   }`}
                 >
@@ -426,7 +476,7 @@ export default function DualBrandLandingPage() {
                   onClick={() => setSelectedCategory("ORIENTAL_SWEETS")}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
                     selectedCategory === "ORIENTAL_SWEETS"
-                      ? "bg-emerald-600 text-white"
+                      ? "bg-emerald-600 text-white font-black"
                       : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
                   }`}
                 >
@@ -436,17 +486,27 @@ export default function DualBrandLandingPage() {
                   onClick={() => setSelectedCategory("CAKES_TORTES")}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
                     selectedCategory === "CAKES_TORTES"
-                      ? "bg-emerald-600 text-white"
+                      ? "bg-emerald-600 text-white font-black"
                       : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
                   }`}
                 >
                   تورت وكيك مناسبات 🎂
                 </button>
                 <button
+                  onClick={() => setSelectedCategory("WESTERN_PASTRY")}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+                    selectedCategory === "WESTERN_PASTRY"
+                      ? "bg-emerald-600 text-white font-black"
+                      : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
+                  }`}
+                >
+                  جاتوه وغربي 🍰
+                </button>
+                <button
                   onClick={() => setSelectedCategory("GIFT_BOXES")}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
                     selectedCategory === "GIFT_BOXES"
-                      ? "bg-emerald-600 text-white"
+                      ? "bg-emerald-600 text-white font-black"
                       : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
                   }`}
                 >
@@ -515,7 +575,138 @@ export default function DualBrandLandingPage() {
         </div>
       </section>
 
-      {/* 5. FOOTER & CONTACT */}
+      {/* 5. RESERVATION & PARTY BOOKING MODAL */}
+      {showReservationModal && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#120d14] border-2 border-amber-500/40 rounded-3xl w-full max-w-md p-6 shadow-2xl relative text-right space-y-4">
+            <button
+              onClick={() => setShowReservationModal(false)}
+              className="absolute left-4 top-4 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center text-2xl flex-shrink-0">
+                {reservationType === "PARTY" ? "🎉" : "🥂"}
+              </div>
+              <div>
+                <h3 className="text-base font-black text-white">
+                  {reservationType === "PARTY"
+                    ? "حجز باقة حفلة أو عيد ميلاد خاصة"
+                    : "حجز ترابيزة VIP مسبقاً في كافيه سول ميت"}
+                </h3>
+                <p className="text-xs text-slate-400">
+                  {reservationType === "PARTY"
+                    ? "تجهيز الطاولة، ديكورات احتفالية، وتورتة مخصصة من حلواني أبو عادل"
+                    : "اختر موعدك والصالة المفضلة وسنكون بانتظارك"}
+                </p>
+              </div>
+            </div>
+
+            <form onSubmit={handleReservationSubmit} className="space-y-3 text-xs">
+              <div>
+                <label className="block text-slate-300 mb-1">الاسم الكريم *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="مثال: أ / كريم محمود"
+                  value={resForm.customerName}
+                  onChange={(e) => setResForm({ ...resForm, customerName: e.target.value })}
+                  className="w-full bg-black/60 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-300 mb-1">رقم الموبايل *</label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="010XXXXXXXX"
+                    value={resForm.customerPhone}
+                    onChange={(e) => setResForm({ ...resForm, customerPhone: e.target.value })}
+                    className="w-full bg-black/60 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-300 mb-1">عدد الأفراد *</label>
+                  <input
+                    type="number"
+                    min="1"
+                    required
+                    value={resForm.guestCount}
+                    onChange={(e) => setResForm({ ...resForm, guestCount: e.target.value })}
+                    className="w-full bg-black/60 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-300 mb-1">تاريخ الحجز *</label>
+                  <input
+                    type="date"
+                    required
+                    value={resForm.bookingDate}
+                    onChange={(e) => setResForm({ ...resForm, bookingDate: e.target.value })}
+                    className="w-full bg-black/60 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-300 mb-1">الوقت المفضل</label>
+                  <select
+                    value={resForm.timeSlot}
+                    onChange={(e) => setResForm({ ...resForm, timeSlot: e.target.value })}
+                    className="w-full bg-black/60 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-400"
+                  >
+                    <option value="06:00 مساءً">06:00 مساءً</option>
+                    <option value="07:00 مساءً">07:00 مساءً</option>
+                    <option value="08:00 مساءً">08:00 مساءً</option>
+                    <option value="09:00 مساءً">09:00 مساءً</option>
+                    <option value="10:00 مساءً">10:00 مساءً</option>
+                    <option value="11:00 مساءً">11:00 مساءً</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-slate-300 mb-1">المنطقة المفضلة</label>
+                <select
+                  value={resForm.zonePreference}
+                  onChange={(e) => setResForm({ ...resForm, zonePreference: e.target.value })}
+                  className="w-full bg-black/60 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-400"
+                >
+                  <option value="INDOOR">صالة داخلية مكيفة هادئة</option>
+                  <option value="OUTDOOR_TERRACE">تراس خارجي في الهواء الطلق</option>
+                  <option value="VIP_LOUNGE">ركن الـ VIP الفاخر</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-slate-300 mb-1">ملاحظات أو طلبات خاصة (تزيين، نوع التورتة...)</label>
+                <input
+                  type="text"
+                  placeholder="اختياري..."
+                  value={resForm.specialRequests}
+                  onChange={(e) => setResForm({ ...resForm, specialRequests: e.target.value })}
+                  className="w-full bg-black/60 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={submittingRes}
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs shadow-lg transition disabled:opacity-50"
+              >
+                {submittingRes ? "جارٍ تسجيل الحجز..." : "تأكيد طلب الحجز الآن ⭐"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 6. FOOTER & CONTACT */}
       <footer className="bg-slate-950 border-t border-slate-900 py-8 px-4 text-xs text-slate-400">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
@@ -527,7 +718,7 @@ export default function DualBrandLandingPage() {
                 منظومة حلواني أبو عادل المستقل & سول ميت كافيه VIP
               </div>
               <div className="text-[10px] text-slate-400">
-                نظام إدارة الكافيهات والمطاعم السحابي الذكي (Table POS + KDS + Loyalty)
+                نظام إدارة الكافيهات والمطاعم السحابي الذكي (Table POS + KDS + Loyalty + Delivery)
               </div>
             </div>
           </div>
@@ -560,7 +751,7 @@ export default function DualBrandLandingPage() {
         </div>
       </footer>
 
-      {/* 6. MODAL 2-QR CARDS */}
+      {/* 7. MODAL 2-QR CARDS */}
       <CardQRModal
         isOpen={showQRCardModal}
         onClose={() => setShowQRCardModal(false)}
@@ -568,6 +759,14 @@ export default function DualBrandLandingPage() {
         soulmatePhone={settings?.soulmatePhone || "01099887766"}
         abuAdelPhone={settings?.abuAdelPhone || "15992"}
       />
+
+      {/* TOAST */}
+      {toastMessage && (
+        <div className="fixed bottom-4 left-4 z-50 flex items-center gap-2 px-4 py-3 rounded-2xl bg-slate-900 border border-amber-500/40 text-amber-300 shadow-2xl text-xs font-bold animate-fade-in">
+          <span>ℹ️</span>
+          <span>{toastMessage}</span>
+        </div>
+      )}
     </div>
   );
 }

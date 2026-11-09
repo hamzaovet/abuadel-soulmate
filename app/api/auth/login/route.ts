@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: Request) {
   try {
     const { username, password, pin } = await req.json();
@@ -35,7 +37,8 @@ export async function POST(req: Request) {
       );
     }
 
-    if (pin && user.pin && user.pin !== pin.trim()) {
+    // If PIN is explicitly provided and user has a PIN, verify it
+    if (pin && user.pin && pin.trim() !== "" && user.pin !== pin.trim()) {
       return NextResponse.json(
         { success: false, error: "رمز PIN السري غير صحيح" },
         { status: 401 }

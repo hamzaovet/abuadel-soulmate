@@ -3,14 +3,13 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Lock, User, KeyRound, Sparkles, ArrowRight, Coffee, Cake, ShieldCheck } from "lucide-react";
+import { Lock, User, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
 
 export default function StaffLoginPage() {
   const router = useRouter();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [pin, setPin] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -31,15 +30,16 @@ export default function StaffLoginPage() {
         body: JSON.stringify({
           username: username.trim().toLowerCase(),
           password: password.trim(),
-          pin: pin.trim(),
         }),
       });
 
       const data = await res.json();
       if (data.success && data.user) {
+        // Save to BOTH local storage keys for universal compatibility
         localStorage.setItem("abuadel_soulmate_user", JSON.stringify(data.user));
+        localStorage.setItem("abuadel_auth_user", JSON.stringify(data.user));
 
-        // Route by role
+        // Route automatically by role
         if (
           data.user.role === "owner" ||
           data.user.role === "general_manager" ||
@@ -54,10 +54,10 @@ export default function StaffLoginPage() {
           router.push("/admin");
         }
       } else {
-        setError(data.error || "بيانات الدخول غير صحيحة");
+        setError(data.error || "اسم المستخدم أو كلمة المرور غير صحيحة");
       }
     } catch {
-      setError("تعذر الاتصال بالخادم، يرجى المحاولة مرة أخرى");
+      setError("تعذر الاتصال بالخادم، يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى");
     } finally {
       setLoading(false);
     }
@@ -65,7 +65,7 @@ export default function StaffLoginPage() {
 
   return (
     <div
-      className="min-h-screen bg-[#07070b] text-slate-100 flex flex-col items-center justify-center p-4 font-sans selection:bg-amber-500 selection:text-black"
+      className="min-h-screen bg-[#07070b] text-slate-100 flex flex-col items-center justify-center p-4 font-sans selection:bg-amber-500 selection:text-black relative overflow-hidden"
       dir="rtl"
     >
       {/* Background Ambient Glows */}
@@ -76,13 +76,11 @@ export default function StaffLoginPage() {
         {/* Dual Logos and Brand Header */}
         <div className="text-center space-y-3">
           <div className="flex items-center justify-center gap-3">
-            <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-amber-400 bg-black shadow-lg shadow-amber-500/20 p-1">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/soulmate-logo.svg" alt="Soulmate Cafe" className="w-full h-full object-contain" />
+            <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-amber-400 bg-black shadow-lg shadow-amber-500/20 p-1 flex items-center justify-center font-black text-amber-400 text-2xl">
+              S
             </div>
-            <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-rose-400 bg-black shadow-lg shadow-rose-500/20 p-1">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/abuadel-logo.svg" alt="Abu Adel Patisserie" className="w-full h-full object-contain" />
+            <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-rose-400 bg-black shadow-lg shadow-rose-500/20 p-1 flex items-center justify-center font-black text-rose-400 text-2xl">
+              ع
             </div>
           </div>
 
@@ -92,7 +90,7 @@ export default function StaffLoginPage() {
               <Sparkles className="w-4 h-4 text-amber-400" />
             </h1>
             <p className="text-xs text-slate-400 pt-1">
-              حلواني أبو عادل &amp; سول ميت كافيه VIP
+              حلواني أبو عادل المستقل &amp; سول ميت كافيه VIP
             </p>
           </div>
         </div>
@@ -105,7 +103,7 @@ export default function StaffLoginPage() {
           </div>
         )}
 
-        {/* Login Form */}
+        {/* Clean Login Form */}
         <form onSubmit={handleLogin} className="space-y-4 text-xs font-bold">
           <div>
             <label className="text-slate-300 block mb-1.5 flex items-center gap-1.5">
@@ -115,9 +113,10 @@ export default function StaffLoginPage() {
             <input
               type="text"
               required
+              autoFocus
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="مثال: maestro, cashier-soulmate, barista-soulmate..."
+              placeholder="أدخل اسم المستخدم المصرح به..."
               className="w-full py-2.5 px-3.5 rounded-xl bg-black/60 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 font-mono text-xs transition"
             />
           </div>
@@ -137,21 +136,6 @@ export default function StaffLoginPage() {
             />
           </div>
 
-          <div>
-            <label className="text-slate-400 block mb-1.5 flex items-center gap-1.5">
-              <KeyRound className="w-3.5 h-3.5 text-amber-400" />
-              <span>رمز PIN السريع (اختياري للكاشير / 159920):</span>
-            </label>
-            <input
-              type="password"
-              maxLength={6}
-              value={pin}
-              onChange={(e) => setPin(e.target.value)}
-              placeholder="159920"
-              className="w-full py-2 px-3.5 rounded-xl bg-black/40 border border-white/5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-400 font-mono text-xs transition tracking-widest text-center"
-            />
-          </div>
-
           <button
             type="submit"
             disabled={loading}
@@ -168,26 +152,19 @@ export default function StaffLoginPage() {
           </button>
         </form>
 
-        {/* Quick Demo Credentials Help */}
-        <div className="pt-2 border-t border-white/10 text-[11px] text-slate-400 space-y-1 text-center font-mono">
-          <p className="font-bold text-amber-300">🔑 حسابات الدخول التجريبية (الباسوورد: 123456789):</p>
-          <div className="grid grid-cols-2 gap-1 text-[10px] text-slate-300 pt-1">
-            <span className="p-1 rounded bg-white/5">المالك: maestro</span>
-            <span className="p-1 rounded bg-white/5">المدير العام: gm</span>
-            <span className="p-1 rounded bg-white/5">كاشير سول ميت: cashier-soulmate</span>
-            <span className="p-1 rounded bg-white/5">كاشير أبو عادل: cashier-abuadel</span>
-            <span className="p-1 rounded bg-white/5 col-span-2">شاشة الباريستا KDS: barista-soulmate</span>
+        {/* Security badge and Return home */}
+        <div className="pt-2 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
+          <div className="flex items-center gap-1.5 text-slate-500 text-[11px]">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <span>نظام سحابي مشفر وآمن</span>
           </div>
-        </div>
 
-        {/* Back to Home */}
-        <div className="text-center pt-2">
           <Link
             href="/"
-            className="text-xs text-slate-400 hover:text-amber-300 font-bold transition flex items-center justify-center gap-1"
+            className="text-xs text-amber-400 hover:underline font-bold transition flex items-center gap-1"
           >
-            <span>العودة إلى الصفحة الرئيسية والمنيو</span>
-            <ArrowRight className="w-3.5 h-3.5 rotate-180" />
+            <span>الصفحة الرئيسية</span>
+            <ArrowRight className="w-3 h-3 rotate-180" />
           </Link>
         </div>
       </div>
