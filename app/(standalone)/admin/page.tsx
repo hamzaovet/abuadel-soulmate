@@ -53,6 +53,7 @@ import {
   ArrowUpRight,
   ArrowDownLeft,
   Scale,
+  Home,
 } from "lucide-react";
 
 interface Toast {
@@ -1282,6 +1283,15 @@ export default function AdminDashboardPage() {
             )}
 
             {/* Quick Navigation Buttons */}
+            <Link
+              href="/"
+              className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs border border-slate-700 transition"
+              title="زيارة الصفحة الرئيسية للموقع"
+            >
+              <Home className="w-4 h-4 text-amber-400" />
+              <span>الرئيسية 🏠</span>
+            </Link>
+
             <Link
               href="/pos"
               className="flex items-center gap-1.5 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-black font-bold px-3.5 py-1.5 rounded-xl text-xs shadow-md transition"

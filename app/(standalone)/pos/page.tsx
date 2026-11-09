@@ -37,6 +37,9 @@ import {
   Clock,
   LogOut,
   SlidersHorizontal,
+  Home,
+  Crown,
+  Shield,
 } from "lucide-react";
 
 export default function PosTerminalPage() {
@@ -454,11 +457,11 @@ export default function PosTerminalPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#07070a] text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-black" dir="rtl">
+    <div className="h-screen max-h-screen overflow-hidden bg-[#07070a] text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-black" dir="rtl">
       {/* ─────────────────────────────────────────────────────────────
           1. POS TOP HEADER
          ───────────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 bg-[#120d14]/95 backdrop-blur-md border-b border-amber-500/25 px-4 sm:px-6 py-2.5 flex items-center justify-between shadow-lg no-print">
+      <header className="shrink-0 z-40 bg-[#120d14]/95 backdrop-blur-md border-b border-amber-500/25 px-3 sm:px-5 py-2 flex items-center justify-between shadow-lg no-print">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl overflow-hidden border-2 border-amber-400 bg-black shrink-0 p-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -483,8 +486,8 @@ export default function PosTerminalPage() {
           </div>
         </div>
 
-        {/* Top Controls & Outlet Switcher */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        {/* Top Controls & Direct Navigation */}
+        <div className="flex items-center gap-2 sm:gap-2.5">
           {/* Outlet Switcher (Maestro Owner only) or Locked Badge (Cashiers & Branch Managers) */}
           {isOwner ? (
             <select
@@ -509,16 +512,16 @@ export default function PosTerminalPage() {
             </div>
           )}
 
-          {/* Quick Expense (صرف نقدية من الدرج) */}
+          {/* Quick Expense */}
           <button
             onClick={() => setShowExpenseModal(true)}
             className="py-1.5 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
           >
             <Wallet className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">مصروف نثريات 💸</span>
+            <span className="hidden xl:inline">مصروف نثريات 💸</span>
           </button>
 
-          {/* Close Shift (إقفال الوردية) */}
+          {/* Close Shift */}
           <button
             onClick={() => setShowShiftModal(true)}
             className="py-1.5 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-black transition flex items-center gap-1.5 cursor-pointer shadow-sm"
@@ -526,6 +529,35 @@ export default function PosTerminalPage() {
             <Lock className="w-3.5 h-3.5 text-amber-400" />
             <span>إقفال الوردية 🔒</span>
           </button>
+
+          {/* Navigation to Admin (Crucial Exit Button!) */}
+          <Link
+            href="/admin"
+            className="py-1.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs transition flex items-center gap-1.5 shadow-md shadow-amber-500/20 hover:scale-105"
+            title="الذهاب إلى لوحة الإدارة العامة"
+          >
+            <Crown className="w-3.5 h-3.5 text-slate-950" />
+            <span>لوحة الإدارة 👑</span>
+          </Link>
+
+          {/* Link to KDS */}
+          <Link
+            href="/kds"
+            className="py-1.5 px-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs font-bold transition flex items-center gap-1"
+            title="شاشة الباريستا والمطبخ"
+          >
+            <span>شاشة KDS ☕</span>
+          </Link>
+
+          {/* Link to Home (Storefront) */}
+          <Link
+            href="/"
+            className="py-1.5 px-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs font-bold transition flex items-center gap-1"
+            title="الصفحة الرئيسية للموقع"
+          >
+            <Home className="w-3.5 h-3.5 text-amber-400" />
+            <span className="hidden md:inline">الرئيسية 🏠</span>
+          </Link>
 
           {/* Card 2 QR */}
           <button
@@ -536,30 +568,23 @@ export default function PosTerminalPage() {
             <QrCode className="w-4 h-4" />
           </button>
 
-          {/* Link to KDS */}
-          <Link
-            href="/kds"
-            className="py-1.5 px-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-xs font-bold transition flex items-center gap-1"
-          >
-            <span>شاشة KDS 🥞</span>
-          </Link>
-
           {/* Refresh */}
           <button
             onClick={loadPosData}
             className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 transition cursor-pointer"
-            title="تحديث"
+            title="تحديث البيانات"
           >
             <RefreshCw className="w-4 h-4" />
           </button>
 
-          {/* Logout */}
+          {/* Logout Button */}
           <button
             onClick={handleLogout}
-            className="p-2 rounded-xl bg-white/5 hover:bg-rose-500/20 hover:text-rose-300 text-slate-400 transition cursor-pointer"
-            title="تسجيل خروج"
+            className="py-1.5 px-3 rounded-xl bg-rose-500/15 hover:bg-rose-500 text-rose-300 hover:text-white border border-rose-500/30 text-xs font-black transition flex items-center gap-1.5 cursor-pointer"
+            title="تسجيل الخروج"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="w-3.5 h-3.5" />
+            <span>خروج 🚪</span>
           </button>
         </div>
       </header>
@@ -567,13 +592,13 @@ export default function PosTerminalPage() {
       {/* ─────────────────────────────────────────────────────────────
           2. MAIN POS WORKSPACE: 3 COLUMNS (TABLES | MENU | CART/CHECKOUT)
          ───────────────────────────────────────────────────────────── */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-3 p-3 sm:p-4 overflow-hidden no-print">
+      <div className="flex-1 min-h-0 h-[calc(100vh-58px)] max-h-[calc(100vh-58px)] grid grid-cols-1 lg:grid-cols-12 gap-3 p-3 overflow-hidden no-print">
         {/* COLUMN 1: FLOOR PLAN & TABLES (For Soulmate Cafe) or Quick Order Types (3 Cols) */}
-        <div className="lg:col-span-3 bg-[#110c14] border border-white/10 rounded-3xl p-3 flex flex-col space-y-3">
-          <div className="flex items-center justify-between border-b border-white/10 pb-2">
+        <div className="lg:col-span-3 h-full max-h-full bg-[#110c14] border border-white/10 rounded-2xl p-3 flex flex-col overflow-hidden">
+          <div className="shrink-0 flex items-center justify-between border-b border-white/10 pb-2">
             <h3 className="font-black text-xs text-white flex items-center gap-1.5">
               <LayoutGrid className="w-4 h-4 text-amber-400" />
-              <span>{isAbuAdel ? "نوع طلب حلواني أبو عادل" : "ترابيزات وصالة الكافيه 💺"}</span>
+              <span>{isAbuAdel ? "نوع طلب حلواني أبو عادل" : "ترابيزات وصالة الكافيه 🪑"}</span>
             </h3>
 
             {isSoulmate && selectedTable && (
@@ -591,7 +616,7 @@ export default function PosTerminalPage() {
 
           {isAbuAdel ? (
             /* Abu Adel Order Type Switcher */
-            <div className="space-y-2">
+            <div className="shrink-0 space-y-2 mt-2">
               <div className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-black/60 border border-white/10 text-xs font-bold text-center">
                 <button
                   onClick={() => setOrderType("TAKEAWAY")}
@@ -615,19 +640,19 @@ export default function PosTerminalPage() {
                     orderType === "DINE_IN" ? "bg-rose-500 text-white font-black" : "text-slate-400"
                   }`}
                 >
-                  صالة 💺
+                  صالة 🍽️
                 </button>
               </div>
 
               <div className="p-3 rounded-2xl bg-black/40 border border-white/5 text-[11px] space-y-1.5">
                 <span className="text-amber-300 font-bold block">معلومات حلواني أبو عادل:</span>
                 <p className="text-slate-400">الخط الساخن الموحد: 15992</p>
-                <p className="text-slate-400">كاشير المعرض: بيع مباشر للأوزان والقطع والتورت والعلب المشكلة.</p>
+                <p className="text-slate-400">كاشير المعرض: بيع مباشر للزبائن والقطع والتورت والعلب المشكلة.</p>
               </div>
             </div>
           ) : (
             /* Soulmate Visual Table Layout */
-            <div className="flex-1 overflow-y-auto space-y-2.5 pr-1">
+            <div className="flex-1 overflow-y-auto min-h-0 space-y-2 pr-1 mt-2">
               {tables.map((t) => {
                 const isSelected = selectedTable?.id === t.id;
                 const isOccupied = t.status === "OCCUPIED";
@@ -638,10 +663,10 @@ export default function PosTerminalPage() {
                     onClick={() => handleSelectTable(t)}
                     className={`w-full p-2.5 rounded-2xl border text-right transition flex items-center justify-between cursor-pointer ${
                       isSelected
-                        ? "bg-amber-500/20 border-amber-400 text-white shadow-md shadow-amber-500/20 ring-1 ring-amber-400"
+                        ? "bg-amber-500/20 border-amber-400 text-white shadow-lg shadow-amber-500/10"
                         : isOccupied
-                        ? "bg-[#1f121a] border-rose-500/40 text-rose-200"
-                        : "bg-black/40 hover:bg-white/5 border-white/5 text-slate-300"
+                        ? "bg-rose-950/20 border-rose-500/40 text-rose-200 hover:bg-rose-900/30"
+                        : "bg-black/40 border-white/5 text-slate-300 hover:bg-white/5"
                     }`}
                   >
                     <div>
@@ -650,7 +675,7 @@ export default function PosTerminalPage() {
                         <span className="text-[10px] text-slate-400">({t.capacity} كراسي)</span>
                       </div>
                       <span className="text-[10px] text-slate-400 block pt-0.5">
-                        {t.zone === "OUTDOOR" ? "تراس خارجي 🌿" : t.zone === "VIP_LOUNGE" ? "ركن VIP 👑" : "صالة داخلية"}
+                        {t.zone === "OUTDOOR" ? "تراس خارجي 🌿" : t.zone === "VIP_LOUNGE" ? "صالون VIP 👑" : "صالة داخلية"}
                       </span>
                     </div>
 
@@ -678,9 +703,9 @@ export default function PosTerminalPage() {
         </div>
 
         {/* COLUMN 2: MENU CATALOG (5 Cols) */}
-        <div className="lg:col-span-5 bg-[#110c14] border border-white/10 rounded-3xl p-3 flex flex-col space-y-3">
+        <div className="lg:col-span-5 h-full max-h-full bg-[#110c14] border border-white/10 rounded-2xl p-3 flex flex-col overflow-hidden">
           {/* Search & Categories */}
-          <div className="space-y-2">
+          <div className="shrink-0 space-y-2 pb-2">
             <div className="relative">
               <Search className="w-4 h-4 absolute right-3 top-2.5 text-slate-400" />
               <input
@@ -697,7 +722,7 @@ export default function PosTerminalPage() {
               <button
                 onClick={() => setActiveCategory("ALL")}
                 className={`py-1 px-3 rounded-lg transition whitespace-nowrap cursor-pointer ${
-                  activeCategory === "ALL" ? "bg-amber-500 text-slate-950 font-black" : "bg-white/5 text-slate-400"
+                  activeCategory === "ALL" ? "bg-amber-500 text-slate-950 font-black" : "bg-white/5 text-slate-400 hover:text-white"
                 }`}
               >
                 الكل ✨
@@ -712,7 +737,7 @@ export default function PosTerminalPage() {
                       ? isAbuAdel
                         ? "bg-rose-500 text-white font-black"
                         : "bg-amber-500 text-slate-950 font-black"
-                      : "bg-white/5 text-slate-400"
+                      : "bg-white/5 text-slate-400 hover:text-white"
                   }`}
                 >
                   <span>{cat.nameAr}</span> <span className="mr-0.5">{cat.icon}</span>
@@ -721,8 +746,8 @@ export default function PosTerminalPage() {
             </div>
           </div>
 
-          {/* Menu Items Grid */}
-          <div className="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 gap-2.5 pr-1">
+          {/* Menu Items Grid: Strictly scrolls inside column 2 */}
+          <div className="flex-1 overflow-y-auto min-h-0 grid grid-cols-2 sm:grid-cols-3 gap-2 pr-1 content-start">
             {filteredMenuItems.map((item) => (
               <button
                 key={item.id}
@@ -755,16 +780,16 @@ export default function PosTerminalPage() {
         </div>
 
         {/* COLUMN 3: CART, CHECKOUT & SETTLEMENT (4 Cols) */}
-        <div className="lg:col-span-4 bg-[#110c14] border border-white/10 rounded-3xl p-3.5 flex flex-col justify-between space-y-3">
-          {/* Header */}
-          <div className="border-b border-white/10 pb-2 flex items-center justify-between">
+        <div className="lg:col-span-4 h-full max-h-full bg-[#110c14] border border-white/10 rounded-2xl p-3 flex flex-col overflow-hidden">
+          {/* Header: shrink-0 */}
+          <div className="shrink-0 border-b border-white/10 pb-2 flex items-center justify-between">
             <div>
               <h3 className="font-black text-sm text-white flex items-center gap-1.5">
                 <Receipt className="w-4 h-4 text-amber-400" />
                 <span>لوحة الحساب والفاتورة</span>
               </h3>
               <p className="text-[11px] text-amber-300 font-bold">
-                {selectedTable ? `💺 ترابيزة: ${selectedTable.tableNumber}` : `🛍️ ${orderType === "TAKEAWAY" ? "طلب تيك أواي" : "طلب دليفري"}`}
+                {selectedTable ? `🪑 ترابيزة: ${selectedTable.tableNumber}` : `🛍️ ${orderType === "TAKEAWAY" ? "طلب تيك أواي سفري" : "طلب دليفري"}`}
               </p>
             </div>
 
@@ -791,25 +816,45 @@ export default function PosTerminalPage() {
             )}
           </div>
 
-          {/* Cart Items List */}
-          <div className="flex-1 overflow-y-auto space-y-2 pr-1 max-h-56">
+          {/* Delivery Info Inputs if Delivery: shrink-0 */}
+          {orderType === "DELIVERY" && (
+            <div className="shrink-0 grid grid-cols-2 gap-1.5 py-1.5 border-b border-white/5 text-[11px]">
+              <input
+                type="text"
+                placeholder="اسم العميل..."
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                className="py-1 px-2 rounded-lg bg-black/60 border border-white/10 text-white text-xs outline-none"
+              />
+              <input
+                type="tel"
+                placeholder="رقم الهاتف..."
+                value={customerPhone}
+                onChange={(e) => setCustomerPhone(e.target.value)}
+                className="py-1 px-2 rounded-lg bg-black/60 border border-white/10 text-white text-xs outline-none"
+              />
+            </div>
+          )}
+
+          {/* Cart Items List: SCROLLABLE INDEPENDENTLY */}
+          <div className="flex-1 overflow-y-auto min-h-0 space-y-1.5 pr-1 py-1">
             {cart.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center text-slate-500 text-xs py-10">
-                <Receipt className="w-8 h-8 mb-1 opacity-40" />
-                <span>الشيك فارغ حالياً</span>
-                <span className="text-[10px] text-slate-600">اختر أصناف من القائمة أو الترابيزة للإضافة</span>
+              <div className="h-full min-h-[120px] flex flex-col items-center justify-center text-center text-slate-500 text-xs py-4">
+                <Receipt className="w-8 h-8 mb-1 opacity-30 text-amber-400" />
+                <span className="font-bold text-slate-400">الفاتورة فارغة حالياً</span>
+                <span className="text-[10px] text-slate-600">اختر أصنافاً من المنيو للإضافة</span>
               </div>
             ) : (
               cart.map((it) => (
                 <div key={it.menuItemId} className="p-2 rounded-xl bg-black/40 border border-white/5 flex items-center justify-between text-xs">
-                  <div className="flex-1">
-                    <span className="font-bold text-white block">{it.nameAr}</span>
+                  <div className="flex-1 min-w-0">
+                    <span className="font-bold text-white block truncate">{it.nameAr}</span>
                     <span className="text-[10px] text-slate-400 font-mono">
-                      {it.price} ج × {it.qty} = <strong className="text-amber-300">{it.price * it.qty} ج</strong>
+                      {it.price} ج × {it.qty} = <strong className="text-amber-300 font-black">{it.price * it.qty} ج</strong>
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 shrink-0">
                     <button
                       onClick={() => updateCartQty(it.menuItemId, -1)}
                       className="w-5 h-5 rounded bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer"
@@ -835,107 +880,123 @@ export default function PosTerminalPage() {
             )}
           </div>
 
-          {/* Discount & Tip Inputs */}
-          <div className="grid grid-cols-2 gap-2 text-xs border-t border-white/10 pt-2 font-mono">
-            <div>
-              <label className="text-[10px] text-slate-400 block mb-0.5">خصم (ج.م):</label>
-              <input
-                type="number"
-                min={0}
-                value={discountAmount}
-                onChange={(e) => setDiscountAmount(Number(e.target.value))}
-                className="w-full py-1 px-2 rounded-lg bg-black/60 border border-white/10 text-white text-xs font-bold text-center"
-              />
-            </div>
-            <div>
-              <label className="text-[10px] text-slate-400 block mb-0.5">إكرامية / Tip (ج.م):</label>
-              <input
-                type="number"
-                min={0}
-                value={tipAmount}
-                onChange={(e) => setTipAmount(Number(e.target.value))}
-                className="w-full py-1 px-2 rounded-lg bg-black/60 border border-white/10 text-white text-xs font-bold text-center"
-              />
-            </div>
-          </div>
-
-          {/* Payment Method Selector */}
-          <div className="grid grid-cols-4 gap-1 text-[11px] font-bold">
-            <button
-              onClick={() => setPaymentMethod("CASH")}
-              className={`py-1.5 rounded-lg border transition cursor-pointer flex flex-col items-center gap-0.5 ${
-                paymentMethod === "CASH" ? "bg-amber-500 text-slate-950 font-black border-amber-400" : "bg-black/40 text-slate-400 border-white/5"
-              }`}
-            >
-              <span>💵</span>
-              <span>كاش</span>
-            </button>
-            <button
-              onClick={() => setPaymentMethod("CARD")}
-              className={`py-1.5 rounded-lg border transition cursor-pointer flex flex-col items-center gap-0.5 ${
-                paymentMethod === "CARD" ? "bg-sky-500 text-white font-black border-sky-400" : "bg-black/40 text-slate-400 border-white/5"
-              }`}
-            >
-              <span>💳</span>
-              <span>فيزا</span>
-            </button>
-            <button
-              onClick={() => setPaymentMethod("INSTAPAY")}
-              className={`py-1.5 rounded-lg border transition cursor-pointer flex flex-col items-center gap-0.5 ${
-                paymentMethod === "INSTAPAY" ? "bg-purple-600 text-white font-black border-purple-400" : "bg-black/40 text-slate-400 border-white/5"
-              }`}
-            >
-              <span>⚡</span>
-              <span>انستاباي</span>
-            </button>
-            <button
-              onClick={() => setPaymentMethod("VODAFONE_CASH")}
-              className={`py-1.5 rounded-lg border transition cursor-pointer flex flex-col items-center gap-0.5 ${
-                paymentMethod === "VODAFONE_CASH" ? "bg-rose-600 text-white font-black border-rose-400" : "bg-black/40 text-slate-400 border-white/5"
-              }`}
-            >
-              <span>📱</span>
-              <span>فودافون</span>
-            </button>
-          </div>
-
-          {/* Totals Breakdown & Settle Button */}
-          <div className="space-y-1.5 border-t border-white/10 pt-2 text-xs">
-            <div className="flex justify-between text-slate-400 font-mono text-[11px]">
-              <span>المجموع الفرعي:</span>
-              <span>{rawSubtotal} ج</span>
-            </div>
-            {settings?.isServiceChargeEnabled && (
-              <div className="flex justify-between text-slate-400 font-mono text-[11px]">
-                <span>خدمة ({settings.serviceChargePercent}%):</span>
-                <span>+{calculatedService.toFixed(2)} ج</span>
+          {/* PINNED SETTLEMENT PANEL - PERMANENTLY VISIBLE AT THE BOTTOM */}
+          <div className="shrink-0 border-t border-white/10 pt-2 space-y-2 bg-[#110c14]">
+            {/* Discount & Tip Inputs */}
+            <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+              <div>
+                <label className="text-[10px] text-slate-400 block mb-0.5">خصم (ج.م):</label>
+                <input
+                  type="number"
+                  min={0}
+                  value={discountAmount || ""}
+                  placeholder="0"
+                  onChange={(e) => setDiscountAmount(Number(e.target.value))}
+                  className="w-full py-1 px-2 rounded-lg bg-black/60 border border-white/10 text-white text-xs font-bold text-center outline-none focus:border-amber-400"
+                />
               </div>
-            )}
-            {settings?.isTaxEnabled && (
-              <div className="flex justify-between text-slate-400 font-mono text-[11px]">
-                <span>ضريبة ({settings.taxPercent}%):</span>
-                <span>+{calculatedTax.toFixed(2)} ج</span>
+              <div>
+                <label className="text-[10px] text-slate-400 block mb-0.5">إكرامية / Tip (ج.م):</label>
+                <input
+                  type="number"
+                  min={0}
+                  value={tipAmount || ""}
+                  placeholder="0"
+                  onChange={(e) => setTipAmount(Number(e.target.value))}
+                  className="w-full py-1 px-2 rounded-lg bg-black/60 border border-white/10 text-white text-xs font-bold text-center outline-none focus:border-amber-400"
+                />
               </div>
-            )}
-            <div className="flex justify-between text-base font-black border-t border-white/10 pt-1.5">
-              <span className="text-white">المبلغ النهائي المطلوب:</span>
-              <span className="font-mono text-amber-400 text-lg">{calculatedFinal} ج.م</span>
             </div>
 
-            <button
-              onClick={handleSettleAndPrint}
-              disabled={settlingOrder || cart.length === 0}
-              className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-sm transition shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-            >
-              {settlingOrder ? (
-                <span>جارٍ التحصيل...</span>
-              ) : (
-                <>
-                  <Printer className="w-4 h-4" />
-                  <span>تحصيل {calculatedFinal} ج.م وطباعة الإيصال 🖨️</span>
-                </>
+            {/* Payment Method Selector */}
+            <div className="grid grid-cols-4 gap-1 text-[11px] font-bold">
+              <button
+                onClick={() => setPaymentMethod("CASH")}
+                className={`py-1.5 rounded-lg border transition cursor-pointer flex flex-col items-center gap-0.5 ${
+                  paymentMethod === "CASH" ? "bg-amber-500 text-slate-950 font-black border-amber-400 shadow-md shadow-amber-500/20" : "bg-black/40 text-slate-400 border-white/5 hover:text-white"
+                }`}
+              >
+                <span>💵</span>
+                <span>كاش</span>
+              </button>
+              <button
+                onClick={() => setPaymentMethod("CARD")}
+                className={`py-1.5 rounded-lg border transition cursor-pointer flex flex-col items-center gap-0.5 ${
+                  paymentMethod === "CARD" ? "bg-sky-500 text-white font-black border-sky-400 shadow-md shadow-sky-500/20" : "bg-black/40 text-slate-400 border-white/5 hover:text-white"
+                }`}
+              >
+                <span>💳</span>
+                <span>فيزا</span>
+              </button>
+              <button
+                onClick={() => setPaymentMethod("INSTAPAY")}
+                className={`py-1.5 rounded-lg border transition cursor-pointer flex flex-col items-center gap-0.5 ${
+                  paymentMethod === "INSTAPAY" ? "bg-purple-600 text-white font-black border-purple-400 shadow-md shadow-purple-600/20" : "bg-black/40 text-slate-400 border-white/5 hover:text-white"
+                }`}
+              >
+                <span>⚡</span>
+                <span>إنستاباي</span>
+              </button>
+              <button
+                onClick={() => setPaymentMethod("VODAFONE_CASH")}
+                className={`py-1.5 rounded-lg border transition cursor-pointer flex flex-col items-center gap-0.5 ${
+                  paymentMethod === "VODAFONE_CASH" ? "bg-rose-600 text-white font-black border-rose-400 shadow-md shadow-rose-600/20" : "bg-black/40 text-slate-400 border-white/5 hover:text-white"
+                }`}
+              >
+                <span>📱</span>
+                <span>فودافون</span>
+              </button>
+            </div>
+
+            {/* Totals Breakdown & Settle Button */}
+            <div className="space-y-1 border-t border-white/10 pt-1.5 text-xs">
+              <div className="flex justify-between text-slate-400 font-mono text-[11px]">
+                <span>المجموع الفرعي:</span>
+                <span>{rawSubtotal} ج</span>
+              </div>
+              {settings?.isServiceChargeEnabled && (
+                <div className="flex justify-between text-slate-400 font-mono text-[11px]">
+                  <span>خدمة ({settings.serviceChargePercent}%):</span>
+                  <span>+{calculatedService.toFixed(2)} ج</span>
+                </div>
               )}
-            </button>
+              {settings?.isTaxEnabled && (
+                <div className="flex justify-between text-slate-400 font-mono text-[11px]">
+                  <span>ضريبة ({settings.taxPercent}%):</span>
+                  <span>+{calculatedTax.toFixed(2)} ج</span>
+                </div>
+              )}
+              <div className="flex justify-between items-center text-sm font-black border-t border-white/10 pt-1">
+                <span className="text-white">المبلغ المطلوب:</span>
+                <span className="font-mono text-amber-400 text-base font-black">{calculatedFinal} ج.م</span>
+              </div>
+
+              <div className="flex items-center gap-1.5 pt-1">
+                {cart.length > 0 && (
+                  <button
+                    onClick={() => setCart([])}
+                    className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 text-xs font-bold transition cursor-pointer"
+                    title="مسح الفاتورة بالكامل"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+                <button
+                  onClick={handleSettleAndPrint}
+                  disabled={settlingOrder || cart.length === 0}
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs sm:text-sm transition shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  {settlingOrder ? (
+                    <span>جاري التحصيل والطباعة...</span>
+                  ) : (
+                    <>
+                      <Printer className="w-4 h-4" />
+                      <span>تحصيل {calculatedFinal} ج.م وطباعة الإيصال 🖨️</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

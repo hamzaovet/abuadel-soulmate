@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Coffee,
@@ -15,9 +16,13 @@ import {
   Sparkles,
   ArrowRight,
   BellRing,
+  Crown,
+  Home,
+  Receipt,
 } from "lucide-react";
 
 export default function KdsScreenPage() {
+  const router = useRouter();
   const [tickets, setTickets] = useState<any[]>([]);
   const [stationFilter, setStationFilter] = useState<string>("ALL");
   const [loading, setLoading] = useState(true);
@@ -25,6 +30,12 @@ export default function KdsScreenPage() {
 
   // Audio Context Ref
   const lastTicketIdRef = useRef<string | null>(null);
+
+  const handleLogout = () => {
+    localStorage.removeItem("abuadel_soulmate_user");
+    localStorage.removeItem("abuadel_auth_user");
+    router.push("/login");
+  };
 
   const playChime = () => {
     if (!soundEnabled) return;
@@ -86,40 +97,40 @@ export default function KdsScreenPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#07070b] text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-black" dir="rtl">
+    <div className="h-screen max-h-screen overflow-hidden bg-[#07070b] text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-black" dir="rtl">
       {/* KDS TOP HEADER */}
-      <header className="sticky top-0 z-40 bg-[#120d14]/95 backdrop-blur-md border-b border-amber-500/25 px-4 sm:px-8 py-3 flex items-center justify-between shadow-lg">
+      <header className="shrink-0 z-40 bg-[#120d14]/95 backdrop-blur-md border-b border-amber-500/25 px-3 sm:px-6 py-2.5 flex items-center justify-between shadow-lg">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl overflow-hidden border-2 border-amber-400 bg-black shrink-0 p-1">
+          <div className="w-10 h-10 rounded-2xl overflow-hidden border-2 border-amber-400 bg-black shrink-0 p-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/soulmate-logo.svg" alt="Logo" className="w-full h-full object-contain" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-base sm:text-lg font-black text-amber-300">
+              <h1 className="text-sm sm:text-base font-black text-amber-300">
                 شاشة الباريستا والمطبخ الفورية (KDS Live)
               </h1>
               <span className="py-0.5 px-2 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black animate-pulse">
                 مباشر 🟢
               </span>
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-[11px] text-slate-400">
               توجيه آلي للطلبات من الترابيزات والكاشير لمحطة التحضير
             </p>
           </div>
         </div>
 
         {/* Station Filters & Controls */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-2.5">
           {/* Station Filter Pills */}
-          <div className="hidden md:flex items-center gap-1 p-1 rounded-xl bg-black/60 border border-white/10 text-xs font-bold">
+          <div className="hidden lg:flex items-center gap-1 p-1 rounded-xl bg-black/60 border border-white/10 text-xs font-bold">
             <button
               onClick={() => setStationFilter("ALL")}
               className={`py-1 px-3 rounded-lg transition ${
                 stationFilter === "ALL" ? "bg-amber-500 text-slate-950 font-black" : "text-slate-400 hover:text-white"
               }`}
             >
-              كل المحطات 🛎️
+              كل المحطات ⚡
             </button>
             <button
               onClick={() => setStationFilter("BARISTA")}
@@ -153,7 +164,7 @@ export default function KdsScreenPage() {
             className={`p-2 rounded-xl transition cursor-pointer ${
               soundEnabled ? "bg-amber-500/20 text-amber-300 border border-amber-500/30" : "bg-white/5 text-slate-500"
             }`}
-            title={soundEnabled ? "صوت الجرس مفعّل" : "صوت الجرس مكتوم"}
+            title={soundEnabled ? "صوت الجرس مفعل" : "صوت الجرس مكتوم"}
           >
             {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
           </button>
@@ -166,17 +177,48 @@ export default function KdsScreenPage() {
             <RefreshCw className="w-4 h-4" />
           </button>
 
+          {/* Direct Exit & Navigation Buttons */}
+          <Link
+            href="/admin"
+            className="py-1.5 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-bold text-xs transition flex items-center gap-1.5"
+            title="العودة للوحة الإدارة"
+          >
+            <Crown className="w-3.5 h-3.5 text-amber-400" />
+            <span className="hidden sm:inline">لوحة الإدارة 👑</span>
+          </Link>
+
           <Link
             href="/pos"
-            className="py-1.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition shadow-md hidden sm:inline"
+            className="py-1.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs transition shadow-md flex items-center gap-1.5"
+            title="الذهاب لشاشة كاشير POS"
           >
-            شاشة الكاشير POS 💰
+            <Receipt className="w-3.5 h-3.5" />
+            <span>كاشير POS 🧾</span>
           </Link>
+
+          <Link
+            href="/"
+            className="py-1.5 px-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs font-bold transition flex items-center gap-1"
+            title="الصفحة الرئيسية للموقع"
+          >
+            <Home className="w-3.5 h-3.5 text-amber-400" />
+            <span className="hidden md:inline">الرئيسية 🏠</span>
+          </Link>
+
+          {/* Logout */}
+          <button
+            onClick={handleLogout}
+            className="py-1.5 px-3 rounded-xl bg-rose-500/15 hover:bg-rose-500 text-rose-300 hover:text-white border border-rose-500/30 text-xs font-black transition flex items-center gap-1.5 cursor-pointer"
+            title="تسجيل الخروج"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>خروج 🚪</span>
+          </button>
         </div>
       </header>
 
-      {/* TICKETS BOARD */}
-      <main className="flex-1 p-4 sm:p-6 space-y-4">
+      {/* TICKETS BOARD: Smooth inner scroll */}
+      <main className="flex-1 min-h-0 h-[calc(100vh-62px)] overflow-y-auto p-4 sm:p-6 space-y-4">
         {tickets.length === 0 ? (
           <div className="h-96 flex flex-col items-center justify-center text-center space-y-3 text-slate-500">
             <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center text-slate-600">
