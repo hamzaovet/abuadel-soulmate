@@ -20,10 +20,13 @@ export const SOULMATE_CATEGORIES: CategoryDef[] = [
 ];
 
 export const ABU_ADEL_CATEGORIES: CategoryDef[] = [
-  { id: "ORIENTAL_SWEETS", nameAr: "شرقيات ملكية", nameEn: "Oriental Sweets", icon: "🍯" },
-  { id: "CAKES_TORTES", nameAr: "تورت وكيك مناسبات", nameEn: "Cakes & Tortes", icon: "🎂" },
-  { id: "WESTERN_PASTRY", nameAr: "جاتوه وغربي فاخر", nameEn: "Western Pastry", icon: "🍰" },
-  { id: "GIFT_BOXES", nameAr: "علب وبوكسات هدايا", nameEn: "Gift Boxes", icon: "🎁" },
+  { id: "ORIENTAL_SWEETS", nameAr: "شرقيات وبسبوسة وكنافة", nameEn: "Oriental Sweets", icon: "🍯" },
+  { id: "CAKES_TORTES", nameAr: "تورت ومناسبات ومقاسات", nameEn: "Cakes & Occasions", icon: "🎂" },
+  { id: "WESTERN_PASTRY", nameAr: "جاتوهات وطواجن وديسباسيتو", nameEn: "Gateaux & Desserts", icon: "🍰" },
+  { id: "BAKERY_FETEER", nameAr: "مخبوزات وفطير وساليزون", nameEn: "Bakery & Feteer", icon: "🥐" },
+  { id: "KAHK_NOVAM", nameAr: "كعك ونواعم وبيتي فور", nameEn: "Kahk & Cookies", icon: "🍪" },
+  { id: "CHOCOLATE_SWEETS", nameAr: "شوكولاتة وبارات فاخرة", nameEn: "Chocolates & Bars", icon: "🍫" },
+  { id: "GIFT_BOXES", nameAr: "علب وبوكسات مشكلة", nameEn: "Gift Boxes", icon: "🎁" },
 ];
 
 export const ALL_CATEGORIES: CategoryDef[] = [

@@ -166,7 +166,7 @@ export default function DualBrandLandingPage() {
             <span>
               {activeBrand === "SOULMATE"
                 ? "☕ مرحباً بك في سول ميت كافيه VIP - قهوة مختصة وأجواء استثنائية مع خدمة الطلب من الترابيزة"
-                : "🍰 حلواني أبو عادل المستقل - حلي يومك مع المذاق المصري الأصيل وتوصيل دليفري (الخط الساخن: 15992)"}
+                : "🍰 حلواني أبو عادل المستقل - حلي يومك مع المذاق المصري الأصيل وتوصيل دليفري (حجوزات وطلبات: 01146862114)"}
             </span>
           </div>
 
@@ -331,7 +331,7 @@ export default function DualBrandLandingPage() {
                   href={`tel:${
                     activeBrand === "SOULMATE"
                       ? settings?.soulmatePhone || "01099887766"
-                      : settings?.hotline || "15992"
+                      : settings?.abuAdelPhone || "01146862114"
                   }`}
                   className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 px-5 py-3 rounded-xl text-sm font-bold transition shadow"
                 >
@@ -339,7 +339,7 @@ export default function DualBrandLandingPage() {
                   <span>
                     {activeBrand === "SOULMATE"
                       ? `هاتف الكافيه: ${settings?.soulmatePhone || "01099887766"}`
-                      : `الخط الساخن: ${settings?.hotline || "15992"}`}
+                      : `حجوزات وطلبات: ${settings?.abuAdelPhone || "01146862114"}`}
                   </span>
                 </a>
               </div>

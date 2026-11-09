@@ -19,7 +19,7 @@ export default function CardQRModal({
   activeTable,
   hotline = "15992",
   soulmatePhone = "01099887766",
-  abuAdelPhone = "15992",
+  abuAdelPhone = "01146862114",
 }: CardQRModalProps) {
   const [originUrl, setOriginUrl] = useState("");
   const [tableQrDataUrl, setTableQrDataUrl] = useState("");
