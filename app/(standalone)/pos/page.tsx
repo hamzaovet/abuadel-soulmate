@@ -5,6 +5,11 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import CardQRModal from "@/components/CardQRModal";
 import {
+  SOULMATE_CATEGORIES,
+  ABU_ADEL_CATEGORIES,
+  getCategoryLabel,
+} from "@/lib/categories";
+import {
   Coffee,
   Cake,
   LayoutGrid,
@@ -698,69 +703,21 @@ export default function PosTerminalPage() {
                 الكل ✨
               </button>
 
-              {isAbuAdel ? (
-                <>
-                  <button
-                    onClick={() => setActiveCategory("ORIENTAL_SWEETS")}
-                    className={`py-1 px-3 rounded-lg transition whitespace-nowrap cursor-pointer ${
-                      activeCategory === "ORIENTAL_SWEETS" ? "bg-rose-500 text-white font-black" : "bg-white/5 text-slate-400"
-                    }`}
-                  >
-                    شرقي 🍯
-                  </button>
-                  <button
-                    onClick={() => setActiveCategory("CAKES_TORTES")}
-                    className={`py-1 px-3 rounded-lg transition whitespace-nowrap cursor-pointer ${
-                      activeCategory === "CAKES_TORTES" ? "bg-rose-500 text-white font-black" : "bg-white/5 text-slate-400"
-                    }`}
-                  >
-                    تورت 🎂
-                  </button>
-                  <button
-                    onClick={() => setActiveCategory("WESTERN_PASTRY")}
-                    className={`py-1 px-3 rounded-lg transition whitespace-nowrap cursor-pointer ${
-                      activeCategory === "WESTERN_PASTRY" ? "bg-rose-500 text-white font-black" : "bg-white/5 text-slate-400"
-                    }`}
-                  >
-                    جاتوهات 🍰
-                  </button>
-                  <button
-                    onClick={() => setActiveCategory("GIFT_BOXES")}
-                    className={`py-1 px-3 rounded-lg transition whitespace-nowrap cursor-pointer ${
-                      activeCategory === "GIFT_BOXES" ? "bg-rose-500 text-white font-black" : "bg-white/5 text-slate-400"
-                    }`}
-                  >
-                    نواعم وعلب 🎁
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={() => setActiveCategory("HOT_COFFEE")}
-                    className={`py-1 px-3 rounded-lg transition whitespace-nowrap cursor-pointer ${
-                      activeCategory === "HOT_COFFEE" ? "bg-amber-500 text-slate-950 font-black" : "bg-white/5 text-slate-400"
-                    }`}
-                  >
-                    قهوة ساخنة ☕
-                  </button>
-                  <button
-                    onClick={() => setActiveCategory("COLD_COFFEE")}
-                    className={`py-1 px-3 rounded-lg transition whitespace-nowrap cursor-pointer ${
-                      activeCategory === "COLD_COFFEE" ? "bg-amber-500 text-slate-950 font-black" : "bg-white/5 text-slate-400"
-                    }`}
-                  >
-                    قهوة مثلجة 🧊
-                  </button>
-                  <button
-                    onClick={() => setActiveCategory("WAFFLES_PANCAKES")}
-                    className={`py-1 px-3 rounded-lg transition whitespace-nowrap cursor-pointer ${
-                      activeCategory === "WAFFLES_PANCAKES" ? "bg-amber-500 text-slate-950 font-black" : "bg-white/5 text-slate-400"
-                    }`}
-                  >
-                    وافل وبان كيك 🥞
-                  </button>
-                </>
-              )}
+              {(isAbuAdel ? ABU_ADEL_CATEGORIES : SOULMATE_CATEGORIES).map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveCategory(cat.id)}
+                  className={`py-1 px-3 rounded-lg transition whitespace-nowrap cursor-pointer ${
+                    activeCategory === cat.id
+                      ? isAbuAdel
+                        ? "bg-rose-500 text-white font-black"
+                        : "bg-amber-500 text-slate-950 font-black"
+                      : "bg-white/5 text-slate-400"
+                  }`}
+                >
+                  <span>{cat.nameAr}</span> <span className="mr-0.5">{cat.icon}</span>
+                </button>
+              ))}
             </div>
           </div>
 
@@ -776,6 +733,11 @@ export default function PosTerminalPage() {
                   <h4 className="font-black text-xs text-white group-hover:text-amber-300 line-clamp-2">
                     {item.nameAr}
                   </h4>
+                  {item.nameEn && (
+                    <span className="text-[10px] text-amber-200/70 font-mono block truncate" dir="ltr">
+                      {item.nameEn}
+                    </span>
+                  )}
                   <span className="text-[10px] text-slate-400 block pt-0.5">
                     {item.itemType === "READY_PASTRY" ? `متبقي: ${item.stockQty} ${item.unitType}` : "تحضير فوري ☕"}
                   </span>

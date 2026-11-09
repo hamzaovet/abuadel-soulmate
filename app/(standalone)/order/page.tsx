@@ -4,6 +4,11 @@ import React, { useState, useEffect, Suspense, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
+  SOULMATE_CATEGORIES,
+  ABU_ADEL_CATEGORIES,
+  getCategoryLabel,
+} from "@/lib/categories";
+import {
   Coffee,
   Cake,
   ShoppingBag,
@@ -603,83 +608,21 @@ function TableOrderContent() {
             الكل
           </button>
 
-          {activeBrandTab === "SOULMATE" ? (
-            <>
-              <button
-                onClick={() => setActiveCategory("HOT_COFFEE")}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                  activeCategory === "HOT_COFFEE"
-                    ? "bg-amber-500 text-black font-black shadow"
-                    : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
-                }`}
-              >
-                قهوة ساخنة ☕
-              </button>
-              <button
-                onClick={() => setActiveCategory("COLD_COFFEE")}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                  activeCategory === "COLD_COFFEE"
-                    ? "bg-amber-500 text-black font-black shadow"
-                    : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
-                }`}
-              >
-                مثلجات وفرابيه وموهيتو 🧊
-              </button>
-              <button
-                onClick={() => setActiveCategory("WAFFLES_PANCAKES")}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                  activeCategory === "WAFFLES_PANCAKES"
-                    ? "bg-amber-500 text-black font-black shadow"
-                    : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
-                }`}
-              >
-                وافل وبان كيك 🥞
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                onClick={() => setActiveCategory("ORIENTAL_SWEETS")}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                  activeCategory === "ORIENTAL_SWEETS"
-                    ? "bg-emerald-600 text-white font-black shadow"
-                    : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
-                }`}
-              >
-                حلويات شرقية فاخرة 🍯
-              </button>
-              <button
-                onClick={() => setActiveCategory("CAKES_TORTES")}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                  activeCategory === "CAKES_TORTES"
-                    ? "bg-emerald-600 text-white font-black shadow"
-                    : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
-                }`}
-              >
-                تورت وكيك مناسبات 🎂
-              </button>
-              <button
-                onClick={() => setActiveCategory("WESTERN_PASTRY")}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                  activeCategory === "WESTERN_PASTRY"
-                    ? "bg-emerald-600 text-white font-black shadow"
-                    : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
-                }`}
-              >
-                جاتوه وغربي 🍰
-              </button>
-              <button
-                onClick={() => setActiveCategory("GIFT_BOXES")}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                  activeCategory === "GIFT_BOXES"
-                    ? "bg-emerald-600 text-white font-black shadow"
-                    : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
-                }`}
-              >
-                بوكسات هدايا 🎁
-              </button>
-            </>
-          )}
+          {(activeBrandTab === "SOULMATE" ? SOULMATE_CATEGORIES : ABU_ADEL_CATEGORIES).map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+                activeCategory === cat.id
+                  ? activeBrandTab === "SOULMATE"
+                    ? "bg-amber-500 text-black font-black shadow-md shadow-amber-500/20"
+                    : "bg-emerald-600 text-white font-black shadow-md shadow-emerald-600/20"
+                  : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
+              }`}
+            >
+              <span>{cat.nameAr}</span> <span className="mr-1">{cat.icon}</span>
+            </button>
+          ))}
         </div>
 
         {/* PRODUCTS LIST */}
@@ -709,18 +652,26 @@ function TableOrderContent() {
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-bold text-white text-sm truncate">{item.nameAr}</h4>
+                  <div className="flex items-center gap-1.5 mb-1 flex-wrap">
+                    <span className="text-[9px] px-1.5 py-0.5 rounded font-bold bg-slate-800 text-slate-300 border border-slate-700">
+                      {getCategoryLabel(item.category)}
+                    </span>
                     {item.loyaltyPointsEarned > 0 && settings?.isLoyaltyEnabled && (
                       <span className="text-[9px] px-1.5 py-0.2 rounded-full font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 whitespace-nowrap">
                         +{item.loyaltyPointsEarned}★
                       </span>
                     )}
                   </div>
-                  <p className="text-[11px] text-slate-400 line-clamp-2">
+                  <h4 className="font-bold text-white text-sm truncate">{item.nameAr}</h4>
+                  {item.nameEn && (
+                    <p className="text-[10px] text-amber-300/75 font-mono truncate" dir="ltr">
+                      {item.nameEn}
+                    </p>
+                  )}
+                  <p className="text-[11px] text-slate-400 line-clamp-1 mt-0.5">
                     {item.description || "صنف فاخر معد بأعلى معايير الجودة."}
                   </p>
-                  <div className="text-sm font-black text-amber-400 font-mono mt-2">
+                  <div className="text-sm font-black text-amber-400 font-mono mt-1.5">
                     {item.price} <span className="text-[10px] font-normal text-slate-400">ج.م</span>
                     {item.itemType === "READY_PASTRY" && (
                       <span className="text-[10px] text-slate-400 mr-1">

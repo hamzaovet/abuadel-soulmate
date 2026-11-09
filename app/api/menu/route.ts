@@ -85,7 +85,7 @@ export async function POST(req: Request) {
         outletId,
         nameAr: nameAr.trim(),
         nameEn: nameEn?.trim() || null,
-        category: category || "HOT_COFFEE",
+        category: category || "HOT_DRINKS",
         price: Number(price),
         costPrice: Number(costPrice) || 0,
         durationMinutes: Number(durationMinutes) || 5,

@@ -5,6 +5,11 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import CardQRModal from "@/components/CardQRModal";
 import {
+  SOULMATE_CATEGORIES,
+  ABU_ADEL_CATEGORIES,
+  getCategoryLabel,
+} from "@/lib/categories";
+import {
   Coffee,
   Cake,
   TrendingUp,
@@ -101,7 +106,7 @@ export default function AdminDashboardPage() {
     outletId: "",
     nameAr: "",
     nameEn: "",
-    category: "HOT_COFFEE",
+    category: "HOT_DRINKS",
     price: "",
     costPrice: "",
     stockQty: "100",
@@ -1542,7 +1547,7 @@ export default function AdminDashboardPage() {
                         : outlets[0]?.id || "",
                       nameAr: "",
                       nameEn: "",
-                      category: isUserAbuAdel ? "ORIENTAL_SWEETS" : "HOT_COFFEE",
+                      category: isUserAbuAdel ? "ORIENTAL_SWEETS" : "HOT_DRINKS",
                       price: "",
                       costPrice: "",
                       stockQty: "100",
@@ -1596,14 +1601,20 @@ export default function AdminDashboardPage() {
                   className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-amber-500"
                 >
                   <option value="ALL">📂 كافة التصنيفات</option>
-                  <option value="HOT_COFFEE">☕ قهوة ساخنة</option>
-                  <option value="COLD_COFFEE">🧊 قهوة مثلجة وموهيتو</option>
-                  <option value="BEVERAGES">🥤 مشروبات وميلك شيك</option>
-                  <option value="WAFFLES_PANCAKES">🧇 وافل وبان كيك</option>
-                  <option value="ORIENTAL_SWEETS">🥮 حلويات شرقية</option>
-                  <option value="CAKES_TORTES">🎂 تورت وتريليتشا</option>
-                  <option value="GATEAUX_WESTERN">🧁 جاتوهات وحلويات غربية</option>
-                  <option value="GIFT_BOXES">🎁 علب هدايا وكعك</option>
+                  <optgroup label="☕ سول ميت كافيه">
+                    {SOULMATE_CATEGORIES.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.icon} {c.nameAr} ({c.nameEn})
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="🍰 حلواني أبو عادل">
+                    {ABU_ADEL_CATEGORIES.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.icon} {c.nameAr} ({c.nameEn})
+                      </option>
+                    ))}
+                  </optgroup>
                 </select>
               </div>
             </div>
@@ -1683,7 +1694,9 @@ export default function AdminDashboardPage() {
                               </span>
                             </td>
                             <td className="py-2.5 px-3">
-                              <span className="text-[11px] text-slate-300">{item.category}</span>
+                              <span className="text-[11px] text-slate-300 font-medium">
+                                {getCategoryLabel(item.category)}
+                              </span>
                             </td>
                             <td className="py-2.5 px-3 font-mono font-bold text-amber-400 text-sm">
                               {item.price} ج.م
@@ -2919,14 +2932,20 @@ export default function AdminDashboardPage() {
                     onChange={(e) => setMenuItemForm({ ...menuItemForm, category: e.target.value })}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500"
                   >
-                    <option value="HOT_COFFEE">☕ قهوة ساخنة</option>
-                    <option value="COLD_COFFEE">🧊 قهوة مثلجة وموهيتو</option>
-                    <option value="BEVERAGES">🥤 مشروبات وميلك شيك</option>
-                    <option value="WAFFLES_PANCAKES">🧇 وافل وبان كيك</option>
-                    <option value="ORIENTAL_SWEETS">🥮 حلويات شرقية</option>
-                    <option value="CAKES_TORTES">🎂 تورت وتريليتشا</option>
-                    <option value="GATEAUX_WESTERN">🧁 جاتوهات وحلويات غربية</option>
-                    <option value="GIFT_BOXES">🎁 علب هدايا وكعك</option>
+                    <optgroup label="☕ سول ميت كافيه">
+                      {SOULMATE_CATEGORIES.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.icon} {c.nameAr} ({c.nameEn})
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="🍰 حلواني أبو عادل">
+                      {ABU_ADEL_CATEGORIES.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.icon} {c.nameAr} ({c.nameEn})
+                        </option>
+                      ))}
+                    </optgroup>
                   </select>
                 </div>
               </div>
