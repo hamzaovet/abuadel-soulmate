@@ -212,7 +212,6 @@ export default function AdminDashboardPage() {
       const user = JSON.parse(saved);
       if (
         user.role !== "owner" &&
-        user.role !== "general_manager" &&
         user.role !== "branch_manager"
       ) {
         addToast("error", "عفواً، لا تملك صلاحية دخول لوحة الإدارة");
@@ -222,6 +221,7 @@ export default function AdminDashboardPage() {
       setCurrentUser(user);
       if (user.role === "branch_manager" && user.outletId) {
         setSelectedOutletId(user.outletId);
+        setMenuOutletFilter(user.outletId);
       }
     } catch {
       router.push("/login");
@@ -322,7 +322,7 @@ export default function AdminDashboardPage() {
   const isSoulmate = activeOutlet?.code === "SOULMATE_CAFE";
   const isAbuAdel = activeOutlet?.code === "ABU_ADEL_PATISSERIE";
 
-  const isOwnerOrGM = currentUser?.role === "owner" || currentUser?.role === "general_manager";
+  const isOwner = currentUser?.role === "owner";
   const isBranchManager = currentUser?.role === "branch_manager";
   const userOutlet = outlets.find((o) => o.id === currentUser?.outletId);
   const isUserSoulmate = userOutlet?.code === "SOULMATE_CAFE";
@@ -939,21 +939,25 @@ export default function AdminDashboardPage() {
                 </h1>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
                   {currentUser?.role === "owner"
-                    ? "👑 المالك (Maestro)"
-                    : currentUser?.role === "general_manager"
-                    ? "⭐ المدير العام"
-                    : "مدير الفرع"}
+                    ? "👑 المالك العام (Maestro)"
+                    : isUserSoulmate
+                    ? "☕ مدير فرع سول ميت كافيه VIP"
+                    : "🍰 مدير فرع حلواني أبو عادل المستقل"}
                 </span>
               </div>
               <p className="text-xs text-slate-400">
-                مجموعة حلواني أبو عادل المستقل & سول ميت كافيه VIP
+                {currentUser?.role === "owner"
+                  ? "مجموعة حلواني أبو عادل المستقل & سول ميت كافيه VIP"
+                  : isUserSoulmate
+                  ? "إدارة وتشغيل سول ميت كافيه VIP (حدايق القبة)"
+                  : "إدارة وتشغيل حلواني أبو عادل المستقل (أصل الحلويات)"}
               </p>
             </div>
           </div>
 
-          {/* Outlet Switcher (Owner & GM only) */}
+          {/* Outlet Switcher (Maestro Owner only) */}
           <div className="flex items-center gap-3">
-            {currentUser?.role !== "branch_manager" ? (
+            {currentUser?.role === "owner" ? (
               <div className="flex items-center gap-2 bg-slate-800/80 p-1.5 rounded-xl border border-slate-700">
                 <span className="text-xs text-slate-400 px-2 font-medium">الفرع:</span>
                 <select
@@ -961,18 +965,27 @@ export default function AdminDashboardPage() {
                   onChange={(e) => setSelectedOutletId(e.target.value)}
                   className="bg-slate-900 text-amber-400 text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-700 focus:outline-none focus:border-amber-500 cursor-pointer"
                 >
-                  <option value="ALL">🌟 جميع الفروع (نظام مدمج شامل)</option>
+                  <option value="ALL">🌟 كافة الفروع (إدارة مركزية شاملة)</option>
                   {outlets.map((o) => (
                     <option key={o.id} value={o.id}>
-                      {o.code === "SOULMATE_CAFE" ? "☕ سول ميت كافيه" : "🍰 حلواني أبو عادل"}
+                      {o.code === "SOULMATE_CAFE" ? "☕ سول ميت كافيه VIP" : "🍰 حلواني أبو عادل المستقل"}
                     </option>
                   ))}
                 </select>
               </div>
             ) : (
-              <div className="bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 text-xs font-bold text-amber-400 flex items-center gap-1.5">
-                <Shield className="w-3.5 h-3.5 text-amber-400" />
-                {activeOutlet?.name || "فرعك المخصص"}
+              <div className="bg-slate-800/90 px-3.5 py-2 rounded-xl border border-slate-700 text-xs font-black text-amber-300 flex items-center gap-2 shadow-sm">
+                {isUserSoulmate ? (
+                  <>
+                    <Coffee className="w-4 h-4 text-amber-400" />
+                    <span>فرع سول ميت كافيه VIP (تشغيل وإدارة منفصلة)</span>
+                  </>
+                ) : (
+                  <>
+                    <Cake className="w-4 h-4 text-rose-400" />
+                    <span>فرع حلواني أبو عادل المستقل (تشغيل وإدارة منفصلة)</span>
+                  </>
+                )}
               </div>
             )}
 
@@ -1061,7 +1074,7 @@ export default function AdminDashboardPage() {
             </button>
 
             {/* Recipes Tab (Soulmate only) */}
-            {(isOwnerOrGM || isUserSoulmate) && (
+            {(isOwner || isUserSoulmate) && (
               <button
                 onClick={() => setActiveTab("recipes")}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
@@ -1076,7 +1089,7 @@ export default function AdminDashboardPage() {
             )}
 
             {/* Pastry Tab (Abu Adel only) */}
-            {(isOwnerOrGM || isUserAbuAdel) && (
+            {(isOwner || isUserAbuAdel) && (
               <button
                 onClick={() => setActiveTab("pastry")}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
@@ -1103,7 +1116,7 @@ export default function AdminDashboardPage() {
             </button>
 
             {/* Reservations Tab (Soulmate only) */}
-            {(isOwnerOrGM || isUserSoulmate) && (
+            {(isOwner || isUserSoulmate) && (
               <button
                 onClick={() => setActiveTab("reservations")}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
@@ -1113,12 +1126,12 @@ export default function AdminDashboardPage() {
                 }`}
               >
                 <Calendar className="w-4 h-4" />
-                <span>حجوزات الترابيزات والحفلات (${reservations.length})</span>
+                <span>حجوزات الترابيزات والحفلات ({reservations.length})</span>
               </button>
             )}
 
             {/* Chat Tab (Soulmate only) */}
-            {(isOwnerOrGM || isUserSoulmate) && (
+            {(isOwner || isUserSoulmate) && (
               <button
                 onClick={() => setActiveTab("chat")}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
@@ -1128,12 +1141,12 @@ export default function AdminDashboardPage() {
                 }`}
               >
                 <MessageCircle className="w-4 h-4" />
-                <span>شات الزبائن والباريستا (${chatMessages.length})</span>
+                <span>شات الزبائن والباريستا ({chatMessages.length})</span>
               </button>
             )}
 
             {/* Loyalty Tab (Soulmate only) */}
-            {(isOwnerOrGM || isUserSoulmate) && (
+            {(isOwner || isUserSoulmate) && (
               <button
                 onClick={() => setActiveTab("loyalty")}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
@@ -1150,8 +1163,8 @@ export default function AdminDashboardPage() {
               </button>
             )}
 
-            {/* Users & Permissions Tab (Maestro & GM Exclusive!) */}
-            {isOwnerOrGM && (
+            {/* Users & Permissions Tab (Maestro Exclusive!) */}
+            {isOwner && (
               <button
                 onClick={() => setActiveTab("users")}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
@@ -1165,8 +1178,8 @@ export default function AdminDashboardPage() {
               </button>
             )}
 
-            {/* Settings Tab (Maestro & GM Exclusive!) */}
-            {isOwnerOrGM && (
+            {/* Settings Tab (Maestro Exclusive!) */}
+            {isOwner && (
               <button
                 onClick={() => setActiveTab("settings")}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
@@ -1580,7 +1593,7 @@ export default function AdminDashboardPage() {
                   />
                 </div>
 
-                {isOwnerOrGM && (
+                {isOwner && (
                   <select
                     value={menuOutletFilter}
                     onChange={(e) => setMenuOutletFilter(e.target.value)}
@@ -2442,7 +2455,7 @@ export default function AdminDashboardPage() {
         )}
 
         {/* TAB: USERS & ROLES MANAGEMENT (MAESTRO & GM EXCLUSIVE) */}
-        {activeTab === "users" && isOwnerOrGM && (
+        {activeTab === "users" && isOwner && (
           <div className="space-y-6">
             {/* Maestro Emergency System Lock Card */}
             <div className="bg-gradient-to-r from-slate-900 via-rose-950/30 to-slate-900 border-2 border-rose-500/40 rounded-2xl p-6 shadow-xl relative overflow-hidden">
@@ -2824,11 +2837,11 @@ export default function AdminDashboardPage() {
                     onChange={(e) => setUserForm({ ...userForm, role: e.target.value })}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500"
                   >
+                    <option value="branch_manager">🏢 مدير فرع مستقل</option>
                     <option value="cashier">💳 كاشير (POS)</option>
                     <option value="barista">☕ باريستا (KDS)</option>
-                    <option value="branch_manager">🏢 مدير فرع</option>
-                    <option value="general_manager">⭐ المدير العام</option>
-                    <option value="owner">👑 المالك (Maestro)</option>
+                    <option value="chef">👨‍🍳 شيف حلويات ومخبوزات</option>
+                    <option value="owner">👑 المالك العام (Maestro فقط)</option>
                   </select>
                 </div>
 

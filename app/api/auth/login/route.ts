@@ -7,9 +7,9 @@ export async function POST(req: Request) {
   try {
     const { username, password, pin } = await req.json();
 
-    if (!username || !password) {
+    if (!username || !password || !pin) {
       return NextResponse.json(
-        { success: false, error: "برجاء إدخال اسم المستخدم وكلمة المرور" },
+        { success: false, error: "برجاء إدخال كافة بيانات الدخول: اسم المستخدم، كلمة المرور، ورمز PIN السري" },
         { status: 400 }
       );
     }
@@ -37,10 +37,10 @@ export async function POST(req: Request) {
       );
     }
 
-    // If PIN is explicitly provided and user has a PIN, verify it
-    if (pin && user.pin && pin.trim() !== "" && user.pin !== pin.trim()) {
+    // Mandatory PIN verification
+    if (user.pin && user.pin !== pin.trim()) {
       return NextResponse.json(
-        { success: false, error: "رمز PIN السري غير صحيح" },
+        { success: false, error: "رمز PIN السري غير صحيح لهذا المستخدم" },
         { status: 401 }
       );
     }

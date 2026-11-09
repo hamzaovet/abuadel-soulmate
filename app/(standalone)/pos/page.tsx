@@ -177,7 +177,7 @@ export default function PosTerminalPage() {
   const currentOutlet = outlets.find((o) => o.id === activeOutletId) || outlets[0];
   const isSoulmate = currentOutlet?.code === "SOULMATE_CAFE";
   const isAbuAdel = currentOutlet?.code === "ABU_ADEL_PATISSERIE";
-  const isOwnerOrGM = currentUser?.role === "owner" || currentUser?.role === "general_manager";
+  const isOwner = currentUser?.role === "owner";
 
   // Filtered Menu Items
   const filteredMenuItems = menuItems.filter((item) => {
@@ -485,8 +485,8 @@ export default function PosTerminalPage() {
 
         {/* Top Controls & Outlet Switcher */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Outlet Switcher (Owner/GM) or Locked Badge (Cashiers) */}
-          {isOwnerOrGM ? (
+          {/* Outlet Switcher (Maestro Owner only) or Locked Badge (Cashiers & Branch Managers) */}
+          {isOwner ? (
             <select
               value={activeOutletId}
               onChange={(e) => {
