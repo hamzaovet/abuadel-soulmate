@@ -46,11 +46,35 @@ import {
 export default function PosTerminalPage() {
   const router = useRouter();
 
-  // Current Staff User
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  // Current Staff User (Synchronous initial read to prevent 2-second glitch)
+  const [currentUser, setCurrentUser] = useState<any>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const saved =
+        localStorage.getItem("abuadel_soulmate_user") ||
+        localStorage.getItem("abuadel_auth_user");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
 
   // Active Outlet / Brand Tab in POS
-  const [activeOutletId, setActiveOutletId] = useState<string>("");
+  const [activeOutletId, setActiveOutletId] = useState<string>(() => {
+    if (typeof window === "undefined") return "";
+    try {
+      const saved =
+        localStorage.getItem("abuadel_soulmate_user") ||
+        localStorage.getItem("abuadel_auth_user");
+      if (saved) {
+        const u = JSON.parse(saved);
+        if (u.outletId) return u.outletId;
+      }
+      return localStorage.getItem("activeOutletId") || "";
+    } catch {
+      return "";
+    }
+  });
   const [outlets, setOutlets] = useState<any[]>([]);
 
   // Tables & Menu Items
@@ -66,7 +90,24 @@ export default function PosTerminalPage() {
 
   // Current Order Cart (Active Table Check or Walk-In Order)
   const [cart, setCart] = useState<any[]>([]);
-  const [orderType, setOrderType] = useState<"DINE_IN" | "TAKEAWAY" | "DELIVERY">("DINE_IN");
+  const [orderType, setOrderType] = useState<"DINE_IN" | "TAKEAWAY" | "DELIVERY">(() => {
+    if (typeof window === "undefined") return "DINE_IN";
+    try {
+      const saved =
+        localStorage.getItem("abuadel_soulmate_user") ||
+        localStorage.getItem("abuadel_auth_user");
+      if (saved) {
+        const u = JSON.parse(saved);
+        if (
+          u.outlet?.code === "ABU_ADEL_PATISSERIE" ||
+          u.username?.includes("abuadel")
+        ) {
+          return "TAKEAWAY";
+        }
+      }
+    } catch {}
+    return "DINE_IN";
+  });
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [deliveryAddress, setDeliveryAddress] = useState("");
@@ -239,7 +280,9 @@ export default function PosTerminalPage() {
 
       if (dataOutlets.success) {
         setOutlets(dataOutlets.outlets);
-        if (!activeOutletId && dataOutlets.outlets.length > 0) {
+        if (currentUser?.role !== "owner" && currentUser?.outletId) {
+          setActiveOutletId(currentUser.outletId);
+        } else if (!activeOutletId && dataOutlets.outlets.length > 0) {
           setActiveOutletId(dataOutlets.outlets[0].id);
         }
       }
@@ -269,11 +312,40 @@ export default function PosTerminalPage() {
     }
   }, [currentUser, activeOutletId]);
 
-  // Active Outlet & Identification
-  const currentOutlet = outlets.find((o) => o.id === activeOutletId) || outlets[0];
-  const isSoulmate = currentOutlet?.code === "SOULMATE_CAFE";
-  const isAbuAdel = currentOutlet?.code === "ABU_ADEL_PATISSERIE";
+  // Active Outlet & Identification (Immediate evaluation from currentUser or activeOutletId)
+  const currentOutlet =
+    outlets.find((o) => o.id === activeOutletId) ||
+    currentUser?.outlet ||
+    (currentUser?.role === "branch_manager" || currentUser?.role === "cashier"
+      ? {
+          id: currentUser?.outletId || "",
+          code: currentUser?.username?.includes("abuadel")
+            ? "ABU_ADEL_PATISSERIE"
+            : "SOULMATE_CAFE",
+          name: currentUser?.username?.includes("abuadel")
+            ? "حلواني أبو عادل"
+            : "سول ميت كافيه VIP",
+        }
+      : null) ||
+    outlets[0];
+
+  const isSoulmate =
+    currentOutlet?.code === "SOULMATE_CAFE" ||
+    currentUser?.outlet?.code === "SOULMATE_CAFE" ||
+    currentUser?.username?.includes("soulmate");
+  const isAbuAdel =
+    currentOutlet?.code === "ABU_ADEL_PATISSERIE" ||
+    currentUser?.outlet?.code === "ABU_ADEL_PATISSERIE" ||
+    currentUser?.username?.includes("abuadel");
   const isOwner = currentUser?.role === "owner";
+
+  // Enforce Abu Adel strictly as Takeaway & Delivery (Never Hall/Dine-In)
+  useEffect(() => {
+    if (isAbuAdel && orderType === "DINE_IN") {
+      setOrderType("TAKEAWAY");
+      setSelectedTable(null);
+    }
+  }, [isAbuAdel, orderType]);
 
   // Filtered Menu Items
   const filteredMenuItems = menuItems.filter((item) => {
@@ -659,24 +731,28 @@ export default function PosTerminalPage() {
             <span>إقفال الوردية 🔒</span>
           </button>
 
-          {/* Navigation to Admin (Crucial Exit Button!) */}
-          <Link
-            href="/admin"
-            className="py-1.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs transition flex items-center gap-1.5 shadow-md shadow-amber-500/20 hover:scale-105"
-            title="الذهاب إلى لوحة الإدارة العامة"
-          >
-            <Crown className="w-3.5 h-3.5 text-slate-950" />
-            <span>لوحة الإدارة 👑</span>
-          </Link>
+          {/* Navigation to Admin (Only for Owner or Branch Manager) */}
+          {(isOwner || currentUser?.role === "branch_manager") && (
+            <Link
+              href="/admin"
+              className="py-1.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs transition flex items-center gap-1.5 shadow-md shadow-amber-500/20 hover:scale-105"
+              title="الذهاب إلى لوحة الإدارة العامة"
+            >
+              <Crown className="w-3.5 h-3.5 text-slate-950" />
+              <span>لوحة الإدارة 👑</span>
+            </Link>
+          )}
 
-          {/* Link to KDS */}
-          <Link
-            href="/kds"
-            className="py-1.5 px-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs font-bold transition flex items-center gap-1"
-            title="شاشة الباريستا والمطبخ"
-          >
-            <span>شاشة KDS ☕</span>
-          </Link>
+          {/* Link to KDS (Only for Soulmate Cafe - Abu Adel has no bar/KDS) */}
+          {isSoulmate && (
+            <Link
+              href="/kds"
+              className="py-1.5 px-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs font-bold transition flex items-center gap-1"
+              title="شاشة الباريستا والمطبخ"
+            >
+              <span>شاشة KDS ☕</span>
+            </Link>
+          )}
 
           {/* Link to Home (Storefront) */}
           <Link
@@ -922,7 +998,7 @@ export default function PosTerminalPage() {
             </div>
 
             {/* Contextual Sub-bar based on Selected Order Type */}
-            {orderType === "DINE_IN" ? (
+            {!isAbuAdel && orderType === "DINE_IN" ? (
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"

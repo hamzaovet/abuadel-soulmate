@@ -28,6 +28,7 @@ import {
   ArrowUpDown,
   RotateCcw,
   Plus,
+  Lock,
   AlertTriangle,
   CheckCircle2,
   X,
@@ -69,13 +70,53 @@ interface Toast {
   message: string;
 }
 
+// Fast Session Cache Reader (Zero Lag on Navigations between POS & Admin)
+function getAdminDashboardSessionCache() {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = sessionStorage.getItem("abuadel_admin_dashboard_cache");
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function AdminDashboardPage() {
   const router = useRouter();
 
-  // Auth User state
-  const [currentUser, setCurrentUser] = useState<any>(null);
-  const [outlets, setOutlets] = useState<any[]>([]);
-  const [selectedOutletId, setSelectedOutletId] = useState<string>("ALL");
+  // Auth User state (Synchronous read from localStorage to avoid delay)
+  const [currentUser, setCurrentUser] = useState<any>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const saved =
+        localStorage.getItem("abuadel_soulmate_user") ||
+        localStorage.getItem("abuadel_auth_user");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const [selectedOutletId, setSelectedOutletId] = useState<string>(() => {
+    if (typeof window === "undefined") return "ALL";
+    try {
+      const saved =
+        localStorage.getItem("abuadel_soulmate_user") ||
+        localStorage.getItem("abuadel_auth_user");
+      if (saved) {
+        const u = JSON.parse(saved);
+        if (u.role === "branch_manager" && u.outletId) return u.outletId;
+      }
+      return "ALL";
+    } catch {
+      return "ALL";
+    }
+  });
+
+  // Cached Data from Session
+  const initialCache = getAdminDashboardSessionCache();
+
+  const [outlets, setOutlets] = useState<any[]>(initialCache?.outlets || []);
 
   // UI Tabs
   const [activeTab, setActiveTab] = useState<
@@ -93,7 +134,7 @@ export default function AdminDashboardPage() {
   >("overview");
 
   // Users Management state (Maestro & GM)
-  const [usersList, setUsersList] = useState<any[]>([]);
+  const [usersList, setUsersList] = useState<any[]>(initialCache?.usersList || []);
   const [showUserModal, setShowUserModal] = useState(false);
   const [userModalMode, setUserModalMode] = useState<"ADD" | "EDIT">("ADD");
   const [userForm, setUserForm] = useState({
@@ -132,18 +173,18 @@ export default function AdminDashboardPage() {
   });
 
   // Data states
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialCache);
   const [refreshing, setRefreshing] = useState(false);
-  const [settings, setSettings] = useState<any>(null);
-  const [shiftData, setShiftData] = useState<any>(null);
-  const [expenses, setExpenses] = useState<any[]>([]);
-  const [rawMaterials, setRawMaterials] = useState<any[]>([]);
-  const [menuItems, setMenuItems] = useState<any[]>([]);
-  const [orders, setOrders] = useState<any[]>([]);
-  const [customers, setCustomers] = useState<any[]>([]);
-  const [tables, setTables] = useState<any[]>([]);
-  const [reservations, setReservations] = useState<any[]>([]);
-  const [chatMessages, setChatMessages] = useState<any[]>([]);
+  const [settings, setSettings] = useState<any>(initialCache?.settings || null);
+  const [shiftData, setShiftData] = useState<any>(initialCache?.shiftDataRes || null);
+  const [expenses, setExpenses] = useState<any[]>(initialCache?.expenses || []);
+  const [rawMaterials, setRawMaterials] = useState<any[]>(initialCache?.rawMaterials || []);
+  const [menuItems, setMenuItems] = useState<any[]>(initialCache?.menuItems || []);
+  const [orders, setOrders] = useState<any[]>(initialCache?.orders || []);
+  const [customers, setCustomers] = useState<any[]>(initialCache?.customers || []);
+  const [tables, setTables] = useState<any[]>(initialCache?.tables || []);
+  const [reservations, setReservations] = useState<any[]>(initialCache?.reservations || []);
+  const [chatMessages, setChatMessages] = useState<any[]>(initialCache?.chatMessages || []);
 
   // Modals & Sliders
   const [showQRModal, setShowQRModal] = useState(false);
@@ -167,7 +208,7 @@ export default function AdminDashboardPage() {
   const [pastryOpeningValue, setPastryOpeningValue] = useState("");
 
   // Abu Adel Pastry ERP States
-  const [pastryInventory, setPastryInventory] = useState<any[]>([]);
+  const [pastryInventory, setPastryInventory] = useState<any[]>(initialCache?.pastryInventory || []);
   const [pastrySubTab, setPastrySubTab] = useState<"cards" | "audit">("cards");
   const [pastryAuditCounts, setPastryAuditCounts] = useState<Record<string, string>>({});
   const [isSubmittingPastryAudit, setIsSubmittingPastryAudit] = useState(false);
@@ -193,7 +234,19 @@ export default function AdminDashboardPage() {
   // Sub-tabs & Filters for Treasury & Financial BI Reports Tab
   const [treasurySubTab, setTreasurySubTab] = useState<"drawer" | "pnl" | "menu_eng" | "payments" | "archive">("drawer");
   const [reportTimeframe, setReportTimeframe] = useState<"TODAY" | "WEEK" | "MONTH" | "ALL">("TODAY");
-  const [reportOutletFilter, setReportOutletFilter] = useState<string>("ALL");
+  const [reportOutletFilter, setReportOutletFilter] = useState<string>(() => {
+    if (typeof window === "undefined") return "ALL";
+    try {
+      const saved =
+        localStorage.getItem("abuadel_soulmate_user") ||
+        localStorage.getItem("abuadel_auth_user");
+      if (saved) {
+        const u = JSON.parse(saved);
+        if (u.role === "branch_manager" && u.outletId) return u.outletId;
+      }
+    } catch {}
+    return "ALL";
+  });
 
   // Forms
   const [expenseForm, setExpenseForm] = useState({
@@ -269,7 +322,7 @@ export default function AdminDashboardPage() {
       localStorage.getItem("abuadel_soulmate_user") ||
       localStorage.getItem("abuadel_auth_user");
     if (!saved) {
-      router.push("/login");
+      router.replace("/login");
       return;
     }
     try {
@@ -279,98 +332,129 @@ export default function AdminDashboardPage() {
         user.role !== "branch_manager"
       ) {
         addToast("error", "عفواً، لا تملك صلاحية دخول لوحة الإدارة");
-        router.push("/pos");
+        router.replace("/pos");
         return;
       }
       setCurrentUser(user);
       if (user.role === "branch_manager" && user.outletId) {
         setSelectedOutletId(user.outletId);
         setMenuOutletFilter(user.outletId);
+        setReportOutletFilter(user.outletId);
       }
     } catch {
-      router.push("/login");
+      router.replace("/login");
     }
   }, [router]);
 
-  // 2. Fetch All Dashboard Data
+  // 2. Fetch All Dashboard Data (Staged Fast Loading + Session Cache)
   const fetchDashboardData = async () => {
     try {
       setRefreshing(true);
       const outletParam = selectedOutletId !== "ALL" ? `?outletId=${selectedOutletId}` : "";
 
+      // Burst 1: Core Dashboard & Overview data (Essential for immediate render)
       const [
         outletsRes,
         settingsRes,
         shiftRes,
         expensesRes,
-        recipesRes,
-        menuRes,
-        pastryRes,
         ordersRes,
-        customersRes,
         tablesRes,
-        reservationsRes,
-        chatRes,
-        usersRes,
       ] = await Promise.all([
         fetch("/api/outlets"),
         fetch("/api/settings"),
         fetch(`/api/shifts${outletParam}`),
         fetch(`/api/expenses${outletParam}`),
+        fetch(`/api/orders${outletParam}`),
+        fetch(`/api/tables${outletParam}`),
+      ]);
+
+      const [outletsData, settingsData, shiftDataRes, expensesData, ordersData, tablesData] =
+        await Promise.all([
+          outletsRes.json(),
+          settingsRes.json(),
+          shiftRes.json(),
+          expensesRes.json(),
+          ordersRes.json(),
+          tablesRes.json(),
+        ]);
+
+      if (outletsData.success) setOutlets(outletsData.outlets);
+      if (settingsData.success) setSettings(settingsData.settings);
+      if (shiftDataRes.success) setShiftData(shiftDataRes);
+      if (expensesData.success) setExpenses(expensesData.expenses);
+      if (ordersData.success) setOrders(ordersData.orders);
+      if (tablesData.success) setTables(tablesData.tables);
+
+      // Core Overview is fully ready! Unblock screen immediately!
+      setLoading(false);
+
+      // Burst 2: Catalogs, recipes, inventory & modules (Auxiliary data)
+      const [
+        recipesRes,
+        menuRes,
+        pastryRes,
+        customersRes,
+        reservationsRes,
+        chatRes,
+        usersRes,
+      ] = await Promise.all([
         fetch(currentUser?.role === "owner" ? "/api/recipes" : `/api/recipes${outletParam}`),
         fetch(currentUser?.role === "owner" ? "/api/menu" : `/api/menu${outletParam}`),
         fetch("/api/pastry-inventory"),
-        fetch(`/api/orders${outletParam}`),
         fetch("/api/customers"),
-        fetch(`/api/tables${outletParam}`),
         fetch(`/api/reservations${outletParam}`),
         fetch(`/api/chat${outletParam}`),
         fetch("/api/users"),
       ]);
 
       const [
-        outletsData,
-        settingsData,
-        shiftDataRes,
-        expensesData,
         recipesData,
         menuData,
         pastryData,
-        ordersData,
         customersData,
-        tablesData,
         resData,
         chatData,
         usersData,
       ] = await Promise.all([
-        outletsRes.json(),
-        settingsRes.json(),
-        shiftRes.json(),
-        expensesRes.json(),
         recipesRes.json(),
         menuRes.json(),
         pastryRes.json(),
-        ordersRes.json(),
         customersRes.json(),
-        tablesRes.json(),
         reservationsRes.json(),
         chatRes.json(),
         usersRes.json(),
       ]);
 
-      if (outletsData.success) setOutlets(outletsData.outlets);
-      if (settingsData.success) setSettings(settingsData.settings);
-      if (shiftDataRes.success) setShiftData(shiftDataRes);
-      if (expensesData.success) setExpenses(expensesData.expenses);
       if (recipesData.success) setRawMaterials(recipesData.rawMaterials);
       if (menuData.success) setMenuItems(menuData.items);
       if (pastryData.success) setPastryInventory(pastryData.items);
-      if (ordersData.success) setOrders(ordersData.orders);
       if (customersData.success) setCustomers(customersData.customers);
-      if (tablesData.success) setTables(tablesData.tables);
       if (resData.success) setReservations(resData.reservations);
       if (chatData.success) setChatMessages(chatData.messages);
       if (usersData?.success) setUsersList(usersData.users);
+
+      // Save complete snapshot to sessionStorage for instant 0ms restoration next time
+      try {
+        sessionStorage.setItem(
+          "abuadel_admin_dashboard_cache",
+          JSON.stringify({
+            outlets: outletsData.success ? outletsData.outlets : [],
+            settings: settingsData.success ? settingsData.settings : null,
+            shiftDataRes: shiftDataRes.success ? shiftDataRes : null,
+            expenses: expensesData.success ? expensesData.expenses : [],
+            rawMaterials: recipesData.success ? recipesData.rawMaterials : [],
+            menuItems: menuData.success ? menuData.items : [],
+            pastryInventory: pastryData.success ? pastryData.items : [],
+            orders: ordersData.success ? ordersData.orders : [],
+            customers: customersData.success ? customersData.customers : [],
+            tables: tablesData.success ? tablesData.tables : [],
+            reservations: resData.success ? resData.reservations : [],
+            chatMessages: chatData.success ? chatData.messages : [],
+            usersList: usersData?.success ? usersData.users : [],
+          })
+        );
+      } catch {}
     } catch (err) {
       console.error(err);
       addToast("error", "فشل تحديث بيانات لوحة الإدارة");
@@ -393,9 +477,18 @@ export default function AdminDashboardPage() {
 
   const isOwner = currentUser?.role === "owner";
   const isBranchManager = currentUser?.role === "branch_manager";
-  const userOutlet = outlets.find((o) => o.id === currentUser?.outletId);
-  const isUserSoulmate = userOutlet?.code === "SOULMATE_CAFE";
-  const isUserAbuAdel = userOutlet?.code === "ABU_ADEL_PATISSERIE";
+  const userOutlet = outlets.find((o) => o.id === currentUser?.outletId) || currentUser?.outlet;
+  const isUserSoulmate =
+    userOutlet?.code === "SOULMATE_CAFE" ||
+    currentUser?.username?.includes("soulmate");
+  const isUserAbuAdel =
+    userOutlet?.code === "ABU_ADEL_PATISSERIE" ||
+    currentUser?.username?.includes("abuadel");
+
+  // Multi-tier Isolation Views:
+  const isViewingSoulmate = isUserSoulmate || (isOwner && isSoulmate);
+  const isViewingAbuAdel = isUserAbuAdel || (isOwner && isAbuAdel);
+  const isViewingAll = isOwner && (selectedOutletId === "ALL" || !selectedOutletId);
 
   // KPIs Calculations
   const totalSales = orders
@@ -1620,7 +1713,7 @@ export default function AdminDashboardPage() {
             </button>
 
             {/* Recipes Tab (Soulmate only) */}
-            {(isOwner || isUserSoulmate) && (
+            {(isViewingAll || isViewingSoulmate) && (
               <button
                 onClick={() => setActiveTab("recipes")}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
@@ -1635,7 +1728,7 @@ export default function AdminDashboardPage() {
             )}
 
             {/* Pastry Tab (Abu Adel only) */}
-            {(isOwner || isUserAbuAdel) && (
+            {(isViewingAll || isViewingAbuAdel) && (
               <button
                 onClick={() => setActiveTab("pastry")}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
@@ -1662,7 +1755,7 @@ export default function AdminDashboardPage() {
             </button>
 
             {/* Reservations Tab (Soulmate only) */}
-            {(isOwner || isUserSoulmate) && (
+            {(isViewingAll || isViewingSoulmate) && (
               <button
                 onClick={() => setActiveTab("reservations")}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
@@ -1677,7 +1770,7 @@ export default function AdminDashboardPage() {
             )}
 
             {/* Chat Tab (Soulmate only) */}
-            {(isOwner || isUserSoulmate) && (
+            {(isViewingAll || isViewingSoulmate) && (
               <button
                 onClick={() => setActiveTab("chat")}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
@@ -1692,7 +1785,7 @@ export default function AdminDashboardPage() {
             )}
 
             {/* Loyalty Tab (Soulmate only) */}
-            {(isOwner || isUserSoulmate) && (
+            {(isViewingAll || isViewingSoulmate) && (
               <button
                 onClick={() => setActiveTab("loyalty")}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
@@ -1747,60 +1840,168 @@ export default function AdminDashboardPage() {
         {/* TAB 1: OVERVIEW & ANALYTICS */}
         {activeTab === "overview" && (
           <div className="space-y-6">
-            {/* KPI Cards Row */}
+            {/* KPI Cards Row - Strictly Filtered by Role & Branch */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* CARD 1: Revenue Card */}
               <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden group">
                 <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
-                  <span>إجمالي المبيعات المدفوعة</span>
+                  <span>
+                    {isViewingSoulmate && !isViewingAll
+                      ? "إجمالي مبيعات كافيه سول ميت"
+                      : isViewingAbuAdel && !isViewingAll
+                      ? "إجمالي مبيعات حلواني أبو عادل"
+                      : "إجمالي المبيعات المدفوعة (كافة الفروع)"}
+                  </span>
                   <DollarSign className="w-4 h-4 text-amber-400" />
                 </div>
-                <div className="text-2xl font-black text-amber-400">
-                  {totalSales.toLocaleString()} <span className="text-xs text-slate-400 font-normal">ج.م</span>
+                <div className="text-2xl font-black text-amber-400 font-mono">
+                  {(isViewingSoulmate && !isViewingAll
+                    ? soulmateSales
+                    : isViewingAbuAdel && !isViewingAll
+                    ? abuAdelSales
+                    : totalSales
+                  ).toLocaleString()}{" "}
+                  <span className="text-xs text-slate-400 font-normal">ج.م</span>
                 </div>
                 <div className="text-[11px] text-slate-400 mt-2 flex items-center gap-1">
-                  <span className="text-emerald-400 font-bold">{orders.length} طلب</span>
-                  <span>مسجل بالمنظومة</span>
+                  <span className="text-emerald-400 font-bold">
+                    {(isViewingSoulmate && !isViewingAll
+                      ? orders.filter((o) => o.outlet?.code === "SOULMATE_CAFE" || o.outletId === outlets.find((x) => x.code === "SOULMATE_CAFE")?.id)
+                      : isViewingAbuAdel && !isViewingAll
+                      ? orders.filter((o) => o.outlet?.code === "ABU_ADEL_PATISSERIE" || o.outletId === outlets.find((x) => x.code === "ABU_ADEL_PATISSERIE")?.id)
+                      : orders
+                    ).length} طلب
+                  </span>
+                  <span>مسجل ومسدد</span>
                 </div>
               </div>
 
-              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden group">
-                <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
-                  <span>إيرادات سول ميت كافيه VIP</span>
-                  <Coffee className="w-4 h-4 text-amber-500" />
+              {/* CARD 2: Contextual Branch Card */}
+              {isViewingAll ? (
+                // Owner viewing ALL: Soulmate Revenue
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden group">
+                  <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
+                    <span>إيرادات سول ميت كافيه VIP</span>
+                    <Coffee className="w-4 h-4 text-amber-500" />
+                  </div>
+                  <div className="text-2xl font-black text-amber-500 font-mono">
+                    {soulmateSales.toLocaleString()}{" "}
+                    <span className="text-xs text-slate-400 font-normal">ج.م</span>
+                  </div>
+                  <div className="text-[11px] text-slate-400 mt-2">
+                    باريستا، مشروبات ساخنة وباردة
+                  </div>
                 </div>
-                <div className="text-2xl font-black text-amber-500">
-                  {soulmateSales.toLocaleString()} <span className="text-xs text-slate-400 font-normal">ج.م</span>
+              ) : isViewingSoulmate ? (
+                // Soulmate Only: Table Occupancy Rate
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden group">
+                  <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
+                    <span>إشغال ترابيزات الكافيه</span>
+                    <UtensilsCrossed className="w-4 h-4 text-purple-400" />
+                  </div>
+                  <div className="text-2xl font-black text-purple-400 font-mono">
+                    {tableOccupancyRate}%
+                  </div>
+                  <div className="text-[11px] text-slate-400 mt-2">
+                    {occupiedTables} من {tables.length} ترابيزة مشغولة الآن
+                  </div>
                 </div>
-                <div className="text-[11px] text-slate-400 mt-2">
-                  باريستا، مشروبات ساخنة وباردة
+              ) : (
+                // Abu Adel Only: Finished Goods Inventory
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden group">
+                  <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
+                    <span>أصناف حلويات المخزن الجاهزة</span>
+                    <Cake className="w-4 h-4 text-emerald-400" />
+                  </div>
+                  <div className="text-2xl font-black text-emerald-400 font-mono">
+                    {pastryInventory.length || 230}{" "}
+                    <span className="text-xs text-slate-400 font-normal">صنف</span>
+                  </div>
+                  <div className="text-[11px] text-slate-400 mt-2">
+                    جاهزة للبيع المباشر والوزن والدليفري
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden group">
-                <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
-                  <span>إيرادات حلواني أبو عادل</span>
-                  <Cake className="w-4 h-4 text-emerald-400" />
+              {/* CARD 3: Contextual Secondary Card */}
+              {isViewingAll ? (
+                // Owner viewing ALL: Abu Adel Revenue
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden group">
+                  <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
+                    <span>إيرادات حلواني أبو عادل</span>
+                    <Cake className="w-4 h-4 text-rose-400" />
+                  </div>
+                  <div className="text-2xl font-black text-rose-400 font-mono">
+                    {abuAdelSales.toLocaleString()}{" "}
+                    <span className="text-xs text-slate-400 font-normal">ج.م</span>
+                  </div>
+                  <div className="text-[11px] text-slate-400 mt-2">
+                    حلويات شرقية، تورت وبوكسات هدايا
+                  </div>
                 </div>
-                <div className="text-2xl font-black text-emerald-400">
-                  {abuAdelSales.toLocaleString()} <span className="text-xs text-slate-400 font-normal">ج.م</span>
+              ) : isViewingSoulmate ? (
+                // Soulmate Only: Orders Breakdown
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden group">
+                  <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
+                    <span>مبيعات الصالة والدليفري</span>
+                    <Receipt className="w-4 h-4 text-amber-400" />
+                  </div>
+                  <div className="text-2xl font-black text-white font-mono">
+                    {orders.filter((o) => o.outlet?.code === "SOULMATE_CAFE" || o.outletId === outlets.find((x) => x.code === "SOULMATE_CAFE")?.id).length}{" "}
+                    <span className="text-xs text-slate-400 font-normal">طلب</span>
+                  </div>
+                  <div className="text-[11px] text-slate-400 mt-2">
+                    شيكات مفتوحة ومسددة بالوردية
+                  </div>
                 </div>
-                <div className="text-[11px] text-slate-400 mt-2">
-                  حلويات شرقية، تورت وبوكسات هدايا
+              ) : (
+                // Abu Adel Only: Orders Breakdown
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden group">
+                  <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
+                    <span>طلبات البيع المباشر والدليفري</span>
+                    <Receipt className="w-4 h-4 text-rose-400" />
+                  </div>
+                  <div className="text-2xl font-black text-white font-mono">
+                    {orders.filter((o) => o.outlet?.code === "ABU_ADEL_PATISSERIE" || o.outletId === outlets.find((x) => x.code === "ABU_ADEL_PATISSERIE")?.id).length}{" "}
+                    <span className="text-xs text-slate-400 font-normal">طلب</span>
+                  </div>
+                  <div className="text-[11px] text-slate-400 mt-2">
+                    بيع كاونتر مباشر + توصيل خارجي
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden group">
-                <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
-                  <span>إشغال ترابيزات الكافيه</span>
-                  <UtensilsCrossed className="w-4 h-4 text-purple-400" />
+              {/* CARD 4: Contextual Fourth Card */}
+              {isViewingAll ? (
+                // Owner viewing ALL: Table Occupancy
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden group">
+                  <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
+                    <span>إشغال ترابيزات الكافيه</span>
+                    <UtensilsCrossed className="w-4 h-4 text-purple-400" />
+                  </div>
+                  <div className="text-2xl font-black text-purple-400 font-mono">
+                    {tableOccupancyRate}%
+                  </div>
+                  <div className="text-[11px] text-slate-400 mt-2">
+                    {occupiedTables} من {tables.length} ترابيزة مشغولة الآن
+                  </div>
                 </div>
-                <div className="text-2xl font-black text-purple-400">
-                  {tableOccupancyRate}%
+              ) : (
+                // Branch Managers (Both Soulmate & Abu Adel): Safe / Drawer Cash
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden group">
+                  <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
+                    <span>نقدية الدرج المتوقعة للوردية</span>
+                    <Lock className="w-4 h-4 text-emerald-400" />
+                  </div>
+                  <div className="text-2xl font-black text-emerald-400 font-mono">
+                    {(shiftData?.liveStats?.expectedCash ?? shiftData?.expectedCash ?? 0).toLocaleString()}{" "}
+                    <span className="text-xs text-slate-400 font-normal">ج.م</span>
+                  </div>
+                  <div className="text-[11px] text-slate-400 mt-2">
+                    فكة + كاش مسدد - نثريات منصرفة
+                  </div>
                 </div>
-                <div className="text-[11px] text-slate-400 mt-2">
-                  {occupiedTables} من {tables.length} ترابيزة مشغولة الآن
-                </div>
-              </div>
+              )}
             </div>
 
             {/* Quick Actions & Live Summary */}
@@ -1830,24 +2031,26 @@ export default function AdminDashboardPage() {
                     <ExternalLink className="w-4 h-4 text-slate-500 group-hover:text-amber-400 transition" />
                   </Link>
 
-                  <Link
-                    href="/kds"
-                    target="_blank"
-                    className="flex items-center justify-between p-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 transition group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
-                        KDS
-                      </div>
-                      <div>
-                        <div className="text-xs font-bold text-white group-hover:text-emerald-400 transition">
-                          شاشة باريستا ومطبخ الكافيه
+                  {(isViewingAll || isViewingSoulmate) && (
+                    <Link
+                      href="/kds"
+                      target="_blank"
+                      className="flex items-center justify-between p-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 transition group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+                          KDS
                         </div>
-                        <div className="text-[10px] text-slate-400">/kds (محطة التحضير المباشر)</div>
+                        <div>
+                          <div className="text-xs font-bold text-white group-hover:text-emerald-400 transition">
+                            شاشة باريستا ومطبخ الكافيه
+                          </div>
+                          <div className="text-[10px] text-slate-400">/kds (محطة التحضير المباشر)</div>
+                        </div>
                       </div>
-                    </div>
-                    <ExternalLink className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition" />
-                  </Link>
+                      <ExternalLink className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition" />
+                    </Link>
+                  )}
 
                   <div
                     onClick={() => setShowQRModal(true)}
@@ -2066,20 +2269,26 @@ export default function AdminDashboardPage() {
                     </button>
                   </div>
 
-                  {/* Outlet Selector */}
-                  <select
-                    value={reportOutletFilter}
-                    onChange={(e) => setReportOutletFilter(e.target.value)}
-                    className="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-1.5 font-bold focus:border-amber-500 focus:outline-none"
-                  >
-                    <option value="ALL">🌟 كافة الفروع (مجمّع)</option>
-                    {outlets.map((ot) => (
-                      <option key={ot.id} value={ot.id}>
-                        {ot.code === "SOULMATE_CAFE" ? "☕ " : "🍰 "}
-                        {ot.name}
-                      </option>
-                    ))}
-                  </select>
+                  {/* Outlet Selector (Maestro has dropdown, Branch Managers are locked to their branch) */}
+                  {isOwner ? (
+                    <select
+                      value={reportOutletFilter}
+                      onChange={(e) => setReportOutletFilter(e.target.value)}
+                      className="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-1.5 font-bold focus:border-amber-500 focus:outline-none cursor-pointer"
+                    >
+                      <option value="ALL">🌟 كافة الفروع (مجمّع)</option>
+                      {outlets.map((ot) => (
+                        <option key={ot.id} value={ot.id}>
+                          {ot.code === "SOULMATE_CAFE" ? "☕ " : "🍰 "}
+                          {ot.name}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div className="bg-slate-950 border border-slate-800 text-amber-400 text-xs rounded-xl px-3 py-1.5 font-black flex items-center gap-1.5">
+                      {isUserSoulmate ? "☕ سول ميت كافيه VIP" : "🍰 حلواني أبو عادل"}
+                    </div>
+                  )}
 
                   {/* Export CSV Button */}
                   <button
@@ -2206,14 +2415,14 @@ export default function AdminDashboardPage() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-800">
-                        {expenses.length === 0 ? (
-                          <tr>
-                            <td colSpan={6} className="py-6 text-center text-slate-500">
-                              لا توجد مصروفات مسجلة حتى الآن
-                            </td>
-                          </tr>
-                        ) : (
-                          expenses.map((exp) => (
+                        {expenses
+                          .filter((exp) => {
+                            if (isUserSoulmate && exp.outlet?.code !== "SOULMATE_CAFE" && exp.outletId !== outlets.find((x) => x.code === "SOULMATE_CAFE")?.id) return false;
+                            if (isUserAbuAdel && exp.outlet?.code !== "ABU_ADEL_PATISSERIE" && exp.outletId !== outlets.find((x) => x.code === "ABU_ADEL_PATISSERIE")?.id) return false;
+                            if (selectedOutletId !== "ALL" && exp.outletId !== selectedOutletId) return false;
+                            return true;
+                          })
+                          .map((exp) => (
                             <tr key={exp.id} className="hover:bg-slate-800/40">
                               <td className="py-2.5 px-3 font-bold text-white">{exp.title}</td>
                               <td className="py-2.5 px-3 font-bold text-rose-400 font-mono">
@@ -2230,8 +2439,7 @@ export default function AdminDashboardPage() {
                               </td>
                               <td className="py-2.5 px-3 text-slate-400">{exp.notes || "-"}</td>
                             </tr>
-                          ))
-                        )}
+                          ))}
                       </tbody>
                     </table>
                   </div>
@@ -2456,96 +2664,146 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
 
-                  {/* Right (1 col): Branch Comparison */}
+                  {/* Right (1 col): Branch Comparison or Dedicated Branch Performance Card */}
                   <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
                     <div>
-                      <h3 className="text-base font-black text-white flex items-center gap-2 mb-1">
-                        <PieChart className="w-5 h-5 text-purple-400" />
-                        <span>مقارنة أداء ومساهمة المحلين</span>
-                      </h3>
-                      <p className="text-xs text-slate-400 mb-6">
-                        توزيع المبيعات والمصروفات بين سول ميت كافيه وحلواني أبو عادل.
-                      </p>
+                      {isViewingAll ? (
+                        <>
+                          <h3 className="text-base font-black text-white flex items-center gap-2 mb-1">
+                            <PieChart className="w-5 h-5 text-purple-400" />
+                            <span>مقارنة أداء ومساهمة المحلين</span>
+                          </h3>
+                          <p className="text-xs text-slate-400 mb-6">
+                            توزيع المبيعات والمصروفات بين سول ميت كافيه وحلواني أبو عادل.
+                          </p>
 
-                      {/* Soulmate Cafe Card */}
-                      <div className="bg-slate-950/70 border border-amber-500/30 rounded-2xl p-4 mb-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-black text-amber-400 text-xs flex items-center gap-1.5">
-                            <span>☕ سول ميت كافيه VIP</span>
-                          </span>
-                          <span className="text-[11px] font-bold text-amber-300 font-mono">
-                            {filteredReportData.totalRevenue > 0
-                              ? ((filteredReportData.soulmateRevenue / filteredReportData.totalRevenue) * 100).toFixed(1)
-                              : "0.0"}%
-                          </span>
-                        </div>
-                        <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden mb-3">
-                          <div
-                            className="bg-gradient-to-r from-amber-600 to-amber-400 h-2 rounded-full transition-all duration-500"
-                            style={{
-                              width: `${
-                                filteredReportData.totalRevenue > 0
-                                  ? Math.min(100, (filteredReportData.soulmateRevenue / filteredReportData.totalRevenue) * 100)
-                                  : 0
-                              }%`,
-                            }}
-                          />
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 text-[11px]">
-                          <div className="bg-slate-900/80 p-2 rounded-lg">
-                            <span className="text-slate-400 block text-[10px]">المبيعات:</span>
-                            <span className="font-bold font-mono text-emerald-400">
-                              {filteredReportData.soulmateRevenue.toLocaleString()} ج.م
-                            </span>
+                          {/* Soulmate Cafe Card */}
+                          <div className="bg-slate-950/70 border border-amber-500/30 rounded-2xl p-4 mb-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="font-black text-amber-400 text-xs flex items-center gap-1.5">
+                                <span>☕ سول ميت كافيه VIP</span>
+                              </span>
+                              <span className="text-[11px] font-bold text-amber-300 font-mono">
+                                {filteredReportData.totalRevenue > 0
+                                  ? ((filteredReportData.soulmateRevenue / filteredReportData.totalRevenue) * 100).toFixed(1)
+                                  : "0.0"}%
+                              </span>
+                            </div>
+                            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden mb-3">
+                              <div
+                                className="bg-gradient-to-r from-amber-600 to-amber-400 h-2 rounded-full transition-all duration-500"
+                                style={{
+                                  width: `${
+                                    filteredReportData.totalRevenue > 0
+                                      ? Math.min(100, (filteredReportData.soulmateRevenue / filteredReportData.totalRevenue) * 100)
+                                      : 0
+                                  }%`,
+                                }}
+                              />
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 text-[11px]">
+                              <div className="bg-slate-900/80 p-2 rounded-lg">
+                                <span className="text-slate-400 block text-[10px]">المبيعات:</span>
+                                <span className="font-bold font-mono text-emerald-400">
+                                  {filteredReportData.soulmateRevenue.toLocaleString()} ج.م
+                                </span>
+                              </div>
+                              <div className="bg-slate-900/80 p-2 rounded-lg">
+                                <span className="text-slate-400 block text-[10px]">المصروفات:</span>
+                                <span className="font-bold font-mono text-rose-400">
+                                  {filteredReportData.soulmateExpenses.toLocaleString()} ج.م
+                                </span>
+                              </div>
+                            </div>
                           </div>
-                          <div className="bg-slate-900/80 p-2 rounded-lg">
-                            <span className="text-slate-400 block text-[10px]">المصروفات:</span>
-                            <span className="font-bold font-mono text-rose-400">
-                              {filteredReportData.soulmateExpenses.toLocaleString()} ج.م
-                            </span>
-                          </div>
-                        </div>
-                      </div>
 
-                      {/* Abu Adel Sweets Card */}
-                      <div className="bg-slate-950/70 border border-rose-500/30 rounded-2xl p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-black text-rose-400 text-xs flex items-center gap-1.5">
-                            <span>🍰 حلواني أبو عادل</span>
-                          </span>
-                          <span className="text-[11px] font-bold text-rose-300 font-mono">
-                            {filteredReportData.totalRevenue > 0
-                              ? ((filteredReportData.abuAdelRevenue / filteredReportData.totalRevenue) * 100).toFixed(1)
-                              : "0.0"}%
-                          </span>
-                        </div>
-                        <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden mb-3">
-                          <div
-                            className="bg-gradient-to-r from-rose-600 to-rose-400 h-2 rounded-full transition-all duration-500"
-                            style={{
-                              width: `${
-                                filteredReportData.totalRevenue > 0
-                                  ? Math.min(100, (filteredReportData.abuAdelRevenue / filteredReportData.totalRevenue) * 100)
-                                  : 0
-                              }%`,
-                            }}
-                          />
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 text-[11px]">
-                          <div className="bg-slate-900/80 p-2 rounded-lg">
-                            <span className="text-slate-400 block text-[10px]">المبيعات:</span>
-                            <span className="font-bold font-mono text-emerald-400">
-                              {filteredReportData.abuAdelRevenue.toLocaleString()} ج.م
-                            </span>
+                          {/* Abu Adel Sweets Card */}
+                          <div className="bg-slate-950/70 border border-rose-500/30 rounded-2xl p-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="font-black text-rose-400 text-xs flex items-center gap-1.5">
+                                <span>🍰 حلواني أبو عادل</span>
+                              </span>
+                              <span className="text-[11px] font-bold text-rose-300 font-mono">
+                                {filteredReportData.totalRevenue > 0
+                                  ? ((filteredReportData.abuAdelRevenue / filteredReportData.totalRevenue) * 100).toFixed(1)
+                                  : "0.0"}%
+                              </span>
+                            </div>
+                            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden mb-3">
+                              <div
+                                className="bg-gradient-to-r from-rose-600 to-rose-400 h-2 rounded-full transition-all duration-500"
+                                style={{
+                                  width: `${
+                                    filteredReportData.totalRevenue > 0
+                                      ? Math.min(100, (filteredReportData.abuAdelRevenue / filteredReportData.totalRevenue) * 100)
+                                      : 0
+                                  }%`,
+                                }}
+                              />
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 text-[11px]">
+                              <div className="bg-slate-900/80 p-2 rounded-lg">
+                                <span className="text-slate-400 block text-[10px]">المبيعات:</span>
+                                <span className="font-bold font-mono text-emerald-400">
+                                  {filteredReportData.abuAdelRevenue.toLocaleString()} ج.م
+                                </span>
+                              </div>
+                              <div className="bg-slate-900/80 p-2 rounded-lg">
+                                <span className="text-slate-400 block text-[10px]">المصروفات:</span>
+                                <span className="font-bold font-mono text-rose-400">
+                                  {filteredReportData.abuAdelExpenses.toLocaleString()} ج.م
+                                </span>
+                              </div>
+                            </div>
                           </div>
-                          <div className="bg-slate-900/80 p-2 rounded-lg">
-                            <span className="text-slate-400 block text-[10px]">المصروفات:</span>
-                            <span className="font-bold font-mono text-rose-400">
-                              {filteredReportData.abuAdelExpenses.toLocaleString()} ج.م
+                        </>
+                      ) : (
+                        <>
+                          <h3 className="text-base font-black text-white flex items-center gap-2 mb-1">
+                            {isViewingSoulmate ? (
+                              <Coffee className="w-5 h-5 text-amber-400" />
+                            ) : (
+                              <Cake className="w-5 h-5 text-rose-400" />
+                            )}
+                            <span>
+                              {isViewingSoulmate ? "ملخص أداء سول ميت كافيه VIP" : "ملخص أداء حلواني أبو عادل"}
                             </span>
+                          </h3>
+                          <p className="text-xs text-slate-400 mb-6">
+                            تقرير الأداء والتحصيل المالي الحصري للفرع.
+                          </p>
+
+                          <div className="space-y-3">
+                            <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
+                              <span className="text-xs text-slate-300">مبيعات الفرع المحصلة:</span>
+                              <span className="font-mono font-bold text-emerald-400 text-sm">
+                                {filteredReportData.totalRevenue.toLocaleString()} ج.م
+                              </span>
+                            </div>
+
+                            <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
+                              <span className="text-xs text-slate-300">تكلفة الخامات والمبيعات:</span>
+                              <span className="font-mono font-bold text-amber-400 text-sm">
+                                {filteredReportData.totalCOGS.toLocaleString()} ج.م
+                              </span>
+                            </div>
+
+                            <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
+                              <span className="text-xs text-slate-300">نثريات ومصروفات الفرع:</span>
+                              <span className="font-mono font-bold text-rose-400 text-sm">
+                                {filteredReportData.totalExpensesAmount.toLocaleString()} ج.م
+                              </span>
+                            </div>
+
+                            <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
+                              <span className="text-xs text-slate-300">صافي أرباح الفرع:</span>
+                              <span className="font-mono font-black text-emerald-400 text-base">
+                                {filteredReportData.netProfit.toLocaleString()} ج.م
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                      </div>
+                        </>
+                      )}
                     </div>
 
                     <div className="mt-6 p-3 rounded-xl bg-slate-950 border border-slate-800/80 text-[11px] text-slate-400 leading-relaxed">
@@ -4182,12 +4440,16 @@ export default function AdminDashboardPage() {
                   </thead>
                   <tbody className="divide-y divide-slate-800">
                     {orders
-                      .filter(
-                        (o) =>
+                      .filter((o) => {
+                        if (isUserSoulmate && o.outlet?.code !== "SOULMATE_CAFE" && o.outletId !== outlets.find((x) => x.code === "SOULMATE_CAFE")?.id) return false;
+                        if (isUserAbuAdel && o.outlet?.code !== "ABU_ADEL_PATISSERIE" && o.outletId !== outlets.find((x) => x.code === "ABU_ADEL_PATISSERIE")?.id) return false;
+                        if (selectedOutletId !== "ALL" && o.outletId !== selectedOutletId) return false;
+                        return (
                           o.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           (o.tableNumber && o.tableNumber.toLowerCase().includes(searchQuery.toLowerCase())) ||
                           (o.deliveryAddress && o.deliveryAddress.toLowerCase().includes(searchQuery.toLowerCase()))
-                      )
+                        );
+                      })
                       .map((o) => {
                         let parsedItems: any[] = [];
                         try {

@@ -34,6 +34,17 @@ export default function KdsScreenPage() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [printingDeliveryTicket, setPrintingDeliveryTicket] = useState<any>(null);
 
+  // Current Staff User
+  const [currentUser, setCurrentUser] = useState<any>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const saved = localStorage.getItem("abuadel_soulmate_user") || localStorage.getItem("abuadel_auth_user");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
   // Audio Context Ref
   const lastTicketIdRef = useRef<string | null>(null);
 
@@ -183,15 +194,17 @@ export default function KdsScreenPage() {
             <RefreshCw className="w-4 h-4" />
           </button>
 
-          {/* Direct Exit & Navigation Buttons */}
-          <Link
-            href="/admin"
-            className="py-1.5 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-bold text-xs transition flex items-center gap-1.5"
-            title="العودة للوحة الإدارة"
-          >
-            <Crown className="w-3.5 h-3.5 text-amber-400" />
-            <span className="hidden sm:inline">لوحة الإدارة 👑</span>
-          </Link>
+          {/* Direct Exit & Navigation Buttons (Only for Owner or Branch Manager) */}
+          {(currentUser?.role === "owner" || currentUser?.role === "branch_manager") && (
+            <Link
+              href="/admin"
+              className="py-1.5 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-bold text-xs transition flex items-center gap-1.5"
+              title="العودة للوحة الإدارة"
+            >
+              <Crown className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden sm:inline">لوحة الإدارة 👑</span>
+            </Link>
+          )}
 
           <Link
             href="/pos"
