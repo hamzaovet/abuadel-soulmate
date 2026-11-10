@@ -90,6 +90,11 @@ export default function PosTerminalPage() {
   const [shiftNotes, setShiftNotes] = useState<string>("");
   const [lastClosedShift, setLastClosedShift] = useState<any>(null);
   const [closingShift, setClosingShift] = useState<boolean>(false);
+  const [showTableModal, setShowTableModal] = useState<boolean>(false);
+  const [shiftModalTab, setShiftModalTab] = useState<"SHIFT" | "DAILY">("SHIFT");
+  const [selectedShiftType, setSelectedShiftType] = useState<"SHIFT_1" | "SHIFT_2">("SHIFT_1");
+  const [lastDailyClose, setLastDailyClose] = useState<any>(null);
+  const [closingDaily, setClosingDaily] = useState<boolean>(false);
 
   // Completed Printed Receipt
   const [lastPrintedOrder, setLastPrintedOrder] = useState<any>(null);
@@ -396,6 +401,7 @@ export default function PosTerminalPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           shiftId: openShift.id,
+          shiftType: selectedShiftType,
           actualCash: shiftActualCash,
           handedTo: shiftHandedTo,
           notes: shiftNotes,
@@ -417,6 +423,38 @@ export default function PosTerminalPage() {
       showToast("error", "تعذر الاتصال بالخادم");
     } finally {
       setClosingShift(false);
+    }
+  };
+
+  // Close Daily End-of-Day Consolidated Handler
+  const handleCloseDaily = async () => {
+    try {
+      setClosingDaily(true);
+      const res = await fetch("/api/shifts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "DAILY_CLOSE",
+          outletId: currentOutlet?.id,
+          closedBy: currentUser?.name || "المايسترو (المالك) 👑",
+          notes: shiftNotes,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success && data.dailyClose) {
+        setLastDailyClose(data.dailyClose);
+        showToast("success", data.message || "تم اعتماد إقفال اليومية الشامل بنجاح 📑");
+        setShowShiftModal(false);
+        await loadPosData();
+        setTimeout(() => window.print(), 400);
+      } else {
+        showToast("error", data.error || "فشل إقفال اليومية");
+      }
+    } catch {
+      showToast("error", "تعذر الاتصال بالسيرفر لإقفال اليومية");
+    } finally {
+      setClosingDaily(false);
     }
   };
 
@@ -590,139 +628,52 @@ export default function PosTerminalPage() {
       </header>
 
       {/* ─────────────────────────────────────────────────────────────
-          2. MAIN POS WORKSPACE: 3 COLUMNS (TABLES | MENU | CART/CHECKOUT)
+          2. MAIN POS WORKSPACE: 2 WIDE COLUMNS (MENU CATALOG 8 COLS | CART & CHECKOUT 4 COLS)
          ───────────────────────────────────────────────────────────── */}
       <div className="flex-1 min-h-0 h-[calc(100vh-58px)] max-h-[calc(100vh-58px)] grid grid-cols-1 lg:grid-cols-12 gap-3 p-3 overflow-hidden no-print">
-        {/* COLUMN 1: FLOOR PLAN & TABLES (For Soulmate Cafe) or Quick Order Types (3 Cols) */}
-        <div className="lg:col-span-3 h-full max-h-full bg-[#110c14] border border-white/10 rounded-2xl p-3 flex flex-col overflow-hidden">
-          <div className="shrink-0 flex items-center justify-between border-b border-white/10 pb-2">
-            <h3 className="font-black text-xs text-white flex items-center gap-1.5">
-              <LayoutGrid className="w-4 h-4 text-amber-400" />
-              <span>{isAbuAdel ? "نوع طلب حلواني أبو عادل" : "ترابيزات وصالة الكافيه 🪑"}</span>
-            </h3>
-
-            {isSoulmate && selectedTable && (
-              <button
-                onClick={() => {
-                  setSelectedTable(null);
-                  setCart([]);
-                }}
-                className="text-[10px] text-amber-300 hover:underline font-bold"
-              >
-                إلغاء التحديد ✕
-              </button>
-            )}
-          </div>
-
-          {isAbuAdel ? (
-            /* Abu Adel Order Type Switcher */
-            <div className="shrink-0 space-y-2 mt-2">
-              <div className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-black/60 border border-white/10 text-xs font-bold text-center">
-                <button
-                  onClick={() => setOrderType("TAKEAWAY")}
-                  className={`py-2 rounded-lg transition ${
-                    orderType === "TAKEAWAY" ? "bg-rose-500 text-white font-black" : "text-slate-400"
-                  }`}
-                >
-                  تيك أواي 🛍️
-                </button>
-                <button
-                  onClick={() => setOrderType("DELIVERY")}
-                  className={`py-2 rounded-lg transition ${
-                    orderType === "DELIVERY" ? "bg-rose-500 text-white font-black" : "text-slate-400"
-                  }`}
-                >
-                  دليفري 🛵
-                </button>
-                <button
-                  onClick={() => setOrderType("DINE_IN")}
-                  className={`py-2 rounded-lg transition ${
-                    orderType === "DINE_IN" ? "bg-rose-500 text-white font-black" : "text-slate-400"
-                  }`}
-                >
-                  صالة 🍽️
-                </button>
-              </div>
-
-              <div className="p-3 rounded-2xl bg-black/40 border border-white/5 text-[11px] space-y-1.5">
-                <span className="text-amber-300 font-bold block">معلومات حلواني أبو عادل:</span>
-                <p className="text-slate-400">الخط الساخن الموحد: 15992</p>
-                <p className="text-slate-400">كاشير المعرض: بيع مباشر للزبائن والقطع والتورت والعلب المشكلة.</p>
-              </div>
-            </div>
-          ) : (
-            /* Soulmate Visual Table Layout */
-            <div className="flex-1 overflow-y-auto min-h-0 space-y-2 pr-1 mt-2">
-              {tables.map((t) => {
-                const isSelected = selectedTable?.id === t.id;
-                const isOccupied = t.status === "OCCUPIED";
-
-                return (
-                  <button
-                    key={t.id}
-                    onClick={() => handleSelectTable(t)}
-                    className={`w-full p-2.5 rounded-2xl border text-right transition flex items-center justify-between cursor-pointer ${
-                      isSelected
-                        ? "bg-amber-500/20 border-amber-400 text-white shadow-lg shadow-amber-500/10"
-                        : isOccupied
-                        ? "bg-rose-950/20 border-rose-500/40 text-rose-200 hover:bg-rose-900/30"
-                        : "bg-black/40 border-white/5 text-slate-300 hover:bg-white/5"
-                    }`}
-                  >
-                    <div>
-                      <div className="flex items-center gap-1.5">
-                        <strong className="text-xs font-black">{t.tableNumber}</strong>
-                        <span className="text-[10px] text-slate-400">({t.capacity} كراسي)</span>
-                      </div>
-                      <span className="text-[10px] text-slate-400 block pt-0.5">
-                        {t.zone === "OUTDOOR" ? "تراس خارجي 🌿" : t.zone === "VIP_LOUNGE" ? "صالون VIP 👑" : "صالة داخلية"}
-                      </span>
-                    </div>
-
-                    <div className="text-left">
-                      <span
-                        className={`py-0.5 px-2 rounded-full text-[9px] font-black ${
-                          isOccupied
-                            ? "bg-rose-500/20 text-rose-300 border border-rose-500/30 animate-pulse"
-                            : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                        }`}
-                      >
-                        {isOccupied ? "مشغولة 🔴" : "فاضية 🟢"}
-                      </span>
-                      {t.activeOrder && (
-                        <span className="text-[10px] font-mono font-bold text-amber-300 block pt-0.5">
-                          {t.activeOrder.finalAmount || t.activeOrder.subtotal || 0} ج
-                        </span>
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
-
-        {/* COLUMN 2: MENU CATALOG (5 Cols) */}
-        <div className="lg:col-span-5 h-full max-h-full bg-[#110c14] border border-white/10 rounded-2xl p-3 flex flex-col overflow-hidden">
-          {/* Search & Categories */}
+        {/* COLUMN 1: MENU CATALOG & SEARCH (8 Cols - Wide & Spacious!) */}
+        <div className="lg:col-span-8 h-full max-h-full bg-[#110c14] border border-white/10 rounded-2xl p-3.5 flex flex-col overflow-hidden shadow-xl">
+          {/* Search Bar & Fast Table Selector Pill */}
           <div className="shrink-0 space-y-2 pb-2">
-            <div className="relative">
-              <Search className="w-4 h-4 absolute right-3 top-2.5 text-slate-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="ابحث عن صنف، فنجان قهوة، تورتة، جاتوه..."
-                className="w-full py-2 pr-9 pl-3 rounded-xl bg-black/60 border border-white/10 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-amber-400"
-              />
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 absolute right-3 top-2.5 text-slate-400" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="ابحث بالاسم، فنجان قهوة، تورتة، موهيتو، كرواسون..."
+                  className="w-full py-2 pr-9 pl-3 rounded-xl bg-black/60 border border-white/10 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-amber-400 font-bold"
+                />
+              </div>
+
+              {/* Quick Table Switcher Button in Header */}
+              {isSoulmate && (
+                <button
+                  type="button"
+                  onClick={() => setShowTableModal(true)}
+                  className={`py-2 px-3 rounded-xl border flex items-center gap-1.5 text-xs font-black transition cursor-pointer shrink-0 shadow-sm ${
+                    selectedTable
+                      ? selectedTable.status === "BILL_REQUESTED"
+                        ? "bg-purple-600/30 border-purple-500 text-purple-200 animate-pulse"
+                        : "bg-amber-500/20 border-amber-500/50 text-amber-300"
+                      : "bg-slate-800/80 border-slate-700 text-slate-300 hover:border-amber-500"
+                  }`}
+                >
+                  <LayoutGrid className="w-3.5 h-3.5 text-amber-400" />
+                  <span>
+                    {selectedTable ? `ترابيزة ${selectedTable.tableNumber}` : "اختر ترابيزة (1 - 12) 🪑"}
+                  </span>
+                </button>
+              )}
             </div>
 
-            {/* Category Pills */}
+            {/* Category Filter Pills */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs font-bold">
               <button
                 onClick={() => setActiveCategory("ALL")}
-                className={`py-1 px-3 rounded-lg transition whitespace-nowrap cursor-pointer ${
-                  activeCategory === "ALL" ? "bg-amber-500 text-slate-950 font-black" : "bg-white/5 text-slate-400 hover:text-white"
+                className={`py-1.5 px-3 rounded-xl transition whitespace-nowrap cursor-pointer ${
+                  activeCategory === "ALL" ? "bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/20" : "bg-white/5 text-slate-400 hover:text-white"
                 }`}
               >
                 الكل ✨
@@ -732,30 +683,30 @@ export default function PosTerminalPage() {
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`py-1 px-3 rounded-lg transition whitespace-nowrap cursor-pointer ${
+                  className={`py-1.5 px-3 rounded-xl transition whitespace-nowrap cursor-pointer flex items-center gap-1 ${
                     activeCategory === cat.id
                       ? isAbuAdel
-                        ? "bg-rose-500 text-white font-black"
-                        : "bg-amber-500 text-slate-950 font-black"
+                        ? "bg-rose-500 text-white font-black shadow-md shadow-rose-500/20"
+                        : "bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/20"
                       : "bg-white/5 text-slate-400 hover:text-white"
                   }`}
                 >
-                  <span>{cat.nameAr}</span> <span className="mr-0.5">{cat.icon}</span>
+                  <span>{cat.nameAr}</span> <span>{cat.icon}</span>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Menu Items Grid: Strictly scrolls inside column 2 */}
-          <div className="flex-1 overflow-y-auto min-h-0 grid grid-cols-2 sm:grid-cols-3 gap-2 pr-1 content-start">
+          {/* Menu Items Grid: 4 columns on large screens! */}
+          <div className="flex-1 overflow-y-auto min-h-0 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2.5 pr-1 content-start">
             {filteredMenuItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => addToCart(item)}
-                className="p-2.5 rounded-2xl bg-black/50 hover:bg-amber-500/10 border border-white/5 hover:border-amber-500/40 transition text-right flex flex-col justify-between space-y-1.5 group cursor-pointer"
+                className="p-2.5 rounded-2xl bg-black/50 hover:bg-amber-500/10 border border-white/5 hover:border-amber-500/40 transition text-right flex flex-col justify-between space-y-1.5 group cursor-pointer shadow-sm hover:scale-[1.02]"
               >
                 <div>
-                  <h4 className="font-black text-xs text-white group-hover:text-amber-300 line-clamp-2">
+                  <h4 className="font-black text-xs text-white group-hover:text-amber-300 line-clamp-2 leading-snug">
                     {item.nameAr}
                   </h4>
                   {item.nameEn && (
@@ -764,11 +715,11 @@ export default function PosTerminalPage() {
                     </span>
                   )}
                   <span className="text-[10px] text-slate-400 block pt-0.5">
-                    {item.itemType === "READY_PASTRY" ? `متبقي: ${item.stockQty} ${item.unitType}` : "تحضير فوري ☕"}
+                    {item.itemType === "READY_PASTRY" ? `رصيد: ${item.stockQty} ${item.unitType}` : "تحضير فوري ☕"}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between w-full pt-1 border-t border-white/5">
+                <div className="flex items-center justify-between w-full pt-1.5 border-t border-white/5">
                   <span className="font-mono font-black text-xs text-amber-400">{item.price} ج</span>
                   <div className="w-5 h-5 rounded-lg bg-white/10 group-hover:bg-amber-500 group-hover:text-slate-950 text-white flex items-center justify-center transition">
                     <Plus className="w-3 h-3" />
@@ -779,44 +730,89 @@ export default function PosTerminalPage() {
           </div>
         </div>
 
-        {/* COLUMN 3: CART, CHECKOUT & SETTLEMENT (4 Cols) */}
-        <div className="lg:col-span-4 h-full max-h-full bg-[#110c14] border border-white/10 rounded-2xl p-3 flex flex-col overflow-hidden">
-          {/* Header: shrink-0 */}
-          <div className="shrink-0 border-b border-white/10 pb-2 flex items-center justify-between">
-            <div>
-              <h3 className="font-black text-sm text-white flex items-center gap-1.5">
+        {/* COLUMN 2: CART, BILL & PINNED SETTLEMENT (4 Cols) */}
+        <div className="lg:col-span-4 h-full max-h-full bg-[#110c14] border border-white/10 rounded-2xl p-3 flex flex-col overflow-hidden shadow-xl">
+          {/* Header & Quick Table Selector Button */}
+          <div className="shrink-0 space-y-2 pb-2 border-b border-white/10">
+            <div className="flex items-center justify-between">
+              <h3 className="font-black text-xs sm:text-sm text-white flex items-center gap-1.5">
                 <Receipt className="w-4 h-4 text-amber-400" />
-                <span>لوحة الحساب والفاتورة</span>
+                <span>شيك الحساب والفاتورة</span>
               </h3>
-              <p className="text-[11px] text-amber-300 font-bold">
-                {selectedTable ? `🪑 ترابيزة: ${selectedTable.tableNumber}` : `🛍️ ${orderType === "TAKEAWAY" ? "طلب تيك أواي سفري" : "طلب دليفري"}`}
-              </p>
+
+              {/* Table Actions (Transfer & Split) */}
+              {selectedTable && (
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setShowTransferModal(true)}
+                    className="py-1 px-2 rounded-lg bg-sky-500/15 border border-sky-500/30 text-sky-300 text-[10px] font-bold flex items-center gap-1 cursor-pointer"
+                    title="نقل الشيك لترابيزة ثانية"
+                  >
+                    <ArrowRightLeft className="w-3 h-3" />
+                    <span>نقل</span>
+                  </button>
+                  <button
+                    onClick={() => setShowSplitModal(true)}
+                    className="py-1 px-2 rounded-lg bg-purple-500/15 border border-purple-500/30 text-purple-300 text-[10px] font-bold flex items-center gap-1 cursor-pointer"
+                    title="تقسيم الفاتورة"
+                  >
+                    <Split className="w-3 h-3" />
+                    <span>تقسيم</span>
+                  </button>
+                </div>
+              )}
             </div>
 
-            {/* Table Actions Menu (Transfer & Split) */}
-            {selectedTable && (
-              <div className="flex items-center gap-1">
+            {/* Prominent Table / Order Type Trigger Bar */}
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => setShowTableModal(true)}
+                className={`flex-1 py-1.5 px-2.5 rounded-xl border flex items-center justify-between text-xs font-black transition cursor-pointer ${
+                  selectedTable
+                    ? selectedTable.status === "BILL_REQUESTED"
+                      ? "bg-purple-600/30 border-purple-500 text-purple-200 animate-pulse"
+                      : "bg-amber-500/20 border-amber-500/50 text-amber-300 shadow-sm"
+                    : orderType === "TAKEAWAY"
+                    ? "bg-rose-500/20 border-rose-500/50 text-rose-300"
+                    : orderType === "DELIVERY"
+                    ? "bg-sky-500/20 border-sky-500/50 text-sky-300"
+                    : "bg-slate-800/80 border-slate-700 text-slate-300 hover:border-amber-500"
+                }`}
+              >
+                <div className="flex items-center gap-1.5">
+                  <LayoutGrid className="w-3.5 h-3.5 text-amber-400" />
+                  <span>
+                    {selectedTable
+                      ? `ترابيزة رقم [ ${selectedTable.tableNumber} ]`
+                      : orderType === "TAKEAWAY"
+                      ? "طلب تيك أواي سفري 🛍️"
+                      : orderType === "DELIVERY"
+                      ? "طلب دليفري للمنزل 🛵"
+                      : "اختر الترابيزة (1 - 12) 🪑"}
+                  </span>
+                </div>
+                <span className="text-[10px] text-amber-400 bg-black/40 py-0.5 px-1.5 rounded-md">
+                  تغيير ▾
+                </span>
+              </button>
+
+              {selectedTable && (
                 <button
-                  onClick={() => setShowTransferModal(true)}
-                  className="py-1 px-2 rounded-lg bg-sky-500/15 border border-sky-500/30 text-sky-300 text-[10px] font-bold flex items-center gap-1 cursor-pointer"
-                  title="نقل الشيك لترابيزة ثانية"
+                  onClick={() => {
+                    setSelectedTable(null);
+                    setCart([]);
+                  }}
+                  className="p-2 rounded-xl bg-white/5 hover:bg-rose-500/20 hover:text-rose-300 text-slate-400 transition cursor-pointer"
+                  title="إلغاء الترابيزة"
                 >
-                  <ArrowRightLeft className="w-3 h-3" />
-                  <span>نقل</span>
+                  <X className="w-3.5 h-3.5" />
                 </button>
-                <button
-                  onClick={() => setShowSplitModal(true)}
-                  className="py-1 px-2 rounded-lg bg-purple-500/15 border border-purple-500/30 text-purple-300 text-[10px] font-bold flex items-center gap-1 cursor-pointer"
-                  title="تقسيم الفاتورة"
-                >
-                  <Split className="w-3 h-3" />
-                  <span>تقسيم</span>
-                </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
-          {/* Delivery Info Inputs if Delivery: shrink-0 */}
+          {/* Delivery Fields (if Delivery) */}
           {orderType === "DELIVERY" && (
             <div className="shrink-0 grid grid-cols-2 gap-1.5 py-1.5 border-b border-white/5 text-[11px]">
               <input
@@ -954,6 +950,12 @@ export default function PosTerminalPage() {
                 <span>المجموع الفرعي:</span>
                 <span>{rawSubtotal} ج</span>
               </div>
+              {orderType === "DELIVERY" && (
+                <div className="flex justify-between text-sky-400 font-mono text-[11px]">
+                  <span>خدمة توصيل دليفري:</span>
+                  <span>+{settings?.deliveryFee || 20} ج</span>
+                </div>
+              )}
               {settings?.isServiceChargeEnabled && (
                 <div className="flex justify-between text-slate-400 font-mono text-[11px]">
                   <span>خدمة ({settings.serviceChargePercent}%):</span>
@@ -968,7 +970,9 @@ export default function PosTerminalPage() {
               )}
               <div className="flex justify-between items-center text-sm font-black border-t border-white/10 pt-1">
                 <span className="text-white">المبلغ المطلوب:</span>
-                <span className="font-mono text-amber-400 text-base font-black">{calculatedFinal} ج.م</span>
+                <span className="font-mono text-amber-400 text-base font-black">
+                  {calculatedFinal + (orderType === "DELIVERY" ? (settings?.deliveryFee || 20) : 0)} ج.م
+                </span>
               </div>
 
               <div className="flex items-center gap-1.5 pt-1">
@@ -991,7 +995,7 @@ export default function PosTerminalPage() {
                   ) : (
                     <>
                       <Printer className="w-4 h-4" />
-                      <span>تحصيل {calculatedFinal} ج.م وطباعة الإيصال 🖨️</span>
+                      <span>تحصيل {calculatedFinal + (orderType === "DELIVERY" ? (settings?.deliveryFee || 20) : 0)} ج.م وطباعة الإيصال 🖨️</span>
                     </>
                   )}
                 </button>
@@ -1042,6 +1046,137 @@ export default function PosTerminalPage() {
                 className="py-2.5 px-4 rounded-xl bg-white/10 text-white text-xs font-bold cursor-pointer"
               >
                 إلغاء
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          3.1 MODAL: FAST TABLE & ORDER TYPE SELECTOR (خريطة الترابيزات الذكية)
+         ───────────────────────────────────────────────────────────── */}
+      {showTableModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in no-print">
+          <div className="bg-[#140e16] border-2 border-amber-500/40 rounded-3xl p-5 max-w-lg w-full space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-white/10 pb-2">
+              <div>
+                <h3 className="font-black text-sm sm:text-base text-white flex items-center gap-2">
+                  <LayoutGrid className="w-4 h-4 text-amber-400" />
+                  <span>ترابيزات كافيه سول ميت (1 - 12)</span>
+                </h3>
+                <p className="text-[11px] text-slate-400">
+                  اضغط على رقم الترابيزة لاختيارها فوراً، أو اختر سفري / دليفري
+                </p>
+              </div>
+              <button
+                onClick={() => setShowTableModal(false)}
+                className="p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition cursor-pointer text-sm font-bold"
+              >
+                ✕ إغلاق
+              </button>
+            </div>
+
+            {/* Quick Order Type Buttons */}
+            <div className="grid grid-cols-2 gap-2 text-xs font-bold">
+              <button
+                onClick={() => {
+                  setOrderType("TAKEAWAY");
+                  setSelectedTable(null);
+                  setShowTableModal(false);
+                  showToast("info", "تم تفعيل وضع الطلب السفري (تيك أواي) 🛍️");
+                }}
+                className={`py-2.5 px-3 rounded-xl border flex items-center justify-center gap-2 transition cursor-pointer ${
+                  orderType === "TAKEAWAY" && !selectedTable
+                    ? "bg-rose-500 text-white border-rose-400 font-black shadow-lg shadow-rose-500/20"
+                    : "bg-black/40 text-slate-300 border-white/10 hover:border-rose-500"
+                }`}
+              >
+                <span>🛍️</span>
+                <span>طلب سفري / تيك أواي</span>
+              </button>
+              <button
+                onClick={() => {
+                  setOrderType("DELIVERY");
+                  setSelectedTable(null);
+                  setShowTableModal(false);
+                  showToast("info", "تم تفعيل وضع التوصيل (دليفري) 🛵");
+                }}
+                className={`py-2.5 px-3 rounded-xl border flex items-center justify-center gap-2 transition cursor-pointer ${
+                  orderType === "DELIVERY" && !selectedTable
+                    ? "bg-sky-500 text-white border-sky-400 font-black shadow-lg shadow-sky-500/20"
+                    : "bg-black/40 text-slate-300 border-white/10 hover:border-sky-500"
+                }`}
+              >
+                <span>🛵</span>
+                <span>طلب دليفري للمنزل</span>
+              </button>
+            </div>
+
+            {/* Tables Grid (1 - 12) */}
+            <div className="space-y-1.5">
+              <span className="text-[11px] font-bold text-amber-300 block">
+                ترابيزات الصالة المتاحة:
+              </span>
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                {tables.map((t) => {
+                  const isSelected = selectedTable?.id === t.id;
+                  const isOccupied = t.status === "OCCUPIED";
+                  const isBillReq = t.status === "BILL_REQUESTED";
+
+                  return (
+                    <button
+                      key={t.id}
+                      onClick={() => {
+                        handleSelectTable(t);
+                        setShowTableModal(false);
+                        showToast("success", `تم اختيار ترابيزة رقم ${t.tableNumber} بنجاح 🪑`);
+                      }}
+                      className={`p-3 rounded-2xl border text-center transition flex flex-col items-center justify-between gap-1 cursor-pointer shadow-sm hover:scale-105 ${
+                        isSelected
+                          ? "bg-amber-500 text-slate-950 border-amber-400 font-black shadow-lg shadow-amber-500/20"
+                          : isBillReq
+                          ? "bg-purple-950/60 border-purple-500/80 text-purple-200 animate-pulse"
+                          : isOccupied
+                          ? "bg-rose-950/40 border-rose-500/50 text-rose-200 hover:bg-rose-900/60"
+                          : "bg-black/50 border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/10"
+                      }`}
+                    >
+                      <div className="text-xl font-black font-mono">
+                        {t.tableNumber}
+                      </div>
+                      <span className="text-[10px] block opacity-80">
+                        {t.zone === "OUTDOOR" ? "تراس 🌿" : t.zone === "VIP_LOUNGE" ? "VIP 👑" : "داخلية"}
+                      </span>
+                      <span
+                        className={`text-[9px] font-black px-1.5 py-0.5 rounded-full block ${
+                          isSelected
+                            ? "bg-black/30 text-black"
+                            : isBillReq
+                            ? "bg-purple-500 text-white"
+                            : isOccupied
+                            ? "bg-rose-500/20 text-rose-300 border border-rose-500/40"
+                            : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                        }`}
+                      >
+                        {isBillReq
+                          ? "طلب حساب 🧾"
+                          : isOccupied
+                          ? `مشغولة (${t.activeOrder?.finalAmount || 0}ج)`
+                          : "فاضية 🟢"}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-white/10 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowTableModal(false)}
+                className="py-2 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer"
+              >
+                رجوع وإغلاق ✕
               </button>
             </div>
           </div>
@@ -1153,95 +1288,191 @@ export default function PosTerminalPage() {
       )}
 
       {/* ─────────────────────────────────────────────────────────────
-          6. MODAL: CLOSE SHIFT (إقفال وتسليم الوردية Z-REPORT)
+          6. MODAL: CLOSE SHIFT & DAILY CLOSE (إقفال الشيفت واليومية الشاملة)
          ───────────────────────────────────────────────────────────── */}
       {showShiftModal && openShift && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in no-print">
-          <div className="bg-[#140e16] border-2 border-amber-500/40 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#140e16] border-2 border-amber-500/40 rounded-3xl p-5 max-w-md w-full space-y-4 shadow-2xl max-h-[92vh] overflow-y-auto">
+            {/* Header & Tabs */}
             <div className="flex items-center justify-between border-b border-white/10 pb-2">
               <h3 className="font-black text-base text-white flex items-center gap-2">
                 <Lock className="w-4 h-4 text-amber-400" />
-                <span>إقفال وردية الكاشير رقم #{openShift.shiftNumber}</span>
+                <span>إقفال الحسابات والخزينة</span>
               </h3>
-              <button onClick={() => setShowShiftModal(false)} className="text-slate-400 hover:text-white">✕</button>
+              <button onClick={() => setShowShiftModal(false)} className="text-slate-400 hover:text-white cursor-pointer font-bold">✕</button>
             </div>
 
-            {/* Live Stats */}
-            <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1.5 text-xs font-mono">
-              <div className="flex justify-between text-slate-400">
-                <span>فكة الدرج الافتتاحية:</span>
-                <span>{shiftLiveStats?.openingFloat || 500} ج</span>
-              </div>
-              <div className="flex justify-between text-emerald-400">
-                <span>مقبوضات الكاش النقدية (+):</span>
-                <span>+{shiftLiveStats?.cashCollected || 0} ج</span>
-              </div>
-              <div className="flex justify-between text-sky-400">
-                <span>فيزا وبطاقات إلكترونية:</span>
-                <span>{shiftLiveStats?.visaCollected || 0} ج</span>
-              </div>
-              <div className="flex justify-between text-purple-400">
-                <span>انستاباي InstaPay:</span>
-                <span>{shiftLiveStats?.instapayCollected || 0} ج</span>
-              </div>
-              <div className="flex justify-between text-rose-400">
-                <span>مصروفات ونثريات الدرج (-):</span>
-                <span>-{shiftLiveStats?.expensesTotal || 0} ج</span>
-              </div>
-              <div className="flex justify-between text-amber-300 font-bold border-t border-white/10 pt-1 text-sm">
-                <span>النقدية المتوقعة بالدرج:</span>
-                <span>{shiftLiveStats?.expectedCash || 0} ج.م</span>
-              </div>
-            </div>
-
-            {/* Shift Close Form */}
-            <div className="space-y-3 text-xs">
-              <div>
-                <label className="text-slate-300 font-bold block mb-1">النقدية الفعلية بالدرج بعد العد (ج.م):</label>
-                <input
-                  type="number"
-                  value={shiftActualCash}
-                  onChange={(e) => setShiftActualCash(Number(e.target.value))}
-                  className="w-full py-2.5 px-3 rounded-xl bg-black/60 border border-amber-500/40 text-amber-300 text-base font-black font-mono text-center"
-                />
-                <span className="text-[10px] text-slate-400 block pt-1 text-center font-mono">
-                  الفارق:{" "}
-                  <strong className={shiftActualCash - (shiftLiveStats?.expectedCash || 0) === 0 ? "text-emerald-400" : "text-rose-400"}>
-                    {shiftActualCash - (shiftLiveStats?.expectedCash || 0)} ج.م{" "}
-                    {shiftActualCash - (shiftLiveStats?.expectedCash || 0) === 0 ? "(مطابقة تامة ✅)" : "(عجز/زيادة ⚠️)"}
-                  </strong>
-                </span>
-              </div>
-
-              <div>
-                <label className="text-slate-300 font-bold block mb-1">تسليم النقدية إلى:</label>
-                <input
-                  type="text"
-                  value={shiftHandedTo}
-                  onChange={(e) => setShiftHandedTo(e.target.value)}
-                  className="w-full py-2 px-3 rounded-xl bg-black/60 border border-white/10 text-white font-bold"
-                />
-              </div>
-
-              <div>
-                <label className="text-slate-300 font-bold block mb-1">ملاحظات الإقفال:</label>
-                <input
-                  type="text"
-                  value={shiftNotes}
-                  onChange={(e) => setShiftNotes(e.target.value)}
-                  placeholder="أي ملاحظات حول الوردية..."
-                  className="w-full py-2 px-3 rounded-xl bg-black/60 border border-white/10 text-white"
-                />
-              </div>
-
+            {/* Toggle Tabs: Shift Close vs Daily Close */}
+            <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-black/60 border border-white/10 text-xs font-bold text-center">
               <button
-                onClick={handleCloseShift}
-                disabled={closingShift}
-                className="w-full py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition shadow-lg cursor-pointer disabled:opacity-50"
+                onClick={() => setShiftModalTab("SHIFT")}
+                className={`py-2 rounded-lg transition cursor-pointer ${
+                  shiftModalTab === "SHIFT" ? "bg-amber-500 text-slate-950 font-black shadow" : "text-slate-400 hover:text-white"
+                }`}
               >
-                {closingShift ? "جارٍ الإقفال..." : "إقفال وتسليم الوردية وطباعة Z-Report 🖨️🔒"}
+                إقفال الوردية (Z-Report) 🔒
+              </button>
+              <button
+                onClick={() => setShiftModalTab("DAILY")}
+                className={`py-2 rounded-lg transition cursor-pointer ${
+                  shiftModalTab === "DAILY" ? "bg-amber-500 text-slate-950 font-black shadow" : "text-slate-400 hover:text-white"
+                }`}
+              >
+                إقفال اليومية بالكامل 📑
               </button>
             </div>
+
+            {shiftModalTab === "SHIFT" ? (
+              /* TAB 1: SHIFT CLOSE */
+              <div className="space-y-3">
+                {/* Shift Selector */}
+                <div>
+                  <label className="text-slate-300 font-bold text-xs block mb-1">حدد الوردية المراد إقفالها:</label>
+                  <div className="grid grid-cols-2 gap-2 text-xs font-bold">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedShiftType("SHIFT_1")}
+                      className={`py-2 px-3 rounded-xl border transition cursor-pointer ${
+                        selectedShiftType === "SHIFT_1"
+                          ? "bg-amber-500/20 border-amber-500 text-amber-300 font-black"
+                          : "bg-black/40 border-white/10 text-slate-400"
+                      }`}
+                    >
+                      الوردية 1 (الصباحية ☀️)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedShiftType("SHIFT_2")}
+                      className={`py-2 px-3 rounded-xl border transition cursor-pointer ${
+                        selectedShiftType === "SHIFT_2"
+                          ? "bg-amber-500/20 border-amber-500 text-amber-300 font-black"
+                          : "bg-black/40 border-white/10 text-slate-400"
+                      }`}
+                    >
+                      الوردية 2 (المسائية 🌙)
+                    </button>
+                  </div>
+                </div>
+
+                {/* Live Stats */}
+                <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1.5 text-xs font-mono">
+                  <div className="flex justify-between text-slate-400">
+                    <span>فكة الدرج الافتتاحية:</span>
+                    <span>{shiftLiveStats?.openingFloat || 500} ج</span>
+                  </div>
+                  <div className="flex justify-between text-emerald-400">
+                    <span>مقبوضات الكاش النقدية (+):</span>
+                    <span>+{shiftLiveStats?.cashCollected || 0} ج</span>
+                  </div>
+                  <div className="flex justify-between text-sky-400">
+                    <span>فيزا وبطاقات إلكترونية:</span>
+                    <span>{shiftLiveStats?.visaCollected || 0} ج</span>
+                  </div>
+                  <div className="flex justify-between text-purple-400">
+                    <span>انستاباي InstaPay:</span>
+                    <span>{shiftLiveStats?.instapayCollected || 0} ج</span>
+                  </div>
+                  <div className="flex justify-between text-rose-400">
+                    <span>مصروفات ونثريات الدرج (-):</span>
+                    <span>-{shiftLiveStats?.expensesTotal || 0} ج</span>
+                  </div>
+                  <div className="flex justify-between text-amber-300 font-bold border-t border-white/10 pt-1 text-sm">
+                    <span>النقدية المتوقعة بالدرج:</span>
+                    <span>{shiftLiveStats?.expectedCash || 0} ج.م</span>
+                  </div>
+                </div>
+
+                {/* Actual Cash Input */}
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">النقدية الفعلية بالدرج بعد العد (ج.م) *:</label>
+                    <input
+                      type="number"
+                      value={shiftActualCash}
+                      onChange={(e) => setShiftActualCash(Number(e.target.value))}
+                      className="w-full py-2.5 px-3 rounded-xl bg-black/60 border border-amber-500/40 text-amber-300 text-base font-black font-mono text-center focus:outline-none"
+                    />
+                    <span className="text-[10px] text-slate-400 block pt-1 text-center font-mono">
+                      الفارق:{" "}
+                      <strong className={shiftActualCash - (shiftLiveStats?.expectedCash || 0) === 0 ? "text-emerald-400" : "text-rose-400"}>
+                        {shiftActualCash - (shiftLiveStats?.expectedCash || 0)} ج.م{" "}
+                        {shiftActualCash - (shiftLiveStats?.expectedCash || 0) === 0 ? "(مطابقة تامة ✅)" : "(عجز/زيادة ⚠️)"}
+                      </strong>
+                    </span>
+                  </div>
+
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">تسليم النقدية إلى:</label>
+                    <input
+                      type="text"
+                      value={shiftHandedTo}
+                      onChange={(e) => setShiftHandedTo(e.target.value)}
+                      className="w-full py-2 px-3 rounded-xl bg-black/60 border border-white/10 text-white font-bold"
+                    />
+                  </div>
+
+                  <button
+                    onClick={handleCloseShift}
+                    disabled={closingShift}
+                    className="w-full py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition shadow-lg cursor-pointer disabled:opacity-50"
+                  >
+                    {closingShift ? "جارٍ الإقفال..." : "إقفال وتسليم الوردية وطباعة Z-Report 🔒🖨️"}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* TAB 2: DAILY CONSOLIDATED CLOSE */
+              <div className="space-y-3 text-xs">
+                <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 space-y-1">
+                  <span className="font-black text-sm block">تقرير إقفال اليومية الشامل 📑</span>
+                  <p className="text-[11px] text-slate-300 leading-relaxed">
+                    يقوم هذا الإجراء بتجميع كافة مبيعات ومصروفات اليوم بالكامل لكافة الورديات (الصباحية والمسائية)، واحتساب صافي النقدية الموردة للخزينة الرئيسية.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1.5 font-mono">
+                  <div className="flex justify-between text-slate-400">
+                    <span>إجمالي إيرادات اليوم:</span>
+                    <span className="text-white font-bold">{shiftLiveStats?.totalRevenue || 0} ج</span>
+                  </div>
+                  <div className="flex justify-between text-emerald-400">
+                    <span>صافي النقدية (الكاش):</span>
+                    <span>{shiftLiveStats?.cashCollected || 0} ج</span>
+                  </div>
+                  <div className="flex justify-between text-sky-400">
+                    <span>المدفوعات الإلكترونية:</span>
+                    <span>{(shiftLiveStats?.visaCollected || 0) + (shiftLiveStats?.instapayCollected || 0) + (shiftLiveStats?.vodafoneCollected || 0)} ج</span>
+                  </div>
+                  <div className="flex justify-between text-rose-400">
+                    <span>إجمالي المصروفات:</span>
+                    <span>-{shiftLiveStats?.expensesTotal || 0} ج</span>
+                  </div>
+                  <div className="flex justify-between text-amber-300 font-bold border-t border-white/10 pt-1 text-sm">
+                    <span>صافي الكاش المورد للخزينة:</span>
+                    <span>{Math.max(0, (shiftLiveStats?.cashCollected || 0) - (shiftLiveStats?.expensesTotal || 0))} ج.م</span>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">ملاحظات إقفال اليومية:</label>
+                  <input
+                    type="text"
+                    value={shiftNotes}
+                    onChange={(e) => setShiftNotes(e.target.value)}
+                    placeholder="أي ملاحظات حول يومية العمل..."
+                    className="w-full py-2 px-3 rounded-xl bg-black/60 border border-white/10 text-white"
+                  />
+                </div>
+
+                <button
+                  onClick={handleCloseDaily}
+                  disabled={closingDaily}
+                  className="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs transition shadow-lg cursor-pointer disabled:opacity-50"
+                >
+                  {closingDaily ? "جارٍ إقفال اليومية..." : "اعتماد إقفال اليومية وطباعة التقرير الشامل 📑🖨️"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

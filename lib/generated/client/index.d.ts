@@ -94,6 +94,11 @@ export type KdsTicket = $Result.DefaultSelection<Prisma.$KdsTicketPayload>
  */
 export type Shift = $Result.DefaultSelection<Prisma.$ShiftPayload>
 /**
+ * Model DailyClose
+ * 
+ */
+export type DailyClose = $Result.DefaultSelection<Prisma.$DailyClosePayload>
+/**
  * Model Expense
  * 
  */
@@ -394,6 +399,16 @@ export class PrismaClient<
     * ```
     */
   get shift(): Prisma.ShiftDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.dailyClose`: Exposes CRUD operations for the **DailyClose** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DailyCloses
+    * const dailyCloses = await prisma.dailyClose.findMany()
+    * ```
+    */
+  get dailyClose(): Prisma.DailyCloseDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.expense`: Exposes CRUD operations for the **Expense** model.
@@ -897,6 +912,7 @@ export namespace Prisma {
     Order: 'Order',
     KdsTicket: 'KdsTicket',
     Shift: 'Shift',
+    DailyClose: 'DailyClose',
     Expense: 'Expense',
     SystemSettings: 'SystemSettings',
     Reservation: 'Reservation',
@@ -916,7 +932,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "outlet" | "user" | "diningTable" | "menuItem" | "productMovement" | "pastryAudit" | "pastryAuditItem" | "rawMaterial" | "rawMaterialMovement" | "inventoryAudit" | "inventoryAuditItem" | "recipeItem" | "customer" | "order" | "kdsTicket" | "shift" | "expense" | "systemSettings" | "reservation" | "chatMessage"
+      modelProps: "outlet" | "user" | "diningTable" | "menuItem" | "productMovement" | "pastryAudit" | "pastryAuditItem" | "rawMaterial" | "rawMaterialMovement" | "inventoryAudit" | "inventoryAuditItem" | "recipeItem" | "customer" | "order" | "kdsTicket" | "shift" | "dailyClose" | "expense" | "systemSettings" | "reservation" | "chatMessage"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2104,6 +2120,80 @@ export namespace Prisma {
           }
         }
       }
+      DailyClose: {
+        payload: Prisma.$DailyClosePayload<ExtArgs>
+        fields: Prisma.DailyCloseFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DailyCloseFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyClosePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DailyCloseFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyClosePayload>
+          }
+          findFirst: {
+            args: Prisma.DailyCloseFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyClosePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DailyCloseFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyClosePayload>
+          }
+          findMany: {
+            args: Prisma.DailyCloseFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyClosePayload>[]
+          }
+          create: {
+            args: Prisma.DailyCloseCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyClosePayload>
+          }
+          createMany: {
+            args: Prisma.DailyCloseCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DailyCloseCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyClosePayload>[]
+          }
+          delete: {
+            args: Prisma.DailyCloseDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyClosePayload>
+          }
+          update: {
+            args: Prisma.DailyCloseUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyClosePayload>
+          }
+          deleteMany: {
+            args: Prisma.DailyCloseDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DailyCloseUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DailyCloseUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyClosePayload>[]
+          }
+          upsert: {
+            args: Prisma.DailyCloseUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyClosePayload>
+          }
+          aggregate: {
+            args: Prisma.DailyCloseAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDailyClose>
+          }
+          groupBy: {
+            args: Prisma.DailyCloseGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DailyCloseGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DailyCloseCountArgs<ExtArgs>
+            result: $Utils.Optional<DailyCloseCountAggregateOutputType> | number
+          }
+        }
+      }
       Expense: {
         payload: Prisma.$ExpensePayload<ExtArgs>
         fields: Prisma.ExpenseFieldRefs
@@ -2539,6 +2629,7 @@ export namespace Prisma {
     order?: OrderOmit
     kdsTicket?: KdsTicketOmit
     shift?: ShiftOmit
+    dailyClose?: DailyCloseOmit
     expense?: ExpenseOmit
     systemSettings?: SystemSettingsOmit
     reservation?: ReservationOmit
@@ -2634,6 +2725,7 @@ export namespace Prisma {
     chatMessages: number
     inventoryAudits: number
     pastryAudits: number
+    dailyCloses: number
   }
 
   export type OutletCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2648,6 +2740,7 @@ export namespace Prisma {
     chatMessages?: boolean | OutletCountOutputTypeCountChatMessagesArgs
     inventoryAudits?: boolean | OutletCountOutputTypeCountInventoryAuditsArgs
     pastryAudits?: boolean | OutletCountOutputTypeCountPastryAuditsArgs
+    dailyCloses?: boolean | OutletCountOutputTypeCountDailyClosesArgs
   }
 
   // Custom InputTypes
@@ -2736,6 +2829,13 @@ export namespace Prisma {
    */
   export type OutletCountOutputTypeCountPastryAuditsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PastryAuditWhereInput
+  }
+
+  /**
+   * OutletCountOutputType without action
+   */
+  export type OutletCountOutputTypeCountDailyClosesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DailyCloseWhereInput
   }
 
 
@@ -3193,6 +3293,7 @@ export namespace Prisma {
     chatMessages?: boolean | Outlet$chatMessagesArgs<ExtArgs>
     inventoryAudits?: boolean | Outlet$inventoryAuditsArgs<ExtArgs>
     pastryAudits?: boolean | Outlet$pastryAuditsArgs<ExtArgs>
+    dailyCloses?: boolean | Outlet$dailyClosesArgs<ExtArgs>
     _count?: boolean | OutletCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["outlet"]>
 
@@ -3248,6 +3349,7 @@ export namespace Prisma {
     chatMessages?: boolean | Outlet$chatMessagesArgs<ExtArgs>
     inventoryAudits?: boolean | Outlet$inventoryAuditsArgs<ExtArgs>
     pastryAudits?: boolean | Outlet$pastryAuditsArgs<ExtArgs>
+    dailyCloses?: boolean | Outlet$dailyClosesArgs<ExtArgs>
     _count?: boolean | OutletCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OutletIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3267,6 +3369,7 @@ export namespace Prisma {
       chatMessages: Prisma.$ChatMessagePayload<ExtArgs>[]
       inventoryAudits: Prisma.$InventoryAuditPayload<ExtArgs>[]
       pastryAudits: Prisma.$PastryAuditPayload<ExtArgs>[]
+      dailyCloses: Prisma.$DailyClosePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3684,6 +3787,7 @@ export namespace Prisma {
     chatMessages<T extends Outlet$chatMessagesArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$chatMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     inventoryAudits<T extends Outlet$inventoryAuditsArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$inventoryAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InventoryAuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     pastryAudits<T extends Outlet$pastryAuditsArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$pastryAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PastryAuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    dailyCloses<T extends Outlet$dailyClosesArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$dailyClosesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DailyClosePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4377,6 +4481,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PastryAuditScalarFieldEnum | PastryAuditScalarFieldEnum[]
+  }
+
+  /**
+   * Outlet.dailyCloses
+   */
+  export type Outlet$dailyClosesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyClose
+     */
+    select?: DailyCloseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyClose
+     */
+    omit?: DailyCloseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyCloseInclude<ExtArgs> | null
+    where?: DailyCloseWhereInput
+    orderBy?: DailyCloseOrderByWithRelationInput | DailyCloseOrderByWithRelationInput[]
+    cursor?: DailyCloseWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DailyCloseScalarFieldEnum | DailyCloseScalarFieldEnum[]
   }
 
   /**
@@ -18824,6 +18952,7 @@ export namespace Prisma {
     subtotal: number | null
     serviceCharge: number | null
     taxAmount: number | null
+    deliveryFee: number | null
     discountAmount: number | null
     tipAmount: number | null
     finalAmount: number | null
@@ -18835,6 +18964,7 @@ export namespace Prisma {
     subtotal: number | null
     serviceCharge: number | null
     taxAmount: number | null
+    deliveryFee: number | null
     discountAmount: number | null
     tipAmount: number | null
     finalAmount: number | null
@@ -18858,6 +18988,7 @@ export namespace Prisma {
     subtotal: number | null
     serviceCharge: number | null
     taxAmount: number | null
+    deliveryFee: number | null
     discountAmount: number | null
     tipAmount: number | null
     finalAmount: number | null
@@ -18890,6 +19021,7 @@ export namespace Prisma {
     subtotal: number | null
     serviceCharge: number | null
     taxAmount: number | null
+    deliveryFee: number | null
     discountAmount: number | null
     tipAmount: number | null
     finalAmount: number | null
@@ -18922,6 +19054,7 @@ export namespace Prisma {
     subtotal: number
     serviceCharge: number
     taxAmount: number
+    deliveryFee: number
     discountAmount: number
     tipAmount: number
     finalAmount: number
@@ -18944,6 +19077,7 @@ export namespace Prisma {
     subtotal?: true
     serviceCharge?: true
     taxAmount?: true
+    deliveryFee?: true
     discountAmount?: true
     tipAmount?: true
     finalAmount?: true
@@ -18955,6 +19089,7 @@ export namespace Prisma {
     subtotal?: true
     serviceCharge?: true
     taxAmount?: true
+    deliveryFee?: true
     discountAmount?: true
     tipAmount?: true
     finalAmount?: true
@@ -18978,6 +19113,7 @@ export namespace Prisma {
     subtotal?: true
     serviceCharge?: true
     taxAmount?: true
+    deliveryFee?: true
     discountAmount?: true
     tipAmount?: true
     finalAmount?: true
@@ -19010,6 +19146,7 @@ export namespace Prisma {
     subtotal?: true
     serviceCharge?: true
     taxAmount?: true
+    deliveryFee?: true
     discountAmount?: true
     tipAmount?: true
     finalAmount?: true
@@ -19042,6 +19179,7 @@ export namespace Prisma {
     subtotal?: true
     serviceCharge?: true
     taxAmount?: true
+    deliveryFee?: true
     discountAmount?: true
     tipAmount?: true
     finalAmount?: true
@@ -19161,6 +19299,7 @@ export namespace Prisma {
     subtotal: number
     serviceCharge: number
     taxAmount: number
+    deliveryFee: number
     discountAmount: number
     tipAmount: number
     finalAmount: number
@@ -19212,6 +19351,7 @@ export namespace Prisma {
     subtotal?: boolean
     serviceCharge?: boolean
     taxAmount?: boolean
+    deliveryFee?: boolean
     discountAmount?: boolean
     tipAmount?: boolean
     finalAmount?: boolean
@@ -19249,6 +19389,7 @@ export namespace Prisma {
     subtotal?: boolean
     serviceCharge?: boolean
     taxAmount?: boolean
+    deliveryFee?: boolean
     discountAmount?: boolean
     tipAmount?: boolean
     finalAmount?: boolean
@@ -19284,6 +19425,7 @@ export namespace Prisma {
     subtotal?: boolean
     serviceCharge?: boolean
     taxAmount?: boolean
+    deliveryFee?: boolean
     discountAmount?: boolean
     tipAmount?: boolean
     finalAmount?: boolean
@@ -19319,6 +19461,7 @@ export namespace Prisma {
     subtotal?: boolean
     serviceCharge?: boolean
     taxAmount?: boolean
+    deliveryFee?: boolean
     discountAmount?: boolean
     tipAmount?: boolean
     finalAmount?: boolean
@@ -19335,7 +19478,7 @@ export namespace Prisma {
     settledAt?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "orderNumber" | "orderType" | "tableId" | "tableNumber" | "deliveryAddress" | "deliveryPhone" | "deliveryNotes" | "status" | "paymentStatus" | "paymentMethod" | "subtotal" | "serviceCharge" | "taxAmount" | "discountAmount" | "tipAmount" | "finalAmount" | "cashierName" | "waiterName" | "customerName" | "customerPhone" | "customerId" | "pointsEarned" | "pointsRedeemed" | "notes" | "items" | "createdAt" | "settledAt", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "orderNumber" | "orderType" | "tableId" | "tableNumber" | "deliveryAddress" | "deliveryPhone" | "deliveryNotes" | "status" | "paymentStatus" | "paymentMethod" | "subtotal" | "serviceCharge" | "taxAmount" | "deliveryFee" | "discountAmount" | "tipAmount" | "finalAmount" | "cashierName" | "waiterName" | "customerName" | "customerPhone" | "customerId" | "pointsEarned" | "pointsRedeemed" | "notes" | "items" | "createdAt" | "settledAt", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     table?: boolean | Order$tableArgs<ExtArgs>
@@ -19378,6 +19521,7 @@ export namespace Prisma {
       subtotal: number
       serviceCharge: number
       taxAmount: number
+      deliveryFee: number
       discountAmount: number
       tipAmount: number
       finalAmount: number
@@ -19834,6 +19978,7 @@ export namespace Prisma {
     readonly subtotal: FieldRef<"Order", 'Float'>
     readonly serviceCharge: FieldRef<"Order", 'Float'>
     readonly taxAmount: FieldRef<"Order", 'Float'>
+    readonly deliveryFee: FieldRef<"Order", 'Float'>
     readonly discountAmount: FieldRef<"Order", 'Float'>
     readonly tipAmount: FieldRef<"Order", 'Float'>
     readonly finalAmount: FieldRef<"Order", 'Float'>
@@ -22768,6 +22913,1278 @@ export namespace Prisma {
 
 
   /**
+   * Model DailyClose
+   */
+
+  export type AggregateDailyClose = {
+    _count: DailyCloseCountAggregateOutputType | null
+    _avg: DailyCloseAvgAggregateOutputType | null
+    _sum: DailyCloseSumAggregateOutputType | null
+    _min: DailyCloseMinAggregateOutputType | null
+    _max: DailyCloseMaxAggregateOutputType | null
+  }
+
+  export type DailyCloseAvgAggregateOutputType = {
+    shiftsCount: number | null
+    totalRevenue: number | null
+    totalCash: number | null
+    totalVisa: number | null
+    totalInstapay: number | null
+    totalVodafone: number | null
+    totalExpenses: number | null
+    netCashInSafe: number | null
+    ordersCount: number | null
+  }
+
+  export type DailyCloseSumAggregateOutputType = {
+    shiftsCount: number | null
+    totalRevenue: number | null
+    totalCash: number | null
+    totalVisa: number | null
+    totalInstapay: number | null
+    totalVodafone: number | null
+    totalExpenses: number | null
+    netCashInSafe: number | null
+    ordersCount: number | null
+  }
+
+  export type DailyCloseMinAggregateOutputType = {
+    id: string | null
+    outletId: string | null
+    closeDate: Date | null
+    dayName: string | null
+    shiftsCount: number | null
+    totalRevenue: number | null
+    totalCash: number | null
+    totalVisa: number | null
+    totalInstapay: number | null
+    totalVodafone: number | null
+    totalExpenses: number | null
+    netCashInSafe: number | null
+    ordersCount: number | null
+    closedBy: string | null
+    notes: string | null
+    createdAt: Date | null
+  }
+
+  export type DailyCloseMaxAggregateOutputType = {
+    id: string | null
+    outletId: string | null
+    closeDate: Date | null
+    dayName: string | null
+    shiftsCount: number | null
+    totalRevenue: number | null
+    totalCash: number | null
+    totalVisa: number | null
+    totalInstapay: number | null
+    totalVodafone: number | null
+    totalExpenses: number | null
+    netCashInSafe: number | null
+    ordersCount: number | null
+    closedBy: string | null
+    notes: string | null
+    createdAt: Date | null
+  }
+
+  export type DailyCloseCountAggregateOutputType = {
+    id: number
+    outletId: number
+    closeDate: number
+    dayName: number
+    shiftsCount: number
+    totalRevenue: number
+    totalCash: number
+    totalVisa: number
+    totalInstapay: number
+    totalVodafone: number
+    totalExpenses: number
+    netCashInSafe: number
+    ordersCount: number
+    closedBy: number
+    notes: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type DailyCloseAvgAggregateInputType = {
+    shiftsCount?: true
+    totalRevenue?: true
+    totalCash?: true
+    totalVisa?: true
+    totalInstapay?: true
+    totalVodafone?: true
+    totalExpenses?: true
+    netCashInSafe?: true
+    ordersCount?: true
+  }
+
+  export type DailyCloseSumAggregateInputType = {
+    shiftsCount?: true
+    totalRevenue?: true
+    totalCash?: true
+    totalVisa?: true
+    totalInstapay?: true
+    totalVodafone?: true
+    totalExpenses?: true
+    netCashInSafe?: true
+    ordersCount?: true
+  }
+
+  export type DailyCloseMinAggregateInputType = {
+    id?: true
+    outletId?: true
+    closeDate?: true
+    dayName?: true
+    shiftsCount?: true
+    totalRevenue?: true
+    totalCash?: true
+    totalVisa?: true
+    totalInstapay?: true
+    totalVodafone?: true
+    totalExpenses?: true
+    netCashInSafe?: true
+    ordersCount?: true
+    closedBy?: true
+    notes?: true
+    createdAt?: true
+  }
+
+  export type DailyCloseMaxAggregateInputType = {
+    id?: true
+    outletId?: true
+    closeDate?: true
+    dayName?: true
+    shiftsCount?: true
+    totalRevenue?: true
+    totalCash?: true
+    totalVisa?: true
+    totalInstapay?: true
+    totalVodafone?: true
+    totalExpenses?: true
+    netCashInSafe?: true
+    ordersCount?: true
+    closedBy?: true
+    notes?: true
+    createdAt?: true
+  }
+
+  export type DailyCloseCountAggregateInputType = {
+    id?: true
+    outletId?: true
+    closeDate?: true
+    dayName?: true
+    shiftsCount?: true
+    totalRevenue?: true
+    totalCash?: true
+    totalVisa?: true
+    totalInstapay?: true
+    totalVodafone?: true
+    totalExpenses?: true
+    netCashInSafe?: true
+    ordersCount?: true
+    closedBy?: true
+    notes?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type DailyCloseAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DailyClose to aggregate.
+     */
+    where?: DailyCloseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DailyCloses to fetch.
+     */
+    orderBy?: DailyCloseOrderByWithRelationInput | DailyCloseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DailyCloseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DailyCloses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DailyCloses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DailyCloses
+    **/
+    _count?: true | DailyCloseCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DailyCloseAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DailyCloseSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DailyCloseMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DailyCloseMaxAggregateInputType
+  }
+
+  export type GetDailyCloseAggregateType<T extends DailyCloseAggregateArgs> = {
+        [P in keyof T & keyof AggregateDailyClose]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDailyClose[P]>
+      : GetScalarType<T[P], AggregateDailyClose[P]>
+  }
+
+
+
+
+  export type DailyCloseGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DailyCloseWhereInput
+    orderBy?: DailyCloseOrderByWithAggregationInput | DailyCloseOrderByWithAggregationInput[]
+    by: DailyCloseScalarFieldEnum[] | DailyCloseScalarFieldEnum
+    having?: DailyCloseScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DailyCloseCountAggregateInputType | true
+    _avg?: DailyCloseAvgAggregateInputType
+    _sum?: DailyCloseSumAggregateInputType
+    _min?: DailyCloseMinAggregateInputType
+    _max?: DailyCloseMaxAggregateInputType
+  }
+
+  export type DailyCloseGroupByOutputType = {
+    id: string
+    outletId: string
+    closeDate: Date
+    dayName: string | null
+    shiftsCount: number
+    totalRevenue: number
+    totalCash: number
+    totalVisa: number
+    totalInstapay: number
+    totalVodafone: number
+    totalExpenses: number
+    netCashInSafe: number
+    ordersCount: number
+    closedBy: string
+    notes: string | null
+    createdAt: Date
+    _count: DailyCloseCountAggregateOutputType | null
+    _avg: DailyCloseAvgAggregateOutputType | null
+    _sum: DailyCloseSumAggregateOutputType | null
+    _min: DailyCloseMinAggregateOutputType | null
+    _max: DailyCloseMaxAggregateOutputType | null
+  }
+
+  type GetDailyCloseGroupByPayload<T extends DailyCloseGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DailyCloseGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DailyCloseGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DailyCloseGroupByOutputType[P]>
+            : GetScalarType<T[P], DailyCloseGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DailyCloseSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    closeDate?: boolean
+    dayName?: boolean
+    shiftsCount?: boolean
+    totalRevenue?: boolean
+    totalCash?: boolean
+    totalVisa?: boolean
+    totalInstapay?: boolean
+    totalVodafone?: boolean
+    totalExpenses?: boolean
+    netCashInSafe?: boolean
+    ordersCount?: boolean
+    closedBy?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["dailyClose"]>
+
+  export type DailyCloseSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    closeDate?: boolean
+    dayName?: boolean
+    shiftsCount?: boolean
+    totalRevenue?: boolean
+    totalCash?: boolean
+    totalVisa?: boolean
+    totalInstapay?: boolean
+    totalVodafone?: boolean
+    totalExpenses?: boolean
+    netCashInSafe?: boolean
+    ordersCount?: boolean
+    closedBy?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["dailyClose"]>
+
+  export type DailyCloseSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    closeDate?: boolean
+    dayName?: boolean
+    shiftsCount?: boolean
+    totalRevenue?: boolean
+    totalCash?: boolean
+    totalVisa?: boolean
+    totalInstapay?: boolean
+    totalVodafone?: boolean
+    totalExpenses?: boolean
+    netCashInSafe?: boolean
+    ordersCount?: boolean
+    closedBy?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["dailyClose"]>
+
+  export type DailyCloseSelectScalar = {
+    id?: boolean
+    outletId?: boolean
+    closeDate?: boolean
+    dayName?: boolean
+    shiftsCount?: boolean
+    totalRevenue?: boolean
+    totalCash?: boolean
+    totalVisa?: boolean
+    totalInstapay?: boolean
+    totalVodafone?: boolean
+    totalExpenses?: boolean
+    netCashInSafe?: boolean
+    ordersCount?: boolean
+    closedBy?: boolean
+    notes?: boolean
+    createdAt?: boolean
+  }
+
+  export type DailyCloseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "closeDate" | "dayName" | "shiftsCount" | "totalRevenue" | "totalCash" | "totalVisa" | "totalInstapay" | "totalVodafone" | "totalExpenses" | "netCashInSafe" | "ordersCount" | "closedBy" | "notes" | "createdAt", ExtArgs["result"]["dailyClose"]>
+  export type DailyCloseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }
+  export type DailyCloseIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }
+  export type DailyCloseIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }
+
+  export type $DailyClosePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DailyClose"
+    objects: {
+      outlet: Prisma.$OutletPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      outletId: string
+      closeDate: Date
+      dayName: string | null
+      shiftsCount: number
+      totalRevenue: number
+      totalCash: number
+      totalVisa: number
+      totalInstapay: number
+      totalVodafone: number
+      totalExpenses: number
+      netCashInSafe: number
+      ordersCount: number
+      closedBy: string
+      notes: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["dailyClose"]>
+    composites: {}
+  }
+
+  type DailyCloseGetPayload<S extends boolean | null | undefined | DailyCloseDefaultArgs> = $Result.GetResult<Prisma.$DailyClosePayload, S>
+
+  type DailyCloseCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DailyCloseFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DailyCloseCountAggregateInputType | true
+    }
+
+  export interface DailyCloseDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DailyClose'], meta: { name: 'DailyClose' } }
+    /**
+     * Find zero or one DailyClose that matches the filter.
+     * @param {DailyCloseFindUniqueArgs} args - Arguments to find a DailyClose
+     * @example
+     * // Get one DailyClose
+     * const dailyClose = await prisma.dailyClose.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DailyCloseFindUniqueArgs>(args: SelectSubset<T, DailyCloseFindUniqueArgs<ExtArgs>>): Prisma__DailyCloseClient<$Result.GetResult<Prisma.$DailyClosePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DailyClose that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DailyCloseFindUniqueOrThrowArgs} args - Arguments to find a DailyClose
+     * @example
+     * // Get one DailyClose
+     * const dailyClose = await prisma.dailyClose.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DailyCloseFindUniqueOrThrowArgs>(args: SelectSubset<T, DailyCloseFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DailyCloseClient<$Result.GetResult<Prisma.$DailyClosePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DailyClose that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DailyCloseFindFirstArgs} args - Arguments to find a DailyClose
+     * @example
+     * // Get one DailyClose
+     * const dailyClose = await prisma.dailyClose.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DailyCloseFindFirstArgs>(args?: SelectSubset<T, DailyCloseFindFirstArgs<ExtArgs>>): Prisma__DailyCloseClient<$Result.GetResult<Prisma.$DailyClosePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DailyClose that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DailyCloseFindFirstOrThrowArgs} args - Arguments to find a DailyClose
+     * @example
+     * // Get one DailyClose
+     * const dailyClose = await prisma.dailyClose.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DailyCloseFindFirstOrThrowArgs>(args?: SelectSubset<T, DailyCloseFindFirstOrThrowArgs<ExtArgs>>): Prisma__DailyCloseClient<$Result.GetResult<Prisma.$DailyClosePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DailyCloses that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DailyCloseFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DailyCloses
+     * const dailyCloses = await prisma.dailyClose.findMany()
+     * 
+     * // Get first 10 DailyCloses
+     * const dailyCloses = await prisma.dailyClose.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const dailyCloseWithIdOnly = await prisma.dailyClose.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DailyCloseFindManyArgs>(args?: SelectSubset<T, DailyCloseFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DailyClosePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DailyClose.
+     * @param {DailyCloseCreateArgs} args - Arguments to create a DailyClose.
+     * @example
+     * // Create one DailyClose
+     * const DailyClose = await prisma.dailyClose.create({
+     *   data: {
+     *     // ... data to create a DailyClose
+     *   }
+     * })
+     * 
+     */
+    create<T extends DailyCloseCreateArgs>(args: SelectSubset<T, DailyCloseCreateArgs<ExtArgs>>): Prisma__DailyCloseClient<$Result.GetResult<Prisma.$DailyClosePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DailyCloses.
+     * @param {DailyCloseCreateManyArgs} args - Arguments to create many DailyCloses.
+     * @example
+     * // Create many DailyCloses
+     * const dailyClose = await prisma.dailyClose.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DailyCloseCreateManyArgs>(args?: SelectSubset<T, DailyCloseCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DailyCloses and returns the data saved in the database.
+     * @param {DailyCloseCreateManyAndReturnArgs} args - Arguments to create many DailyCloses.
+     * @example
+     * // Create many DailyCloses
+     * const dailyClose = await prisma.dailyClose.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DailyCloses and only return the `id`
+     * const dailyCloseWithIdOnly = await prisma.dailyClose.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DailyCloseCreateManyAndReturnArgs>(args?: SelectSubset<T, DailyCloseCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DailyClosePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DailyClose.
+     * @param {DailyCloseDeleteArgs} args - Arguments to delete one DailyClose.
+     * @example
+     * // Delete one DailyClose
+     * const DailyClose = await prisma.dailyClose.delete({
+     *   where: {
+     *     // ... filter to delete one DailyClose
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DailyCloseDeleteArgs>(args: SelectSubset<T, DailyCloseDeleteArgs<ExtArgs>>): Prisma__DailyCloseClient<$Result.GetResult<Prisma.$DailyClosePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DailyClose.
+     * @param {DailyCloseUpdateArgs} args - Arguments to update one DailyClose.
+     * @example
+     * // Update one DailyClose
+     * const dailyClose = await prisma.dailyClose.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DailyCloseUpdateArgs>(args: SelectSubset<T, DailyCloseUpdateArgs<ExtArgs>>): Prisma__DailyCloseClient<$Result.GetResult<Prisma.$DailyClosePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DailyCloses.
+     * @param {DailyCloseDeleteManyArgs} args - Arguments to filter DailyCloses to delete.
+     * @example
+     * // Delete a few DailyCloses
+     * const { count } = await prisma.dailyClose.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DailyCloseDeleteManyArgs>(args?: SelectSubset<T, DailyCloseDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DailyCloses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DailyCloseUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DailyCloses
+     * const dailyClose = await prisma.dailyClose.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DailyCloseUpdateManyArgs>(args: SelectSubset<T, DailyCloseUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DailyCloses and returns the data updated in the database.
+     * @param {DailyCloseUpdateManyAndReturnArgs} args - Arguments to update many DailyCloses.
+     * @example
+     * // Update many DailyCloses
+     * const dailyClose = await prisma.dailyClose.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DailyCloses and only return the `id`
+     * const dailyCloseWithIdOnly = await prisma.dailyClose.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DailyCloseUpdateManyAndReturnArgs>(args: SelectSubset<T, DailyCloseUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DailyClosePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DailyClose.
+     * @param {DailyCloseUpsertArgs} args - Arguments to update or create a DailyClose.
+     * @example
+     * // Update or create a DailyClose
+     * const dailyClose = await prisma.dailyClose.upsert({
+     *   create: {
+     *     // ... data to create a DailyClose
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DailyClose we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DailyCloseUpsertArgs>(args: SelectSubset<T, DailyCloseUpsertArgs<ExtArgs>>): Prisma__DailyCloseClient<$Result.GetResult<Prisma.$DailyClosePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DailyCloses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DailyCloseCountArgs} args - Arguments to filter DailyCloses to count.
+     * @example
+     * // Count the number of DailyCloses
+     * const count = await prisma.dailyClose.count({
+     *   where: {
+     *     // ... the filter for the DailyCloses we want to count
+     *   }
+     * })
+    **/
+    count<T extends DailyCloseCountArgs>(
+      args?: Subset<T, DailyCloseCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DailyCloseCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DailyClose.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DailyCloseAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DailyCloseAggregateArgs>(args: Subset<T, DailyCloseAggregateArgs>): Prisma.PrismaPromise<GetDailyCloseAggregateType<T>>
+
+    /**
+     * Group by DailyClose.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DailyCloseGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DailyCloseGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DailyCloseGroupByArgs['orderBy'] }
+        : { orderBy?: DailyCloseGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DailyCloseGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDailyCloseGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DailyClose model
+   */
+  readonly fields: DailyCloseFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DailyClose.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DailyCloseClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    outlet<T extends OutletDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OutletDefaultArgs<ExtArgs>>): Prisma__OutletClient<$Result.GetResult<Prisma.$OutletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DailyClose model
+   */
+  interface DailyCloseFieldRefs {
+    readonly id: FieldRef<"DailyClose", 'String'>
+    readonly outletId: FieldRef<"DailyClose", 'String'>
+    readonly closeDate: FieldRef<"DailyClose", 'DateTime'>
+    readonly dayName: FieldRef<"DailyClose", 'String'>
+    readonly shiftsCount: FieldRef<"DailyClose", 'Int'>
+    readonly totalRevenue: FieldRef<"DailyClose", 'Float'>
+    readonly totalCash: FieldRef<"DailyClose", 'Float'>
+    readonly totalVisa: FieldRef<"DailyClose", 'Float'>
+    readonly totalInstapay: FieldRef<"DailyClose", 'Float'>
+    readonly totalVodafone: FieldRef<"DailyClose", 'Float'>
+    readonly totalExpenses: FieldRef<"DailyClose", 'Float'>
+    readonly netCashInSafe: FieldRef<"DailyClose", 'Float'>
+    readonly ordersCount: FieldRef<"DailyClose", 'Int'>
+    readonly closedBy: FieldRef<"DailyClose", 'String'>
+    readonly notes: FieldRef<"DailyClose", 'String'>
+    readonly createdAt: FieldRef<"DailyClose", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DailyClose findUnique
+   */
+  export type DailyCloseFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyClose
+     */
+    select?: DailyCloseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyClose
+     */
+    omit?: DailyCloseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyCloseInclude<ExtArgs> | null
+    /**
+     * Filter, which DailyClose to fetch.
+     */
+    where: DailyCloseWhereUniqueInput
+  }
+
+  /**
+   * DailyClose findUniqueOrThrow
+   */
+  export type DailyCloseFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyClose
+     */
+    select?: DailyCloseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyClose
+     */
+    omit?: DailyCloseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyCloseInclude<ExtArgs> | null
+    /**
+     * Filter, which DailyClose to fetch.
+     */
+    where: DailyCloseWhereUniqueInput
+  }
+
+  /**
+   * DailyClose findFirst
+   */
+  export type DailyCloseFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyClose
+     */
+    select?: DailyCloseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyClose
+     */
+    omit?: DailyCloseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyCloseInclude<ExtArgs> | null
+    /**
+     * Filter, which DailyClose to fetch.
+     */
+    where?: DailyCloseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DailyCloses to fetch.
+     */
+    orderBy?: DailyCloseOrderByWithRelationInput | DailyCloseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DailyCloses.
+     */
+    cursor?: DailyCloseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DailyCloses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DailyCloses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DailyCloses.
+     */
+    distinct?: DailyCloseScalarFieldEnum | DailyCloseScalarFieldEnum[]
+  }
+
+  /**
+   * DailyClose findFirstOrThrow
+   */
+  export type DailyCloseFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyClose
+     */
+    select?: DailyCloseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyClose
+     */
+    omit?: DailyCloseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyCloseInclude<ExtArgs> | null
+    /**
+     * Filter, which DailyClose to fetch.
+     */
+    where?: DailyCloseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DailyCloses to fetch.
+     */
+    orderBy?: DailyCloseOrderByWithRelationInput | DailyCloseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DailyCloses.
+     */
+    cursor?: DailyCloseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DailyCloses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DailyCloses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DailyCloses.
+     */
+    distinct?: DailyCloseScalarFieldEnum | DailyCloseScalarFieldEnum[]
+  }
+
+  /**
+   * DailyClose findMany
+   */
+  export type DailyCloseFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyClose
+     */
+    select?: DailyCloseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyClose
+     */
+    omit?: DailyCloseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyCloseInclude<ExtArgs> | null
+    /**
+     * Filter, which DailyCloses to fetch.
+     */
+    where?: DailyCloseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DailyCloses to fetch.
+     */
+    orderBy?: DailyCloseOrderByWithRelationInput | DailyCloseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DailyCloses.
+     */
+    cursor?: DailyCloseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DailyCloses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DailyCloses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DailyCloses.
+     */
+    distinct?: DailyCloseScalarFieldEnum | DailyCloseScalarFieldEnum[]
+  }
+
+  /**
+   * DailyClose create
+   */
+  export type DailyCloseCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyClose
+     */
+    select?: DailyCloseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyClose
+     */
+    omit?: DailyCloseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyCloseInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DailyClose.
+     */
+    data: XOR<DailyCloseCreateInput, DailyCloseUncheckedCreateInput>
+  }
+
+  /**
+   * DailyClose createMany
+   */
+  export type DailyCloseCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DailyCloses.
+     */
+    data: DailyCloseCreateManyInput | DailyCloseCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DailyClose createManyAndReturn
+   */
+  export type DailyCloseCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyClose
+     */
+    select?: DailyCloseSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyClose
+     */
+    omit?: DailyCloseOmit<ExtArgs> | null
+    /**
+     * The data used to create many DailyCloses.
+     */
+    data: DailyCloseCreateManyInput | DailyCloseCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyCloseIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DailyClose update
+   */
+  export type DailyCloseUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyClose
+     */
+    select?: DailyCloseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyClose
+     */
+    omit?: DailyCloseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyCloseInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DailyClose.
+     */
+    data: XOR<DailyCloseUpdateInput, DailyCloseUncheckedUpdateInput>
+    /**
+     * Choose, which DailyClose to update.
+     */
+    where: DailyCloseWhereUniqueInput
+  }
+
+  /**
+   * DailyClose updateMany
+   */
+  export type DailyCloseUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DailyCloses.
+     */
+    data: XOR<DailyCloseUpdateManyMutationInput, DailyCloseUncheckedUpdateManyInput>
+    /**
+     * Filter which DailyCloses to update
+     */
+    where?: DailyCloseWhereInput
+    /**
+     * Limit how many DailyCloses to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DailyClose updateManyAndReturn
+   */
+  export type DailyCloseUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyClose
+     */
+    select?: DailyCloseSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyClose
+     */
+    omit?: DailyCloseOmit<ExtArgs> | null
+    /**
+     * The data used to update DailyCloses.
+     */
+    data: XOR<DailyCloseUpdateManyMutationInput, DailyCloseUncheckedUpdateManyInput>
+    /**
+     * Filter which DailyCloses to update
+     */
+    where?: DailyCloseWhereInput
+    /**
+     * Limit how many DailyCloses to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyCloseIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DailyClose upsert
+   */
+  export type DailyCloseUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyClose
+     */
+    select?: DailyCloseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyClose
+     */
+    omit?: DailyCloseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyCloseInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DailyClose to update in case it exists.
+     */
+    where: DailyCloseWhereUniqueInput
+    /**
+     * In case the DailyClose found by the `where` argument doesn't exist, create a new DailyClose with this data.
+     */
+    create: XOR<DailyCloseCreateInput, DailyCloseUncheckedCreateInput>
+    /**
+     * In case the DailyClose was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DailyCloseUpdateInput, DailyCloseUncheckedUpdateInput>
+  }
+
+  /**
+   * DailyClose delete
+   */
+  export type DailyCloseDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyClose
+     */
+    select?: DailyCloseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyClose
+     */
+    omit?: DailyCloseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyCloseInclude<ExtArgs> | null
+    /**
+     * Filter which DailyClose to delete.
+     */
+    where: DailyCloseWhereUniqueInput
+  }
+
+  /**
+   * DailyClose deleteMany
+   */
+  export type DailyCloseDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DailyCloses to delete
+     */
+    where?: DailyCloseWhereInput
+    /**
+     * Limit how many DailyCloses to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DailyClose without action
+   */
+  export type DailyCloseDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyClose
+     */
+    select?: DailyCloseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyClose
+     */
+    omit?: DailyCloseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyCloseInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Expense
    */
 
@@ -23918,6 +25335,7 @@ export namespace Prisma {
   export type SystemSettingsAvgAggregateOutputType = {
     serviceChargePercent: number | null
     taxPercent: number | null
+    deliveryFee: number | null
     pointsPerPoundSpent: number | null
     poundValuePerPoint: number | null
   }
@@ -23925,6 +25343,7 @@ export namespace Prisma {
   export type SystemSettingsSumAggregateOutputType = {
     serviceChargePercent: number | null
     taxPercent: number | null
+    deliveryFee: number | null
     pointsPerPoundSpent: number | null
     poundValuePerPoint: number | null
   }
@@ -23941,6 +25360,7 @@ export namespace Prisma {
     facebookUrl: string | null
     serviceChargePercent: number | null
     taxPercent: number | null
+    deliveryFee: number | null
     isServiceChargeEnabled: boolean | null
     isTaxEnabled: boolean | null
     isLoyaltyEnabled: boolean | null
@@ -23964,6 +25384,7 @@ export namespace Prisma {
     facebookUrl: string | null
     serviceChargePercent: number | null
     taxPercent: number | null
+    deliveryFee: number | null
     isServiceChargeEnabled: boolean | null
     isTaxEnabled: boolean | null
     isLoyaltyEnabled: boolean | null
@@ -23987,6 +25408,7 @@ export namespace Prisma {
     facebookUrl: number
     serviceChargePercent: number
     taxPercent: number
+    deliveryFee: number
     isServiceChargeEnabled: number
     isTaxEnabled: number
     isLoyaltyEnabled: number
@@ -24003,6 +25425,7 @@ export namespace Prisma {
   export type SystemSettingsAvgAggregateInputType = {
     serviceChargePercent?: true
     taxPercent?: true
+    deliveryFee?: true
     pointsPerPoundSpent?: true
     poundValuePerPoint?: true
   }
@@ -24010,6 +25433,7 @@ export namespace Prisma {
   export type SystemSettingsSumAggregateInputType = {
     serviceChargePercent?: true
     taxPercent?: true
+    deliveryFee?: true
     pointsPerPoundSpent?: true
     poundValuePerPoint?: true
   }
@@ -24026,6 +25450,7 @@ export namespace Prisma {
     facebookUrl?: true
     serviceChargePercent?: true
     taxPercent?: true
+    deliveryFee?: true
     isServiceChargeEnabled?: true
     isTaxEnabled?: true
     isLoyaltyEnabled?: true
@@ -24049,6 +25474,7 @@ export namespace Prisma {
     facebookUrl?: true
     serviceChargePercent?: true
     taxPercent?: true
+    deliveryFee?: true
     isServiceChargeEnabled?: true
     isTaxEnabled?: true
     isLoyaltyEnabled?: true
@@ -24072,6 +25498,7 @@ export namespace Prisma {
     facebookUrl?: true
     serviceChargePercent?: true
     taxPercent?: true
+    deliveryFee?: true
     isServiceChargeEnabled?: true
     isTaxEnabled?: true
     isLoyaltyEnabled?: true
@@ -24182,6 +25609,7 @@ export namespace Prisma {
     facebookUrl: string
     serviceChargePercent: number
     taxPercent: number
+    deliveryFee: number
     isServiceChargeEnabled: boolean
     isTaxEnabled: boolean
     isLoyaltyEnabled: boolean
@@ -24224,6 +25652,7 @@ export namespace Prisma {
     facebookUrl?: boolean
     serviceChargePercent?: boolean
     taxPercent?: boolean
+    deliveryFee?: boolean
     isServiceChargeEnabled?: boolean
     isTaxEnabled?: boolean
     isLoyaltyEnabled?: boolean
@@ -24247,6 +25676,7 @@ export namespace Prisma {
     facebookUrl?: boolean
     serviceChargePercent?: boolean
     taxPercent?: boolean
+    deliveryFee?: boolean
     isServiceChargeEnabled?: boolean
     isTaxEnabled?: boolean
     isLoyaltyEnabled?: boolean
@@ -24270,6 +25700,7 @@ export namespace Prisma {
     facebookUrl?: boolean
     serviceChargePercent?: boolean
     taxPercent?: boolean
+    deliveryFee?: boolean
     isServiceChargeEnabled?: boolean
     isTaxEnabled?: boolean
     isLoyaltyEnabled?: boolean
@@ -24293,6 +25724,7 @@ export namespace Prisma {
     facebookUrl?: boolean
     serviceChargePercent?: boolean
     taxPercent?: boolean
+    deliveryFee?: boolean
     isServiceChargeEnabled?: boolean
     isTaxEnabled?: boolean
     isLoyaltyEnabled?: boolean
@@ -24304,7 +25736,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SystemSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "brandNameAr" | "brandNameEn" | "soulmatePhone" | "abuAdelPhone" | "hotline" | "whatsapp" | "haliyomakUrl" | "facebookUrl" | "serviceChargePercent" | "taxPercent" | "isServiceChargeEnabled" | "isTaxEnabled" | "isLoyaltyEnabled" | "pointsPerPoundSpent" | "poundValuePerPoint" | "receiptFooterNotes" | "systemLocked" | "lockMessage" | "updatedAt", ExtArgs["result"]["systemSettings"]>
+  export type SystemSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "brandNameAr" | "brandNameEn" | "soulmatePhone" | "abuAdelPhone" | "hotline" | "whatsapp" | "haliyomakUrl" | "facebookUrl" | "serviceChargePercent" | "taxPercent" | "deliveryFee" | "isServiceChargeEnabled" | "isTaxEnabled" | "isLoyaltyEnabled" | "pointsPerPoundSpent" | "poundValuePerPoint" | "receiptFooterNotes" | "systemLocked" | "lockMessage" | "updatedAt", ExtArgs["result"]["systemSettings"]>
 
   export type $SystemSettingsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SystemSettings"
@@ -24321,6 +25753,7 @@ export namespace Prisma {
       facebookUrl: string
       serviceChargePercent: number
       taxPercent: number
+      deliveryFee: number
       isServiceChargeEnabled: boolean
       isTaxEnabled: boolean
       isLoyaltyEnabled: boolean
@@ -24764,6 +26197,7 @@ export namespace Prisma {
     readonly facebookUrl: FieldRef<"SystemSettings", 'String'>
     readonly serviceChargePercent: FieldRef<"SystemSettings", 'Float'>
     readonly taxPercent: FieldRef<"SystemSettings", 'Float'>
+    readonly deliveryFee: FieldRef<"SystemSettings", 'Float'>
     readonly isServiceChargeEnabled: FieldRef<"SystemSettings", 'Boolean'>
     readonly isTaxEnabled: FieldRef<"SystemSettings", 'Boolean'>
     readonly isLoyaltyEnabled: FieldRef<"SystemSettings", 'Boolean'>
@@ -27726,6 +29160,7 @@ export namespace Prisma {
     subtotal: 'subtotal',
     serviceCharge: 'serviceCharge',
     taxAmount: 'taxAmount',
+    deliveryFee: 'deliveryFee',
     discountAmount: 'discountAmount',
     tipAmount: 'tipAmount',
     finalAmount: 'finalAmount',
@@ -27785,6 +29220,28 @@ export namespace Prisma {
   export type ShiftScalarFieldEnum = (typeof ShiftScalarFieldEnum)[keyof typeof ShiftScalarFieldEnum]
 
 
+  export const DailyCloseScalarFieldEnum: {
+    id: 'id',
+    outletId: 'outletId',
+    closeDate: 'closeDate',
+    dayName: 'dayName',
+    shiftsCount: 'shiftsCount',
+    totalRevenue: 'totalRevenue',
+    totalCash: 'totalCash',
+    totalVisa: 'totalVisa',
+    totalInstapay: 'totalInstapay',
+    totalVodafone: 'totalVodafone',
+    totalExpenses: 'totalExpenses',
+    netCashInSafe: 'netCashInSafe',
+    ordersCount: 'ordersCount',
+    closedBy: 'closedBy',
+    notes: 'notes',
+    createdAt: 'createdAt'
+  };
+
+  export type DailyCloseScalarFieldEnum = (typeof DailyCloseScalarFieldEnum)[keyof typeof DailyCloseScalarFieldEnum]
+
+
   export const ExpenseScalarFieldEnum: {
     id: 'id',
     outletId: 'outletId',
@@ -27811,6 +29268,7 @@ export namespace Prisma {
     facebookUrl: 'facebookUrl',
     serviceChargePercent: 'serviceChargePercent',
     taxPercent: 'taxPercent',
+    deliveryFee: 'deliveryFee',
     isServiceChargeEnabled: 'isServiceChargeEnabled',
     isTaxEnabled: 'isTaxEnabled',
     isLoyaltyEnabled: 'isLoyaltyEnabled',
@@ -27980,6 +29438,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageListRelationFilter
     inventoryAudits?: InventoryAuditListRelationFilter
     pastryAudits?: PastryAuditListRelationFilter
+    dailyCloses?: DailyCloseListRelationFilter
   }
 
   export type OutletOrderByWithRelationInput = {
@@ -28004,6 +29463,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageOrderByRelationAggregateInput
     inventoryAudits?: InventoryAuditOrderByRelationAggregateInput
     pastryAudits?: PastryAuditOrderByRelationAggregateInput
+    dailyCloses?: DailyCloseOrderByRelationAggregateInput
   }
 
   export type OutletWhereUniqueInput = Prisma.AtLeast<{
@@ -28031,6 +29491,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageListRelationFilter
     inventoryAudits?: InventoryAuditListRelationFilter
     pastryAudits?: PastryAuditListRelationFilter
+    dailyCloses?: DailyCloseListRelationFilter
   }, "id" | "code">
 
   export type OutletOrderByWithAggregationInput = {
@@ -29162,6 +30623,7 @@ export namespace Prisma {
     subtotal?: FloatFilter<"Order"> | number
     serviceCharge?: FloatFilter<"Order"> | number
     taxAmount?: FloatFilter<"Order"> | number
+    deliveryFee?: FloatFilter<"Order"> | number
     discountAmount?: FloatFilter<"Order"> | number
     tipAmount?: FloatFilter<"Order"> | number
     finalAmount?: FloatFilter<"Order"> | number
@@ -29198,6 +30660,7 @@ export namespace Prisma {
     subtotal?: SortOrder
     serviceCharge?: SortOrder
     taxAmount?: SortOrder
+    deliveryFee?: SortOrder
     discountAmount?: SortOrder
     tipAmount?: SortOrder
     finalAmount?: SortOrder
@@ -29237,6 +30700,7 @@ export namespace Prisma {
     subtotal?: FloatFilter<"Order"> | number
     serviceCharge?: FloatFilter<"Order"> | number
     taxAmount?: FloatFilter<"Order"> | number
+    deliveryFee?: FloatFilter<"Order"> | number
     discountAmount?: FloatFilter<"Order"> | number
     tipAmount?: FloatFilter<"Order"> | number
     finalAmount?: FloatFilter<"Order"> | number
@@ -29273,6 +30737,7 @@ export namespace Prisma {
     subtotal?: SortOrder
     serviceCharge?: SortOrder
     taxAmount?: SortOrder
+    deliveryFee?: SortOrder
     discountAmount?: SortOrder
     tipAmount?: SortOrder
     finalAmount?: SortOrder
@@ -29313,6 +30778,7 @@ export namespace Prisma {
     subtotal?: FloatWithAggregatesFilter<"Order"> | number
     serviceCharge?: FloatWithAggregatesFilter<"Order"> | number
     taxAmount?: FloatWithAggregatesFilter<"Order"> | number
+    deliveryFee?: FloatWithAggregatesFilter<"Order"> | number
     discountAmount?: FloatWithAggregatesFilter<"Order"> | number
     tipAmount?: FloatWithAggregatesFilter<"Order"> | number
     finalAmount?: FloatWithAggregatesFilter<"Order"> | number
@@ -29531,6 +30997,118 @@ export namespace Prisma {
     closedAt?: DateTimeNullableWithAggregatesFilter<"Shift"> | Date | string | null
   }
 
+  export type DailyCloseWhereInput = {
+    AND?: DailyCloseWhereInput | DailyCloseWhereInput[]
+    OR?: DailyCloseWhereInput[]
+    NOT?: DailyCloseWhereInput | DailyCloseWhereInput[]
+    id?: StringFilter<"DailyClose"> | string
+    outletId?: StringFilter<"DailyClose"> | string
+    closeDate?: DateTimeFilter<"DailyClose"> | Date | string
+    dayName?: StringNullableFilter<"DailyClose"> | string | null
+    shiftsCount?: IntFilter<"DailyClose"> | number
+    totalRevenue?: FloatFilter<"DailyClose"> | number
+    totalCash?: FloatFilter<"DailyClose"> | number
+    totalVisa?: FloatFilter<"DailyClose"> | number
+    totalInstapay?: FloatFilter<"DailyClose"> | number
+    totalVodafone?: FloatFilter<"DailyClose"> | number
+    totalExpenses?: FloatFilter<"DailyClose"> | number
+    netCashInSafe?: FloatFilter<"DailyClose"> | number
+    ordersCount?: IntFilter<"DailyClose"> | number
+    closedBy?: StringFilter<"DailyClose"> | string
+    notes?: StringNullableFilter<"DailyClose"> | string | null
+    createdAt?: DateTimeFilter<"DailyClose"> | Date | string
+    outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
+  }
+
+  export type DailyCloseOrderByWithRelationInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    closeDate?: SortOrder
+    dayName?: SortOrderInput | SortOrder
+    shiftsCount?: SortOrder
+    totalRevenue?: SortOrder
+    totalCash?: SortOrder
+    totalVisa?: SortOrder
+    totalInstapay?: SortOrder
+    totalVodafone?: SortOrder
+    totalExpenses?: SortOrder
+    netCashInSafe?: SortOrder
+    ordersCount?: SortOrder
+    closedBy?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    outlet?: OutletOrderByWithRelationInput
+  }
+
+  export type DailyCloseWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: DailyCloseWhereInput | DailyCloseWhereInput[]
+    OR?: DailyCloseWhereInput[]
+    NOT?: DailyCloseWhereInput | DailyCloseWhereInput[]
+    outletId?: StringFilter<"DailyClose"> | string
+    closeDate?: DateTimeFilter<"DailyClose"> | Date | string
+    dayName?: StringNullableFilter<"DailyClose"> | string | null
+    shiftsCount?: IntFilter<"DailyClose"> | number
+    totalRevenue?: FloatFilter<"DailyClose"> | number
+    totalCash?: FloatFilter<"DailyClose"> | number
+    totalVisa?: FloatFilter<"DailyClose"> | number
+    totalInstapay?: FloatFilter<"DailyClose"> | number
+    totalVodafone?: FloatFilter<"DailyClose"> | number
+    totalExpenses?: FloatFilter<"DailyClose"> | number
+    netCashInSafe?: FloatFilter<"DailyClose"> | number
+    ordersCount?: IntFilter<"DailyClose"> | number
+    closedBy?: StringFilter<"DailyClose"> | string
+    notes?: StringNullableFilter<"DailyClose"> | string | null
+    createdAt?: DateTimeFilter<"DailyClose"> | Date | string
+    outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
+  }, "id">
+
+  export type DailyCloseOrderByWithAggregationInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    closeDate?: SortOrder
+    dayName?: SortOrderInput | SortOrder
+    shiftsCount?: SortOrder
+    totalRevenue?: SortOrder
+    totalCash?: SortOrder
+    totalVisa?: SortOrder
+    totalInstapay?: SortOrder
+    totalVodafone?: SortOrder
+    totalExpenses?: SortOrder
+    netCashInSafe?: SortOrder
+    ordersCount?: SortOrder
+    closedBy?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: DailyCloseCountOrderByAggregateInput
+    _avg?: DailyCloseAvgOrderByAggregateInput
+    _max?: DailyCloseMaxOrderByAggregateInput
+    _min?: DailyCloseMinOrderByAggregateInput
+    _sum?: DailyCloseSumOrderByAggregateInput
+  }
+
+  export type DailyCloseScalarWhereWithAggregatesInput = {
+    AND?: DailyCloseScalarWhereWithAggregatesInput | DailyCloseScalarWhereWithAggregatesInput[]
+    OR?: DailyCloseScalarWhereWithAggregatesInput[]
+    NOT?: DailyCloseScalarWhereWithAggregatesInput | DailyCloseScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"DailyClose"> | string
+    outletId?: StringWithAggregatesFilter<"DailyClose"> | string
+    closeDate?: DateTimeWithAggregatesFilter<"DailyClose"> | Date | string
+    dayName?: StringNullableWithAggregatesFilter<"DailyClose"> | string | null
+    shiftsCount?: IntWithAggregatesFilter<"DailyClose"> | number
+    totalRevenue?: FloatWithAggregatesFilter<"DailyClose"> | number
+    totalCash?: FloatWithAggregatesFilter<"DailyClose"> | number
+    totalVisa?: FloatWithAggregatesFilter<"DailyClose"> | number
+    totalInstapay?: FloatWithAggregatesFilter<"DailyClose"> | number
+    totalVodafone?: FloatWithAggregatesFilter<"DailyClose"> | number
+    totalExpenses?: FloatWithAggregatesFilter<"DailyClose"> | number
+    netCashInSafe?: FloatWithAggregatesFilter<"DailyClose"> | number
+    ordersCount?: IntWithAggregatesFilter<"DailyClose"> | number
+    closedBy?: StringWithAggregatesFilter<"DailyClose"> | string
+    notes?: StringNullableWithAggregatesFilter<"DailyClose"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"DailyClose"> | Date | string
+  }
+
   export type ExpenseWhereInput = {
     AND?: ExpenseWhereInput | ExpenseWhereInput[]
     OR?: ExpenseWhereInput[]
@@ -29618,6 +31196,7 @@ export namespace Prisma {
     facebookUrl?: StringFilter<"SystemSettings"> | string
     serviceChargePercent?: FloatFilter<"SystemSettings"> | number
     taxPercent?: FloatFilter<"SystemSettings"> | number
+    deliveryFee?: FloatFilter<"SystemSettings"> | number
     isServiceChargeEnabled?: BoolFilter<"SystemSettings"> | boolean
     isTaxEnabled?: BoolFilter<"SystemSettings"> | boolean
     isLoyaltyEnabled?: BoolFilter<"SystemSettings"> | boolean
@@ -29641,6 +31220,7 @@ export namespace Prisma {
     facebookUrl?: SortOrder
     serviceChargePercent?: SortOrder
     taxPercent?: SortOrder
+    deliveryFee?: SortOrder
     isServiceChargeEnabled?: SortOrder
     isTaxEnabled?: SortOrder
     isLoyaltyEnabled?: SortOrder
@@ -29667,6 +31247,7 @@ export namespace Prisma {
     facebookUrl?: StringFilter<"SystemSettings"> | string
     serviceChargePercent?: FloatFilter<"SystemSettings"> | number
     taxPercent?: FloatFilter<"SystemSettings"> | number
+    deliveryFee?: FloatFilter<"SystemSettings"> | number
     isServiceChargeEnabled?: BoolFilter<"SystemSettings"> | boolean
     isTaxEnabled?: BoolFilter<"SystemSettings"> | boolean
     isLoyaltyEnabled?: BoolFilter<"SystemSettings"> | boolean
@@ -29690,6 +31271,7 @@ export namespace Prisma {
     facebookUrl?: SortOrder
     serviceChargePercent?: SortOrder
     taxPercent?: SortOrder
+    deliveryFee?: SortOrder
     isServiceChargeEnabled?: SortOrder
     isTaxEnabled?: SortOrder
     isLoyaltyEnabled?: SortOrder
@@ -29721,6 +31303,7 @@ export namespace Prisma {
     facebookUrl?: StringWithAggregatesFilter<"SystemSettings"> | string
     serviceChargePercent?: FloatWithAggregatesFilter<"SystemSettings"> | number
     taxPercent?: FloatWithAggregatesFilter<"SystemSettings"> | number
+    deliveryFee?: FloatWithAggregatesFilter<"SystemSettings"> | number
     isServiceChargeEnabled?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
     isTaxEnabled?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
     isLoyaltyEnabled?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
@@ -29931,6 +31514,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateInput = {
@@ -29955,6 +31539,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUpdateInput = {
@@ -29979,6 +31564,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateInput = {
@@ -30003,6 +31589,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateManyInput = {
@@ -31275,6 +32862,7 @@ export namespace Prisma {
     subtotal?: number
     serviceCharge?: number
     taxAmount?: number
+    deliveryFee?: number
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
@@ -31310,6 +32898,7 @@ export namespace Prisma {
     subtotal?: number
     serviceCharge?: number
     taxAmount?: number
+    deliveryFee?: number
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
@@ -31341,6 +32930,7 @@ export namespace Prisma {
     subtotal?: FloatFieldUpdateOperationsInput | number
     serviceCharge?: FloatFieldUpdateOperationsInput | number
     taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
@@ -31376,6 +32966,7 @@ export namespace Prisma {
     subtotal?: FloatFieldUpdateOperationsInput | number
     serviceCharge?: FloatFieldUpdateOperationsInput | number
     taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
@@ -31409,6 +33000,7 @@ export namespace Prisma {
     subtotal?: number
     serviceCharge?: number
     taxAmount?: number
+    deliveryFee?: number
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
@@ -31439,6 +33031,7 @@ export namespace Prisma {
     subtotal?: FloatFieldUpdateOperationsInput | number
     serviceCharge?: FloatFieldUpdateOperationsInput | number
     taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
@@ -31470,6 +33063,7 @@ export namespace Prisma {
     subtotal?: FloatFieldUpdateOperationsInput | number
     serviceCharge?: FloatFieldUpdateOperationsInput | number
     taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
@@ -31722,6 +33316,138 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type DailyCloseCreateInput = {
+    id?: string
+    closeDate?: Date | string
+    dayName?: string | null
+    shiftsCount?: number
+    totalRevenue?: number
+    totalCash?: number
+    totalVisa?: number
+    totalInstapay?: number
+    totalVodafone?: number
+    totalExpenses?: number
+    netCashInSafe?: number
+    ordersCount?: number
+    closedBy: string
+    notes?: string | null
+    createdAt?: Date | string
+    outlet: OutletCreateNestedOneWithoutDailyClosesInput
+  }
+
+  export type DailyCloseUncheckedCreateInput = {
+    id?: string
+    outletId: string
+    closeDate?: Date | string
+    dayName?: string | null
+    shiftsCount?: number
+    totalRevenue?: number
+    totalCash?: number
+    totalVisa?: number
+    totalInstapay?: number
+    totalVodafone?: number
+    totalExpenses?: number
+    netCashInSafe?: number
+    ordersCount?: number
+    closedBy: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type DailyCloseUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    dayName?: NullableStringFieldUpdateOperationsInput | string | null
+    shiftsCount?: IntFieldUpdateOperationsInput | number
+    totalRevenue?: FloatFieldUpdateOperationsInput | number
+    totalCash?: FloatFieldUpdateOperationsInput | number
+    totalVisa?: FloatFieldUpdateOperationsInput | number
+    totalInstapay?: FloatFieldUpdateOperationsInput | number
+    totalVodafone?: FloatFieldUpdateOperationsInput | number
+    totalExpenses?: FloatFieldUpdateOperationsInput | number
+    netCashInSafe?: FloatFieldUpdateOperationsInput | number
+    ordersCount?: IntFieldUpdateOperationsInput | number
+    closedBy?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outlet?: OutletUpdateOneRequiredWithoutDailyClosesNestedInput
+  }
+
+  export type DailyCloseUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    dayName?: NullableStringFieldUpdateOperationsInput | string | null
+    shiftsCount?: IntFieldUpdateOperationsInput | number
+    totalRevenue?: FloatFieldUpdateOperationsInput | number
+    totalCash?: FloatFieldUpdateOperationsInput | number
+    totalVisa?: FloatFieldUpdateOperationsInput | number
+    totalInstapay?: FloatFieldUpdateOperationsInput | number
+    totalVodafone?: FloatFieldUpdateOperationsInput | number
+    totalExpenses?: FloatFieldUpdateOperationsInput | number
+    netCashInSafe?: FloatFieldUpdateOperationsInput | number
+    ordersCount?: IntFieldUpdateOperationsInput | number
+    closedBy?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DailyCloseCreateManyInput = {
+    id?: string
+    outletId: string
+    closeDate?: Date | string
+    dayName?: string | null
+    shiftsCount?: number
+    totalRevenue?: number
+    totalCash?: number
+    totalVisa?: number
+    totalInstapay?: number
+    totalVodafone?: number
+    totalExpenses?: number
+    netCashInSafe?: number
+    ordersCount?: number
+    closedBy: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type DailyCloseUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    dayName?: NullableStringFieldUpdateOperationsInput | string | null
+    shiftsCount?: IntFieldUpdateOperationsInput | number
+    totalRevenue?: FloatFieldUpdateOperationsInput | number
+    totalCash?: FloatFieldUpdateOperationsInput | number
+    totalVisa?: FloatFieldUpdateOperationsInput | number
+    totalInstapay?: FloatFieldUpdateOperationsInput | number
+    totalVodafone?: FloatFieldUpdateOperationsInput | number
+    totalExpenses?: FloatFieldUpdateOperationsInput | number
+    netCashInSafe?: FloatFieldUpdateOperationsInput | number
+    ordersCount?: IntFieldUpdateOperationsInput | number
+    closedBy?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DailyCloseUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    dayName?: NullableStringFieldUpdateOperationsInput | string | null
+    shiftsCount?: IntFieldUpdateOperationsInput | number
+    totalRevenue?: FloatFieldUpdateOperationsInput | number
+    totalCash?: FloatFieldUpdateOperationsInput | number
+    totalVisa?: FloatFieldUpdateOperationsInput | number
+    totalInstapay?: FloatFieldUpdateOperationsInput | number
+    totalVodafone?: FloatFieldUpdateOperationsInput | number
+    totalExpenses?: FloatFieldUpdateOperationsInput | number
+    netCashInSafe?: FloatFieldUpdateOperationsInput | number
+    ordersCount?: IntFieldUpdateOperationsInput | number
+    closedBy?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ExpenseCreateInput = {
     id?: string
     title: string
@@ -31810,6 +33536,7 @@ export namespace Prisma {
     facebookUrl?: string
     serviceChargePercent?: number
     taxPercent?: number
+    deliveryFee?: number
     isServiceChargeEnabled?: boolean
     isTaxEnabled?: boolean
     isLoyaltyEnabled?: boolean
@@ -31833,6 +33560,7 @@ export namespace Prisma {
     facebookUrl?: string
     serviceChargePercent?: number
     taxPercent?: number
+    deliveryFee?: number
     isServiceChargeEnabled?: boolean
     isTaxEnabled?: boolean
     isLoyaltyEnabled?: boolean
@@ -31856,6 +33584,7 @@ export namespace Prisma {
     facebookUrl?: StringFieldUpdateOperationsInput | string
     serviceChargePercent?: FloatFieldUpdateOperationsInput | number
     taxPercent?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     isServiceChargeEnabled?: BoolFieldUpdateOperationsInput | boolean
     isTaxEnabled?: BoolFieldUpdateOperationsInput | boolean
     isLoyaltyEnabled?: BoolFieldUpdateOperationsInput | boolean
@@ -31879,6 +33608,7 @@ export namespace Prisma {
     facebookUrl?: StringFieldUpdateOperationsInput | string
     serviceChargePercent?: FloatFieldUpdateOperationsInput | number
     taxPercent?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     isServiceChargeEnabled?: BoolFieldUpdateOperationsInput | boolean
     isTaxEnabled?: BoolFieldUpdateOperationsInput | boolean
     isLoyaltyEnabled?: BoolFieldUpdateOperationsInput | boolean
@@ -31902,6 +33632,7 @@ export namespace Prisma {
     facebookUrl?: string
     serviceChargePercent?: number
     taxPercent?: number
+    deliveryFee?: number
     isServiceChargeEnabled?: boolean
     isTaxEnabled?: boolean
     isLoyaltyEnabled?: boolean
@@ -31925,6 +33656,7 @@ export namespace Prisma {
     facebookUrl?: StringFieldUpdateOperationsInput | string
     serviceChargePercent?: FloatFieldUpdateOperationsInput | number
     taxPercent?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     isServiceChargeEnabled?: BoolFieldUpdateOperationsInput | boolean
     isTaxEnabled?: BoolFieldUpdateOperationsInput | boolean
     isLoyaltyEnabled?: BoolFieldUpdateOperationsInput | boolean
@@ -31948,6 +33680,7 @@ export namespace Prisma {
     facebookUrl?: StringFieldUpdateOperationsInput | string
     serviceChargePercent?: FloatFieldUpdateOperationsInput | number
     taxPercent?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     isServiceChargeEnabled?: BoolFieldUpdateOperationsInput | boolean
     isTaxEnabled?: BoolFieldUpdateOperationsInput | boolean
     isLoyaltyEnabled?: BoolFieldUpdateOperationsInput | boolean
@@ -32272,6 +34005,12 @@ export namespace Prisma {
     none?: PastryAuditWhereInput
   }
 
+  export type DailyCloseListRelationFilter = {
+    every?: DailyCloseWhereInput
+    some?: DailyCloseWhereInput
+    none?: DailyCloseWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -32318,6 +34057,10 @@ export namespace Prisma {
   }
 
   export type PastryAuditOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type DailyCloseOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -33280,6 +35023,7 @@ export namespace Prisma {
     subtotal?: SortOrder
     serviceCharge?: SortOrder
     taxAmount?: SortOrder
+    deliveryFee?: SortOrder
     discountAmount?: SortOrder
     tipAmount?: SortOrder
     finalAmount?: SortOrder
@@ -33300,6 +35044,7 @@ export namespace Prisma {
     subtotal?: SortOrder
     serviceCharge?: SortOrder
     taxAmount?: SortOrder
+    deliveryFee?: SortOrder
     discountAmount?: SortOrder
     tipAmount?: SortOrder
     finalAmount?: SortOrder
@@ -33323,6 +35068,7 @@ export namespace Prisma {
     subtotal?: SortOrder
     serviceCharge?: SortOrder
     taxAmount?: SortOrder
+    deliveryFee?: SortOrder
     discountAmount?: SortOrder
     tipAmount?: SortOrder
     finalAmount?: SortOrder
@@ -33355,6 +35101,7 @@ export namespace Prisma {
     subtotal?: SortOrder
     serviceCharge?: SortOrder
     taxAmount?: SortOrder
+    deliveryFee?: SortOrder
     discountAmount?: SortOrder
     tipAmount?: SortOrder
     finalAmount?: SortOrder
@@ -33375,6 +35122,7 @@ export namespace Prisma {
     subtotal?: SortOrder
     serviceCharge?: SortOrder
     taxAmount?: SortOrder
+    deliveryFee?: SortOrder
     discountAmount?: SortOrder
     tipAmount?: SortOrder
     finalAmount?: SortOrder
@@ -33533,6 +35281,87 @@ export namespace Prisma {
     ticketsCount?: SortOrder
   }
 
+  export type DailyCloseCountOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    closeDate?: SortOrder
+    dayName?: SortOrder
+    shiftsCount?: SortOrder
+    totalRevenue?: SortOrder
+    totalCash?: SortOrder
+    totalVisa?: SortOrder
+    totalInstapay?: SortOrder
+    totalVodafone?: SortOrder
+    totalExpenses?: SortOrder
+    netCashInSafe?: SortOrder
+    ordersCount?: SortOrder
+    closedBy?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DailyCloseAvgOrderByAggregateInput = {
+    shiftsCount?: SortOrder
+    totalRevenue?: SortOrder
+    totalCash?: SortOrder
+    totalVisa?: SortOrder
+    totalInstapay?: SortOrder
+    totalVodafone?: SortOrder
+    totalExpenses?: SortOrder
+    netCashInSafe?: SortOrder
+    ordersCount?: SortOrder
+  }
+
+  export type DailyCloseMaxOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    closeDate?: SortOrder
+    dayName?: SortOrder
+    shiftsCount?: SortOrder
+    totalRevenue?: SortOrder
+    totalCash?: SortOrder
+    totalVisa?: SortOrder
+    totalInstapay?: SortOrder
+    totalVodafone?: SortOrder
+    totalExpenses?: SortOrder
+    netCashInSafe?: SortOrder
+    ordersCount?: SortOrder
+    closedBy?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DailyCloseMinOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    closeDate?: SortOrder
+    dayName?: SortOrder
+    shiftsCount?: SortOrder
+    totalRevenue?: SortOrder
+    totalCash?: SortOrder
+    totalVisa?: SortOrder
+    totalInstapay?: SortOrder
+    totalVodafone?: SortOrder
+    totalExpenses?: SortOrder
+    netCashInSafe?: SortOrder
+    ordersCount?: SortOrder
+    closedBy?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DailyCloseSumOrderByAggregateInput = {
+    shiftsCount?: SortOrder
+    totalRevenue?: SortOrder
+    totalCash?: SortOrder
+    totalVisa?: SortOrder
+    totalInstapay?: SortOrder
+    totalVodafone?: SortOrder
+    totalExpenses?: SortOrder
+    netCashInSafe?: SortOrder
+    ordersCount?: SortOrder
+  }
+
   export type ExpenseCountOrderByAggregateInput = {
     id?: SortOrder
     outletId?: SortOrder
@@ -33586,6 +35415,7 @@ export namespace Prisma {
     facebookUrl?: SortOrder
     serviceChargePercent?: SortOrder
     taxPercent?: SortOrder
+    deliveryFee?: SortOrder
     isServiceChargeEnabled?: SortOrder
     isTaxEnabled?: SortOrder
     isLoyaltyEnabled?: SortOrder
@@ -33600,6 +35430,7 @@ export namespace Prisma {
   export type SystemSettingsAvgOrderByAggregateInput = {
     serviceChargePercent?: SortOrder
     taxPercent?: SortOrder
+    deliveryFee?: SortOrder
     pointsPerPoundSpent?: SortOrder
     poundValuePerPoint?: SortOrder
   }
@@ -33616,6 +35447,7 @@ export namespace Prisma {
     facebookUrl?: SortOrder
     serviceChargePercent?: SortOrder
     taxPercent?: SortOrder
+    deliveryFee?: SortOrder
     isServiceChargeEnabled?: SortOrder
     isTaxEnabled?: SortOrder
     isLoyaltyEnabled?: SortOrder
@@ -33639,6 +35471,7 @@ export namespace Prisma {
     facebookUrl?: SortOrder
     serviceChargePercent?: SortOrder
     taxPercent?: SortOrder
+    deliveryFee?: SortOrder
     isServiceChargeEnabled?: SortOrder
     isTaxEnabled?: SortOrder
     isLoyaltyEnabled?: SortOrder
@@ -33653,6 +35486,7 @@ export namespace Prisma {
   export type SystemSettingsSumOrderByAggregateInput = {
     serviceChargePercent?: SortOrder
     taxPercent?: SortOrder
+    deliveryFee?: SortOrder
     pointsPerPoundSpent?: SortOrder
     poundValuePerPoint?: SortOrder
   }
@@ -33829,6 +35663,13 @@ export namespace Prisma {
     connect?: PastryAuditWhereUniqueInput | PastryAuditWhereUniqueInput[]
   }
 
+  export type DailyCloseCreateNestedManyWithoutOutletInput = {
+    create?: XOR<DailyCloseCreateWithoutOutletInput, DailyCloseUncheckedCreateWithoutOutletInput> | DailyCloseCreateWithoutOutletInput[] | DailyCloseUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: DailyCloseCreateOrConnectWithoutOutletInput | DailyCloseCreateOrConnectWithoutOutletInput[]
+    createMany?: DailyCloseCreateManyOutletInputEnvelope
+    connect?: DailyCloseWhereUniqueInput | DailyCloseWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutOutletInput = {
     create?: XOR<UserCreateWithoutOutletInput, UserUncheckedCreateWithoutOutletInput> | UserCreateWithoutOutletInput[] | UserUncheckedCreateWithoutOutletInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOutletInput | UserCreateOrConnectWithoutOutletInput[]
@@ -33904,6 +35745,13 @@ export namespace Prisma {
     connectOrCreate?: PastryAuditCreateOrConnectWithoutOutletInput | PastryAuditCreateOrConnectWithoutOutletInput[]
     createMany?: PastryAuditCreateManyOutletInputEnvelope
     connect?: PastryAuditWhereUniqueInput | PastryAuditWhereUniqueInput[]
+  }
+
+  export type DailyCloseUncheckedCreateNestedManyWithoutOutletInput = {
+    create?: XOR<DailyCloseCreateWithoutOutletInput, DailyCloseUncheckedCreateWithoutOutletInput> | DailyCloseCreateWithoutOutletInput[] | DailyCloseUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: DailyCloseCreateOrConnectWithoutOutletInput | DailyCloseCreateOrConnectWithoutOutletInput[]
+    createMany?: DailyCloseCreateManyOutletInputEnvelope
+    connect?: DailyCloseWhereUniqueInput | DailyCloseWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -34076,6 +35924,20 @@ export namespace Prisma {
     deleteMany?: PastryAuditScalarWhereInput | PastryAuditScalarWhereInput[]
   }
 
+  export type DailyCloseUpdateManyWithoutOutletNestedInput = {
+    create?: XOR<DailyCloseCreateWithoutOutletInput, DailyCloseUncheckedCreateWithoutOutletInput> | DailyCloseCreateWithoutOutletInput[] | DailyCloseUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: DailyCloseCreateOrConnectWithoutOutletInput | DailyCloseCreateOrConnectWithoutOutletInput[]
+    upsert?: DailyCloseUpsertWithWhereUniqueWithoutOutletInput | DailyCloseUpsertWithWhereUniqueWithoutOutletInput[]
+    createMany?: DailyCloseCreateManyOutletInputEnvelope
+    set?: DailyCloseWhereUniqueInput | DailyCloseWhereUniqueInput[]
+    disconnect?: DailyCloseWhereUniqueInput | DailyCloseWhereUniqueInput[]
+    delete?: DailyCloseWhereUniqueInput | DailyCloseWhereUniqueInput[]
+    connect?: DailyCloseWhereUniqueInput | DailyCloseWhereUniqueInput[]
+    update?: DailyCloseUpdateWithWhereUniqueWithoutOutletInput | DailyCloseUpdateWithWhereUniqueWithoutOutletInput[]
+    updateMany?: DailyCloseUpdateManyWithWhereWithoutOutletInput | DailyCloseUpdateManyWithWhereWithoutOutletInput[]
+    deleteMany?: DailyCloseScalarWhereInput | DailyCloseScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutOutletNestedInput = {
     create?: XOR<UserCreateWithoutOutletInput, UserUncheckedCreateWithoutOutletInput> | UserCreateWithoutOutletInput[] | UserUncheckedCreateWithoutOutletInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOutletInput | UserCreateOrConnectWithoutOutletInput[]
@@ -34228,6 +36090,20 @@ export namespace Prisma {
     update?: PastryAuditUpdateWithWhereUniqueWithoutOutletInput | PastryAuditUpdateWithWhereUniqueWithoutOutletInput[]
     updateMany?: PastryAuditUpdateManyWithWhereWithoutOutletInput | PastryAuditUpdateManyWithWhereWithoutOutletInput[]
     deleteMany?: PastryAuditScalarWhereInput | PastryAuditScalarWhereInput[]
+  }
+
+  export type DailyCloseUncheckedUpdateManyWithoutOutletNestedInput = {
+    create?: XOR<DailyCloseCreateWithoutOutletInput, DailyCloseUncheckedCreateWithoutOutletInput> | DailyCloseCreateWithoutOutletInput[] | DailyCloseUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: DailyCloseCreateOrConnectWithoutOutletInput | DailyCloseCreateOrConnectWithoutOutletInput[]
+    upsert?: DailyCloseUpsertWithWhereUniqueWithoutOutletInput | DailyCloseUpsertWithWhereUniqueWithoutOutletInput[]
+    createMany?: DailyCloseCreateManyOutletInputEnvelope
+    set?: DailyCloseWhereUniqueInput | DailyCloseWhereUniqueInput[]
+    disconnect?: DailyCloseWhereUniqueInput | DailyCloseWhereUniqueInput[]
+    delete?: DailyCloseWhereUniqueInput | DailyCloseWhereUniqueInput[]
+    connect?: DailyCloseWhereUniqueInput | DailyCloseWhereUniqueInput[]
+    update?: DailyCloseUpdateWithWhereUniqueWithoutOutletInput | DailyCloseUpdateWithWhereUniqueWithoutOutletInput[]
+    updateMany?: DailyCloseUpdateManyWithWhereWithoutOutletInput | DailyCloseUpdateManyWithWhereWithoutOutletInput[]
+    deleteMany?: DailyCloseScalarWhereInput | DailyCloseScalarWhereInput[]
   }
 
   export type OutletCreateNestedOneWithoutUsersInput = {
@@ -34880,6 +36756,20 @@ export namespace Prisma {
     update?: XOR<XOR<OutletUpdateToOneWithWhereWithoutShiftsInput, OutletUpdateWithoutShiftsInput>, OutletUncheckedUpdateWithoutShiftsInput>
   }
 
+  export type OutletCreateNestedOneWithoutDailyClosesInput = {
+    create?: XOR<OutletCreateWithoutDailyClosesInput, OutletUncheckedCreateWithoutDailyClosesInput>
+    connectOrCreate?: OutletCreateOrConnectWithoutDailyClosesInput
+    connect?: OutletWhereUniqueInput
+  }
+
+  export type OutletUpdateOneRequiredWithoutDailyClosesNestedInput = {
+    create?: XOR<OutletCreateWithoutDailyClosesInput, OutletUncheckedCreateWithoutDailyClosesInput>
+    connectOrCreate?: OutletCreateOrConnectWithoutDailyClosesInput
+    upsert?: OutletUpsertWithoutDailyClosesInput
+    connect?: OutletWhereUniqueInput
+    update?: XOR<XOR<OutletUpdateToOneWithWhereWithoutDailyClosesInput, OutletUpdateWithoutDailyClosesInput>, OutletUncheckedUpdateWithoutDailyClosesInput>
+  }
+
   export type OutletCreateNestedOneWithoutExpensesInput = {
     create?: XOR<OutletCreateWithoutExpensesInput, OutletUncheckedCreateWithoutExpensesInput>
     connectOrCreate?: OutletCreateOrConnectWithoutExpensesInput
@@ -35321,6 +37211,7 @@ export namespace Prisma {
     subtotal?: number
     serviceCharge?: number
     taxAmount?: number
+    deliveryFee?: number
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
@@ -35354,6 +37245,7 @@ export namespace Prisma {
     subtotal?: number
     serviceCharge?: number
     taxAmount?: number
+    deliveryFee?: number
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
@@ -35593,6 +37485,52 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type DailyCloseCreateWithoutOutletInput = {
+    id?: string
+    closeDate?: Date | string
+    dayName?: string | null
+    shiftsCount?: number
+    totalRevenue?: number
+    totalCash?: number
+    totalVisa?: number
+    totalInstapay?: number
+    totalVodafone?: number
+    totalExpenses?: number
+    netCashInSafe?: number
+    ordersCount?: number
+    closedBy: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type DailyCloseUncheckedCreateWithoutOutletInput = {
+    id?: string
+    closeDate?: Date | string
+    dayName?: string | null
+    shiftsCount?: number
+    totalRevenue?: number
+    totalCash?: number
+    totalVisa?: number
+    totalInstapay?: number
+    totalVodafone?: number
+    totalExpenses?: number
+    netCashInSafe?: number
+    ordersCount?: number
+    closedBy: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type DailyCloseCreateOrConnectWithoutOutletInput = {
+    where: DailyCloseWhereUniqueInput
+    create: XOR<DailyCloseCreateWithoutOutletInput, DailyCloseUncheckedCreateWithoutOutletInput>
+  }
+
+  export type DailyCloseCreateManyOutletInputEnvelope = {
+    data: DailyCloseCreateManyOutletInput | DailyCloseCreateManyOutletInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithWhereUniqueWithoutOutletInput = {
     where: UserWhereUniqueInput
     update: XOR<UserUpdateWithoutOutletInput, UserUncheckedUpdateWithoutOutletInput>
@@ -35767,6 +37705,7 @@ export namespace Prisma {
     subtotal?: FloatFilter<"Order"> | number
     serviceCharge?: FloatFilter<"Order"> | number
     taxAmount?: FloatFilter<"Order"> | number
+    deliveryFee?: FloatFilter<"Order"> | number
     discountAmount?: FloatFilter<"Order"> | number
     tipAmount?: FloatFilter<"Order"> | number
     finalAmount?: FloatFilter<"Order"> | number
@@ -35977,6 +37916,44 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"PastryAudit"> | Date | string
   }
 
+  export type DailyCloseUpsertWithWhereUniqueWithoutOutletInput = {
+    where: DailyCloseWhereUniqueInput
+    update: XOR<DailyCloseUpdateWithoutOutletInput, DailyCloseUncheckedUpdateWithoutOutletInput>
+    create: XOR<DailyCloseCreateWithoutOutletInput, DailyCloseUncheckedCreateWithoutOutletInput>
+  }
+
+  export type DailyCloseUpdateWithWhereUniqueWithoutOutletInput = {
+    where: DailyCloseWhereUniqueInput
+    data: XOR<DailyCloseUpdateWithoutOutletInput, DailyCloseUncheckedUpdateWithoutOutletInput>
+  }
+
+  export type DailyCloseUpdateManyWithWhereWithoutOutletInput = {
+    where: DailyCloseScalarWhereInput
+    data: XOR<DailyCloseUpdateManyMutationInput, DailyCloseUncheckedUpdateManyWithoutOutletInput>
+  }
+
+  export type DailyCloseScalarWhereInput = {
+    AND?: DailyCloseScalarWhereInput | DailyCloseScalarWhereInput[]
+    OR?: DailyCloseScalarWhereInput[]
+    NOT?: DailyCloseScalarWhereInput | DailyCloseScalarWhereInput[]
+    id?: StringFilter<"DailyClose"> | string
+    outletId?: StringFilter<"DailyClose"> | string
+    closeDate?: DateTimeFilter<"DailyClose"> | Date | string
+    dayName?: StringNullableFilter<"DailyClose"> | string | null
+    shiftsCount?: IntFilter<"DailyClose"> | number
+    totalRevenue?: FloatFilter<"DailyClose"> | number
+    totalCash?: FloatFilter<"DailyClose"> | number
+    totalVisa?: FloatFilter<"DailyClose"> | number
+    totalInstapay?: FloatFilter<"DailyClose"> | number
+    totalVodafone?: FloatFilter<"DailyClose"> | number
+    totalExpenses?: FloatFilter<"DailyClose"> | number
+    netCashInSafe?: FloatFilter<"DailyClose"> | number
+    ordersCount?: IntFilter<"DailyClose"> | number
+    closedBy?: StringFilter<"DailyClose"> | string
+    notes?: StringNullableFilter<"DailyClose"> | string | null
+    createdAt?: DateTimeFilter<"DailyClose"> | Date | string
+  }
+
   export type OutletCreateWithoutUsersInput = {
     id?: string
     name: string
@@ -35998,6 +37975,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutUsersInput = {
@@ -36021,6 +37999,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutUsersInput = {
@@ -36060,6 +38039,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutUsersInput = {
@@ -36083,6 +38063,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateWithoutTablesInput = {
@@ -36106,6 +38087,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutTablesInput = {
@@ -36129,6 +38111,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutTablesInput = {
@@ -36150,6 +38133,7 @@ export namespace Prisma {
     subtotal?: number
     serviceCharge?: number
     taxAmount?: number
+    deliveryFee?: number
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
@@ -36183,6 +38167,7 @@ export namespace Prisma {
     subtotal?: number
     serviceCharge?: number
     taxAmount?: number
+    deliveryFee?: number
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
@@ -36242,6 +38227,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutTablesInput = {
@@ -36265,6 +38251,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OrderUpsertWithWhereUniqueWithoutTableInput = {
@@ -36304,6 +38291,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutMenuItemsInput = {
@@ -36327,6 +38315,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutMenuItemsInput = {
@@ -36428,6 +38417,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutMenuItemsInput = {
@@ -36451,6 +38441,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type RecipeItemUpsertWithWhereUniqueWithoutMenuItemInput = {
@@ -36647,6 +38638,7 @@ export namespace Prisma {
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutPastryAuditsInput = {
@@ -36670,6 +38662,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutPastryAuditsInput = {
@@ -36755,6 +38748,7 @@ export namespace Prisma {
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutPastryAuditsInput = {
@@ -36778,6 +38772,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type PastryAuditItemUpsertWithWhereUniqueWithoutAuditInput = {
@@ -36887,6 +38882,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutRawMaterialsInput = {
@@ -36910,6 +38906,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutRawMaterialsInput = {
@@ -37011,6 +39008,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutRawMaterialsInput = {
@@ -37034,6 +39032,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type RecipeItemUpsertWithWhereUniqueWithoutRawMaterialInput = {
@@ -37183,6 +39182,7 @@ export namespace Prisma {
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutInventoryAuditsInput = {
@@ -37206,6 +39206,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutInventoryAuditsInput = {
@@ -37289,6 +39290,7 @@ export namespace Prisma {
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutInventoryAuditsInput = {
@@ -37312,6 +39314,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type InventoryAuditItemUpsertWithWhereUniqueWithoutAuditInput = {
@@ -37601,6 +39604,7 @@ export namespace Prisma {
     subtotal?: number
     serviceCharge?: number
     taxAmount?: number
+    deliveryFee?: number
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
@@ -37635,6 +39639,7 @@ export namespace Prisma {
     subtotal?: number
     serviceCharge?: number
     taxAmount?: number
+    deliveryFee?: number
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
@@ -37698,6 +39703,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutOrdersInput = {
@@ -37721,6 +39727,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutOrdersInput = {
@@ -37858,6 +39865,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutOrdersInput = {
@@ -37881,6 +39889,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type DiningTableUpsertWithoutOrdersInput = {
@@ -38008,6 +40017,7 @@ export namespace Prisma {
     subtotal?: number
     serviceCharge?: number
     taxAmount?: number
+    deliveryFee?: number
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
@@ -38042,6 +40052,7 @@ export namespace Prisma {
     subtotal?: number
     serviceCharge?: number
     taxAmount?: number
+    deliveryFee?: number
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
@@ -38088,6 +40099,7 @@ export namespace Prisma {
     subtotal?: FloatFieldUpdateOperationsInput | number
     serviceCharge?: FloatFieldUpdateOperationsInput | number
     taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
@@ -38122,6 +40134,7 @@ export namespace Prisma {
     subtotal?: FloatFieldUpdateOperationsInput | number
     serviceCharge?: FloatFieldUpdateOperationsInput | number
     taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
@@ -38159,6 +40172,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutShiftsInput = {
@@ -38182,6 +40196,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutShiftsInput = {
@@ -38221,6 +40236,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutShiftsInput = {
@@ -38239,6 +40255,119 @@ export namespace Prisma {
     menuItems?: MenuItemUncheckedUpdateManyWithoutOutletNestedInput
     rawMaterials?: RawMaterialUncheckedUpdateManyWithoutOutletNestedInput
     orders?: OrderUncheckedUpdateManyWithoutOutletNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
+  }
+
+  export type OutletCreateWithoutDailyClosesInput = {
+    id?: string
+    name: string
+    code: string
+    type?: string
+    address: string
+    phone: string
+    whatsapp?: string | null
+    logoUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    users?: UserCreateNestedManyWithoutOutletInput
+    tables?: DiningTableCreateNestedManyWithoutOutletInput
+    menuItems?: MenuItemCreateNestedManyWithoutOutletInput
+    rawMaterials?: RawMaterialCreateNestedManyWithoutOutletInput
+    orders?: OrderCreateNestedManyWithoutOutletInput
+    shifts?: ShiftCreateNestedManyWithoutOutletInput
+    expenses?: ExpenseCreateNestedManyWithoutOutletInput
+    reservations?: ReservationCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
+  }
+
+  export type OutletUncheckedCreateWithoutDailyClosesInput = {
+    id?: string
+    name: string
+    code: string
+    type?: string
+    address: string
+    phone: string
+    whatsapp?: string | null
+    logoUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutOutletInput
+    tables?: DiningTableUncheckedCreateNestedManyWithoutOutletInput
+    menuItems?: MenuItemUncheckedCreateNestedManyWithoutOutletInput
+    rawMaterials?: RawMaterialUncheckedCreateNestedManyWithoutOutletInput
+    orders?: OrderUncheckedCreateNestedManyWithoutOutletInput
+    shifts?: ShiftUncheckedCreateNestedManyWithoutOutletInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
+    reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
+  }
+
+  export type OutletCreateOrConnectWithoutDailyClosesInput = {
+    where: OutletWhereUniqueInput
+    create: XOR<OutletCreateWithoutDailyClosesInput, OutletUncheckedCreateWithoutDailyClosesInput>
+  }
+
+  export type OutletUpsertWithoutDailyClosesInput = {
+    update: XOR<OutletUpdateWithoutDailyClosesInput, OutletUncheckedUpdateWithoutDailyClosesInput>
+    create: XOR<OutletCreateWithoutDailyClosesInput, OutletUncheckedCreateWithoutDailyClosesInput>
+    where?: OutletWhereInput
+  }
+
+  export type OutletUpdateToOneWithWhereWithoutDailyClosesInput = {
+    where?: OutletWhereInput
+    data: XOR<OutletUpdateWithoutDailyClosesInput, OutletUncheckedUpdateWithoutDailyClosesInput>
+  }
+
+  export type OutletUpdateWithoutDailyClosesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutOutletNestedInput
+    tables?: DiningTableUpdateManyWithoutOutletNestedInput
+    menuItems?: MenuItemUpdateManyWithoutOutletNestedInput
+    rawMaterials?: RawMaterialUpdateManyWithoutOutletNestedInput
+    orders?: OrderUpdateManyWithoutOutletNestedInput
+    shifts?: ShiftUpdateManyWithoutOutletNestedInput
+    expenses?: ExpenseUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
+  }
+
+  export type OutletUncheckedUpdateWithoutDailyClosesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutOutletNestedInput
+    tables?: DiningTableUncheckedUpdateManyWithoutOutletNestedInput
+    menuItems?: MenuItemUncheckedUpdateManyWithoutOutletNestedInput
+    rawMaterials?: RawMaterialUncheckedUpdateManyWithoutOutletNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutOutletNestedInput
+    shifts?: ShiftUncheckedUpdateManyWithoutOutletNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
@@ -38267,6 +40396,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutExpensesInput = {
@@ -38290,6 +40420,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutExpensesInput = {
@@ -38329,6 +40460,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutExpensesInput = {
@@ -38352,6 +40484,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateWithoutReservationsInput = {
@@ -38375,6 +40508,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutReservationsInput = {
@@ -38398,6 +40532,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutReservationsInput = {
@@ -38437,6 +40572,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutReservationsInput = {
@@ -38460,6 +40596,7 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateWithoutChatMessagesInput = {
@@ -38483,6 +40620,7 @@ export namespace Prisma {
     reservations?: ReservationCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutChatMessagesInput = {
@@ -38506,6 +40644,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutChatMessagesInput = {
@@ -38545,6 +40684,7 @@ export namespace Prisma {
     reservations?: ReservationUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutChatMessagesInput = {
@@ -38568,6 +40708,7 @@ export namespace Prisma {
     reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type UserCreateManyOutletInput = {
@@ -38644,6 +40785,7 @@ export namespace Prisma {
     subtotal?: number
     serviceCharge?: number
     taxAmount?: number
+    deliveryFee?: number
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
@@ -38730,6 +40872,24 @@ export namespace Prisma {
   export type PastryAuditCreateManyOutletInput = {
     id?: string
     auditorName?: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type DailyCloseCreateManyOutletInput = {
+    id?: string
+    closeDate?: Date | string
+    dayName?: string | null
+    shiftsCount?: number
+    totalRevenue?: number
+    totalCash?: number
+    totalVisa?: number
+    totalInstapay?: number
+    totalVodafone?: number
+    totalExpenses?: number
+    netCashInSafe?: number
+    ordersCount?: number
+    closedBy: string
     notes?: string | null
     createdAt?: Date | string
   }
@@ -38935,6 +41095,7 @@ export namespace Prisma {
     subtotal?: FloatFieldUpdateOperationsInput | number
     serviceCharge?: FloatFieldUpdateOperationsInput | number
     taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
@@ -38968,6 +41129,7 @@ export namespace Prisma {
     subtotal?: FloatFieldUpdateOperationsInput | number
     serviceCharge?: FloatFieldUpdateOperationsInput | number
     taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
@@ -39000,6 +41162,7 @@ export namespace Prisma {
     subtotal?: FloatFieldUpdateOperationsInput | number
     serviceCharge?: FloatFieldUpdateOperationsInput | number
     taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
@@ -39242,6 +41405,60 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type DailyCloseUpdateWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    dayName?: NullableStringFieldUpdateOperationsInput | string | null
+    shiftsCount?: IntFieldUpdateOperationsInput | number
+    totalRevenue?: FloatFieldUpdateOperationsInput | number
+    totalCash?: FloatFieldUpdateOperationsInput | number
+    totalVisa?: FloatFieldUpdateOperationsInput | number
+    totalInstapay?: FloatFieldUpdateOperationsInput | number
+    totalVodafone?: FloatFieldUpdateOperationsInput | number
+    totalExpenses?: FloatFieldUpdateOperationsInput | number
+    netCashInSafe?: FloatFieldUpdateOperationsInput | number
+    ordersCount?: IntFieldUpdateOperationsInput | number
+    closedBy?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DailyCloseUncheckedUpdateWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    dayName?: NullableStringFieldUpdateOperationsInput | string | null
+    shiftsCount?: IntFieldUpdateOperationsInput | number
+    totalRevenue?: FloatFieldUpdateOperationsInput | number
+    totalCash?: FloatFieldUpdateOperationsInput | number
+    totalVisa?: FloatFieldUpdateOperationsInput | number
+    totalInstapay?: FloatFieldUpdateOperationsInput | number
+    totalVodafone?: FloatFieldUpdateOperationsInput | number
+    totalExpenses?: FloatFieldUpdateOperationsInput | number
+    netCashInSafe?: FloatFieldUpdateOperationsInput | number
+    ordersCount?: IntFieldUpdateOperationsInput | number
+    closedBy?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DailyCloseUncheckedUpdateManyWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    closeDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    dayName?: NullableStringFieldUpdateOperationsInput | string | null
+    shiftsCount?: IntFieldUpdateOperationsInput | number
+    totalRevenue?: FloatFieldUpdateOperationsInput | number
+    totalCash?: FloatFieldUpdateOperationsInput | number
+    totalVisa?: FloatFieldUpdateOperationsInput | number
+    totalInstapay?: FloatFieldUpdateOperationsInput | number
+    totalVodafone?: FloatFieldUpdateOperationsInput | number
+    totalExpenses?: FloatFieldUpdateOperationsInput | number
+    netCashInSafe?: FloatFieldUpdateOperationsInput | number
+    ordersCount?: IntFieldUpdateOperationsInput | number
+    closedBy?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type OrderCreateManyTableInput = {
     id?: string
     outletId: string
@@ -39257,6 +41474,7 @@ export namespace Prisma {
     subtotal?: number
     serviceCharge?: number
     taxAmount?: number
+    deliveryFee?: number
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
@@ -39287,6 +41505,7 @@ export namespace Prisma {
     subtotal?: FloatFieldUpdateOperationsInput | number
     serviceCharge?: FloatFieldUpdateOperationsInput | number
     taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
@@ -39320,6 +41539,7 @@ export namespace Prisma {
     subtotal?: FloatFieldUpdateOperationsInput | number
     serviceCharge?: FloatFieldUpdateOperationsInput | number
     taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
@@ -39352,6 +41572,7 @@ export namespace Prisma {
     subtotal?: FloatFieldUpdateOperationsInput | number
     serviceCharge?: FloatFieldUpdateOperationsInput | number
     taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
@@ -39692,6 +41913,7 @@ export namespace Prisma {
     subtotal?: number
     serviceCharge?: number
     taxAmount?: number
+    deliveryFee?: number
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
@@ -39721,6 +41943,7 @@ export namespace Prisma {
     subtotal?: FloatFieldUpdateOperationsInput | number
     serviceCharge?: FloatFieldUpdateOperationsInput | number
     taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
@@ -39755,6 +41978,7 @@ export namespace Prisma {
     subtotal?: FloatFieldUpdateOperationsInput | number
     serviceCharge?: FloatFieldUpdateOperationsInput | number
     taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
@@ -39787,6 +42011,7 @@ export namespace Prisma {
     subtotal?: FloatFieldUpdateOperationsInput | number
     serviceCharge?: FloatFieldUpdateOperationsInput | number
     taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number

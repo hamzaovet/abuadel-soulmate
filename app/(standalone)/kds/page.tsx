@@ -19,6 +19,11 @@ import {
   Crown,
   Home,
   Receipt,
+  Printer,
+  Truck,
+  MapPin,
+  Phone,
+  User,
 } from "lucide-react";
 
 export default function KdsScreenPage() {
@@ -27,6 +32,7 @@ export default function KdsScreenPage() {
   const [stationFilter, setStationFilter] = useState<string>("ALL");
   const [loading, setLoading] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [printingDeliveryTicket, setPrintingDeliveryTicket] = useState<any>(null);
 
   // Audio Context Ref
   const lastTicketIdRef = useRef<string | null>(null);
@@ -267,14 +273,52 @@ export default function KdsScreenPage() {
                           {t.station === "BARISTA" ? "☕ باريستا" : t.station === "KITCHEN" ? "🥞 مطبخ" : "🍰 حلواني"}
                         </span>
                       </div>
-                      <p className="text-xs text-amber-300 font-black pt-1">
-                        {t.order?.tableNumber ? `💺 ترابيزة: ${t.order.tableNumber}` : "🛍️ تيك أواي / سفري"}
-                      </p>
+                      <div className="flex items-center gap-2 pt-1 flex-wrap">
+                        {t.order?.orderType === "DELIVERY" ? (
+                          <span className="py-0.5 px-2 rounded-md text-[10px] font-black bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                            🛵 دليفري للمنزل
+                          </span>
+                        ) : t.order?.orderType === "TAKEAWAY" ? (
+                          <span className="py-0.5 px-2 rounded-md text-[10px] font-black bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                            🛍️ تيك أواي سفري
+                          </span>
+                        ) : (
+                          <span className="py-0.5 px-2 rounded-md text-[10px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                            🪑 صالة (ترابيزة {t.order?.tableNumber || "-"})
+                          </span>
+                        )}
+                        {t.order?.customerName && (
+                          <span className="text-[10px] text-slate-300">
+                            • {t.order.customerName}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Delivery Address & Phone on Card */}
+                      {t.order?.orderType === "DELIVERY" && (
+                        <div className="mt-1.5 p-1.5 rounded-xl bg-sky-950/40 border border-sky-500/30 text-[10px] text-sky-200 space-y-0.5">
+                          {t.order.deliveryAddress && (
+                            <p className="flex items-center gap-1 truncate">
+                              <MapPin className="w-3 h-3 text-sky-400 shrink-0" />
+                              <span>{t.order.deliveryAddress}</span>
+                            </p>
+                          )}
+                          {t.order.deliveryPhone && (
+                            <p className="flex items-center gap-1 font-mono">
+                              <Phone className="w-3 h-3 text-sky-400 shrink-0" />
+                              <span>{t.order.deliveryPhone}</span>
+                            </p>
+                          )}
+                          <p className="font-mono font-bold text-amber-300 pt-0.5 border-t border-sky-500/20">
+                            مطلوب تحصيله: {t.order.finalAmount || t.order.subtotal || 0} ج.م (شامل التوصيل)
+                          </p>
+                        </div>
+                      )}
                     </div>
 
                     {/* Timer Badge */}
                     <div
-                      className={`py-1 px-2.5 rounded-xl text-xs font-mono font-black flex items-center gap-1 ${
+                      className={`py-1 px-2.5 rounded-xl text-xs font-mono font-black flex items-center gap-1 shrink-0 ${
                         isUrgent
                           ? "bg-rose-600 text-white animate-bounce"
                           : isWarning
@@ -311,6 +355,21 @@ export default function KdsScreenPage() {
 
                   {/* Action Buttons */}
                   <div className="pt-2 border-t border-white/10 flex items-center gap-2">
+                    {/* Delivery Driver Slip Button */}
+                    {t.order?.orderType === "DELIVERY" && (
+                      <button
+                        onClick={() => {
+                          setPrintingDeliveryTicket(t);
+                          setTimeout(() => window.print(), 300);
+                        }}
+                        className="py-2 px-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs transition flex items-center gap-1 cursor-pointer shrink-0 shadow-sm"
+                        title="طباعة بون الطيار 80 مم"
+                      >
+                        <Printer className="w-3.5 h-3.5" />
+                        <span>بون الطيار 🛵</span>
+                      </button>
+                    )}
+
                     {t.status === "QUEUED" ? (
                       <button
                         onClick={() => handleUpdateStatus(t.id, "IN_PREPARATION")}
@@ -335,6 +394,76 @@ export default function KdsScreenPage() {
           </div>
         )}
       </main>
+
+      {/* ─────────────────────────────────────────────────────────────
+          PRINTABLE DRIVER RECEIPT (بون الطيار 80MM)
+         ───────────────────────────────────────────────────────────── */}
+      {printingDeliveryTicket && (
+        <div id="driver-dispatch-receipt" className="hidden print:block text-black font-sans p-2" dir="rtl">
+          <div className="text-center space-y-1 border-b-2 border-black pb-2 mb-2">
+            <h2 className="text-base font-black tracking-wider">سول ميت كافيه VIP</h2>
+            <p className="text-[11px] font-bold">بون توصيل طلب دليفري (Driver Dispatch Slip 🛵)</p>
+            <p className="text-[11px] font-mono font-black">رقم الشيك: #{printingDeliveryTicket.order?.orderNumber}</p>
+            <p className="text-[10px] font-mono">
+              التاريخ: {new Date(printingDeliveryTicket.createdAt).toLocaleString("ar-EG")}
+            </p>
+          </div>
+
+          <div className="p-2 border border-black rounded-lg space-y-1 text-[11px] mb-2 font-bold bg-gray-50">
+            <div className="flex items-center gap-1">
+              <span>👤 العميل:</span>
+              <strong className="text-sm">{printingDeliveryTicket.order?.customerName || "عميل راقٍ"}</strong>
+            </div>
+            <div className="flex items-center gap-1 font-mono">
+              <span>📞 الهاتف:</span>
+              <strong className="text-sm">{printingDeliveryTicket.order?.deliveryPhone || printingDeliveryTicket.order?.customerPhone || "-"}</strong>
+            </div>
+            <div className="flex items-start gap-1">
+              <span>📍 العنوان:</span>
+              <strong>{printingDeliveryTicket.order?.deliveryAddress || "العنوان غير محدد"}</strong>
+            </div>
+          </div>
+
+          <div className="border-b border-black pb-2 mb-2">
+            <table className="w-full text-[11px]">
+              <thead>
+                <tr className="border-b border-black text-right font-black">
+                  <th className="py-1">الصنف</th>
+                  <th className="text-center">الكمية</th>
+                </tr>
+              </thead>
+              <tbody>
+                {printingDeliveryTicket.items.map((it: any, idx: number) => (
+                  <tr key={idx} className="border-b border-gray-300">
+                    <td className="py-1 font-bold">{it.nameAr}</td>
+                    <td className="text-center font-mono font-black">×{it.qty || 1}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="text-[11px] space-y-1 border-b-2 border-black pb-2 mb-2">
+            <div className="flex justify-between">
+              <span>المجموع الفرعي:</span>
+              <span className="font-mono">{printingDeliveryTicket.order?.subtotal || 0} ج.م</span>
+            </div>
+            <div className="flex justify-between font-bold">
+              <span>مصاريف التوصيل (دليفري):</span>
+              <span className="font-mono">+{printingDeliveryTicket.order?.deliveryFee || 20} ج.م</span>
+            </div>
+            <div className="flex justify-between border-t border-black pt-1 text-sm font-black">
+              <span>المطلوب تحصيله نقداً 💵:</span>
+              <span className="font-mono text-base">{printingDeliveryTicket.order?.finalAmount || ((printingDeliveryTicket.order?.subtotal || 0) + (printingDeliveryTicket.order?.deliveryFee || 20))} ج.م</span>
+            </div>
+          </div>
+
+          <div className="text-center text-[10px] space-y-0.5">
+            <p className="font-bold">يرجى تسليم النقدية المحصلة لكاشير الوردية فور العودة</p>
+            <p>شكراً لتعاملكم مع كافيه سول ميت VIP ☕✨</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

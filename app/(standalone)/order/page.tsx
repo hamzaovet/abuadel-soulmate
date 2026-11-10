@@ -34,6 +34,8 @@ import {
   ChevronDown,
   Smile,
   ShieldCheck,
+  Receipt,
+  Heart,
 } from "lucide-react";
 
 function TableOrderContent() {
@@ -70,6 +72,108 @@ function TableOrderContent() {
   const [orderNotes, setOrderNotes] = useState("");
   const [submittingOrder, setSubmittingOrder] = useState(false);
   const [submittedOrder, setSubmittedOrder] = useState<any>(null);
+
+  // Active Open Table Check Tracking & Celebration Sound
+  const [activeTableOrder, setActiveTableOrder] = useState<any>(null);
+  const [showReadyModal, setShowReadyModal] = useState<boolean>(false);
+  const [requestingBill, setRequestingBill] = useState<boolean>(false);
+  const lastOrderStatusRef = useRef<string | null>(null);
+
+  // Web Audio API Cheerful Chime
+  const playCelebrationChime = () => {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (AudioCtx) {
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 (Bright cheerful arpeggio)
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+          gain.gain.setValueAtTime(0, now + idx * 0.12);
+          gain.gain.linearRampToValueAtTime(0.25, now + idx * 0.12 + 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.6);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + idx * 0.12);
+          osc.stop(now + idx * 0.12 + 0.65);
+        });
+      }
+    } catch {
+      // Audio fallback
+    }
+  };
+
+  // Poll Active Table Order
+  useEffect(() => {
+    if (orderMode !== "DINE_IN" || !tableNumber) return;
+
+    let isSubscribed = true;
+    const fetchActiveOrder = async () => {
+      try {
+        const res = await fetch(`/api/orders?tableNumber=${encodeURIComponent(tableNumber)}&limit=5`);
+        const data = await res.json();
+        if (data.success && isSubscribed) {
+          const active = data.orders.find(
+            (o: any) => o.status !== "COMPLETED" && o.status !== "CANCELLED"
+          );
+
+          if (active) {
+            setActiveTableOrder(active);
+            if (active.status === "READY_TO_SERVE" && lastOrderStatusRef.current !== "READY_TO_SERVE") {
+              playCelebrationChime();
+              setShowReadyModal(true);
+            }
+            lastOrderStatusRef.current = active.status;
+          } else {
+            if (lastOrderStatusRef.current && lastOrderStatusRef.current !== "COMPLETED") {
+              showToast("success", "تم سداد الشيك بنجاح بالخزينة، نورتنا وشرفتنا دائماً في سول ميت كافيه VIP ☕❤️");
+            }
+            setActiveTableOrder(null);
+            lastOrderStatusRef.current = null;
+          }
+        }
+      } catch {
+        // silent
+      }
+    };
+
+    fetchActiveOrder();
+    const interval = setInterval(fetchActiveOrder, 3500);
+    return () => {
+      isSubscribed = false;
+      clearInterval(interval);
+    };
+  }, [tableNumber, orderMode]);
+
+  // Request Bill Handler (شيك أوت / طلب الحساب)
+  const handleRequestBill = async () => {
+    if (!activeTableOrder) return;
+    try {
+      setRequestingBill(true);
+      const res = await fetch("/api/orders", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId: activeTableOrder.id,
+          action: "REQUEST_BILL",
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast("success", data.message || "تم إخطار الكاشير والويتر بطلب الحساب 🧾");
+        setActiveTableOrder((prev: any) => (prev ? { ...prev, status: "BILL_REQUESTED" } : null));
+      } else {
+        showToast("error", data.error || "فشل إرسال طلب الحساب");
+      }
+    } catch {
+      showToast("error", "تعذر الاتصال بالخادم لطلب الحساب");
+    } finally {
+      setRequestingBill(false);
+    }
+  };
 
   // Customer Account & Gmail Verification Modal
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -214,12 +318,13 @@ function TableOrderContent() {
 
   // Financials
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const deliveryFee = orderMode === "DELIVERY" ? (settings?.deliveryFee || 20) : 0;
   const serviceCharge =
     orderMode === "DINE_IN" && settings?.isServiceChargeEnabled
       ? (subtotal * (settings.serviceChargePercent || 12)) / 100
       : 0;
   const taxAmount = settings?.isTaxEnabled ? (subtotal * (settings.taxPercent || 14)) / 100 : 0;
-  const finalAmount = Math.max(0, subtotal + serviceCharge + taxAmount);
+  const finalAmount = Math.max(0, subtotal + serviceCharge + taxAmount + deliveryFee);
 
   // Submit Order directly to KDS / Kitchen
   const handleSubmitOrder = async () => {
@@ -571,6 +676,80 @@ function TableOrderContent() {
           </div>
         )}
 
+        
+        {/* ACTIVE OPEN TABLE CHECK WIDGET (الشيك المفتوح لطاولتك) */}
+        {orderMode === "DINE_IN" && activeTableOrder && (
+          <div className="bg-gradient-to-br from-[#161019] via-[#100b13] to-black border-2 border-amber-500/40 rounded-2xl p-4 shadow-xl space-y-3">
+            <div className="flex items-center justify-between border-b border-white/10 pb-2">
+              <div className="flex items-center gap-2">
+                <Receipt className="w-4 h-4 text-amber-400" />
+                <h3 className="font-black text-xs sm:text-sm text-white">
+                  الشيك المفتوح لطاولتك (ترابيزة #{tableNumber})
+                </h3>
+              </div>
+              <span
+                className={`text-[10px] font-black py-0.5 px-2 rounded-full border ${
+                  activeTableOrder.status === "BILL_REQUESTED"
+                    ? "bg-purple-500/20 border-purple-500/40 text-purple-300 animate-pulse"
+                    : activeTableOrder.status === "READY_TO_SERVE"
+                    ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300 animate-bounce"
+                    : "bg-amber-500/20 border-amber-500/40 text-amber-300"
+                }`}
+              >
+                {activeTableOrder.status === "BILL_REQUESTED"
+                  ? "تم طلب الحساب 🧾"
+                  : activeTableOrder.status === "READY_TO_SERVE"
+                  ? "طلبك جاهز ☕🎉"
+                  : "جاري التحضير ⏳"}
+              </span>
+            </div>
+
+            {/* List of active items in the open check */}
+            <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1 text-xs font-mono">
+              {(() => {
+                let parsed: any[] = [];
+                try {
+                  parsed = typeof activeTableOrder.items === "string" ? JSON.parse(activeTableOrder.items) : activeTableOrder.items;
+                } catch {
+                  parsed = [];
+                }
+                return parsed.map((it: any, idx: number) => (
+                  <div key={idx} className="flex justify-between items-center text-slate-300 py-0.5 border-b border-white/5">
+                    <span className="font-sans font-bold">{it.nameAr || it.name} ×{it.qty || 1}</span>
+                    <span className="text-amber-300 font-bold">{Number(it.price) * Number(it.qty || 1)} ج</span>
+                  </div>
+                ));
+              })()}
+            </div>
+
+            {/* Total and Checkout Action */}
+            <div className="flex items-center justify-between border-t border-white/10 pt-2 text-xs">
+              <div>
+                <span className="text-[10px] text-slate-400 block">إجمالي الشيك المفتوح:</span>
+                <span className="text-base font-black font-mono text-amber-400">
+                  {activeTableOrder.finalAmount || activeTableOrder.subtotal || 0} ج.م
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleRequestBill}
+                disabled={requestingBill || activeTableOrder.status === "BILL_REQUESTED"}
+                className="py-2 px-3.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-black text-xs transition shadow flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              >
+                <Receipt className="w-3.5 h-3.5" />
+                <span>
+                  {activeTableOrder.status === "BILL_REQUESTED"
+                    ? "تم طلب الحساب (الويتر قادم) 🧾"
+                    : requestingBill
+                    ? "جارٍ الطلب..."
+                    : "طلب الحساب / شيك أوت 🧾"}
+                </span>
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* PROMINENT TABLE CONFIRMATION CARD (For Dine-in) */}
         {orderMode === "DINE_IN" && (
           <div className="bg-slate-900/90 border border-amber-500/30 rounded-2xl p-4 flex items-center justify-between gap-4 shadow-lg flex-wrap">
@@ -761,7 +940,11 @@ function TableOrderContent() {
               ) : (
                 <>
                   <Send className="w-4 h-4" />
-                  <span>تأكيد وإرسال الطلب الآن ☕</span>
+                  <span>
+                    {activeTableOrder
+                      ? `إضافة للشيك المفتوح (+${finalAmount.toFixed(0)} ج.م) ☕➕`
+                      : "تأكيد وإرسال الطلب الآن ☕"}
+                  </span>
                 </>
               )}
             </button>
@@ -796,26 +979,55 @@ function TableOrderContent() {
             <input
               type="text"
               autoFocus
-              placeholder="مثال: 5 أو T-01 أو VIP-1"
+              placeholder="اكتب رقم الترابيزة (مثال: 1 أو 2 أو 3)"
               value={tempTableInput}
               onChange={(e) => setTempTableInput(e.target.value)}
-              className="w-full text-center py-3 px-4 rounded-xl bg-black border-2 border-amber-500/50 text-white font-mono font-bold text-lg focus:outline-none focus:border-amber-400 shadow-inner"
+              className="w-full text-center py-2.5 px-4 rounded-xl bg-black border-2 border-amber-500/50 text-white font-mono font-black text-xl focus:outline-none focus:border-amber-400 shadow-inner"
             />
+
+            {/* Quick 12 Table Buttons (1 - 12) */}
+            <div className="space-y-1.5 pt-1">
+              <span className="text-[11px] font-bold text-amber-300 block">
+                أو اختر رقم الترابيزة بضغطة واحدة:
+              </span>
+              <div className="grid grid-cols-4 gap-2">
+                {Array.from({ length: 12 }, (_, i) => i + 1).map((num) => (
+                  <button
+                    key={num}
+                    type="button"
+                    onClick={() => {
+                      const strNum = String(num);
+                      setTableNumber(strNum);
+                      setTempTableInput(strNum);
+                      setShowTableModal(false);
+                      showToast("success", `تم تثبيت ترابيزة رقم ${strNum} بنجاح 🪑`);
+                    }}
+                    className={`py-2.5 rounded-xl border font-mono font-black text-base transition cursor-pointer hover:scale-105 ${
+                      tempTableInput === String(num) || tableNumber === String(num)
+                        ? "bg-amber-500 text-slate-950 border-amber-400 shadow-lg shadow-amber-500/30"
+                        : "bg-black/60 border-white/10 text-white hover:border-amber-500 hover:text-amber-300"
+                    }`}
+                  >
+                    {num}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             <button
               type="button"
               onClick={() => {
                 if (!tempTableInput.trim()) {
-                  showToast("error", "برجاء كتابة رقم الترابيزة");
+                  showToast("error", "برجاء كتابة أو اختيار رقم الترابيزة");
                   return;
                 }
                 setTableNumber(tempTableInput.trim());
                 setShowTableModal(false);
                 showToast("success", `تم تثبيت ترابيزة رقم ${tempTableInput.trim()} بنجاح 👍`);
               }}
-              className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-xs shadow-lg transition"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs shadow-lg transition cursor-pointer"
             >
-              تأكيد والبدء باختيار المشروبات والمنيو
+              تأكيد والبدء باختيار المشروبات والمنيو ☕
             </button>
           </div>
         </div>
@@ -1002,6 +1214,34 @@ function TableOrderContent() {
                 </button>
               </form>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* CELEBRATORY ORDER READY MODAL (نوتيفيكيشن جاهزية الطلب مع الباريستا) */}
+      {showReadyModal && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-[#120d14] border-2 border-emerald-500/70 rounded-3xl w-full max-w-sm p-6 shadow-2xl text-center space-y-4">
+            <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 flex items-center justify-center text-3xl mx-auto animate-bounce shadow-lg shadow-emerald-500/20">
+              ☕🎉
+            </div>
+
+            <div className="space-y-2">
+              <span className="text-[10px] font-black tracking-wider bg-emerald-500/20 text-emerald-300 py-1 px-3 rounded-full border border-emerald-500/30">
+                الباريستا انتهى من التحضير ☕
+              </span>
+              <h3 className="text-xl font-black text-white">طلبك جاهز الآن يا فندم!</h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                الباريستا انتهى من تحضير مشروبك بكل حب وإتقان. الكابتن في طريقه إليك لتسليمه على ترابيزتك بكل سرور. بالهنا والشفا! ❤️
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowReadyModal(false)}
+              className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs shadow-lg transition cursor-pointer"
+            >
+              تسلم إيدك يا باريستا! بالهنا والشفا ❤️
+            </button>
           </div>
         </div>
       )}
