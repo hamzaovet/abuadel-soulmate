@@ -1869,7 +1869,7 @@ export default function AdminDashboardPage() {
                       category: isUserAbuAdel ? "ORIENTAL_SWEETS" : "HOT_DRINKS",
                       price: "",
                       costPrice: "",
-                      stockQty: "100",
+                      stockQty: "0",
                       minStockAlert: "10",
                       unitType: "PIECE",
                       itemType: isUserAbuAdel ? "READY_PASTRY" : "PREPARED_BEVERAGE",
@@ -2041,8 +2041,48 @@ export default function AdminDashboardPage() {
                                 </span>
                               )}
                             </td>
-                            <td className="py-2.5 px-3 font-mono text-slate-300">
-                              {item.stockQty} {item.unitType === "KG" ? "كجم" : "قطعة"}
+                            <td className="py-2.5 px-3">
+                              {item.itemType === "PREPARED_BEVERAGE" ||
+                              ["HOT_DRINKS", "ICE_COFFEE", "FRAPPE", "MOJITO", "SMOOTHIE", "PANCAKE", "EXTRA"].includes(item.category) ? (
+                                <div className="flex flex-col items-start gap-1">
+                                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 whitespace-nowrap">
+                                    <Coffee className="w-3 h-3 text-amber-400" />
+                                    <span>تحضير فوري (بالريسيبي)</span>
+                                  </span>
+                                  <span className="text-[10px] text-slate-400 font-sans flex items-center gap-1 whitespace-nowrap">
+                                    <span>🧪</span>
+                                    <span>
+                                      {item.recipes && item.recipes.length > 0
+                                        ? `${item.recipes.length} خامات بالريسيبي`
+                                        : "يخصم من خامات البار"}
+                                    </span>
+                                  </span>
+                                </div>
+                              ) : (
+                                <div className="flex flex-col items-start gap-0.5">
+                                  <span
+                                    className={`font-mono font-bold text-xs ${
+                                      (item.stockQty ?? 0) <= (item.minStockAlert || 10)
+                                        ? "text-rose-400 font-black"
+                                        : "text-slate-200"
+                                    }`}
+                                  >
+                                    {item.stockQty ?? 0}{" "}
+                                    <span className="text-[10px] font-sans text-slate-400">
+                                      {item.unitType === "KG"
+                                        ? "كجم"
+                                        : item.category === "SOFT_DRINKS"
+                                        ? "كانز/زجاجة"
+                                        : "قطعة"}
+                                    </span>
+                                  </span>
+                                  {(item.stockQty ?? 0) <= (item.minStockAlert || 10) && (
+                                    <span className="text-[9px] text-rose-400 font-bold flex items-center gap-0.5">
+                                      ⚠️ نواقص بالمخزن
+                                    </span>
+                                  )}
+                                </div>
+                              )}
                             </td>
                             <td className="py-2.5 px-3 text-center">
                               <button
@@ -2072,7 +2112,11 @@ export default function AdminDashboardPage() {
                                       stockQty: String(item.stockQty),
                                       minStockAlert: String(item.minStockAlert || 10),
                                       unitType: item.unitType || "PIECE",
-                                      itemType: item.itemType || "PREPARED_BEVERAGE",
+                                      itemType:
+                                        item.itemType ||
+                                        (["HOT_DRINKS", "ICE_COFFEE", "FRAPPE", "MOJITO", "SMOOTHIE", "PANCAKE", "EXTRA"].includes(item.category)
+                                          ? "PREPARED_BEVERAGE"
+                                          : "READY_PASTRY"),
                                       image: item.image || "",
                                       isAvailable: item.isAvailable,
                                       description: item.description || "",
@@ -3944,7 +3988,16 @@ export default function AdminDashboardPage() {
                   <label className="block text-slate-400 mb-1">التصنيف *</label>
                   <select
                     value={menuItemForm.category}
-                    onChange={(e) => setMenuItemForm({ ...menuItemForm, category: e.target.value })}
+                    onChange={(e) => {
+                      const newCat = e.target.value;
+                      const isPrep = ["HOT_DRINKS", "ICE_COFFEE", "FRAPPE", "MOJITO", "SMOOTHIE", "PANCAKE", "EXTRA"].includes(newCat);
+                      setMenuItemForm({
+                        ...menuItemForm,
+                        category: newCat,
+                        itemType: isPrep ? "PREPARED_BEVERAGE" : "READY_PASTRY",
+                        stockQty: isPrep ? "0" : (menuItemForm.stockQty || "10"),
+                      });
+                    }}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500"
                   >
                     <optgroup label="☕ سول ميت كافيه">
@@ -3965,7 +4018,7 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="block text-slate-400 mb-1">سعر البيع (ج.م) *</label>
                   <input
@@ -3989,15 +4042,25 @@ export default function AdminDashboardPage() {
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-500"
                   />
                 </div>
-                <div>
-                  <label className="block text-slate-400 mb-1">المخزون الحالي</label>
-                  <input
-                    type="number"
-                    value={menuItemForm.stockQty}
-                    onChange={(e) => setMenuItemForm({ ...menuItemForm, stockQty: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-500"
-                  />
-                </div>
+                {menuItemForm.itemType === "PREPARED_BEVERAGE" ||
+                ["HOT_DRINKS", "ICE_COFFEE", "FRAPPE", "MOJITO", "SMOOTHIE", "PANCAKE", "EXTRA"].includes(menuItemForm.category) ? (
+                  <div className="flex flex-col justify-end">
+                    <div className="py-2.5 px-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-300 font-bold flex items-center gap-1.5">
+                      <Coffee className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span>يخصم من ريسيبي خامات البار 🧪</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-slate-400 mb-1">المخزون الفعلي (بضاعة جاهزة)</label>
+                    <input
+                      type="number"
+                      value={menuItemForm.stockQty}
+                      onChange={(e) => setMenuItemForm({ ...menuItemForm, stockQty: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-500"
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Image with Direct ImgBB Upload */}

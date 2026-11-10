@@ -93,7 +93,7 @@ export async function POST(req: Request) {
         image: image?.trim() || null,
         itemType: itemType || "PREPARED_BEVERAGE",
         unitType: unitType || "PIECE",
-        stockQty: Number(stockQty) || 100,
+        stockQty: (itemType || "PREPARED_BEVERAGE") === "PREPARED_BEVERAGE" ? 0 : Number(stockQty) || 0,
         minStockAlert: Number(minStockAlert) || 10,
         isAvailable: true,
       },
