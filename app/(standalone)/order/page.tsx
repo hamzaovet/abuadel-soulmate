@@ -1227,12 +1227,9 @@ function TableOrderContent() {
             </div>
 
             <div className="space-y-2">
-              <span className="text-[10px] font-black tracking-wider bg-emerald-500/20 text-emerald-300 py-1 px-3 rounded-full border border-emerald-500/30">
-                الباريستا انتهى من التحضير ☕
-              </span>
-              <h3 className="text-xl font-black text-white">طلبك جاهز الآن يا فندم!</h3>
+              <h3 className="text-xl font-black text-white">🎉 يا هلا بيك! طلبك جاهز الآن ☕🍰</h3>
               <p className="text-xs text-slate-300 leading-relaxed">
-                الباريستا انتهى من تحضير مشروبك بكل حب وإتقان. الكابتن في طريقه إليك لتسليمه على ترابيزتك بكل سرور. بالهنا والشفا! ❤️
+                تفضل بالتوجه لاستلام طلبك من البار، بالهنا والشفا ❤️
               </p>
             </div>
 

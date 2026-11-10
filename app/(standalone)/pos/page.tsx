@@ -68,6 +68,7 @@ export default function PosTerminalPage() {
   const [orderType, setOrderType] = useState<"DINE_IN" | "TAKEAWAY" | "DELIVERY">("DINE_IN");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
+  const [deliveryAddress, setDeliveryAddress] = useState("");
   const [discountAmount, setDiscountAmount] = useState<number>(0);
   const [tipAmount, setTipAmount] = useState<number>(0);
   const [paymentMethod, setPaymentMethod] = useState<"CASH" | "CARD" | "INSTAPAY" | "VODAFONE_CASH">("CASH");
@@ -262,11 +263,12 @@ export default function PosTerminalPage() {
 
   // Financial calculations
   const rawSubtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+  const deliveryFee = orderType === "DELIVERY" ? (settings?.deliveryFee || 20) : 0;
   const servicePercent = settings?.isServiceChargeEnabled ? settings.serviceChargePercent || 12 : 0;
   const taxPercent = settings?.isTaxEnabled ? settings.taxPercent || 14 : 0;
   const calculatedService = (rawSubtotal * servicePercent) / 100;
   const calculatedTax = (rawSubtotal * taxPercent) / 100;
-  const calculatedFinal = Math.max(0, rawSubtotal + calculatedService + calculatedTax - discountAmount + tipAmount);
+  const calculatedFinal = Math.max(0, rawSubtotal + deliveryFee + calculatedService + calculatedTax - discountAmount + tipAmount);
 
   // Settle and Print Receipt
   const handleSettleAndPrint = async () => {
@@ -315,8 +317,10 @@ export default function PosTerminalPage() {
             tableId: selectedTable?.id || null,
             tableNumber: selectedTable?.tableNumber || null,
             items: cart,
-            customerName: customerName.trim() || (selectedTable ? `ترابيزة ${selectedTable.tableNumber}` : "عميل كاشير"),
+            customerName: customerName.trim() || (selectedTable ? `ترابيزة ${selectedTable.tableNumber}` : orderType === "DELIVERY" ? "عميل دليفري" : "عميل كاشير"),
             customerPhone: customerPhone.trim() || null,
+            deliveryAddress: orderType === "DELIVERY" ? deliveryAddress.trim() : null,
+            deliveryPhone: orderType === "DELIVERY" ? customerPhone.trim() : null,
             cashierName: currentUser?.name || "كاشير المنظومة",
             discountAmount,
             tipAmount,
@@ -633,47 +637,27 @@ export default function PosTerminalPage() {
       <div className="flex-1 min-h-0 h-[calc(100vh-58px)] max-h-[calc(100vh-58px)] grid grid-cols-1 lg:grid-cols-12 gap-3 p-3 overflow-hidden no-print">
         {/* COLUMN 1: MENU CATALOG & SEARCH (8 Cols - Wide & Spacious!) */}
         <div className="lg:col-span-8 h-full max-h-full bg-[#110c14] border border-white/10 rounded-2xl p-3.5 flex flex-col overflow-hidden shadow-xl">
-          {/* Search Bar & Fast Table Selector Pill */}
+          {/* Search Bar & Categories Header */}
           <div className="shrink-0 space-y-2 pb-2">
-            <div className="flex items-center gap-2">
-              <div className="relative flex-1">
-                <Search className="w-4 h-4 absolute right-3 top-2.5 text-slate-400" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="ابحث بالاسم، فنجان قهوة، تورتة، موهيتو، كرواسون..."
-                  className="w-full py-2 pr-9 pl-3 rounded-xl bg-black/60 border border-white/10 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-amber-400 font-bold"
-                />
-              </div>
-
-              {/* Quick Table Switcher Button in Header */}
-              {isSoulmate && (
-                <button
-                  type="button"
-                  onClick={() => setShowTableModal(true)}
-                  className={`py-2 px-3 rounded-xl border flex items-center gap-1.5 text-xs font-black transition cursor-pointer shrink-0 shadow-sm ${
-                    selectedTable
-                      ? selectedTable.status === "BILL_REQUESTED"
-                        ? "bg-purple-600/30 border-purple-500 text-purple-200 animate-pulse"
-                        : "bg-amber-500/20 border-amber-500/50 text-amber-300"
-                      : "bg-slate-800/80 border-slate-700 text-slate-300 hover:border-amber-500"
-                  }`}
-                >
-                  <LayoutGrid className="w-3.5 h-3.5 text-amber-400" />
-                  <span>
-                    {selectedTable ? `ترابيزة ${selectedTable.tableNumber}` : "اختر ترابيزة (1 - 12) 🪑"}
-                  </span>
-                </button>
-              )}
+            <div className="relative">
+              <Search className="w-4 h-4 absolute right-3 top-2.5 text-slate-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="ابحث بالاسم، فنجان قهوة، تورتة، موهيتو، كرواسون..."
+                className="w-full py-2 pr-9 pl-3 rounded-xl bg-black/60 border border-white/10 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-amber-400 font-bold"
+              />
             </div>
 
-            {/* Category Filter Pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs font-bold">
+            {/* Category Filter Pills - Flex Wrap so ALL categories are 100% visible on screen! */}
+            <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-xs font-bold">
               <button
                 onClick={() => setActiveCategory("ALL")}
                 className={`py-1.5 px-3 rounded-xl transition whitespace-nowrap cursor-pointer ${
-                  activeCategory === "ALL" ? "bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/20" : "bg-white/5 text-slate-400 hover:text-white"
+                  activeCategory === "ALL"
+                    ? "bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/20"
+                    : "bg-white/5 text-slate-400 hover:text-white"
                 }`}
               >
                 الكل ✨
@@ -763,74 +747,163 @@ export default function PosTerminalPage() {
               )}
             </div>
 
-            {/* Prominent Table / Order Type Trigger Bar */}
-            <div className="flex items-center gap-1.5">
+            {/* 3-WAY ORDER TYPE SEGMENTED TABS: صالة | تيك أواي | دليفري */}
+            <div className="grid grid-cols-3 gap-1 p-1 bg-black/60 border border-white/10 rounded-2xl text-xs font-black">
+              {/* Option 1: DINE_IN (صالة) */}
               <button
                 type="button"
-                onClick={() => setShowTableModal(true)}
-                className={`flex-1 py-1.5 px-2.5 rounded-xl border flex items-center justify-between text-xs font-black transition cursor-pointer ${
-                  selectedTable
-                    ? selectedTable.status === "BILL_REQUESTED"
-                      ? "bg-purple-600/30 border-purple-500 text-purple-200 animate-pulse"
-                      : "bg-amber-500/20 border-amber-500/50 text-amber-300 shadow-sm"
-                    : orderType === "TAKEAWAY"
-                    ? "bg-rose-500/20 border-rose-500/50 text-rose-300"
-                    : orderType === "DELIVERY"
-                    ? "bg-sky-500/20 border-sky-500/50 text-sky-300"
-                    : "bg-slate-800/80 border-slate-700 text-slate-300 hover:border-amber-500"
+                onClick={() => {
+                  setOrderType("DINE_IN");
+                  setShowTableModal(true);
+                }}
+                className={`py-2 px-1 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                  orderType === "DINE_IN"
+                    ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-black"
+                    : "text-slate-400 hover:text-white"
                 }`}
               >
-                <div className="flex items-center gap-1.5">
-                  <LayoutGrid className="w-3.5 h-3.5 text-amber-400" />
-                  <span>
-                    {selectedTable
-                      ? `ترابيزة رقم [ ${selectedTable.tableNumber} ]`
-                      : orderType === "TAKEAWAY"
-                      ? "طلب تيك أواي سفري 🛍️"
-                      : orderType === "DELIVERY"
-                      ? "طلب دليفري للمنزل 🛵"
-                      : "اختر الترابيزة (1 - 12) 🪑"}
-                  </span>
-                </div>
-                <span className="text-[10px] text-amber-400 bg-black/40 py-0.5 px-1.5 rounded-md">
-                  تغيير ▾
+                <span>🪑</span>
+                <span className="truncate">
+                  {selectedTable ? `ترابيزة ${selectedTable.tableNumber}` : "صالة"}
                 </span>
               </button>
 
-              {selectedTable && (
-                <button
-                  onClick={() => {
-                    setSelectedTable(null);
-                    setCart([]);
-                  }}
-                  className="p-2 rounded-xl bg-white/5 hover:bg-rose-500/20 hover:text-rose-300 text-slate-400 transition cursor-pointer"
-                  title="إلغاء الترابيزة"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-          </div>
+              {/* Option 2: TAKEAWAY (تيك أواي) */}
+              <button
+                type="button"
+                onClick={() => {
+                  setOrderType("TAKEAWAY");
+                  setSelectedTable(null);
+                  showToast("info", "تم تفعيل وضع التيك أواي السفري 🛍️");
+                }}
+                className={`py-2 px-1 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                  orderType === "TAKEAWAY"
+                    ? "bg-rose-500 text-white shadow-md shadow-rose-500/20 font-black"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                <span>🛍️</span>
+                <span>تيك أواي</span>
+              </button>
 
-          {/* Delivery Fields (if Delivery) */}
-          {orderType === "DELIVERY" && (
-            <div className="shrink-0 grid grid-cols-2 gap-1.5 py-1.5 border-b border-white/5 text-[11px]">
-              <input
-                type="text"
-                placeholder="اسم العميل..."
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                className="py-1 px-2 rounded-lg bg-black/60 border border-white/10 text-white text-xs outline-none"
-              />
-              <input
-                type="tel"
-                placeholder="رقم الهاتف..."
-                value={customerPhone}
-                onChange={(e) => setCustomerPhone(e.target.value)}
-                className="py-1 px-2 rounded-lg bg-black/60 border border-white/10 text-white text-xs outline-none"
-              />
+              {/* Option 3: DELIVERY (دليفري) */}
+              <button
+                type="button"
+                onClick={() => {
+                  setOrderType("DELIVERY");
+                  setSelectedTable(null);
+                  showToast("info", "تم تفعيل وضع التوصيل والدليفري 🛵");
+                }}
+                className={`py-2 px-1 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                  orderType === "DELIVERY"
+                    ? "bg-sky-500 text-white shadow-md shadow-sky-500/20 font-black"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                <span>🛵</span>
+                <span>دليفري</span>
+              </button>
             </div>
-          )}
+
+            {/* Contextual Sub-bar based on Selected Order Type */}
+            {orderType === "DINE_IN" ? (
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setShowTableModal(true)}
+                  className={`flex-1 py-1.5 px-3 rounded-xl border flex items-center justify-between text-xs font-black transition cursor-pointer ${
+                    selectedTable
+                      ? selectedTable.status === "BILL_REQUESTED"
+                        ? "bg-purple-600/30 border-purple-500 text-purple-200 animate-pulse"
+                        : "bg-amber-500/20 border-amber-500/50 text-amber-300 shadow-sm"
+                      : "bg-slate-800/80 border-slate-700 text-slate-300 hover:border-amber-500"
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5">
+                    <LayoutGrid className="w-3.5 h-3.5 text-amber-400" />
+                    <span>
+                      {selectedTable
+                        ? `ترابيزة صالة رقم [ ${selectedTable.tableNumber} ]`
+                        : "اختر ترابيزة من الصالة (1 - 12) 🪑"}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-amber-400 bg-black/40 py-0.5 px-2 rounded-md">
+                    تغيير ▾
+                  </span>
+                </button>
+                {selectedTable && (
+                  <button
+                    onClick={() => {
+                      setSelectedTable(null);
+                      setCart([]);
+                    }}
+                    className="p-1.5 rounded-xl bg-white/5 hover:bg-rose-500/20 text-slate-400 hover:text-rose-300 transition cursor-pointer"
+                    title="إلغاء الترابيزة"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            ) : orderType === "TAKEAWAY" ? (
+              <div className="py-1.5 px-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-bold flex items-center justify-between">
+                <span className="flex items-center gap-1.5">
+                  <span>🛍️</span>
+                  <span>طلب سفري تيك أواي • استلام مباشر</span>
+                </span>
+                <span className="text-[10px] font-mono bg-rose-500/20 px-2 py-0.5 rounded-full">
+                  استلام كاونتر
+                </span>
+              </div>
+            ) : (
+              /* DELIVERY MODE: Shows Delivery badge + Customer Address & Phone Inputs */
+              <div className="space-y-1.5 pt-0.5">
+                <div className="py-1 px-2.5 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-300 text-xs font-bold flex items-center justify-between">
+                  <span className="flex items-center gap-1">
+                    <span>🛵</span>
+                    <span>طلب توصيل دليفري للمنزل</span>
+                  </span>
+                  <span className="text-[10px] font-black font-mono bg-sky-500/20 px-2 py-0.5 rounded-full text-sky-200">
+                    خدمة توصيل: +{settings?.deliveryFee || 20} ج.م
+                  </span>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-black/60 border border-sky-500/30 space-y-1.5 text-xs">
+                  <div className="grid grid-cols-2 gap-1.5">
+                    <div>
+                      <label className="text-[10px] text-slate-400 block mb-0.5 font-bold">اسم العميل:</label>
+                      <input
+                        type="text"
+                        placeholder="أ / أحمد..."
+                        value={customerName}
+                        onChange={(e) => setCustomerName(e.target.value)}
+                        className="w-full py-1.5 px-2 rounded-lg bg-black/60 border border-white/10 text-white text-xs outline-none focus:border-sky-400 font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-slate-400 block mb-0.5 font-bold">رقم الهاتف:</label>
+                      <input
+                        type="tel"
+                        placeholder="010XXXXXXXX"
+                        value={customerPhone}
+                        onChange={(e) => setCustomerPhone(e.target.value)}
+                        className="w-full py-1.5 px-2 rounded-lg bg-black/60 border border-white/10 text-white text-xs font-mono outline-none focus:border-sky-400 font-bold"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-400 block mb-0.5 font-bold">عنوان التوصيل بالتفصيل *:</label>
+                    <input
+                      type="text"
+                      placeholder="الشارع، العمارة، رقم الشقة أو علامة مميزة..."
+                      value={deliveryAddress}
+                      onChange={(e) => setDeliveryAddress(e.target.value)}
+                      className="w-full py-1.5 px-2 rounded-lg bg-black/60 border border-white/10 text-white text-xs outline-none focus:border-sky-400 font-bold"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Cart Items List: SCROLLABLE INDEPENDENTLY */}
           <div className="flex-1 overflow-y-auto min-h-0 space-y-1.5 pr-1 py-1">
