@@ -92,7 +92,7 @@ export default function StaffLoginPage() {
               <Sparkles className="w-4 h-4 text-amber-400" />
             </h1>
             <p className="text-xs text-slate-400 pt-0.5">
-              حلواني أبو عادل المستقل &amp; سول ميت كافيه VIP
+              حلواني أبو عادل &amp; سول ميت كافيه VIP
             </p>
           </div>
         </div>

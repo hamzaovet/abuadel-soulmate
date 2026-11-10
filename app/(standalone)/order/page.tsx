@@ -333,7 +333,7 @@ function TableOrderContent() {
       return;
     }
 
-    if (orderMode === "DINE_IN" && !tableNumber.trim()) {
+    if (activeBrandTab === "SOULMATE" && orderMode === "DINE_IN" && !tableNumber.trim()) {
       setShowTableModal(true);
       showToast("error", "برجاء تأكيد رقم الترابيزة أولاً ليتمكن الويتر من توصيل طلبك");
       return;
@@ -347,8 +347,13 @@ function TableOrderContent() {
     try {
       setSubmittingOrder(true);
 
+      const isAbuAdel = activeBrandTab === "ABU_ADEL";
+      const actualOrderType = isAbuAdel
+        ? orderMode === "DELIVERY" ? "DELIVERY" : "TAKEAWAY"
+        : orderMode;
+
       const targetOutlet =
-        activeBrandTab === "SOULMATE"
+        !isAbuAdel
           ? outlets.find((o) => o.code === "SOULMATE_CAFE")?.id || outlets[0]?.id
           : outlets.find((o) => o.code === "ABU_ADEL_PATISSERIE")?.id || outlets[0]?.id;
 
@@ -359,11 +364,11 @@ function TableOrderContent() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           outletId: targetOutlet,
-          orderType: orderMode,
-          tableId: orderMode === "DINE_IN" ? matchedTable?.id : null,
-          tableNumber: orderMode === "DINE_IN" ? tableNumber : null,
+          orderType: actualOrderType,
+          tableId: !isAbuAdel && orderMode === "DINE_IN" ? matchedTable?.id : null,
+          tableNumber: !isAbuAdel && orderMode === "DINE_IN" ? tableNumber : null,
           items: cart,
-          customerName: customerName.trim() || "عميل راقٍ",
+          customerName: customerName.trim() || (isAbuAdel ? "عميل حلواني أبو عادل" : "عميل كافيه سول ميت"),
           customerPhone: customerPhone.trim() || null,
           deliveryAddress: orderMode === "DELIVERY" ? deliveryAddress.trim() : null,
           deliveryPhone: orderMode === "DELIVERY" ? customerPhone.trim() : null,
@@ -519,27 +524,41 @@ function TableOrderContent() {
                 <h1 className="text-sm font-black text-white">
                   {activeBrandTab === "SOULMATE"
                     ? "سول ميت كافيه VIP"
-                    : "حلواني أبو عادل المستقل"}
+                    : "حلواني أبو عادل"}
                 </h1>
               </div>
 
-              {/* Order Mode & Table Indicator (No confusing table dropdown!) */}
+              {/* Order Mode & Table Indicator */}
               <div className="flex items-center gap-2 mt-0.5">
-                {orderMode === "DINE_IN" ? (
-                  <button
-                    onClick={() => setShowTableModal(true)}
-                    className="flex items-center gap-1 text-[11px] font-bold text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/30 transition"
-                  >
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span>
-                      ترابيزة: {tableNumber ? tableNumber : "انقر لتحديد الترابيزة"} ✏️
+                {activeBrandTab === "SOULMATE" ? (
+                  orderMode === "DINE_IN" ? (
+                    <button
+                      onClick={() => setShowTableModal(true)}
+                      className="flex items-center gap-1 text-[11px] font-bold text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/30 transition"
+                    >
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                      <span>
+                        ترابيزة: {tableNumber ? tableNumber : "انقر لتحديد الترابيزة"} ✏️
+                      </span>
+                    </button>
+                  ) : (
+                    <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                      <Truck className="w-3 h-3" />
+                      <span>طلب دليفري للمنزل 🛵</span>
                     </span>
-                  </button>
+                  )
                 ) : (
-                  <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
-                    <Truck className="w-3 h-3" />
-                    <span>طلب دليفري للمنزل 🛵</span>
-                  </span>
+                  /* Abu Adel Patisserie - Strictly Direct Pickup or Delivery */
+                  orderMode === "DELIVERY" ? (
+                    <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                      <Truck className="w-3 h-3" />
+                      <span>طلب دليفري للمنزل 🛵</span>
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                      <span>🛍️ استلام فوري من المحل</span>
+                    </span>
+                  )
                 )}
               </div>
             </div>
@@ -553,11 +572,11 @@ function TableOrderContent() {
                 onClick={() => setOrderMode("DINE_IN")}
                 className={`px-2.5 py-1 rounded-lg transition ${
                   orderMode === "DINE_IN"
-                    ? "bg-amber-500 text-black shadow font-black"
+                    ? activeBrandTab === "SOULMATE" ? "bg-amber-500 text-black shadow font-black" : "bg-emerald-600 text-white shadow font-black"
                     : "text-slate-400 hover:text-white"
                 }`}
               >
-                صالة
+                {activeBrandTab === "SOULMATE" ? "صالة" : "استلام من المحل"}
               </button>
               <button
                 onClick={() => setOrderMode("DELIVERY")}
@@ -656,29 +675,38 @@ function TableOrderContent() {
 
             <div className="flex items-start gap-3">
               <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-2xl flex-shrink-0 shadow">
-                🤵🏻‍♂️
+                {activeBrandTab === "SOULMATE" ? "🤵🏻‍♂️" : "🍰"}
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <h3 className="text-sm font-black text-amber-400">
-                    كابتن زياد (الويتر الذكي الخاص بك)
+                    {activeBrandTab === "SOULMATE"
+                      ? "كابتن زياد (الويتر الذكي الخاص بك)"
+                      : "حلواني أبو عادل • قسم الطلبات السريعة"}
                   </h3>
                   <span className="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-bold">
                     جاهز لخدمتك الآن
                   </span>
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  يا أهلاً ومرحباً بك في <span className="text-amber-400 font-bold">سول ميت كافيه VIP</span>! شرفتنا ونورت مكانك.
-                  اطلب مشروبك المفضل أو حلوياتك، وهيصل طلبك مباشرة لشاشة الباريستا بدون أي انتظار. ولو عندك أي ملحوظة (سكر برة أو ماء إضافي) تواصل معايا في الشات المباشر فوراً! ☕✨
+                  {activeBrandTab === "SOULMATE" ? (
+                    <>
+                      يا أهلاً ومرحباً بك في <span className="text-amber-400 font-bold">سول ميت كافيه VIP</span>! شرفتنا ونورت مكانك.
+                      اطلب مشروبك المفضل أو حلوياتك، وهيصل طلبك مباشرة لشاشة الباريستا بدون أي انتظار. ولو عندك أي ملحوظة (سكر برة أو ماء إضافي) تواصل معايا في الشات المباشر فوراً! ☕✨
+                    </>
+                  ) : (
+                    <>
+                      أهلاً بك في <span className="text-emerald-400 font-bold">حلواني أبو عادل</span>! اختر من أفخر الحلويات الشرقية والغربية والتورت والجاتوهات والكعك الفاخر، واستلم طلبك فوراً من الفرع أو اطلبه دليفري لباب بيتك! 🍰🛵
+                    </>
+                  )}
                 </p>
               </div>
             </div>
           </div>
         )}
 
-        
-        {/* ACTIVE OPEN TABLE CHECK WIDGET (الشيك المفتوح لطاولتك) */}
-        {orderMode === "DINE_IN" && activeTableOrder && (
+        {/* ACTIVE OPEN TABLE CHECK WIDGET (الشيك المفتوح لطاولتك) - Strictly Soulmate Dine-in */}
+        {activeBrandTab === "SOULMATE" && orderMode === "DINE_IN" && activeTableOrder && (
           <div className="bg-gradient-to-br from-[#161019] via-[#100b13] to-black border-2 border-amber-500/40 rounded-2xl p-4 shadow-xl space-y-3">
             <div className="flex items-center justify-between border-b border-white/10 pb-2">
               <div className="flex items-center gap-2">
@@ -750,8 +778,8 @@ function TableOrderContent() {
           </div>
         )}
 
-        {/* PROMINENT TABLE CONFIRMATION CARD (For Dine-in) */}
-        {orderMode === "DINE_IN" && (
+        {/* PROMINENT TABLE CONFIRMATION CARD (For Dine-in Soulmate Only) */}
+        {activeBrandTab === "SOULMATE" && orderMode === "DINE_IN" && (
           <div className="bg-slate-900/90 border border-amber-500/30 rounded-2xl p-4 flex items-center justify-between gap-4 shadow-lg flex-wrap">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-amber-500 text-black flex items-center justify-center font-black text-base shadow">

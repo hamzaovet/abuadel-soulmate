@@ -42,8 +42,38 @@ async function depleteInventory(items: any[], orderNumber: string) {
       }
     }
 
-    // 2. Ready-Made Pastry (Abu Adel sweets / Cakes) -> Deduct stockQty directly & Log Sale Movement
-    if (it.itemType === "READY_PASTRY" && it.menuItemId) {
+    // 2. Custom Mixed Sweet Box (علبة حلويات مشكل بالوزن حسب ورقة الميزان)
+    if (it.isCustomBox && it.boxComponents && Array.isArray(it.boxComponents)) {
+      for (const comp of it.boxComponents) {
+        const weightKg = Number(comp.weightKg) || (Number(comp.grams) / 1000) || 0.25;
+        if (comp.id && !comp.id.startsWith("custom-")) {
+          try {
+            await prisma.menuItem.update({
+              where: { id: comp.id },
+              data: { stockQty: { decrement: weightKg } },
+            });
+            await prisma.productMovement.create({
+              data: {
+                menuItemId: comp.id,
+                type: "SALE",
+                quantity: -weightKg,
+                unitCost: comp.pricePerKg || 0,
+                totalCost: comp.subtotal || 0,
+                orderNumber,
+                recordedBy: "كاشير ونظام مبيعات حلواني أبو عادل",
+                notes: `مبيعات علبة مشكل #${orderNumber} - صنف: ${comp.nameAr || "حلويات"} (وزن: ${comp.grams || (weightKg * 1000)} جم)`,
+              },
+            });
+          } catch (e) {
+            console.error("Failed to deduct custom box component stock:", e);
+          }
+        }
+      }
+      continue;
+    }
+
+    // 3. Ready-Made Pastry (Abu Adel sweets / Cakes) -> Deduct stockQty directly & Log Sale Movement
+    if (it.itemType === "READY_PASTRY" && it.menuItemId && !it.menuItemId.startsWith("custom-")) {
       await prisma.menuItem.update({
         where: { id: it.menuItemId },
         data: { stockQty: { decrement: qty } },

@@ -153,7 +153,7 @@ export default function CardQRModal({
             </div>
 
             <h2 className="text-xl sm:text-2xl font-black text-amber-400 tracking-wide mt-2">
-              سول ميت كافيه VIP & حلواني أبو عادل المستقل
+              سول ميت كافيه VIP & حلواني أبو عادل
             </h2>
             <p className="text-xs text-amber-200/80 font-medium">
               القهوة المختصة والضيافة الراقية • أشهى الحلويات الشرقية والتورت بالسمن البلدي

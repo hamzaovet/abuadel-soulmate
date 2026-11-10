@@ -1209,7 +1209,7 @@ export default function AdminDashboardPage() {
           جاري تحميل لوحة الإدارة الفاخرة...
         </h2>
         <p className="text-slate-400 text-sm mt-1">
-          سول ميت كافيه VIP & حلواني أبو عادل المستقل
+          سول ميت كافيه VIP & حلواني أبو عادل
         </p>
       </div>
     );
@@ -1235,15 +1235,15 @@ export default function AdminDashboardPage() {
                     ? "👑 المالك العام (Maestro)"
                     : isUserSoulmate
                     ? "☕ مدير فرع سول ميت كافيه VIP"
-                    : "🍰 مدير فرع حلواني أبو عادل المستقل"}
+                    : "🍰 مدير فرع حلواني أبو عادل"}
                 </span>
               </div>
               <p className="text-xs text-slate-400">
                 {currentUser?.role === "owner"
-                  ? "مجموعة حلواني أبو عادل المستقل & سول ميت كافيه VIP"
+                  ? "مجموعة حلواني أبو عادل & سول ميت كافيه VIP"
                   : isUserSoulmate
                   ? "إدارة وتشغيل سول ميت كافيه VIP (حدايق القبة)"
-                  : "إدارة وتشغيل حلواني أبو عادل المستقل (أصل الحلويات)"}
+                  : "إدارة وتشغيل حلواني أبو عادل (أصل الحلويات)"}
               </p>
             </div>
           </div>
@@ -1261,7 +1261,7 @@ export default function AdminDashboardPage() {
                   <option value="ALL">🌟 كافة الفروع (إدارة مركزية شاملة)</option>
                   {outlets.map((o) => (
                     <option key={o.id} value={o.id}>
-                      {o.code === "SOULMATE_CAFE" ? "☕ سول ميت كافيه VIP" : "🍰 حلواني أبو عادل المستقل"}
+                      {o.code === "SOULMATE_CAFE" ? "☕ سول ميت كافيه VIP" : "🍰 حلواني أبو عادل"}
                     </option>
                   ))}
                 </select>
@@ -1276,7 +1276,7 @@ export default function AdminDashboardPage() {
                 ) : (
                   <>
                     <Cake className="w-4 h-4 text-rose-400" />
-                    <span>فرع حلواني أبو عادل المستقل (تشغيل وإدارة منفصلة)</span>
+                    <span>فرع حلواني أبو عادل (تشغيل وإدارة منفصلة)</span>
                   </>
                 )}
               </div>
@@ -2654,7 +2654,7 @@ export default function AdminDashboardPage() {
                   <Cake className="w-5 h-5 text-rose-400 flex-shrink-0 mt-0.5" />
                   <div className="text-xs">
                     <h4 className="font-bold text-rose-300 mb-1">
-                      مخزن أصناف حلواني أبو عادل المستقل (Finished Goods ERP Ledger)
+                      مخزن أصناف حلواني أبو عادل (Finished Goods ERP Ledger)
                     </h4>
                     <p className="text-slate-300 leading-relaxed">
                       نظام حركة وجرد متكامل لكل صنف: رصيد بداية المدة، إجمالي الوارد من معمل الحلواني، المسحوب والمباع عبر الكاشير، والرصيد الدفتري والفعلي.

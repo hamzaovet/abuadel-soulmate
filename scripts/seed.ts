@@ -73,7 +73,7 @@ async function main() {
   const abuAdelOutlet = await prisma.outlet.upsert({
     where: { code: "ABU_ADEL_PATISSERIE" },
     update: {
-      name: "حلواني أبو عادل المستقل (Abu Adel Patisserie)",
+      name: "حلواني أبو عادل (Abu Adel Patisserie)",
       type: "PASTRY_SHOP",
       address: "شارع ترعة الجبل، حدائق القبة، القاهرة (الخط الساخن: 15992)",
       phone: "15992",
@@ -83,7 +83,7 @@ async function main() {
     },
     create: {
       code: "ABU_ADEL_PATISSERIE",
-      name: "حلواني أبو عادل المستقل (Abu Adel Patisserie)",
+      name: "حلواني أبو عادل (Abu Adel Patisserie)",
       type: "PASTRY_SHOP",
       address: "شارع ترعة الجبل، حدائق القبة، القاهرة (الخط الساخن: 15992)",
       phone: "15992",

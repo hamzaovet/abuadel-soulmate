@@ -166,7 +166,7 @@ export default function DualBrandLandingPage() {
             <span>
               {activeBrand === "SOULMATE"
                 ? "☕ مرحباً بك في سول ميت كافيه VIP - قهوة مختصة وأجواء استثنائية مع خدمة الطلب من الترابيزة"
-                : "🍰 حلواني أبو عادل المستقل - حلي يومك مع المذاق المصري الأصيل وتوصيل دليفري (حجوزات وطلبات: 01146862114)"}
+                : "🍰 حلواني أبو عادل - حلي يومك مع المذاق المصري الأصيل وتوصيل دليفري (حجوزات وطلبات: 01146862114)"}
             </span>
           </div>
 
@@ -204,7 +204,7 @@ export default function DualBrandLandingPage() {
               <h1 className="text-base font-black text-white">
                 {activeBrand === "SOULMATE"
                   ? "سول ميت كافيه VIP"
-                  : "حلواني أبو عادل المستقل"}
+                  : "حلواني أبو عادل"}
               </h1>
               <p className="text-[11px] text-slate-400">
                 {activeBrand === "SOULMATE"
@@ -675,7 +675,7 @@ export default function DualBrandLandingPage() {
             </div>
             <div>
               <div className="font-bold text-white">
-                منظومة حلواني أبو عادل المستقل & سول ميت كافيه VIP
+                منظومة حلواني أبو عادل & سول ميت كافيه VIP
               </div>
               <div className="text-[10px] text-slate-400">
                 نظام إدارة الكافيهات والمطاعم السحابي الذكي (Table POS + KDS + Loyalty + Delivery)
@@ -706,7 +706,7 @@ export default function DualBrandLandingPage() {
         <div className="border-t border-slate-900 bg-black/80 py-5 px-4 text-center space-y-1.5 text-xs">
           <p className="text-slate-400 font-bold">
             جميع الحقوق محفوظة © {new Date().getFullYear()} لـ{" "}
-            <span className="text-amber-400 font-black">مجموعة حلواني أبو عادل المستقل & سول ميت كافيه VIP</span>
+            <span className="text-amber-400 font-black">مجموعة حلواني أبو عادل & سول ميت كافيه VIP</span>
           </p>
 
           <p className="text-[11px] text-amber-300/90 font-medium">

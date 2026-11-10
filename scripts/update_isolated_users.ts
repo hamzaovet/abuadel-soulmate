@@ -45,7 +45,7 @@ async function main() {
     // 3. Abu Adel Manager (Strictly Abu Adel Patisserie)
     {
       username: "manager-abuadel",
-      name: "حاج / سامي عادل (مدير حلواني أبو عادل المستقل)",
+      name: "حاج / سامي عادل (مدير حلواني أبو عادل)",
       passwordHash: "abuadel@2026",
       pin: "468211",
       role: "branch_manager",

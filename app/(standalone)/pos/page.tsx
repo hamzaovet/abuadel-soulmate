@@ -40,6 +40,7 @@ import {
   Home,
   Crown,
   Shield,
+  Scale,
 } from "lucide-react";
 
 export default function PosTerminalPage() {
@@ -96,6 +97,92 @@ export default function PosTerminalPage() {
   const [selectedShiftType, setSelectedShiftType] = useState<"SHIFT_1" | "SHIFT_2">("SHIFT_1");
   const [lastDailyClose, setLastDailyClose] = useState<any>(null);
   const [closingDaily, setClosingDaily] = useState<boolean>(false);
+
+  // Custom Weighed Sweet Box Builder (تكوين علبة مشكل بالوزن - ورقة الميزان)
+  const [showBoxBuilderModal, setShowBoxBuilderModal] = useState<boolean>(false);
+  const [boxName, setBoxName] = useState<string>("علبة مشكل رقم 1");
+  const [customBoxesCount, setCustomBoxesCount] = useState<number>(0);
+  const [boxComponents, setBoxComponents] = useState<Array<{ id: string; nameAr: string; pricePerKg: number; grams: number; subtotal: number }>>([]);
+  const [boxSearchQuery, setBoxSearchQuery] = useState<string>("");
+  const [selectedBoxItem, setSelectedBoxItem] = useState<any>(null);
+  const [tempBoxGrams, setTempBoxGrams] = useState<number>(250);
+
+  const handleOpenBoxBuilder = () => {
+    setBoxName(`علبة مشكل رقم ${customBoxesCount + 1}`);
+    setBoxComponents([]);
+    setSelectedBoxItem(null);
+    setTempBoxGrams(250);
+    setBoxSearchQuery("");
+    setShowBoxBuilderModal(true);
+  };
+
+  const handleAddBoxComponent = () => {
+    if (!selectedBoxItem) {
+      showToast("error", "اختر صنفاً من الحلويات أولاً");
+      return;
+    }
+    if (!tempBoxGrams || tempBoxGrams <= 0) {
+      showToast("error", "أدخل وزناً صحيحاً بالجرام");
+      return;
+    }
+
+    const pricePerKg = Number(selectedBoxItem.price) || 0;
+    const subtotal = Math.round((tempBoxGrams / 1000) * pricePerKg * 100) / 100;
+
+    setBoxComponents((prev) => [
+      ...prev,
+      {
+        id: selectedBoxItem.id,
+        nameAr: selectedBoxItem.nameAr,
+        pricePerKg,
+        grams: Number(tempBoxGrams),
+        subtotal,
+      },
+    ]);
+
+    showToast("success", `تمت إضافة ${tempBoxGrams} جم ${selectedBoxItem.nameAr} للعلبة (+${subtotal} ج) 👍`);
+    setSelectedBoxItem(null);
+    setTempBoxGrams(250);
+  };
+
+  const handleRemoveBoxComponent = (idx: number) => {
+    setBoxComponents((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleConfirmAddBoxToCart = () => {
+    if (boxComponents.length === 0) {
+      showToast("error", "العلبة فارغة! أضف صنفاً واحداً على الأقل بالوزن");
+      return;
+    }
+
+    const totalWeightGrams = boxComponents.reduce((sum, c) => sum + c.grams, 0);
+    const totalBoxPrice = boxComponents.reduce((sum, c) => sum + c.subtotal, 0);
+
+    const newBoxCartItem = {
+      menuItemId: `custom-box-${Date.now()}`,
+      nameAr: `${boxName} (${(totalWeightGrams / 1000).toFixed(3)} كجم)`,
+      nameEn: `Custom Sweet Box (${(totalWeightGrams / 1000).toFixed(2)} kg)`,
+      price: Math.round(totalBoxPrice * 100) / 100,
+      qty: 1,
+      itemType: "READY_PASTRY",
+      category: "ORIENTAL_SWEETS",
+      isCustomBox: true,
+      totalWeightGrams,
+      boxComponents: boxComponents.map((c) => ({
+        id: c.id,
+        nameAr: c.nameAr,
+        grams: c.grams,
+        weightKg: c.grams / 1000,
+        pricePerKg: c.pricePerKg,
+        subtotal: c.subtotal,
+      })),
+    };
+
+    setCart((prev) => [...prev, newBoxCartItem]);
+    setCustomBoxesCount((prev) => prev + 1);
+    setShowBoxBuilderModal(false);
+    showToast("success", `تمت إضافة ${newBoxCartItem.nameAr} بإجمالي ${totalBoxPrice.toFixed(2)} ج.م للفاتورة 📦✨`);
+  };
 
   // Completed Printed Receipt
   const [lastPrintedOrder, setLastPrintedOrder] = useState<any>(null);
@@ -516,7 +603,7 @@ export default function PosTerminalPage() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-sm sm:text-base font-black text-amber-300">
-                {isAbuAdel ? "كاشير حلواني أبو عادل المستقل 🍰" : "كاشير سول ميت كافيه والترابيزات ☕"}
+                {isAbuAdel ? "كاشير حلواني أبو عادل 🍰" : "كاشير سول ميت كافيه والترابيزات ☕"}
               </h1>
               <span className="py-0.5 px-2 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black">
                 نشط 🟢
@@ -650,6 +737,18 @@ export default function PosTerminalPage() {
               />
             </div>
 
+            {/* Abu Adel Custom Box Builder Banner Button */}
+            {isAbuAdel && (
+              <button
+                type="button"
+                onClick={handleOpenBoxBuilder}
+                className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 via-rose-500 to-amber-600 hover:from-amber-400 hover:to-rose-400 text-slate-950 font-black text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 cursor-pointer"
+              >
+                <Scale className="w-4 h-4" />
+                <span>📦 تكوين علبة حلويات مشكل بالوزن (إدخال ورقة الميزان) ⚖️</span>
+              </button>
+            )}
+
             {/* Category Filter Pills - Flex Wrap so ALL categories are 100% visible on screen! */}
             <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-xs font-bold">
               <button
@@ -724,66 +823,83 @@ export default function PosTerminalPage() {
                 <span>شيك الحساب والفاتورة</span>
               </h3>
 
-              {/* Table Actions (Transfer & Split) */}
-              {selectedTable && (
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => setShowTransferModal(true)}
-                    className="py-1 px-2 rounded-lg bg-sky-500/15 border border-sky-500/30 text-sky-300 text-[10px] font-bold flex items-center gap-1 cursor-pointer"
-                    title="نقل الشيك لترابيزة ثانية"
-                  >
-                    <ArrowRightLeft className="w-3 h-3" />
-                    <span>نقل</span>
-                  </button>
-                  <button
-                    onClick={() => setShowSplitModal(true)}
-                    className="py-1 px-2 rounded-lg bg-purple-500/15 border border-purple-500/30 text-purple-300 text-[10px] font-bold flex items-center gap-1 cursor-pointer"
-                    title="تقسيم الفاتورة"
-                  >
-                    <Split className="w-3 h-3" />
-                    <span>تقسيم</span>
-                  </button>
-                </div>
-              )}
+              <div className="flex items-center gap-1">
+                {/* Button to build custom sweet box */}
+                <button
+                  type="button"
+                  onClick={handleOpenBoxBuilder}
+                  className="py-1 px-2.5 rounded-lg bg-gradient-to-r from-amber-500/20 to-rose-500/20 hover:from-amber-500/30 hover:to-rose-500/30 border border-amber-500/40 text-amber-300 text-[10px] font-black flex items-center gap-1 cursor-pointer transition shadow-sm"
+                  title="تكوين علبة حلويات مشكل حسب ورقة الميزان"
+                >
+                  <Scale className="w-3 h-3 text-amber-400" />
+                  <span>+ علبة مشكل ⚖️</span>
+                </button>
+
+                {/* Table Actions (Transfer & Split) */}
+                {selectedTable && (
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => setShowTransferModal(true)}
+                      className="py-1 px-2 rounded-lg bg-sky-500/15 border border-sky-500/30 text-sky-300 text-[10px] font-bold flex items-center gap-1 cursor-pointer"
+                      title="نقل الشيك لترابيزة ثانية"
+                    >
+                      <ArrowRightLeft className="w-3 h-3" />
+                      <span>نقل</span>
+                    </button>
+                    <button
+                      onClick={() => setShowSplitModal(true)}
+                      className="py-1 px-2 rounded-lg bg-purple-500/15 border border-purple-500/30 text-purple-300 text-[10px] font-bold flex items-center gap-1 cursor-pointer"
+                      title="تقسيم الفاتورة"
+                    >
+                      <Split className="w-3 h-3" />
+                      <span>تقسيم</span>
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* 3-WAY ORDER TYPE SEGMENTED TABS: صالة | تيك أواي | دليفري */}
-            <div className="grid grid-cols-3 gap-1 p-1 bg-black/60 border border-white/10 rounded-2xl text-xs font-black">
-              {/* Option 1: DINE_IN (صالة) */}
-              <button
-                type="button"
-                onClick={() => {
-                  setOrderType("DINE_IN");
-                  setShowTableModal(true);
-                }}
-                className={`py-2 px-1 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer ${
-                  orderType === "DINE_IN"
-                    ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-black"
-                    : "text-slate-400 hover:text-white"
-                }`}
-              >
-                <span>🪑</span>
-                <span className="truncate">
-                  {selectedTable ? `ترابيزة ${selectedTable.tableNumber}` : "صالة"}
-                </span>
-              </button>
+            {/* ORDER TYPE SEGMENTED TABS (2 tabs for Abu Adel, 3 tabs for Soulmate) */}
+            <div className={`grid ${isAbuAdel ? "grid-cols-2" : "grid-cols-3"} gap-1 p-1 bg-black/60 border border-white/10 rounded-2xl text-xs font-black`}>
+              {/* Option 1: DINE_IN (صالة) - Strictly for Soulmate Cafe */}
+              {!isAbuAdel && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOrderType("DINE_IN");
+                    setShowTableModal(true);
+                  }}
+                  className={`py-2 px-1 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                    orderType === "DINE_IN"
+                      ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-black"
+                      : "text-slate-400 hover:text-white"
+                  }`}
+                >
+                  <span>🪑</span>
+                  <span className="truncate">
+                    {selectedTable ? `ترابيزة ${selectedTable.tableNumber}` : "صالة"}
+                  </span>
+                </button>
+              )}
 
-              {/* Option 2: TAKEAWAY (تيك أواي) */}
+              {/* Option 2: TAKEAWAY (بيع مباشر / تيك أواي) */}
               <button
                 type="button"
                 onClick={() => {
                   setOrderType("TAKEAWAY");
                   setSelectedTable(null);
-                  showToast("info", "تم تفعيل وضع التيك أواي السفري 🛍️");
+                  showToast("info", isAbuAdel ? "تم تفعيل وضع البيع المباشر (استلام فوري من المحل) 🛍️" : "تم تفعيل وضع التيك أواي السفري 🛍️");
                 }}
                 className={`py-2 px-1 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer ${
                   orderType === "TAKEAWAY"
-                    ? "bg-rose-500 text-white shadow-md shadow-rose-500/20 font-black"
+                    ? isAbuAdel
+                      ? "bg-rose-600 text-white shadow-md shadow-rose-600/20 font-black"
+                      : "bg-rose-500 text-white shadow-md shadow-rose-500/20 font-black"
                     : "text-slate-400 hover:text-white"
                 }`}
               >
                 <span>🛍️</span>
-                <span>تيك أواي</span>
+                <span>{isAbuAdel ? "بيع مباشر (كاونتر)" : "تيك أواي"}</span>
               </button>
 
               {/* Option 3: DELIVERY (دليفري) */}
@@ -914,38 +1030,81 @@ export default function PosTerminalPage() {
                 <span className="text-[10px] text-slate-600">اختر أصنافاً من المنيو للإضافة</span>
               </div>
             ) : (
-              cart.map((it) => (
-                <div key={it.menuItemId} className="p-2 rounded-xl bg-black/40 border border-white/5 flex items-center justify-between text-xs">
-                  <div className="flex-1 min-w-0">
-                    <span className="font-bold text-white block truncate">{it.nameAr}</span>
-                    <span className="text-[10px] text-slate-400 font-mono">
-                      {it.price} ج × {it.qty} = <strong className="text-amber-300 font-black">{it.price * it.qty} ج</strong>
-                    </span>
-                  </div>
+              cart.map((it) => {
+                if (it.isCustomBox) {
+                  return (
+                    <div key={it.menuItemId} className="p-2.5 rounded-xl bg-rose-950/20 border border-rose-500/30 text-xs space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="font-black text-rose-300 block text-xs">
+                            📦 {it.nameAr}
+                          </span>
+                          <span className="text-[10px] text-slate-400 font-mono">
+                            وزن إجمالي: {it.totalWeightGrams ? (it.totalWeightGrams / 1000).toFixed(3) : 0} كجم
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono font-black text-amber-400 text-sm">
+                            {it.price} ج
+                          </span>
+                          <button
+                            onClick={() => removeFromCart(it.menuItemId)}
+                            className="p-1 rounded text-rose-400 hover:bg-rose-500/20 cursor-pointer"
+                            title="حذف العلبة"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
 
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <button
-                      onClick={() => updateCartQty(it.menuItemId, -1)}
-                      className="w-5 h-5 rounded bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer"
-                    >
-                      <Minus className="w-3 h-3" />
-                    </button>
-                    <span className="font-mono font-bold text-xs px-1 text-white">{it.qty}</span>
-                    <button
-                      onClick={() => updateCartQty(it.menuItemId, 1)}
-                      className="w-5 h-5 rounded bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer"
-                    >
-                      <Plus className="w-3 h-3" />
-                    </button>
-                    <button
-                      onClick={() => removeFromCart(it.menuItemId)}
-                      className="p-1 rounded text-rose-400 hover:bg-rose-500/10 cursor-pointer ml-1"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                      {/* Sub-components of the custom box */}
+                      {it.boxComponents && it.boxComponents.length > 0 && (
+                        <div className="bg-black/50 p-2 rounded-lg border border-white/5 space-y-1 text-[11px] font-mono">
+                          {it.boxComponents.map((comp: any, idx: number) => (
+                            <div key={idx} className="flex justify-between text-slate-300">
+                              <span className="font-sans font-bold">• {comp.nameAr} ({comp.grams} جم)</span>
+                              <span className="text-amber-300/80">{comp.subtotal} ج</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                return (
+                  <div key={it.menuItemId} className="p-2 rounded-xl bg-black/40 border border-white/5 flex items-center justify-between text-xs">
+                    <div className="flex-1 min-w-0">
+                      <span className="font-bold text-white block truncate">{it.nameAr}</span>
+                      <span className="text-[10px] text-slate-400 font-mono">
+                        {it.price} ج × {it.qty} = <strong className="text-amber-300 font-black">{it.price * it.qty} ج</strong>
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        onClick={() => updateCartQty(it.menuItemId, -1)}
+                        className="w-5 h-5 rounded bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer"
+                      >
+                        <Minus className="w-3 h-3" />
+                      </button>
+                      <span className="font-mono font-bold text-xs px-1 text-white">{it.qty}</span>
+                      <button
+                        onClick={() => updateCartQty(it.menuItemId, 1)}
+                        className="w-5 h-5 rounded bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer"
+                      >
+                        <Plus className="w-3 h-3" />
+                      </button>
+                      <button
+                        onClick={() => removeFromCart(it.menuItemId)}
+                        className="p-1 rounded text-rose-400 hover:bg-rose-500/10 cursor-pointer ml-1"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
 
@@ -1251,6 +1410,241 @@ export default function PosTerminalPage() {
               >
                 رجوع وإغلاق ✕
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          3.2 MODAL: WEIGHTED CUSTOM SWEET BOX BUILDER (حساب ورقة الميزان)
+         ───────────────────────────────────────────────────────────── */}
+      {showBoxBuilderModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in no-print">
+          <div className="bg-[#140e16] border-2 border-rose-500/50 rounded-3xl p-5 max-w-lg w-full space-y-4 shadow-2xl max-h-[92vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-white/10 pb-2">
+              <div>
+                <h3 className="font-black text-base text-white flex items-center gap-2">
+                  <Scale className="w-5 h-5 text-amber-400" />
+                  <span>مُنشئ علبة الحلويات المشكلة (ورقة الميزان) ⚖️</span>
+                </h3>
+                <p className="text-[11px] text-slate-400">
+                  اختر الصنف واكتب الوزن بالجرام لاحتساب سعر العلبة آلياً
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowBoxBuilderModal(false)}
+                className="p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition cursor-pointer text-sm font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Box Name Input */}
+            <div className="flex items-center gap-2">
+              <label className="text-xs text-slate-300 font-bold shrink-0">اسم العلبة:</label>
+              <input
+                type="text"
+                value={boxName}
+                onChange={(e) => setBoxName(e.target.value)}
+                className="flex-1 py-1.5 px-3 rounded-xl bg-black/60 border border-white/10 text-white font-bold text-xs outline-none focus:border-amber-400"
+                placeholder="مثال: علبة مشكل رقم 1"
+              />
+            </div>
+
+            {/* Step 1: Pick an Item & Enter Weight */}
+            <div className="p-3 rounded-2xl bg-black/50 border border-white/10 space-y-3">
+              <span className="text-xs font-black text-amber-300 block">
+                1. اختر الصنف والوزن بالجرام المدون في ورقة الميزان:
+              </span>
+
+              {/* Item Search / Selector */}
+              <div className="space-y-1.5">
+                <input
+                  type="text"
+                  placeholder="ابحث عن صنف (بسبوسة، كنافة، كعك، بقلاوة، رموش، بلح الشام...)"
+                  value={boxSearchQuery}
+                  onChange={(e) => setBoxSearchQuery(e.target.value)}
+                  className="w-full py-1.5 px-3 rounded-xl bg-black/60 border border-white/10 text-white text-xs outline-none focus:border-amber-400 font-bold"
+                />
+
+                <div className="max-h-36 overflow-y-auto space-y-1 pr-1 border border-white/5 rounded-xl p-1 bg-black/40">
+                  {menuItems
+                    .filter((m) => {
+                      const matchesOutlet = m.outlet?.code === "ABU_ADEL_PATISSERIE" || m.itemType === "READY_PASTRY";
+                      if (!matchesOutlet) return false;
+                      if (!boxSearchQuery.trim()) return true;
+                      return m.nameAr.toLowerCase().includes(boxSearchQuery.trim().toLowerCase());
+                    })
+                    .slice(0, 15)
+                    .map((m) => (
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => setSelectedBoxItem(m)}
+                        className={`w-full p-2 rounded-xl text-right flex items-center justify-between text-xs transition cursor-pointer ${
+                          selectedBoxItem?.id === m.id
+                            ? "bg-amber-500 text-slate-950 font-black shadow"
+                            : "hover:bg-white/5 text-slate-300"
+                        }`}
+                      >
+                        <span className="font-bold">{m.nameAr}</span>
+                        <span className="font-mono font-bold text-[11px]">
+                          {m.price} ج / {m.unitType === "KG" ? "كجم" : "صنف"}
+                        </span>
+                      </button>
+                    ))}
+                </div>
+              </div>
+
+              {/* Weight Entry (if item selected) */}
+              {selectedBoxItem && (
+                <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2 animate-fade-in">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-black text-amber-300">
+                      الصنف المختار: {selectedBoxItem.nameAr}
+                    </span>
+                    <span className="font-mono text-white font-bold">
+                      سعر الكيلو: {selectedBoxItem.price} ج
+                    </span>
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] text-slate-300 font-bold block mb-1">
+                      الوزن بالجرام (كما في ورقة الميزان):
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        min={10}
+                        step={10}
+                        value={tempBoxGrams}
+                        onChange={(e) => setTempBoxGrams(Number(e.target.value))}
+                        className="w-32 py-1.5 px-3 rounded-xl bg-black border border-amber-500/50 text-white font-mono font-black text-base text-center outline-none"
+                      />
+                      <span className="text-xs text-slate-400 font-bold">جرام (جم)</span>
+                      <div className="flex-1 text-left">
+                        <span className="text-xs text-amber-400 font-mono font-black block">
+                          = {Math.round((tempBoxGrams / 1000) * selectedBoxItem.price * 100) / 100} ج.م
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Weight Quick Chips */}
+                    <div className="flex items-center gap-1.5 pt-2 flex-wrap text-[10px] font-bold">
+                      <span className="text-slate-400">أوزان سريعة:</span>
+                      {[
+                        { label: "1/8 كجم (125 جم)", g: 125 },
+                        { label: "1/4 كجم (250 جم)", g: 250 },
+                        { label: "1/3 كجم (330 جم)", g: 330 },
+                        { label: "1/2 كجم (500 جم)", g: 500 },
+                        { label: "3/4 كجم (750 جم)", g: 750 },
+                        { label: "1 كجم (1000 جم)", g: 1000 },
+                      ].map((chip) => (
+                        <button
+                          key={chip.g}
+                          type="button"
+                          onClick={() => setTempBoxGrams(chip.g)}
+                          className={`py-1 px-2 rounded-lg border transition cursor-pointer ${
+                            tempBoxGrams === chip.g
+                              ? "bg-amber-500 text-slate-950 border-amber-400 font-black"
+                              : "bg-black/60 border-white/10 text-slate-300 hover:text-white"
+                          }`}
+                        >
+                          {chip.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleAddBoxComponent}
+                    className="w-full py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition shadow cursor-pointer flex items-center justify-center gap-1"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>إضافة الصنف إلى هذه العلبة</span>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Step 2: Current Box Items List */}
+            <div className="space-y-2">
+              <span className="text-xs font-black text-white flex items-center justify-between">
+                <span>محتويات {boxName} حتى الآن:</span>
+                <span className="font-mono text-amber-400 text-[11px]">
+                  ({boxComponents.length} أصناف داخل العلبة)
+                </span>
+              </span>
+
+              {boxComponents.length === 0 ? (
+                <div className="p-4 rounded-xl bg-black/30 border border-white/5 text-center text-slate-500 text-xs">
+                  لم تضف أصنافاً للعلبة بعد. اختر صنفاً وحدد وزنه من ورقة الميزان أعلاه.
+                </div>
+              ) : (
+                <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+                  {boxComponents.map((c, idx) => (
+                    <div
+                      key={idx}
+                      className="p-2 rounded-xl bg-black/60 border border-white/10 flex items-center justify-between text-xs"
+                    >
+                      <div className="flex-1">
+                        <span className="font-bold text-white block">{c.nameAr}</span>
+                        <span className="text-[10px] text-slate-400 font-mono">
+                          {c.grams} جم × ({c.pricePerKg} ج/كجم) ={" "}
+                          <strong className="text-amber-300 font-black">{c.subtotal} ج</strong>
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveBoxComponent(idx)}
+                        className="p-1 rounded text-rose-400 hover:bg-rose-500/20 cursor-pointer"
+                        title="حذف من العلبة"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Step 3: Total Box Summary & Add to Cart Action */}
+            <div className="p-3.5 rounded-2xl bg-[#1d111b] border-2 border-amber-500/40 space-y-2.5">
+              <div className="flex items-center justify-between text-xs font-mono">
+                <span className="text-slate-300">إجمالي وزن العلبة:</span>
+                <strong className="text-white text-sm">
+                  {(boxComponents.reduce((s, c) => s + c.grams, 0) / 1000).toFixed(3)} كجم (
+                  {boxComponents.reduce((s, c) => s + c.grams, 0)} جم)
+                </strong>
+              </div>
+              <div className="flex items-center justify-between text-sm font-black border-t border-white/10 pt-1.5">
+                <span className="text-white">إجمالي سعر العلبة:</span>
+                <span className="font-mono text-amber-400 text-lg">
+                  {boxComponents.reduce((s, c) => s + c.subtotal, 0).toFixed(2)} ج.م
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setShowBoxBuilderModal(false)}
+                  className="py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold cursor-pointer"
+                >
+                  إلغاء ✕
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmAddBoxToCart}
+                  disabled={boxComponents.length === 0}
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs transition shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>تأكيد وإضافة العلبة للفاتورة 📦</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1604,12 +1998,31 @@ export default function PosTerminalPage() {
               try {
                 items = typeof lastPrintedOrder.items === "string" ? JSON.parse(lastPrintedOrder.items) : lastPrintedOrder.items || [];
               } catch {}
-              return items.map((it: any, idx: number) => (
-                <div key={idx} className="flex justify-between">
-                  <span>{it.nameAr} (×{it.qty || 1})</span>
-                  <span className="font-mono font-bold">{(it.price * (it.qty || 1))} ج</span>
-                </div>
-              ));
+              return items.map((it: any, idx: number) => {
+                if (it.isCustomBox) {
+                  return (
+                    <div key={idx} className="space-y-0.5 border-b border-gray-300 pb-1 mb-1">
+                      <div className="flex justify-between font-bold">
+                        <span>📦 {it.nameAr}</span>
+                        <span className="font-mono font-black">{it.price * (it.qty || 1)} ج</span>
+                      </div>
+                      {it.boxComponents && it.boxComponents.map((c: any, cIdx: number) => (
+                        <div key={cIdx} className="flex justify-between text-[10px] pr-2 text-gray-700">
+                          <span>- {c.nameAr} ({c.grams} جم)</span>
+                          <span>{c.subtotal} ج</span>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                }
+
+                return (
+                  <div key={idx} className="flex justify-between">
+                    <span>{it.nameAr} (×{it.qty || 1})</span>
+                    <span className="font-mono font-bold">{(it.price * (it.qty || 1))} ج</span>
+                  </div>
+                );
+              });
             })()}
           </div>
 
