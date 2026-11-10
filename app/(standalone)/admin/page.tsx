@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import CardQRModal from "@/components/CardQRModal";
@@ -19,6 +19,13 @@ import {
   Users,
   Settings,
   Receipt,
+  BarChart3,
+  PieChart,
+  CreditCard,
+  Download,
+  Landmark,
+  Percent,
+  ArrowUpDown,
   RotateCcw,
   Plus,
   AlertTriangle,
@@ -182,6 +189,11 @@ export default function AdminDashboardPage() {
   const [recipeSubTab, setRecipeSubTab] = useState<"cards" | "audit" | "bom">("cards");
   const [auditCounts, setAuditCounts] = useState<Record<string, string>>({});
   const [isSubmittingAudit, setIsSubmittingAudit] = useState(false);
+
+  // Sub-tabs & Filters for Treasury & Financial BI Reports Tab
+  const [treasurySubTab, setTreasurySubTab] = useState<"drawer" | "pnl" | "menu_eng" | "payments" | "archive">("drawer");
+  const [reportTimeframe, setReportTimeframe] = useState<"TODAY" | "WEEK" | "MONTH" | "ALL">("TODAY");
+  const [reportOutletFilter, setReportOutletFilter] = useState<string>("ALL");
 
   // Forms
   const [expenseForm, setExpenseForm] = useState({
@@ -403,6 +415,234 @@ export default function AdminDashboardPage() {
   const occupiedTables = tables.filter((t) => t.status === "OCCUPIED").length;
   const tableOccupancyRate =
     tables.length > 0 ? Math.round((occupiedTables / tables.length) * 100) : 0;
+
+  // ─────────────────────────────────────────────────────────────
+  // TREASURY & FINANCIAL INTELLIGENCE BI ENGINE
+  // ─────────────────────────────────────────────────────────────
+  const filteredReportData = useMemo(() => {
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const sevenDaysAgo = startOfToday - 6 * 24 * 60 * 60 * 1000;
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+
+    // 1. Filter Orders by Timeframe & Outlet
+    const filteredOrders = orders.filter((o) => {
+      if (o.status === "CANCELLED") return false;
+      const orderTime = new Date(o.createdAt).getTime();
+
+      if (reportTimeframe === "TODAY" && orderTime < startOfToday) return false;
+      if (reportTimeframe === "WEEK" && orderTime < sevenDaysAgo) return false;
+      if (reportTimeframe === "MONTH" && orderTime < startOfMonth) return false;
+
+      if (reportOutletFilter !== "ALL" && o.outletId !== reportOutletFilter) return false;
+      return true;
+    });
+
+    // 2. Filter Expenses by Timeframe & Outlet
+    const filteredExpenses = expenses.filter((e) => {
+      const expTime = new Date(e.createdAt).getTime();
+      if (reportTimeframe === "TODAY" && expTime < startOfToday) return false;
+      if (reportTimeframe === "WEEK" && expTime < sevenDaysAgo) return false;
+      if (reportTimeframe === "MONTH" && expTime < startOfMonth) return false;
+
+      if (reportOutletFilter !== "ALL" && e.outletId !== reportOutletFilter) return false;
+      return true;
+    });
+
+    // 3. Core Totals
+    const totalRevenue = filteredOrders.reduce((sum, o) => sum + (Number(o.finalAmount) || 0), 0);
+    const totalSubtotal = filteredOrders.reduce((sum, o) => sum + (Number(o.subtotal || o.finalAmount) || 0), 0);
+    const totalDiscount = filteredOrders.reduce((sum, o) => sum + (Number(o.discountAmount) || 0), 0);
+    const totalTips = filteredOrders.reduce((sum, o) => sum + (Number(o.tipAmount) || 0), 0);
+    const totalDeliveryFees = filteredOrders.reduce((sum, o) => sum + (Number(o.deliveryFee) || 0), 0);
+    const totalExpensesAmount = filteredExpenses.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+
+    // 4. Item-Level Analysis & COGS (Cost of Goods Sold)
+    const itemsMap: Record<string, {
+      nameAr: string;
+      category: string;
+      unitPrice: number;
+      costPrice: number;
+      qty: number;
+      totalRevenue: number;
+      totalCost: number;
+      profit: number;
+    }> = {};
+
+    let totalCOGS = 0;
+
+    filteredOrders.forEach((o) => {
+      let orderItems: any[] = [];
+      try {
+        orderItems = typeof o.items === "string" ? JSON.parse(o.items) : o.items || [];
+      } catch {
+        orderItems = [];
+      }
+
+      orderItems.forEach((it: any) => {
+        const qty = Number(it.qty) || 1;
+        const price = Number(it.price) || 0;
+        const lineRev = price * qty;
+
+        const catalogItem = menuItems.find((m) => m.id === it.menuItemId || m.nameAr === it.nameAr);
+        const unitCost = Number(catalogItem?.calculatedCost || catalogItem?.costPrice || it.costPrice || 0);
+        const lineCost = unitCost * qty;
+
+        totalCOGS += lineCost;
+
+        const key = it.nameAr || it.menuItemId || "صنف غير مسمى";
+        if (!itemsMap[key]) {
+          itemsMap[key] = {
+            nameAr: key,
+            category: it.category || catalogItem?.category || "عام",
+            unitPrice: price,
+            costPrice: unitCost,
+            qty: 0,
+            totalRevenue: 0,
+            totalCost: 0,
+            profit: 0,
+          };
+        }
+
+        itemsMap[key].qty += qty;
+        itemsMap[key].totalRevenue += lineRev;
+        itemsMap[key].totalCost += lineCost;
+        itemsMap[key].profit += (lineRev - lineCost);
+      });
+    });
+
+    const itemsList = Object.values(itemsMap);
+    const topByQty = [...itemsList].sort((a, b) => b.qty - a.qty).slice(0, 8);
+    const topByRevenue = [...itemsList].sort((a, b) => b.totalRevenue - a.totalRevenue).slice(0, 8);
+    const topByProfit = [...itemsList].sort((a, b) => b.profit - a.profit).slice(0, 8);
+
+    // 5. Payment Methods Breakdown
+    const paymentMethods: Record<string, { label: string; amount: number; count: number; color: string; border: string; bg: string }> = {
+      CASH: { label: "نقدي (كاش)", amount: 0, count: 0, color: "text-emerald-400", border: "border-emerald-500/30", bg: "bg-emerald-500/10" },
+      CARD: { label: "فيزا / بطاقات بنكية", amount: 0, count: 0, color: "text-blue-400", border: "border-blue-500/30", bg: "bg-blue-500/10" },
+      INSTAPAY: { label: "إنستاباي (InstaPay)", amount: 0, count: 0, color: "text-purple-400", border: "border-purple-500/30", bg: "bg-purple-500/10" },
+      VODAFONE_CASH: { label: "فودافون كاش ومحافظ", amount: 0, count: 0, color: "text-rose-400", border: "border-rose-500/30", bg: "bg-rose-500/10" },
+    };
+
+    filteredOrders.forEach((o) => {
+      const pm = (o.paymentMethod || "CASH").toUpperCase();
+      if (paymentMethods[pm]) {
+        paymentMethods[pm].amount += Number(o.finalAmount) || 0;
+        paymentMethods[pm].count += 1;
+      } else {
+        paymentMethods.CASH.amount += Number(o.finalAmount) || 0;
+        paymentMethods.CASH.count += 1;
+      }
+    });
+
+    // 6. Order Types Breakdown
+    const orderTypes: Record<string, { label: string; amount: number; count: number }> = {
+      DINE_IN: { label: "صالة الكافيه 🪑", amount: 0, count: 0 },
+      TAKEAWAY: { label: "تيك أواي / بيع مباشر 🛍️", amount: 0, count: 0 },
+      DELIVERY: { label: "توصيل دليفري 🛵", amount: 0, count: 0 },
+    };
+
+    filteredOrders.forEach((o) => {
+      const ot = (o.orderType || "DINE_IN").toUpperCase();
+      if (orderTypes[ot]) {
+        orderTypes[ot].amount += Number(o.finalAmount) || 0;
+        orderTypes[ot].count += 1;
+      }
+    });
+
+    // 7. Branch Comparison
+    const soulmateOrders = filteredOrders.filter(
+      (o) => o.outlet?.code === "SOULMATE_CAFE" || o.outletId === outlets.find((x) => x.code === "SOULMATE_CAFE")?.id
+    );
+    const abuAdelOrders = filteredOrders.filter(
+      (o) => o.outlet?.code === "ABU_ADEL_PATISSERIE" || o.outletId === outlets.find((x) => x.code === "ABU_ADEL_PATISSERIE")?.id
+    );
+
+    const soulmateRevenue = soulmateOrders.reduce((s, o) => s + (Number(o.finalAmount) || 0), 0);
+    const abuAdelRevenue = abuAdelOrders.reduce((s, o) => s + (Number(o.finalAmount) || 0), 0);
+
+    const soulmateExpenses = filteredExpenses
+      .filter((e) => e.outlet?.code === "SOULMATE_CAFE" || e.outletId === outlets.find((x) => x.code === "SOULMATE_CAFE")?.id)
+      .reduce((s, e) => s + (Number(e.amount) || 0), 0);
+    const abuAdelExpenses = filteredExpenses
+      .filter((e) => e.outlet?.code === "ABU_ADEL_PATISSERIE" || e.outletId === outlets.find((x) => x.code === "ABU_ADEL_PATISSERIE")?.id)
+      .reduce((s, e) => s + (Number(e.amount) || 0), 0);
+
+    // 8. Financial Summary (P&L)
+    const grossProfit = totalRevenue - totalCOGS;
+    const grossProfitMargin = totalRevenue > 0 ? (grossProfit / totalRevenue) * 100 : 0;
+    const netProfit = grossProfit - totalExpensesAmount;
+    const netProfitMargin = totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0;
+    const averageOrderValue = filteredOrders.length > 0 ? totalRevenue / filteredOrders.length : 0;
+
+    return {
+      filteredOrders,
+      filteredExpenses,
+      totalRevenue,
+      totalSubtotal,
+      totalDiscount,
+      totalTips,
+      totalDeliveryFees,
+      totalExpensesAmount,
+      totalCOGS,
+      grossProfit,
+      grossProfitMargin,
+      netProfit,
+      netProfitMargin,
+      averageOrderValue,
+      itemsList,
+      topByQty,
+      topByRevenue,
+      topByProfit,
+      paymentMethods,
+      orderTypes,
+      soulmateRevenue,
+      abuAdelRevenue,
+      soulmateExpenses,
+      abuAdelExpenses,
+      ordersCount: filteredOrders.length,
+    };
+  }, [orders, expenses, menuItems, outlets, reportTimeframe, reportOutletFilter]);
+
+  const handleExportFinancialCSV = () => {
+    const data = filteredReportData;
+    let csvContent = "\uFEFF"; // UTF-8 BOM
+    csvContent += "تقرير الحسابات والأرباح الشامل - مجموعة حلواني أبو عادل & سول ميت كافيه VIP\n";
+    csvContent += `الفترة,${reportTimeframe === "TODAY" ? "اليوم" : reportTimeframe === "WEEK" ? "آخر 7 أيام" : reportTimeframe === "MONTH" ? "هذا الشهر" : "كافة الفترات"}\n`;
+    csvContent += `الفرع,${reportOutletFilter === "ALL" ? "كافة الفروع" : outlets.find((o) => o.id === reportOutletFilter)?.name || ""}\n`;
+    csvContent += `تاريخ التصدير,${new Date().toLocaleString("ar-EG")}\n\n`;
+
+    csvContent += "=== ملخص قائمة الدخل والأرباح ===\n";
+    csvContent += `إجمالي المبيعات,${data.totalRevenue.toFixed(2)} ج.م\n`;
+    csvContent += `تكلفة الخامات والمبيعات (COGS),${data.totalCOGS.toFixed(2)} ج.م\n`;
+    csvContent += `مجمل الربح,${data.grossProfit.toFixed(2)} ج.م (${data.grossProfitMargin.toFixed(1)}%)\n`;
+    csvContent += `المصروفات والنثريات,${data.totalExpensesAmount.toFixed(2)} ج.م\n`;
+    csvContent += `صافي الربح النهائي,${data.netProfit.toFixed(2)} ج.م (${data.netProfitMargin.toFixed(1)}%)\n`;
+    csvContent += `عدد الطلبات,${data.ordersCount}\n`;
+    csvContent += `متوسط الفاتورة,${data.averageOrderValue.toFixed(2)} ج.م\n\n`;
+
+    csvContent += "=== قنوات التحصيل والدفع ===\n";
+    Object.values(data.paymentMethods).forEach((pm) => {
+      csvContent += `${pm.label},${pm.amount.toFixed(2)} ج.م,${pm.count} طلب\n`;
+    });
+    csvContent += "\n";
+
+    csvContent += "=== الأصناف الأكثر مبيعاً وتحقيقاً للإيراد ===\n";
+    csvContent += "اسم الصنف,التصنيف,الكمية المباعة,سعر الوحدة,إجمالي الإيراد,التكلفة التقديرية,صافي ربح الصنف\n";
+    data.topByRevenue.forEach((it) => {
+      csvContent += `"${it.nameAr}","${it.category}",${it.qty},${it.unitPrice},${it.totalRevenue.toFixed(2)},${it.totalCost.toFixed(2)},${it.profit.toFixed(2)}\n`;
+    });
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Financial_Report_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    addToast("success", "تم تصدير ملف إكسل المالي بنجاح 📥📊");
+  };
 
   // ImgBB Upload Handler
   const handleUploadImgBB = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1364,7 +1604,7 @@ export default function AdminDashboardPage() {
               }`}
             >
               <DollarSign className="w-4 h-4" />
-              <span>الخزنة والورديات وجرد الدرج</span>
+              <span>الخزنة والتقارير المالية والورديات</span>
             </button>
 
             <button
@@ -1711,130 +1951,935 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        {/* TAB 2: TREASURY, SHIFTS & DRAWER */}
+        {/* TAB 2: TREASURY, FINANCIAL BI & BUSINESS INTELLIGENCE */}
         {activeTab === "treasury" && (
           <div className="space-y-6">
-            <div className="bg-gradient-to-r from-slate-900 via-slate-900 to-amber-950/40 border border-amber-500/30 rounded-2xl p-6 shadow-xl relative overflow-hidden">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
-                    <span className="text-xs font-bold text-emerald-400">
-                      الوردية الحالية مفتوحة ونشطة
-                    </span>
-                    <span className="text-xs text-slate-400">
-                      (وردية #{shiftData?.shift?.shiftNumber || 1})
-                    </span>
-                  </div>
-                  <h2 className="text-xl font-black text-white">
-                    الكاشير المسؤول: {shiftData?.shift?.openedBy || "كاشير الوردية"}
-                  </h2>
-                  <p className="text-xs text-slate-400 mt-1">
-                    بدأت في: {new Date(shiftData?.shift?.openedAt || Date.now()).toLocaleTimeString("ar-EG")}
-                  </p>
-                </div>
-
-                <div className="bg-slate-950/80 border border-amber-500/40 rounded-2xl p-4 px-6 text-center shadow-inner">
-                  <div className="text-xs text-slate-400 font-medium mb-1">
-                    صافي النقدية المتوقعة بالدرج الآن
-                  </div>
-                  <div className="text-3xl font-black text-amber-400 font-mono">
-                    {(shiftData?.expectedCash || 0).toLocaleString()} <span className="text-sm font-normal text-slate-400">ج.م</span>
-                  </div>
-                  <div className="text-[10px] text-slate-400 mt-1">
-                    (فكة افتتاحية {shiftData?.shift?.openingCashFloat || 500} ج.م + كاش مبيعات - نثريات)
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
+            {/* TOP CONTROLS & SUB-NAV BAR */}
+            <div className="bg-slate-900/90 backdrop-blur border border-slate-800 rounded-2xl p-4 md:p-5 shadow-xl">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                {/* Sub-Tabs Navigation Pills */}
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
                   <button
-                    onClick={() => setShowExpenseModal(true)}
-                    className="flex items-center gap-2 bg-rose-600 hover:bg-rose-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs shadow-lg transition"
+                    onClick={() => setTreasurySubTab("drawer")}
+                    className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-black transition whitespace-nowrap ${
+                      treasurySubTab === "drawer"
+                        ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/80"
+                    }`}
                   >
-                    <Plus className="w-4 h-4" />
-                    <span>تسجيل مصروف / نثرية</span>
+                    <DollarSign className="w-4 h-4" />
+                    <span>الوردية والدرج المباشر</span>
+                  </button>
+
+                  <button
+                    onClick={() => setTreasurySubTab("pnl")}
+                    className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-black transition whitespace-nowrap ${
+                      treasurySubTab === "pnl"
+                        ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/80"
+                    }`}
+                  >
+                    <BarChart3 className="w-4 h-4" />
+                    <span>قائمة الدخل والأرباح (P&L)</span>
+                  </button>
+
+                  <button
+                    onClick={() => setTreasurySubTab("menu_eng")}
+                    className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-black transition whitespace-nowrap ${
+                      treasurySubTab === "menu_eng"
+                        ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/80"
+                    }`}
+                  >
+                    <Award className="w-4 h-4" />
+                    <span>هندسة المنيو والأكثر طلباً</span>
+                  </button>
+
+                  <button
+                    onClick={() => setTreasurySubTab("payments")}
+                    className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-black transition whitespace-nowrap ${
+                      treasurySubTab === "payments"
+                        ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/80"
+                    }`}
+                  >
+                    <CreditCard className="w-4 h-4" />
+                    <span>قنوات التحصيل ونقاط البيع</span>
+                  </button>
+
+                  <button
+                    onClick={() => setTreasurySubTab("archive")}
+                    className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-black transition whitespace-nowrap ${
+                      treasurySubTab === "archive"
+                        ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/80"
+                    }`}
+                  >
+                    <FileText className="w-4 h-4" />
+                    <span>أرشيف اليوميات Z-Report</span>
+                  </button>
+                </div>
+
+                {/* Filters & Export Actions Bar */}
+                <div className="flex flex-wrap items-center gap-2.5">
+                  {/* Timeframe Selector */}
+                  <div className="flex items-center bg-slate-950/80 border border-slate-800 rounded-xl p-1 text-xs">
+                    <button
+                      onClick={() => setReportTimeframe("TODAY")}
+                      className={`px-2.5 py-1 rounded-lg font-bold transition ${
+                        reportTimeframe === "TODAY"
+                          ? "bg-amber-500 text-slate-950 shadow"
+                          : "text-slate-400 hover:text-white"
+                      }`}
+                    >
+                      اليوم
+                    </button>
+                    <button
+                      onClick={() => setReportTimeframe("WEEK")}
+                      className={`px-2.5 py-1 rounded-lg font-bold transition ${
+                        reportTimeframe === "WEEK"
+                          ? "bg-amber-500 text-slate-950 shadow"
+                          : "text-slate-400 hover:text-white"
+                      }`}
+                    >
+                      7 أيام
+                    </button>
+                    <button
+                      onClick={() => setReportTimeframe("MONTH")}
+                      className={`px-2.5 py-1 rounded-lg font-bold transition ${
+                        reportTimeframe === "MONTH"
+                          ? "bg-amber-500 text-slate-950 shadow"
+                          : "text-slate-400 hover:text-white"
+                      }`}
+                    >
+                      هذا الشهر
+                    </button>
+                    <button
+                      onClick={() => setReportTimeframe("ALL")}
+                      className={`px-2.5 py-1 rounded-lg font-bold transition ${
+                        reportTimeframe === "ALL"
+                          ? "bg-amber-500 text-slate-950 shadow"
+                          : "text-slate-400 hover:text-white"
+                      }`}
+                    >
+                      الكل
+                    </button>
+                  </div>
+
+                  {/* Outlet Selector */}
+                  <select
+                    value={reportOutletFilter}
+                    onChange={(e) => setReportOutletFilter(e.target.value)}
+                    className="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-1.5 font-bold focus:border-amber-500 focus:outline-none"
+                  >
+                    <option value="ALL">🌟 كافة الفروع (مجمّع)</option>
+                    {outlets.map((ot) => (
+                      <option key={ot.id} value={ot.id}>
+                        {ot.code === "SOULMATE_CAFE" ? "☕ " : "🍰 "}
+                        {ot.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Export CSV Button */}
+                  <button
+                    onClick={handleExportFinancialCSV}
+                    className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl text-xs shadow-md transition"
+                    title="تصدير شيت إكسل CSV مالي متكامل مع دعم اللغة العربية"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">إكسل CSV</span>
+                  </button>
+
+                  {/* Print Report Button */}
+                  <button
+                    onClick={() => window.print()}
+                    className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs border border-slate-700 shadow-md transition"
+                    title="طباعة التقرير المالي الحالي"
+                  >
+                    <Printer className="w-3.5 h-3.5 text-amber-400" />
+                    <span className="hidden sm:inline">طباعة</span>
                   </button>
                 </div>
               </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-slate-800">
-                <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-                  <div className="text-[11px] text-slate-400">مقبوضات كاش (نقدي)</div>
-                  <div className="text-lg font-bold text-emerald-400 font-mono mt-1">
-                    {(shiftData?.cashCollected || 0).toLocaleString()} ج.م
-                  </div>
-                </div>
-
-                <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-                  <div className="text-[11px] text-slate-400">مقبوضات فيزا / كروت</div>
-                  <div className="text-lg font-bold text-blue-400 font-mono mt-1">
-                    {(shiftData?.visaCollected || 0).toLocaleString()} ج.م
-                  </div>
-                </div>
-
-                <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-                  <div className="text-[11px] text-slate-400">إنستاباي (InstaPay)</div>
-                  <div className="text-lg font-bold text-purple-400 font-mono mt-1">
-                    {(shiftData?.instapayCollected || 0).toLocaleString()} ج.م
-                  </div>
-                </div>
-
-                <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-                  <div className="text-[11px] text-slate-400">إجمالي المصروفات والنثريات</div>
-                  <div className="text-lg font-bold text-rose-400 font-mono mt-1">
-                    {(shiftData?.expensesTotal || 0).toLocaleString()} ج.م
-                  </div>
-                </div>
-              </div>
             </div>
 
-            {/* Expenses History Table */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-rose-400" />
-                  <span>سجل المصروفات والنثريات المنصرفة من الدرج</span>
-                </h3>
-                <span className="text-xs text-slate-400">
-                  إجمالي: {totalExpenses.toLocaleString()} ج.م
-                </span>
-              </div>
+            {/* 1. SUB-TAB: DRAWER & LIVE SHIFT */}
+            {treasurySubTab === "drawer" && (
+              <div className="space-y-6">
+                <div className="bg-gradient-to-r from-slate-900 via-slate-900 to-amber-950/40 border border-amber-500/30 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+                        <span className="text-xs font-bold text-emerald-400">
+                          الوردية الحالية مفتوحة ونشطة
+                        </span>
+                        <span className="text-xs text-slate-400">
+                          (وردية #{shiftData?.openShift?.shiftNumber || shiftData?.shift?.shiftNumber || 1})
+                        </span>
+                      </div>
+                      <h2 className="text-xl font-black text-white">
+                        الكاشير المسؤول: {shiftData?.openShift?.openedBy || shiftData?.shift?.openedBy || "كاشير الوردية"}
+                      </h2>
+                      <p className="text-xs text-slate-400 mt-1">
+                        بدأت في: {new Date(shiftData?.openShift?.openedAt || shiftData?.shift?.openedAt || Date.now()).toLocaleTimeString("ar-EG")}
+                      </p>
+                    </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-right text-xs">
-                  <thead className="bg-slate-950/60 text-slate-400 border-b border-slate-800">
-                    <tr>
-                      <th className="py-2.5 px-3">بند المصروف</th>
-                      <th className="py-2.5 px-3">المبلغ</th>
-                      <th className="py-2.5 px-3">التصنيف</th>
-                      <th className="py-2.5 px-3">المسؤول</th>
-                      <th className="py-2.5 px-3">الوقت</th>
-                      <th className="py-2.5 px-3">ملاحظات</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-800">
-                    {expenses.map((exp) => (
-                      <tr key={exp.id} className="hover:bg-slate-800/40">
-                        <td className="py-2.5 px-3 font-bold text-white">{exp.title}</td>
-                        <td className="py-2.5 px-3 font-bold text-rose-400 font-mono">
-                          {exp.amount} ج.م
-                        </td>
-                        <td className="py-2.5 px-3">
-                          <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300">
-                            {exp.category}
+                    <div className="bg-slate-950/80 border border-amber-500/40 rounded-2xl p-4 px-6 text-center shadow-inner">
+                      <div className="text-xs text-slate-400 font-medium mb-1">
+                        صافي النقدية المتوقعة بالدرج الآن
+                      </div>
+                      <div className="text-3xl font-black text-amber-400 font-mono">
+                        {(shiftData?.liveStats?.expectedCash ?? shiftData?.expectedCash ?? 0).toLocaleString()} <span className="text-sm font-normal text-slate-400">ج.م</span>
+                      </div>
+                      <div className="text-[10px] text-slate-400 mt-1">
+                        (فكة افتتاحية {shiftData?.openShift?.openingCashFloat || shiftData?.shift?.openingCashFloat || 500} ج.م + كاش مبيعات - نثريات)
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => setShowExpenseModal(true)}
+                        className="flex items-center gap-2 bg-rose-600 hover:bg-rose-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs shadow-lg transition"
+                      >
+                        <Plus className="w-4 h-4" />
+                        <span>تسجيل مصروف / نثرية</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-slate-800">
+                    <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                      <div className="text-[11px] text-slate-400">مقبوضات كاش (نقدي)</div>
+                      <div className="text-lg font-bold text-emerald-400 font-mono mt-1">
+                        {(shiftData?.liveStats?.cashCollected ?? shiftData?.cashCollected ?? 0).toLocaleString()} ج.م
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                      <div className="text-[11px] text-slate-400">مقبوضات فيزا / كروت</div>
+                      <div className="text-lg font-bold text-blue-400 font-mono mt-1">
+                        {(shiftData?.liveStats?.visaCollected ?? shiftData?.visaCollected ?? 0).toLocaleString()} ج.م
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                      <div className="text-[11px] text-slate-400">إنستاباي (InstaPay)</div>
+                      <div className="text-lg font-bold text-purple-400 font-mono mt-1">
+                        {(shiftData?.liveStats?.instapayCollected ?? shiftData?.instapayCollected ?? 0).toLocaleString()} ج.م
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                      <div className="text-[11px] text-slate-400">إجمالي المصروفات والنثريات</div>
+                      <div className="text-lg font-bold text-rose-400 font-mono mt-1">
+                        {(shiftData?.liveStats?.expensesTotal ?? shiftData?.expensesTotal ?? 0).toLocaleString()} ج.م
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Expenses History Table */}
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-rose-400" />
+                      <span>سجل المصروفات والنثريات المنصرفة من الدرج</span>
+                    </h3>
+                    <span className="text-xs text-slate-400">
+                      إجمالي: {totalExpenses.toLocaleString()} ج.م
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-xs">
+                      <thead className="bg-slate-950/60 text-slate-400 border-b border-slate-800">
+                        <tr>
+                          <th className="py-2.5 px-3">بند المصروف</th>
+                          <th className="py-2.5 px-3">المبلغ</th>
+                          <th className="py-2.5 px-3">التصنيف</th>
+                          <th className="py-2.5 px-3">المسؤول</th>
+                          <th className="py-2.5 px-3">الوقت</th>
+                          <th className="py-2.5 px-3">ملاحظات</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800">
+                        {expenses.length === 0 ? (
+                          <tr>
+                            <td colSpan={6} className="py-6 text-center text-slate-500">
+                              لا توجد مصروفات مسجلة حتى الآن
+                            </td>
+                          </tr>
+                        ) : (
+                          expenses.map((exp) => (
+                            <tr key={exp.id} className="hover:bg-slate-800/40">
+                              <td className="py-2.5 px-3 font-bold text-white">{exp.title}</td>
+                              <td className="py-2.5 px-3 font-bold text-rose-400 font-mono">
+                                {exp.amount} ج.م
+                              </td>
+                              <td className="py-2.5 px-3">
+                                <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300">
+                                  {exp.category}
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-3 text-slate-300">{exp.recordedBy}</td>
+                              <td className="py-2.5 px-3 text-slate-400">
+                                {new Date(exp.createdAt).toLocaleTimeString("ar-EG")}
+                              </td>
+                              <td className="py-2.5 px-3 text-slate-400">{exp.notes || "-"}</td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 2. SUB-TAB: P&L (PROFIT & LOSS STATEMENT) */}
+            {treasurySubTab === "pnl" && (
+              <div className="space-y-6">
+                {/* 5 Executive KPI Cards */}
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5">
+                  {/* Revenue */}
+                  <div className="bg-slate-900 border border-emerald-500/30 rounded-2xl p-4 shadow-lg relative overflow-hidden">
+                    <div className="absolute top-2 left-2 text-emerald-500/20">
+                      <TrendingUp className="w-12 h-12" />
+                    </div>
+                    <div className="text-[11px] font-bold text-emerald-400 mb-1 flex items-center gap-1">
+                      <span>إجمالي المبيعات (Revenue)</span>
+                    </div>
+                    <div className="text-2xl font-black text-white font-mono">
+                      {filteredReportData.totalRevenue.toLocaleString()} <span className="text-xs font-normal text-slate-400">ج.م</span>
+                    </div>
+                    <div className="text-[10px] text-slate-400 mt-1">
+                      {filteredReportData.ordersCount} طلب مكتمل ومسدد
+                    </div>
+                  </div>
+
+                  {/* COGS */}
+                  <div className="bg-slate-900 border border-amber-500/30 rounded-2xl p-4 shadow-lg relative overflow-hidden">
+                    <div className="absolute top-2 left-2 text-amber-500/20">
+                      <Boxes className="w-12 h-12" />
+                    </div>
+                    <div className="text-[11px] font-bold text-amber-400 mb-1 flex items-center gap-1">
+                      <span>تكلفة الخامات (COGS)</span>
+                    </div>
+                    <div className="text-2xl font-black text-white font-mono">
+                      {filteredReportData.totalCOGS.toLocaleString()} <span className="text-xs font-normal text-slate-400">ج.م</span>
+                    </div>
+                    <div className="text-[10px] text-slate-400 mt-1">
+                      {filteredReportData.totalRevenue > 0
+                        ? ((filteredReportData.totalCOGS / filteredReportData.totalRevenue) * 100).toFixed(1)
+                        : "0.0"}% من قيمة المبيعات
+                    </div>
+                  </div>
+
+                  {/* Gross Profit */}
+                  <div className="bg-slate-900 border border-sky-500/30 rounded-2xl p-4 shadow-lg relative overflow-hidden">
+                    <div className="absolute top-2 left-2 text-sky-500/20">
+                      <Award className="w-12 h-12" />
+                    </div>
+                    <div className="text-[11px] font-bold text-sky-400 mb-1 flex items-center gap-1">
+                      <span>مجمل الربح (Gross Profit)</span>
+                    </div>
+                    <div className="text-2xl font-black text-sky-400 font-mono">
+                      {filteredReportData.grossProfit.toLocaleString()} <span className="text-xs font-normal text-slate-400">ج.م</span>
+                    </div>
+                    <div className="text-[10px] text-sky-300 font-bold mt-1">
+                      هامش مجمل: {filteredReportData.grossProfitMargin.toFixed(1)}%
+                    </div>
+                  </div>
+
+                  {/* Expenses */}
+                  <div className="bg-slate-900 border border-rose-500/30 rounded-2xl p-4 shadow-lg relative overflow-hidden">
+                    <div className="absolute top-2 left-2 text-rose-500/20">
+                      <ArrowDownLeft className="w-12 h-12" />
+                    </div>
+                    <div className="text-[11px] font-bold text-rose-400 mb-1 flex items-center gap-1">
+                      <span>المصروفات والنثريات</span>
+                    </div>
+                    <div className="text-2xl font-black text-rose-400 font-mono">
+                      {filteredReportData.totalExpensesAmount.toLocaleString()} <span className="text-xs font-normal text-slate-400">ج.م</span>
+                    </div>
+                    <div className="text-[10px] text-slate-400 mt-1">
+                      {filteredReportData.filteredExpenses.length} حركة صرف مسجلة
+                    </div>
+                  </div>
+
+                  {/* Net Operating Profit */}
+                  <div className="bg-gradient-to-br from-emerald-950/60 to-slate-900 border border-emerald-500/50 rounded-2xl p-4 shadow-xl relative overflow-hidden col-span-2 md:col-span-1">
+                    <div className="absolute top-2 left-2 text-emerald-400/20">
+                      <Sparkles className="w-12 h-12" />
+                    </div>
+                    <div className="text-[11px] font-bold text-emerald-300 mb-1 flex items-center gap-1">
+                      <span>صافي الربح الفعلي (Net)</span>
+                    </div>
+                    <div className={`text-2xl font-black font-mono ${filteredReportData.netProfit >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+                      {filteredReportData.netProfit.toLocaleString()} <span className="text-xs font-normal text-slate-400">ج.م</span>
+                    </div>
+                    <div className="text-[10px] text-emerald-300 font-bold mt-1">
+                      هامش صافي: {filteredReportData.netProfitMargin.toFixed(1)}%
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2-Column Section: P&L Statement & Branch Breakdown */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Left (2 cols): Official P&L Statement */}
+                  <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                    <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
+                      <div>
+                        <h3 className="text-base font-black text-white flex items-center gap-2">
+                          <BarChart3 className="w-5 h-5 text-amber-400" />
+                          <span>قائمة الدخل والأرباح التشغيلية الشاملة</span>
+                        </h3>
+                        <p className="text-xs text-slate-400 mt-1">
+                          تحليل تفصيلي لمصادر الإيرادات وتكلفة الخامات ومجمل وصافي الربح للفترة المحددة.
+                        </p>
+                      </div>
+                      <span className="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-amber-400 font-mono">
+                        {reportTimeframe === "TODAY" ? "اليوم" : reportTimeframe === "WEEK" ? "7 أيام" : reportTimeframe === "MONTH" ? "هذا الشهر" : "الكل"}
+                      </span>
+                    </div>
+
+                    <div className="space-y-3 text-xs">
+                      {/* Subtotal */}
+                      <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
+                        <div className="flex items-center gap-2 text-slate-300">
+                          <span className="text-slate-500 font-mono">1.</span>
+                          <span>إجمالي مبيعات الأصناف (Gross Subtotal)</span>
+                        </div>
+                        <div className="font-mono font-bold text-slate-200">
+                          {filteredReportData.totalSubtotal.toFixed(2)} ج.م
+                        </div>
+                      </div>
+
+                      {/* Discounts */}
+                      <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
+                        <div className="flex items-center gap-2 text-rose-400">
+                          <span className="text-slate-500 font-mono">2.</span>
+                          <span>(-) الخصومات والعروض الترويجية الممنوحة</span>
+                        </div>
+                        <div className="font-mono font-bold text-rose-400">
+                          - {filteredReportData.totalDiscount.toFixed(2)} ج.م
+                        </div>
+                      </div>
+
+                      {/* Delivery Fees */}
+                      <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
+                        <div className="flex items-center gap-2 text-slate-300">
+                          <span className="text-slate-500 font-mono">3.</span>
+                          <span>(+) رسوم وخدمات التوصيل الدليفري</span>
+                        </div>
+                        <div className="font-mono font-bold text-slate-300">
+                          + {filteredReportData.totalDeliveryFees.toFixed(2)} ج.م
+                        </div>
+                      </div>
+
+                      {/* Tips */}
+                      <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
+                        <div className="flex items-center gap-2 text-slate-300">
+                          <span className="text-slate-500 font-mono">4.</span>
+                          <span>(+) إكراميات وتيبس الباريستا</span>
+                        </div>
+                        <div className="font-mono font-bold text-slate-300">
+                          + {filteredReportData.totalTips.toFixed(2)} ج.م
+                        </div>
+                      </div>
+
+                      {/* Net Revenue */}
+                      <div className="flex items-center justify-between py-3 px-4 rounded-xl bg-emerald-950/40 border border-emerald-500/40">
+                        <div className="flex items-center gap-2 font-black text-emerald-400 text-sm">
+                          <span>(=) صافي إيرادات المبيعات المحصلة (Net Revenue)</span>
+                        </div>
+                        <div className="font-mono font-black text-emerald-400 text-base">
+                          {filteredReportData.totalRevenue.toFixed(2)} ج.م
+                        </div>
+                      </div>
+
+                      {/* COGS */}
+                      <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
+                        <div className="flex items-center gap-2 text-amber-400">
+                          <span className="text-slate-500 font-mono">5.</span>
+                          <span>(-) تكلفة الخامات ومكونات الإنتاج التقديرية (COGS)</span>
+                        </div>
+                        <div className="font-mono font-bold text-amber-400">
+                          - {filteredReportData.totalCOGS.toFixed(2)} ج.م
+                        </div>
+                      </div>
+
+                      {/* Gross Profit */}
+                      <div className="flex items-center justify-between py-3 px-4 rounded-xl bg-sky-950/40 border border-sky-500/40">
+                        <div>
+                          <div className="font-black text-sky-400 text-sm">
+                            (=) مجمل الربح الإجمالي للنشاط (Gross Profit)
+                          </div>
+                          <div className="text-[10px] text-sky-300 mt-0.5">
+                            هامش مجمل ربح المبيعات: {filteredReportData.grossProfitMargin.toFixed(1)}%
+                          </div>
+                        </div>
+                        <div className="font-mono font-black text-sky-400 text-base">
+                          {filteredReportData.grossProfit.toFixed(2)} ج.م
+                        </div>
+                      </div>
+
+                      {/* OPEX */}
+                      <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
+                        <div className="flex items-center gap-2 text-rose-400">
+                          <span className="text-slate-500 font-mono">6.</span>
+                          <span>(-) المصروفات والنثريات التشغيلية واليومية المنصرفة</span>
+                        </div>
+                        <div className="font-mono font-bold text-rose-400">
+                          - {filteredReportData.totalExpensesAmount.toFixed(2)} ج.م
+                        </div>
+                      </div>
+
+                      {/* Net Operating Profit */}
+                      <div className="flex items-center justify-between py-3.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-slate-950 to-emerald-950/80 border-2 border-emerald-500/60 shadow-lg">
+                        <div>
+                          <div className="font-black text-emerald-300 text-base flex items-center gap-1.5">
+                            <Sparkles className="w-4 h-4 text-emerald-400" />
+                            <span>(🏆) صافي الربح التشغيلي النهائي (Net Profit)</span>
+                          </div>
+                          <div className="text-xs text-emerald-400 font-bold mt-0.5">
+                            هامش صافي الربح الفعلي: {filteredReportData.netProfitMargin.toFixed(1)}%
+                          </div>
+                        </div>
+                        <div className={`font-mono font-black text-xl ${filteredReportData.netProfit >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+                          {filteredReportData.netProfit.toFixed(2)} ج.م
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right (1 col): Branch Comparison */}
+                  <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-base font-black text-white flex items-center gap-2 mb-1">
+                        <PieChart className="w-5 h-5 text-purple-400" />
+                        <span>مقارنة أداء ومساهمة المحلين</span>
+                      </h3>
+                      <p className="text-xs text-slate-400 mb-6">
+                        توزيع المبيعات والمصروفات بين سول ميت كافيه وحلواني أبو عادل.
+                      </p>
+
+                      {/* Soulmate Cafe Card */}
+                      <div className="bg-slate-950/70 border border-amber-500/30 rounded-2xl p-4 mb-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-black text-amber-400 text-xs flex items-center gap-1.5">
+                            <span>☕ سول ميت كافيه VIP</span>
                           </span>
-                        </td>
-                        <td className="py-2.5 px-3 text-slate-300">{exp.recordedBy}</td>
-                        <td className="py-2.5 px-3 text-slate-400">
-                          {new Date(exp.createdAt).toLocaleTimeString("ar-EG")}
-                        </td>
-                        <td className="py-2.5 px-3 text-slate-400">{exp.notes || "-"}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                          <span className="text-[11px] font-bold text-amber-300 font-mono">
+                            {filteredReportData.totalRevenue > 0
+                              ? ((filteredReportData.soulmateRevenue / filteredReportData.totalRevenue) * 100).toFixed(1)
+                              : "0.0"}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden mb-3">
+                          <div
+                            className="bg-gradient-to-r from-amber-600 to-amber-400 h-2 rounded-full transition-all duration-500"
+                            style={{
+                              width: `${
+                                filteredReportData.totalRevenue > 0
+                                  ? Math.min(100, (filteredReportData.soulmateRevenue / filteredReportData.totalRevenue) * 100)
+                                  : 0
+                              }%`,
+                            }}
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 text-[11px]">
+                          <div className="bg-slate-900/80 p-2 rounded-lg">
+                            <span className="text-slate-400 block text-[10px]">المبيعات:</span>
+                            <span className="font-bold font-mono text-emerald-400">
+                              {filteredReportData.soulmateRevenue.toLocaleString()} ج.م
+                            </span>
+                          </div>
+                          <div className="bg-slate-900/80 p-2 rounded-lg">
+                            <span className="text-slate-400 block text-[10px]">المصروفات:</span>
+                            <span className="font-bold font-mono text-rose-400">
+                              {filteredReportData.soulmateExpenses.toLocaleString()} ج.م
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Abu Adel Sweets Card */}
+                      <div className="bg-slate-950/70 border border-rose-500/30 rounded-2xl p-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-black text-rose-400 text-xs flex items-center gap-1.5">
+                            <span>🍰 حلواني أبو عادل</span>
+                          </span>
+                          <span className="text-[11px] font-bold text-rose-300 font-mono">
+                            {filteredReportData.totalRevenue > 0
+                              ? ((filteredReportData.abuAdelRevenue / filteredReportData.totalRevenue) * 100).toFixed(1)
+                              : "0.0"}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden mb-3">
+                          <div
+                            className="bg-gradient-to-r from-rose-600 to-rose-400 h-2 rounded-full transition-all duration-500"
+                            style={{
+                              width: `${
+                                filteredReportData.totalRevenue > 0
+                                  ? Math.min(100, (filteredReportData.abuAdelRevenue / filteredReportData.totalRevenue) * 100)
+                                  : 0
+                              }%`,
+                            }}
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 text-[11px]">
+                          <div className="bg-slate-900/80 p-2 rounded-lg">
+                            <span className="text-slate-400 block text-[10px]">المبيعات:</span>
+                            <span className="font-bold font-mono text-emerald-400">
+                              {filteredReportData.abuAdelRevenue.toLocaleString()} ج.م
+                            </span>
+                          </div>
+                          <div className="bg-slate-900/80 p-2 rounded-lg">
+                            <span className="text-slate-400 block text-[10px]">المصروفات:</span>
+                            <span className="font-bold font-mono text-rose-400">
+                              {filteredReportData.abuAdelExpenses.toLocaleString()} ج.م
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-6 p-3 rounded-xl bg-slate-950 border border-slate-800/80 text-[11px] text-slate-400 leading-relaxed">
+                      💡 <strong className="text-amber-400">ملحوظة ذكية:</strong> تم ربط تكلفة المبيعات (COGS) تلقائياً بمكونات ريسيبي البار بسول ميت وتكلفة الإنتاج والشراء بحلواني أبو عادل لتحقيق دقة محاسبية متناهية.
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* 3. SUB-TAB: MENU ENGINEERING & BEST SELLERS */}
+            {treasurySubTab === "menu_eng" && (
+              <div className="space-y-6">
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                      <h3 className="text-base font-black text-white flex items-center gap-2">
+                        <Award className="w-5 h-5 text-amber-400" />
+                        <span>هندسة المنيو والأصناف الأكثر طلباً وربحية (Menu Engineering)</span>
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-1">
+                        تحليل الأصناف الرابحة (Stars)، الأكثر طلباً بالكمية، والأعلى تحقيقاً للإيرادات وهوامش الأرباح.
+                      </p>
+                    </div>
+                    <span className="text-xs px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 font-mono">
+                      إجمالي الأصناف المباعة: {filteredReportData.itemsList.length} صنف
+                    </span>
+                  </div>
+                </div>
+
+                {filteredReportData.itemsList.length === 0 ? (
+                  <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center text-slate-500">
+                    <Package className="w-12 h-12 mx-auto mb-3 opacity-30 text-amber-400" />
+                    <p className="font-bold text-slate-300">لم يتم تسجيل مبيعات أصناف في الفترة أو المنفذ المحدد حالياً</p>
+                    <p className="text-xs mt-1 text-slate-500">قم بتوسيع نطاق الفترة إلى (كافة الفترات) أو تسجيل طلبات جديدة من شاشة الكاشير.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Top by Qty */}
+                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
+                      <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+                        <h4 className="text-xs font-black text-amber-400 flex items-center gap-1.5">
+                          <span>🔥 الأكثر طلباً ومبيعاً (بالكمية)</span>
+                        </h4>
+                        <span className="text-[10px] text-slate-400">توب 8 أصناف</span>
+                      </div>
+                      <div className="space-y-3">
+                        {filteredReportData.topByQty.map((item, idx) => {
+                          const maxQty = filteredReportData.topByQty[0]?.qty || 1;
+                          const pct = Math.round((item.qty / maxQty) * 100);
+                          return (
+                            <div key={idx} className="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80">
+                              <div className="flex items-center justify-between text-xs mb-1">
+                                <div className="flex items-center gap-2">
+                                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${
+                                    idx === 0 ? "bg-amber-500 text-slate-950" : "bg-slate-800 text-slate-300"
+                                  }`}>
+                                    {idx + 1}
+                                  </span>
+                                  <span className="font-bold text-white truncate max-w-[140px]">{item.nameAr}</span>
+                                </div>
+                                <span className="font-mono font-bold text-amber-400">{item.qty} قطعة</span>
+                              </div>
+                              <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                                <div className="bg-amber-500 h-1.5 rounded-full" style={{ width: `${pct}%` }} />
+                              </div>
+                              <div className="flex items-center justify-between text-[10px] text-slate-400 mt-1">
+                                <span>{item.category}</span>
+                                <span className="font-mono text-emerald-400">{item.totalRevenue.toFixed(0)} ج.م</span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Top by Revenue */}
+                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
+                      <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+                        <h4 className="text-xs font-black text-emerald-400 flex items-center gap-1.5">
+                          <span>💰 الأعلى إيراداً (حجم المبيعات)</span>
+                        </h4>
+                        <span className="text-[10px] text-slate-400">توب 8 أصناف</span>
+                      </div>
+                      <div className="space-y-3">
+                        {filteredReportData.topByRevenue.map((item, idx) => {
+                          const maxRev = filteredReportData.topByRevenue[0]?.totalRevenue || 1;
+                          const pct = Math.round((item.totalRevenue / maxRev) * 100);
+                          return (
+                            <div key={idx} className="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80">
+                              <div className="flex items-center justify-between text-xs mb-1">
+                                <div className="flex items-center gap-2">
+                                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${
+                                    idx === 0 ? "bg-emerald-500 text-slate-950" : "bg-slate-800 text-slate-300"
+                                  }`}>
+                                    {idx + 1}
+                                  </span>
+                                  <span className="font-bold text-white truncate max-w-[140px]">{item.nameAr}</span>
+                                </div>
+                                <span className="font-mono font-bold text-emerald-400">{item.totalRevenue.toFixed(0)} ج.م</span>
+                              </div>
+                              <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                                <div className="bg-emerald-500 h-1.5 rounded-full" style={{ width: `${pct}%` }} />
+                              </div>
+                              <div className="flex items-center justify-between text-[10px] text-slate-400 mt-1">
+                                <span>بيع: {item.unitPrice} ج.م</span>
+                                <span className="font-mono text-slate-300">{item.qty} مبيعات</span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Top by Profit Margin */}
+                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
+                      <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+                        <h4 className="text-xs font-black text-sky-400 flex items-center gap-1.5">
+                          <span>✨ الأعلى ربحية ومساهمة صافية</span>
+                        </h4>
+                        <span className="text-[10px] text-slate-400">توب 8 أصناف</span>
+                      </div>
+                      <div className="space-y-3">
+                        {filteredReportData.topByProfit.map((item, idx) => {
+                          const maxProfit = filteredReportData.topByProfit[0]?.profit || 1;
+                          const pct = Math.max(0, Math.round((item.profit / maxProfit) * 100));
+                          const marginPct = item.totalRevenue > 0 ? Math.round((item.profit / item.totalRevenue) * 100) : 0;
+                          return (
+                            <div key={idx} className="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80">
+                              <div className="flex items-center justify-between text-xs mb-1">
+                                <div className="flex items-center gap-2">
+                                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${
+                                    idx === 0 ? "bg-sky-500 text-slate-950" : "bg-slate-800 text-slate-300"
+                                  }`}>
+                                    {idx + 1}
+                                  </span>
+                                  <span className="font-bold text-white truncate max-w-[140px]">{item.nameAr}</span>
+                                </div>
+                                <span className="font-mono font-bold text-sky-400">+{item.profit.toFixed(0)} ج.م</span>
+                              </div>
+                              <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                                <div className="bg-sky-500 h-1.5 rounded-full" style={{ width: `${pct}%` }} />
+                              </div>
+                              <div className="flex items-center justify-between text-[10px] text-slate-400 mt-1">
+                                <span>تكلفة: {item.costPrice.toFixed(1)} ج.م</span>
+                                <span className="font-bold text-sky-300">هامش {marginPct}%</span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* 4. SUB-TAB: PAYMENTS & CHANNELS */}
+            {treasurySubTab === "payments" && (
+              <div className="space-y-6">
+                {/* 4 Payment Methods Cards */}
+                <div>
+                  <h3 className="text-sm font-black text-slate-200 mb-3 flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-amber-400" />
+                    <span>توزيع مقبوضات المبيعات حسب طريقة الدفع</span>
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {Object.entries(filteredReportData.paymentMethods).map(([key, pm]) => {
+                      const sharePct = filteredReportData.totalRevenue > 0
+                        ? ((pm.amount / filteredReportData.totalRevenue) * 100).toFixed(1)
+                        : "0.0";
+                      return (
+                        <div key={key} className={`rounded-2xl p-4 border bg-slate-900 ${pm.border} shadow-lg relative overflow-hidden`}>
+                          <div className="text-xs font-bold text-slate-300 mb-1">{pm.label}</div>
+                          <div className={`text-2xl font-black font-mono ${pm.color} my-1`}>
+                            {pm.amount.toLocaleString()} <span className="text-xs font-normal text-slate-400">ج.م</span>
+                          </div>
+                          <div className="flex items-center justify-between text-[11px] text-slate-400 mt-3 pt-2 border-t border-slate-800">
+                            <span>{pm.count} طلب مسدد</span>
+                            <span className="font-bold font-mono text-white">{sharePct}% من الإجمالي</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Sales Channels & Operational Metrics */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Order Channels */}
+                  <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
+                    <h3 className="text-sm font-black text-slate-200 mb-4 flex items-center gap-2">
+                      <Truck className="w-4 h-4 text-purple-400" />
+                      <span>قنوات ونوافذ البيع والتشغيل</span>
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      {Object.entries(filteredReportData.orderTypes).map(([key, ot]) => {
+                        const share = filteredReportData.totalRevenue > 0
+                          ? ((ot.amount / filteredReportData.totalRevenue) * 100).toFixed(1)
+                          : "0.0";
+                        return (
+                          <div key={key} className="bg-slate-950/70 border border-slate-800 rounded-xl p-4 text-center">
+                            <div className="text-xs font-bold text-slate-300 mb-1">{ot.label}</div>
+                            <div className="text-xl font-black text-amber-400 font-mono my-1">
+                              {ot.amount.toLocaleString()} <span className="text-xs font-normal text-slate-400">ج.م</span>
+                            </div>
+                            <div className="text-[11px] text-slate-400 mt-2">
+                              {ot.count} طلبات ({share}%)
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Operational Metrics */}
+                  <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
+                    <h3 className="text-sm font-black text-slate-200 mb-4 flex items-center gap-2">
+                      <Percent className="w-4 h-4 text-emerald-400" />
+                      <span>المؤشرات التشغيلية للمبيعات</span>
+                    </h3>
+                    <div className="space-y-3 text-xs">
+                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
+                        <span className="text-slate-400">متوسط قيمة الفاتورة (AOV):</span>
+                        <span className="font-mono font-bold text-emerald-400">
+                          {filteredReportData.averageOrderValue.toFixed(1)} ج.م
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
+                        <span className="text-slate-400">إجمالي الخصومات الممنوحة:</span>
+                        <span className="font-mono font-bold text-rose-400">
+                          {filteredReportData.totalDiscount.toFixed(1)} ج.م
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
+                        <span className="text-slate-400">إكراميات وتيبس الباريستا:</span>
+                        <span className="font-mono font-bold text-amber-400">
+                          {filteredReportData.totalTips.toFixed(1)} ج.م
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
+                        <span className="text-slate-400">رسوم التوصيل المحصلة:</span>
+                        <span className="font-mono font-bold text-sky-400">
+                          {filteredReportData.totalDeliveryFees.toFixed(1)} ج.م
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 5. SUB-TAB: ARCHIVE & Z-REPORTS */}
+            {treasurySubTab === "archive" && (
+              <div className="space-y-6">
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                    <div>
+                      <h3 className="text-sm font-black text-white flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-amber-400" />
+                        <span>أرشيف إقفالات اليوميات والورديات السابقة (Z-Reports Ledger)</span>
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-1">
+                        سجل معتمد لكافة الإقفالات اليومية وتوريدات الخزينة والتسويات المالية.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => window.print()}
+                      className="flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition self-start md:self-auto"
+                    >
+                      <Printer className="w-4 h-4" />
+                      <span>طباعة شيت الإقفال المالي Z-Report</span>
+                    </button>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-xs">
+                      <thead className="bg-slate-950/60 text-slate-400 border-b border-slate-800">
+                        <tr>
+                          <th className="py-2.5 px-3">تاريخ اليومية</th>
+                          <th className="py-2.5 px-3">الفرع</th>
+                          <th className="py-2.5 px-3">إجمالي المبيعات</th>
+                          <th className="py-2.5 px-3">كاش الدرج</th>
+                          <th className="py-2.5 px-3">كروت وإنستاباي</th>
+                          <th className="py-2.5 px-3">المصروفات</th>
+                          <th className="py-2.5 px-3">صافي التوريد</th>
+                          <th className="py-2.5 px-3">المسؤول</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800">
+                        {(!shiftData?.dailyCloses || shiftData.dailyCloses.length === 0) ? (
+                          <tr>
+                            <td colSpan={8} className="py-8 text-center text-slate-400">
+                              <History className="w-8 h-8 mx-auto mb-2 opacity-30 text-amber-400" />
+                              <div className="font-bold text-slate-300">لا توجد إقفالات يومية مؤرشفة مسجلة بعد</div>
+                              <div className="text-[11px] text-slate-500 mt-1">
+                                يتم حفظ تقرير اليومية الشامل (Z-Report) تلقائياً عند إقفال الوردية المسائية من شاشة الكاشير.
+                              </div>
+                            </td>
+                          </tr>
+                        ) : (
+                          shiftData.dailyCloses.map((dc: any) => (
+                            <tr key={dc.id} className="hover:bg-slate-800/40">
+                              <td className="py-2.5 px-3 font-bold text-white font-mono">
+                                {new Date(dc.closeDate).toLocaleDateString("ar-EG")}
+                              </td>
+                              <td className="py-2.5 px-3 text-slate-300">
+                                {dc.outlet?.name || "كافة الفروع"}
+                              </td>
+                              <td className="py-2.5 px-3 font-bold text-emerald-400 font-mono">
+                                {dc.totalSales?.toLocaleString() || 0} ج.م
+                              </td>
+                              <td className="py-2.5 px-3 font-mono text-slate-200">
+                                {dc.cashTotal?.toLocaleString() || 0} ج.م
+                              </td>
+                              <td className="py-2.5 px-3 font-mono text-blue-400">
+                                {(dc.cardTotal || 0) + (dc.instapayTotal || 0)} ج.م
+                              </td>
+                              <td className="py-2.5 px-3 font-mono text-rose-400">
+                                {dc.expensesTotal?.toLocaleString() || 0} ج.م
+                              </td>
+                              <td className="py-2.5 px-3 font-bold text-amber-400 font-mono">
+                                {dc.netSafeDeposit?.toLocaleString() || 0} ج.م
+                              </td>
+                              <td className="py-2.5 px-3 text-slate-400">{dc.closedBy || "-"}</td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
