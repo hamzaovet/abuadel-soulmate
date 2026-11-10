@@ -9,14 +9,21 @@ export async function GET(req: Request) {
     const outletId = searchParams.get("outletId");
     const category = searchParams.get("category");
 
+    const abuAdelOutlet = await prisma.outlet.findFirst({
+      where: { code: "ABU_ADEL_PATISSERIE" },
+      select: { id: true },
+    });
+
     const where: any = {
       OR: [
-        { itemType: "READY_PASTRY" },
         { outlet: { code: "ABU_ADEL_PATISSERIE" } },
+        ...(abuAdelOutlet ? [{ outletId: abuAdelOutlet.id }] : []),
+        { itemType: "READY_PASTRY" },
       ],
     };
 
-    if (outletId && outletId !== "ALL") {
+    // If explicitly filtering by Abu Adel outlet
+    if (outletId && outletId !== "ALL" && outletId === abuAdelOutlet?.id) {
       where.outletId = outletId;
     }
     if (category && category !== "ALL") {

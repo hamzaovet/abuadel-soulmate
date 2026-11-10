@@ -305,9 +305,9 @@ export default function AdminDashboardPage() {
         fetch("/api/settings"),
         fetch(`/api/shifts${outletParam}`),
         fetch(`/api/expenses${outletParam}`),
-        fetch(`/api/recipes${outletParam}`),
-        fetch(`/api/menu${outletParam}`),
-        fetch(`/api/pastry-inventory${outletParam}`),
+        fetch(currentUser?.role === "owner" ? "/api/recipes" : `/api/recipes${outletParam}`),
+        fetch(currentUser?.role === "owner" ? "/api/menu" : `/api/menu${outletParam}`),
+        fetch("/api/pastry-inventory"),
         fetch(`/api/orders${outletParam}`),
         fetch("/api/customers"),
         fetch(`/api/tables${outletParam}`),
@@ -1255,7 +1255,11 @@ export default function AdminDashboardPage() {
                 <span className="text-xs text-slate-400 px-2 font-medium">الفرع:</span>
                 <select
                   value={selectedOutletId}
-                  onChange={(e) => setSelectedOutletId(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setSelectedOutletId(val);
+                    setMenuOutletFilter(val);
+                  }}
                   className="bg-slate-900 text-amber-400 text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-700 focus:outline-none focus:border-amber-500 cursor-pointer"
                 >
                   <option value="ALL">🌟 كافة الفروع (إدارة مركزية شاملة)</option>
@@ -1372,7 +1376,7 @@ export default function AdminDashboardPage() {
               }`}
             >
               <Package className="w-4 h-4" />
-              <span>قائمة الأصناف والتعديل الشامل (${menuItems.length})</span>
+              <span>قائمة الأصناف والتعديل الشامل ({menuItems.length} صنف)</span>
             </button>
 
             {/* Recipes Tab (Soulmate only) */}
@@ -1401,7 +1405,7 @@ export default function AdminDashboardPage() {
                 }`}
               >
                 <Cake className="w-4 h-4" />
-                <span>مخزن حلويات أبو عادل (Finished Goods)</span>
+                <span>مخزن حلويات أبو عادل ({pastryInventory.length > 0 ? pastryInventory.length : 230} صنف)</span>
               </button>
             )}
 
@@ -1952,8 +1956,8 @@ export default function AdminDashboardPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800">
-                    {menuItems
-                      .filter((it) => {
+                    {(() => {
+                      const filteredItems = menuItems.filter((it) => {
                         if (isUserSoulmate && it.outlet?.code !== "SOULMATE_CAFE") return false;
                         if (isUserAbuAdel && it.outlet?.code !== "ABU_ADEL_PATISSERIE") return false;
                         if (menuOutletFilter !== "ALL" && it.outletId !== menuOutletFilter) return false;
@@ -1966,8 +1970,21 @@ export default function AdminDashboardPage() {
                           );
                         }
                         return true;
-                      })
-                      .map((item) => {
+                      });
+
+                      if (filteredItems.length === 0) {
+                        return (
+                          <tr>
+                            <td colSpan={9} className="py-12 text-center text-slate-500">
+                              <Package className="w-10 h-10 mx-auto text-slate-600 opacity-40 mb-2" />
+                              <p className="text-sm font-bold text-slate-400">لا توجد أصناف مطابقة للبحث أو الفلتر المحدد</p>
+                              <p className="text-xs text-slate-500 mt-1">جرّب اختيار تصنيف آخر أو مسح كلمة البحث</p>
+                            </td>
+                          </tr>
+                        );
+                      }
+
+                      return filteredItems.map((item) => {
                         const fallbackImage =
                           item.itemType === "READY_PASTRY"
                             ? "https://images.unsplash.com/photo-1579372786545-d24232daf58c?w=600"
@@ -2078,7 +2095,8 @@ export default function AdminDashboardPage() {
                             </td>
                           </tr>
                         );
-                      })}
+                      });
+                    })()}
                   </tbody>
                 </table>
               </div>
@@ -2682,24 +2700,47 @@ export default function AdminDashboardPage() {
                       { id: "ORIENTAL_SWEETS", label: "الشرقيات" },
                       { id: "CAKES_TORTES", label: "التورت والمناسبات" },
                       { id: "WESTERN_PASTRY", label: "الجاتوهات والغربيات" },
-                      { id: "BAKERY", label: "المخبوزات والفطير" },
-                      { id: "NOVO_SWEETS", label: "النواعم" },
-                      { id: "CHOCOLATE", label: "الشوكولاتة" },
+                      { id: "BAKERY_FETEER", label: "المخبوزات والفطير" },
+                      { id: "KAHK_NOVAM", label: "الكحك والنواعم" },
+                      { id: "CHOCOLATE_SWEETS", label: "الشوكولاتة" },
                       { id: "GIFT_BOXES", label: "بوكسات الهدايا" },
-                    ].map((cat) => (
-                      <button
-                        key={cat.id}
-                        type="button"
-                        onClick={() => setPastryCategoryFilter(cat.id)}
-                        className={`px-3 py-1 rounded-xl text-[11px] font-bold whitespace-nowrap transition cursor-pointer ${
-                          pastryCategoryFilter === cat.id
-                            ? "bg-rose-500 text-white font-black"
-                            : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-                        }`}
-                      >
-                        {cat.label}
-                      </button>
-                    ))}
+                    ].map((cat) => {
+                      const sourceList =
+                        pastryInventory.length > 0
+                          ? pastryInventory
+                          : menuItems.filter((m) => m.itemType === "READY_PASTRY" || m.outlet?.code === "ABU_ADEL_PATISSERIE");
+                      const count =
+                        cat.id === "ALL"
+                          ? sourceList.length
+                          : sourceList.filter((item) => {
+                              if (cat.id === "BAKERY_FETEER") return item.category === "BAKERY_FETEER" || item.category === "BAKERY" || item.category === "FETEER";
+                              if (cat.id === "KAHK_NOVAM") return item.category === "KAHK_NOVAM" || item.category === "NOVO_SWEETS" || item.category === "NOVAM";
+                              if (cat.id === "CHOCOLATE_SWEETS") return item.category === "CHOCOLATE_SWEETS" || item.category === "CHOCOLATE";
+                              return item.category === cat.id;
+                            }).length;
+
+                      return (
+                        <button
+                          key={cat.id}
+                          type="button"
+                          onClick={() => setPastryCategoryFilter(cat.id)}
+                          className={`px-3 py-1 rounded-xl text-[11px] font-bold whitespace-nowrap transition cursor-pointer flex items-center gap-1.5 ${
+                            pastryCategoryFilter === cat.id
+                              ? "bg-rose-500 text-white font-black shadow-md shadow-rose-500/20"
+                              : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                          }`}
+                        >
+                          <span>{cat.label}</span>
+                          <span
+                            className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                              pastryCategoryFilter === cat.id ? "bg-white/20 text-white" : "bg-black/40 text-slate-400"
+                            }`}
+                          >
+                            {count}
+                          </span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -2714,10 +2755,21 @@ export default function AdminDashboardPage() {
                     const matchCategory =
                       pastryCategoryFilter === "ALL" ||
                       item.category === pastryCategoryFilter ||
-                      (pastryCategoryFilter === "BAKERY" && (item.category === "BAKERY" || item.category === "FETEER")) ||
-                      (pastryCategoryFilter === "NOVO_SWEETS" && (item.category === "NOVO_SWEETS" || item.category === "NOVAM"));
+                      (pastryCategoryFilter === "BAKERY_FETEER" && (item.category === "BAKERY_FETEER" || item.category === "BAKERY" || item.category === "FETEER")) ||
+                      (pastryCategoryFilter === "KAHK_NOVAM" && (item.category === "KAHK_NOVAM" || item.category === "NOVO_SWEETS" || item.category === "NOVAM")) ||
+                      (pastryCategoryFilter === "CHOCOLATE_SWEETS" && (item.category === "CHOCOLATE_SWEETS" || item.category === "CHOCOLATE"));
                     return matchQuery && matchCategory;
                   });
+
+                  if (filtered.length === 0) {
+                    return (
+                      <div className="py-16 text-center text-slate-500 bg-slate-900/50 border border-slate-800 rounded-2xl p-8 space-y-2">
+                        <Cake className="w-12 h-12 mx-auto text-rose-500/40 animate-pulse" />
+                        <p className="text-sm font-bold text-slate-300">لا توجد أصناف تطابق هذا البحث أو التصنيف</p>
+                        <p className="text-xs text-slate-500">جرب اختيار تصنيف آخر أو مسح كلمة البحث</p>
+                      </div>
+                    );
+                  }
 
                   return (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
