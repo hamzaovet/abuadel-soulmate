@@ -96,6 +96,36 @@ export async function POST(req: Request) {
       include: { outlet: { select: { id: true, name: true, code: true } } },
     });
 
+    // Record customer in CRM whenever a real phone number is provided in live chat
+    if (senderType === "CUSTOMER" && senderPhone) {
+      const cleanChatPhone = String(senderPhone).trim();
+      if (/^[+\d][\d\s-]{7,15}$/.test(cleanChatPhone)) {
+        try {
+          const existing = await prisma.customer.findUnique({ where: { phone: cleanChatPhone } });
+          if (existing) {
+            await prisma.customer.update({
+              where: { id: existing.id },
+              data: {
+                ...(senderName && senderName !== "عميل" && !existing.name ? { name: senderName.trim() } : {}),
+                lastVisitAt: new Date(),
+              },
+            });
+          } else {
+            await prisma.customer.create({
+              data: {
+                phone: cleanChatPhone,
+                name: senderName?.trim() || "عميل تواصل عبر الشات",
+                lastVisitAt: new Date(),
+                notes: "تواصل مباشر عبر شات العملاء",
+              },
+            });
+          }
+        } catch {
+          // Ignore non-critical CRM sync failures
+        }
+      }
+    }
+
     return NextResponse.json({ success: true, message: chatMsg });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

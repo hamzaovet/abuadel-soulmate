@@ -9,6 +9,16 @@ import {
   getCategoryLabel,
 } from "@/lib/categories";
 import {
+  DEFAULT_OFFERS,
+  OfferData,
+  getItemDiscountPricing,
+} from "@/lib/offers";
+import {
+  calculateEarnedPoints,
+  extractLoyaltyConfig,
+  getLoyaltyProgress,
+} from "@/lib/loyalty";
+import {
   Coffee,
   Cake,
   Phone,
@@ -33,6 +43,8 @@ import {
   Truck,
   Send,
   MessageCircle,
+  Gift,
+  Trophy,
 } from "lucide-react";
 
 export default function DualBrandLandingPage() {
@@ -42,6 +54,10 @@ export default function DualBrandLandingPage() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
   const [settings, setSettings] = useState<any>(null);
+  const [offers, setOffers] = useState<OfferData>(DEFAULT_OFFERS);
+  const [loyaltyPhoneInput, setLoyaltyPhoneInput] = useState("");
+  const [loyaltyCustomer, setLoyaltyCustomer] = useState<any>(null);
+  const [checkingLoyalty, setCheckingLoyalty] = useState(false);
 
   // Reservation & Party Modal State
   const [showReservationModal, setShowReservationModal] = useState(false);
@@ -68,19 +84,45 @@ export default function DualBrandLandingPage() {
   useEffect(() => {
     async function loadData() {
       try {
-        const [menuRes, settingsRes] = await Promise.all([
+        const [menuRes, settingsRes, offersRes] = await Promise.all([
           fetch("/api/menu"),
           fetch("/api/settings"),
+          fetch("/api/public/offers", { cache: "no-store" }),
         ]);
-        const [menuData, settingsData] = await Promise.all([
+        const [menuData, settingsData, offersData] = await Promise.all([
           menuRes.json(),
           settingsRes.json(),
+          offersRes.ok ? offersRes.json() : null,
         ]);
         if (menuData.success) {
           setMenuItems(menuData.items);
         }
         if (settingsData.success) {
           setSettings(settingsData.settings);
+        }
+        if (offersData && typeof offersData === "object") {
+          setOffers({ ...DEFAULT_OFFERS, ...offersData });
+        }
+
+        // Load saved customer session/phone hint to auto-populate Loyalty Meter
+        try {
+          const savedSession = localStorage.getItem("abuadel_customer_session");
+          const savedHint = localStorage.getItem("abuadel_customer_phone_hint");
+          let lookupPhone = savedHint || "";
+          if (savedSession) {
+            const parsed = JSON.parse(savedSession);
+            if (parsed?.phone) lookupPhone = parsed.phone;
+          }
+          if (lookupPhone) {
+            setLoyaltyPhoneInput(lookupPhone);
+            const custRes = await fetch(`/api/customers?phone=${encodeURIComponent(lookupPhone)}`);
+            const custData = await custRes.json();
+            if (custData.success && custData.customer) {
+              setLoyaltyCustomer(custData.customer);
+            }
+          }
+        } catch {
+          // Non-fatal
         }
       } catch (err) {
         console.error("Failed to load landing data", err);
@@ -90,6 +132,32 @@ export default function DualBrandLandingPage() {
     }
     loadData();
   }, []);
+
+  const handleCheckLoyaltyByPhone = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const clean = loyaltyPhoneInput.trim();
+    if (!clean) {
+      showToast("أدخل رقم الموبايل للاستعلام عن نقاطك ⭐");
+      return;
+    }
+    try {
+      setCheckingLoyalty(true);
+      const res = await fetch(`/api/customers?phone=${encodeURIComponent(clean)}`);
+      const data = await res.json();
+      if (data.success && data.customer) {
+        setLoyaltyCustomer(data.customer);
+        localStorage.setItem("abuadel_customer_phone_hint", clean);
+        showToast(`مرحباً ${data.customer.name}! رصيدك الحالي ${(data.customer.loyaltyPoints || 0).toLocaleString()} نقطة ⭐`);
+      } else {
+        setLoyaltyCustomer(null);
+        showToast("لم نجد نقاطاً مسجلة لهذا الرقم بعد — اطلب الآن وابدأ التجميع فوراً! 🎁");
+      }
+    } catch {
+      showToast("تعذر التحقق من النقاط حالياً");
+    } finally {
+      setCheckingLoyalty(false);
+    }
+  };
 
   // Submit Reservation
   const handleReservationSubmit = async (e: React.FormEvent) => {
@@ -434,8 +502,168 @@ export default function DualBrandLandingPage() {
         </div>
       </section>
 
+      {/* 3.5 SPECIAL OFFERS SECTION (Managed Live from Dashboard — Waffle House Engine) */}
+      {offers.enabled !== false && (
+        <section id="offers" className="py-8 max-w-7xl mx-auto px-4 w-full border-b border-slate-800/80">
+          <div className="mb-5">
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-black tracking-wide text-amber-400 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full mb-2">
+              <Flame className="w-3.5 h-3.5" />
+              <span>{offers.badge}</span>
+            </span>
+            <h2 className="text-2xl md:text-3xl font-black text-white">{offers.title}</h2>
+            <p className="text-xs md:text-sm text-slate-400 mt-1">{offers.subtitle}</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+            {offers.cards.map((card, idx) => (
+              <Link
+                key={card.id || idx}
+                href={activeBrand === "ABU_ADEL" ? "/order?brand=abuadel&mode=delivery" : "/order?brand=soulmate"}
+                className="bg-slate-900/90 hover:bg-slate-900 border border-slate-800 hover:border-amber-500/50 rounded-2xl p-4 flex items-center justify-between gap-4 transition group shadow-lg"
+              >
+                <div className="space-y-1 flex-1">
+                  <h3 className="text-sm font-black text-white group-hover:text-amber-300 transition">
+                    {card.title}
+                  </h3>
+                  <p className="text-xs text-slate-400 leading-relaxed">{card.desc}</p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-2xl shrink-0">
+                  {card.icon === "delivery"
+                    ? "🛵"
+                    : card.icon === "student"
+                    ? "🎓"
+                    : card.icon === "gift"
+                    ? "🎁"
+                    : card.icon === "fire"
+                    ? "🔥"
+                    : card.icon === "star"
+                    ? "⭐"
+                    : "🎉"}
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {offers.banner && (
+            <Link
+              href={offers.banner.linkHref || "#menu"}
+              className="relative block min-h-[150px] rounded-3xl overflow-hidden border border-amber-500/35 shadow-2xl group"
+            >
+              <div
+                className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                style={{
+                  backgroundImage: `url('${offers.banner.image || "/products/nawaem-mix-real.webp"}')`,
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-l from-black/95 via-black/75 to-black/30" />
+              <div className="relative z-10 p-6 md:p-8 flex flex-col justify-center min-h-[150px] max-w-2xl space-y-1.5">
+                <span className="text-[11px] font-black text-amber-400">{offers.banner.badge}</span>
+                <h3 className="text-xl md:text-2xl font-black text-white leading-snug">
+                  {offers.banner.title}
+                </h3>
+                <span className="inline-flex items-center gap-1.5 text-xs font-black text-emerald-300 pt-1">
+                  <span>{offers.banner.linkText}</span>
+                  <span>←</span>
+                </span>
+              </div>
+            </Link>
+          )}
+        </section>
+      )}
+
+      {/* 3.6 UNIFIED CUSTOMER LOYALTY COUNTER & PROGRESS WIDGET (Abu Adel & Soulmate) */}
+      {settings?.isLoyaltyEnabled !== false && (() => {
+        const lCfg = extractLoyaltyConfig(settings);
+        const lProg = loyaltyCustomer ? getLoyaltyProgress(loyaltyCustomer.loyaltyPoints, settings) : null;
+        return (
+          <section className="max-w-7xl mx-auto px-4 w-full pt-6">
+            <div className="bg-gradient-to-r from-amber-950/35 via-slate-900 to-emerald-950/35 border border-amber-500/35 rounded-3xl p-5 shadow-xl">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+                <div className="lg:col-span-7 space-y-2">
+                  <div className="inline-flex items-center gap-2 text-xs font-black text-amber-300 bg-amber-500/15 px-3 py-1 rounded-full border border-amber-500/30">
+                    <Trophy className="w-3.5 h-3.5" />
+                    <span>نادي مكافآت أبو عادل & سول ميت VIP 🎁</span>
+                  </div>
+                  <h3 className="text-base md:text-lg font-black text-white">
+                    {lProg
+                      ? `أهلاً بك يا ${loyaltyCustomer.name}! رصيدك ${(loyaltyCustomer.loyaltyPoints || 0).toLocaleString()} نقطة ⭐`
+                      : `جمع ${lCfg.loyaltyRewardThreshold.toLocaleString()} نقطة واكسب هدية بقيمة ${lCfg.loyaltyRewardValue} ج.م!`}
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    {lProg ? lProg.motivationalHeadline : lCfg.loyaltyMotivationalMsg}
+                  </p>
+                  {lProg && (
+                    <div className="pt-1 space-y-1">
+                      <div className="flex justify-between text-[11px] font-bold">
+                        <span className="text-amber-300">
+                          الهدف: {lProg.threshold.toLocaleString()} نقطة = هدية {lProg.rewardValue} ج.م
+                        </span>
+                        <span className="text-emerald-400 font-mono">{lProg.progressPct}%</span>
+                      </div>
+                      <div className="w-full h-2.5 bg-black/70 rounded-full overflow-hidden border border-slate-800">
+                        <div
+                          className="h-full bg-gradient-to-r from-amber-500 to-emerald-400 transition-all duration-500"
+                          style={{ width: `${lProg.progressPct}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="lg:col-span-5">
+                  <form onSubmit={handleCheckLoyaltyByPhone} className="bg-black/50 border border-slate-800 rounded-2xl p-3.5 space-y-2">
+                    <label className="text-[11px] font-bold text-slate-300 block">
+                      استعلم برقم موبايلك عن عداد نقاطك والهدايا المستحقة:
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="tel"
+                        value={loyaltyPhoneInput}
+                        onChange={(e) => setLoyaltyPhoneInput(e.target.value)}
+                        placeholder="010XXXXXXXX"
+                        className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-400"
+                      />
+                      <button
+                        type="submit"
+                        disabled={checkingLoyalty}
+                        className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-xs cursor-pointer shrink-0"
+                      >
+                        {checkingLoyalty ? "..." : "استعلام ★"}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      })()}
+
       {/* 4. DIGITAL MENU & SHOWCASE CATALOG */}
-      <section className="py-10 max-w-7xl mx-auto px-4 w-full flex-1">
+      <section id="menu" className="py-10 max-w-7xl mx-auto px-4 w-full flex-1">
+        {/* Active Promotional Discount Banner */}
+        {offers.enabled !== false && offers.discount?.enabled && offers.discount.value > 0 && (
+          <div className="mb-6 bg-gradient-to-r from-rose-950/60 via-amber-950/40 to-rose-950/60 border-2 border-rose-500/45 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl animate-bounce">🔥</span>
+              <div>
+                <div className="text-sm font-black text-white">{offers.discount.title}</div>
+                <div className="text-xs text-rose-200">
+                  {offers.discount.scope === "all"
+                    ? "يطبق الخصم تلقائياً الآن عند الإضافة للسلة!"
+                    : offers.discount.scope === "category"
+                    ? `خصم تلقائي على قسم (${getCategoryLabel(offers.discount.categoryName)})!`
+                    : "خصم تلقائي على الأصناف المميزة بالشارة الحمراء 🔥!"}
+                </div>
+              </div>
+            </div>
+            <span className="px-3.5 py-1.5 rounded-full bg-rose-600 text-white font-black text-xs shadow">
+              {offers.discount.type === "percentage"
+                ? `خصم ${offers.discount.value}%`
+                : `وفر ${offers.discount.value} ج.م`}
+            </span>
+          </div>
+        )}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
           <div>
             <h2 className="text-xl md:text-2xl font-black text-white flex items-center gap-2">
@@ -489,78 +717,94 @@ export default function DualBrandLandingPage() {
           </div>
         </div>
 
-        {/* Product Cards Grid with REAL IMAGES */}
+        {/* Product Cards Grid with REAL IMAGES + LIVE PROMOTIONAL PRICING */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filteredItems.map((item) => (
-            <div
-              key={item.id}
-              className="bg-slate-900/90 border border-slate-800 hover:border-slate-700 rounded-2xl p-3.5 shadow-lg transition flex flex-col justify-between group overflow-hidden"
-            >
-              <div>
-                {/* Product Card Image Banner */}
-                {item.image && (
-                  <div className="w-full h-40 rounded-xl overflow-hidden mb-3 bg-slate-950 border border-slate-800 relative">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={item.image}
-                      alt={item.nameAr}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => {
-                        (e.target as any).src =
-                          item.itemType === "READY_PASTRY"
-                            ? "/products/nawaem-mix-real.webp"
-                            : "/products/cafe-cappuccino.webp";
-                      }}
-                    />
-                  </div>
-                )}
-
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-800 text-slate-300 border border-slate-700">
-                    {getCategoryLabel(item.category)}
-                  </span>
-                  {item.loyaltyPointsEarned > 0 && settings?.isLoyaltyEnabled && (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                      +{item.loyaltyPointsEarned}★
-                    </span>
-                  )}
-                </div>
-
-                <h3 className="font-bold text-white text-sm group-hover:text-amber-400 transition">
-                  {item.nameAr}
-                </h3>
-                {item.nameEn && (
-                  <p className="text-[11px] text-amber-300/70 font-mono font-medium truncate mt-0.5" dir="ltr">
-                    {item.nameEn}
-                  </p>
-                )}
-                <p className="text-xs text-slate-400 mt-1 line-clamp-2">
-                  {item.description || "صنف فاخر معد بأعلى معايير الجودة والضيافة."}
-                </p>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between">
+          {filteredItems.map((item) => {
+            const pricing = getItemDiscountPricing(item, offers);
+            const estPoints = calculateEarnedPoints(pricing.finalPrice, item.outlet?.code, settings);
+            return (
+              <div
+                key={item.id}
+                className="bg-slate-900/90 border border-slate-800 hover:border-slate-700 rounded-2xl p-3.5 shadow-lg transition flex flex-col justify-between group overflow-hidden"
+              >
                 <div>
-                  <div className="text-lg font-black text-amber-400 font-mono">
-                    {item.price} <span className="text-xs font-normal text-slate-400">ج.م</span>
-                  </div>
-                  {item.itemType === "READY_PASTRY" && (
-                    <span className="text-[10px] text-slate-400">
-                      {item.unitType === "KG" ? "لكل كيلو" : "للقطعة / العلبة"}
-                    </span>
+                  {/* Product Card Image Banner */}
+                  {item.image && (
+                    <div className="w-full h-40 rounded-xl overflow-hidden mb-3 bg-slate-950 border border-slate-800 relative">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={item.image}
+                        alt={item.nameAr}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          (e.target as any).src =
+                            item.itemType === "READY_PASTRY"
+                              ? "/products/nawaem-mix-real.webp"
+                              : "/products/cafe-cappuccino.webp";
+                        }}
+                      />
+                      {pricing.hasDiscount && (
+                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-lg bg-rose-600 text-white text-[10px] font-black shadow-lg">
+                          {pricing.badgeText}
+                        </span>
+                      )}
+                    </div>
                   )}
+
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-800 text-slate-300 border border-slate-700">
+                      {getCategoryLabel(item.category)}
+                    </span>
+                    {estPoints > 0 && settings?.isLoyaltyEnabled && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                        +{estPoints}★
+                      </span>
+                    )}
+                  </div>
+
+                  <h3 className="font-bold text-white text-sm group-hover:text-amber-400 transition">
+                    {item.nameAr}
+                  </h3>
+                  {item.nameEn && (
+                    <p className="text-[11px] text-amber-300/70 font-mono font-medium truncate mt-0.5" dir="ltr">
+                      {item.nameEn}
+                    </p>
+                  )}
+                  <p className="text-xs text-slate-400 mt-1 line-clamp-2">
+                    {item.description || "صنف فاخر معد بأعلى معايير الجودة والضيافة."}
+                  </p>
                 </div>
 
-                <Link
-                  href={activeBrand === "ABU_ADEL" ? "/order?brand=abuadel&mode=delivery" : "/order?brand=soulmate"}
-                  className="p-2 rounded-xl bg-slate-800 hover:bg-amber-500 hover:text-black text-slate-200 transition shadow"
-                  title="اطلب الآن"
-                >
-                  <ShoppingBag className="w-4 h-4" />
-                </Link>
+                <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      {pricing.hasDiscount && (
+                        <span className="text-xs text-slate-500 line-through font-mono">
+                          {pricing.originalPrice}
+                        </span>
+                      )}
+                      <div className={`text-lg font-black font-mono ${pricing.hasDiscount ? "text-rose-400" : "text-amber-400"}`}>
+                        {pricing.finalPrice} <span className="text-xs font-normal text-slate-400">ج.م</span>
+                      </div>
+                    </div>
+                    {item.itemType === "READY_PASTRY" && (
+                      <span className="text-[10px] text-slate-400">
+                        {item.unitType === "KG" ? "لكل كيلو" : "للقطعة / العلبة"}
+                      </span>
+                    )}
+                  </div>
+
+                  <Link
+                    href={activeBrand === "ABU_ADEL" ? "/order?brand=abuadel&mode=delivery" : "/order?brand=soulmate"}
+                    className="p-2 rounded-xl bg-slate-800 hover:bg-amber-500 hover:text-black text-slate-200 transition shadow"
+                    title="اطلب الآن"
+                  >
+                    <ShoppingBag className="w-4 h-4" />
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {filteredItems.length === 0 && (
             <div className="col-span-full py-12 text-center text-slate-500 text-sm">

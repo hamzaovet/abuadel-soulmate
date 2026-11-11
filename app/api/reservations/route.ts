@@ -77,6 +77,27 @@ export async function POST(req: Request) {
       include: { outlet: true },
     });
 
+    // Upsert into unified Customer CRM for marketing & loyalty tracking
+    try {
+      await prisma.customer.upsert({
+        where: { phone: customerPhone.trim() },
+        update: {
+          name: customerName.trim(),
+          ...(customerEmail?.trim() ? { email: customerEmail.trim().toLowerCase() } : {}),
+          lastVisitAt: new Date(),
+        },
+        create: {
+          phone: customerPhone.trim(),
+          name: customerName.trim(),
+          email: customerEmail?.trim()?.toLowerCase() || null,
+          lastVisitAt: new Date(),
+          notes: reservationType === "PARTY" ? "حجز حفلة / مناسبة" : "حجز ترابيزة",
+        },
+      });
+    } catch {
+      // Do not fail reservation creation on secondary CRM sync
+    }
+
     return NextResponse.json({
       success: true,
       message:

@@ -42,6 +42,28 @@ export async function PATCH(req: Request) {
         ...(body.isLoyaltyEnabled !== undefined && { isLoyaltyEnabled: Boolean(body.isLoyaltyEnabled) }),
         ...(body.pointsPerPoundSpent !== undefined && { pointsPerPoundSpent: Number(body.pointsPerPoundSpent) }),
         ...(body.poundValuePerPoint !== undefined && { poundValuePerPoint: Number(body.poundValuePerPoint) }),
+        ...(body.loyaltyRewardThreshold !== undefined && {
+          loyaltyRewardThreshold: Math.max(1, Math.round(Number(body.loyaltyRewardThreshold))),
+        }),
+        ...(body.loyaltyRewardValue !== undefined && {
+          loyaltyRewardValue: Math.max(0, Number(body.loyaltyRewardValue)),
+        }),
+        ...(body.loyaltyAppliesToAbuAdel !== undefined && {
+          loyaltyAppliesToAbuAdel: Boolean(body.loyaltyAppliesToAbuAdel),
+        }),
+        ...(body.loyaltyAppliesToSoulmate !== undefined && {
+          loyaltyAppliesToSoulmate: Boolean(body.loyaltyAppliesToSoulmate),
+        }),
+        ...(body.loyaltyMotivationalMsg !== undefined && {
+          loyaltyMotivationalMsg: String(body.loyaltyMotivationalMsg),
+        }),
+        ...(body.offersEnabled !== undefined && { offersEnabled: Boolean(body.offersEnabled) }),
+        ...(body.specialOffers !== undefined && {
+          specialOffers:
+            typeof body.specialOffers === "string"
+              ? body.specialOffers
+              : JSON.stringify(body.specialOffers),
+        }),
         ...(body.receiptFooterNotes !== undefined && { receiptFooterNotes: body.receiptFooterNotes }),
         ...(body.systemLocked !== undefined && { systemLocked: Boolean(body.systemLocked) }),
         ...(body.lockMessage !== undefined && { lockMessage: body.lockMessage }),

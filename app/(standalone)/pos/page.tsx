@@ -10,6 +10,16 @@ import {
   getCategoryLabel,
 } from "@/lib/categories";
 import {
+  DEFAULT_OFFERS,
+  OfferData,
+  getItemDiscountPricing,
+} from "@/lib/offers";
+import {
+  extractLoyaltyConfig,
+  isLoyaltyActiveForOutlet,
+  getLoyaltyProgress,
+} from "@/lib/loyalty";
+import {
   Coffee,
   Cake,
   LayoutGrid,
@@ -51,6 +61,8 @@ import {
   Package,
   Image as ImageIcon,
   Calendar,
+  Gift,
+  Tag,
 } from "lucide-react";
 
 export default function PosTerminalPage() {
@@ -145,6 +157,12 @@ export default function PosTerminalPage() {
   const [discountAmount, setDiscountAmount] = useState<number>(0);
   const [tipAmount, setTipAmount] = useState<number>(0);
   const [paymentMethod, setPaymentMethod] = useState<"CASH" | "CARD" | "INSTAPAY" | "VODAFONE_CASH">("CASH");
+
+  // Offers, Auto-Discount & Customer CRM / Loyalty in POS
+  const [offers, setOffers] = useState<OfferData>(DEFAULT_OFFERS);
+  const [posCustomer, setPosCustomer] = useState<any>(null);
+  const [posCustomerProgress, setPosCustomerProgress] = useState<any>(null);
+  const [redeemPosGift, setRedeemPosGift] = useState<boolean>(false);
 
   // Modals
   const [showQrModal, setShowQrModal] = useState<boolean>(false);
@@ -324,7 +342,7 @@ export default function PosTerminalPage() {
         ? `/api/chat?outletId=${effectiveOutletId}`
         : "/api/chat";
 
-      const [resOutlets, resTables, resMenu, resSettings, resShifts, resZones, resOrders, resChat, resDrivers] =
+      const [resOutlets, resTables, resMenu, resSettings, resShifts, resZones, resOrders, resChat, resDrivers, resOffers] =
         await Promise.all([
           fetch("/api/outlets"),
           fetch("/api/tables"),
@@ -335,6 +353,7 @@ export default function PosTerminalPage() {
           fetch(ordersQuery),
           fetch(chatQuery),
           fetch("/api/drivers?onlyActive=true"),
+          fetch("/api/public/offers", { cache: "no-store" }),
         ]);
 
       const [
@@ -347,6 +366,7 @@ export default function PosTerminalPage() {
         dataOrders,
         dataChat,
         dataDrivers,
+        dataOffers,
       ] = await Promise.all([
         resOutlets.json(),
         resTables.json(),
@@ -357,7 +377,12 @@ export default function PosTerminalPage() {
         resOrders.json(),
         resChat.json(),
         resDrivers.json(),
+        resOffers.json(),
       ]);
+
+      if (dataOffers?.success && dataOffers.offers) {
+        setOffers(dataOffers.offers);
+      }
 
       if (dataDrivers?.success && Array.isArray(dataDrivers.drivers)) {
         setDrivers(dataDrivers.drivers);
@@ -414,6 +439,42 @@ export default function PosTerminalPage() {
     }
   }, [currentUser, activeOutletId]);
 
+  // Live Customer CRM & Loyalty Lookup by Phone Number
+  useEffect(() => {
+    const cleanDigits = customerPhone.replace(/\D/g, "");
+    if (cleanDigits.length < 10) {
+      setPosCustomer(null);
+      setPosCustomerProgress(null);
+      setRedeemPosGift(false);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/customers?phone=${encodeURIComponent(customerPhone.trim())}`);
+        const data = await res.json();
+        if (data.success && data.customer) {
+          setPosCustomer(data.customer);
+          setPosCustomerProgress(data.progress || null);
+          if (!customerName.trim() && data.customer.name) {
+            setCustomerName(data.customer.name);
+          }
+          if (!deliveryAddress.trim() && data.customer.address) {
+            setDeliveryAddress(data.customer.address);
+          }
+        } else {
+          setPosCustomer(null);
+          setPosCustomerProgress(null);
+          setRedeemPosGift(false);
+        }
+      } catch {
+        // silent fail on lookup
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [customerPhone]);
+
   // Active Outlet & Identification (Immediate evaluation from currentUser or activeOutletId)
   const currentOutlet =
     outlets.find((o) => o.id === activeOutletId) ||
@@ -465,6 +526,11 @@ export default function PosTerminalPage() {
   const handleSelectTable = (table: any) => {
     setSelectedTable(table);
     setOrderType("DINE_IN");
+    setRedeemPosGift(false);
+    if (table.activeOrder) {
+      if (table.activeOrder.customerName) setCustomerName(table.activeOrder.customerName);
+      if (table.activeOrder.customerPhone) setCustomerPhone(table.activeOrder.customerPhone);
+    }
     if (table.activeOrder && table.activeOrder.items) {
       try {
         const parsed =
@@ -490,15 +556,18 @@ export default function PosTerminalPage() {
     return `×${q}`;
   };
 
-  // Cart operations (Supports KG fractional weights + Units)
+  // Cart operations (Supports KG fractional weights + Units + Live Promotional Auto-Discount)
   const addWeightToPosCart = (item: any, weightKg: number) => {
     const cleanQty = Number(Math.max(0.05, weightKg).toFixed(3));
+    const pricing = getItemDiscountPricing({ ...item, outlet: item.outlet || currentOutlet }, offers);
     setCart((prev) => {
       const idx = prev.findIndex((i) => i.menuItemId === item.id);
       if (idx > -1) {
         const copy = [...prev];
         copy[idx] = {
           ...copy[idx],
+          price: pricing.finalPrice,
+          originalPrice: pricing.hasDiscount ? pricing.originalPrice : undefined,
           qty: Number((copy[idx].qty + cleanQty).toFixed(3)),
         };
         return copy;
@@ -508,7 +577,8 @@ export default function PosTerminalPage() {
         {
           menuItemId: item.id,
           nameAr: item.nameAr,
-          price: item.price,
+          price: pricing.finalPrice,
+          originalPrice: pricing.hasDiscount ? pricing.originalPrice : undefined,
           qty: cleanQty,
           unitType: item.unitType || "KG",
           notes: "",
@@ -526,11 +596,17 @@ export default function PosTerminalPage() {
       setWeightPickerItem(item);
       return;
     }
+    const pricing = getItemDiscountPricing({ ...item, outlet: item.outlet || currentOutlet }, offers);
     setCart((prev) => {
       const idx = prev.findIndex((i) => i.menuItemId === item.id);
       if (idx > -1) {
         const copy = [...prev];
-        copy[idx].qty += 1;
+        copy[idx] = {
+          ...copy[idx],
+          price: pricing.finalPrice,
+          originalPrice: pricing.hasDiscount ? pricing.originalPrice : undefined,
+          qty: copy[idx].qty + 1,
+        };
         return copy;
       }
       return [
@@ -538,7 +614,8 @@ export default function PosTerminalPage() {
         {
           menuItemId: item.id,
           nameAr: item.nameAr,
-          price: item.price,
+          price: pricing.finalPrice,
+          originalPrice: pricing.hasDiscount ? pricing.originalPrice : undefined,
           qty: 1,
           unitType: item.unitType || "PIECE",
           notes: "",
@@ -568,7 +645,7 @@ export default function PosTerminalPage() {
     setCart((prev) => prev.filter((i) => i.menuItemId !== menuItemId));
   };
 
-  // Financial calculations
+  // Financial & Loyalty calculations
   const selectedDeliveryZone = deliveryZones.find((z) => z.id === selectedZoneId);
   const rawSubtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
   const deliveryFee =
@@ -581,7 +658,23 @@ export default function PosTerminalPage() {
   const taxPercent = settings?.isTaxEnabled ? settings.taxPercent || 14 : 0;
   const calculatedService = (rawSubtotal * servicePercent) / 100;
   const calculatedTax = (rawSubtotal * taxPercent) / 100;
-  const calculatedFinal = Math.max(0, rawSubtotal + deliveryFee + calculatedService + calculatedTax - discountAmount + tipAmount);
+  const loyaltyCfg = extractLoyaltyConfig(settings);
+  const isLoyaltyOutletActive = isLoyaltyActiveForOutlet(currentOutlet?.code, loyaltyCfg);
+  const liveCustomerProgress = posCustomer
+    ? posCustomerProgress || getLoyaltyProgress(posCustomer.loyaltyPoints, settings)
+    : null;
+  const canRedeemPosMilestone = Boolean(
+    isLoyaltyOutletActive && redeemPosGift && liveCustomerProgress?.canRedeemMilestone
+  );
+  const loyaltyGiftDiscount = canRedeemPosMilestone
+    ? Math.min(rawSubtotal, loyaltyCfg.loyaltyRewardValue)
+    : 0;
+  const calculatedFinal = Number(
+    Math.max(
+      0,
+      rawSubtotal + deliveryFee + calculatedService + calculatedTax - discountAmount - loyaltyGiftDiscount + tipAmount
+    ).toFixed(2)
+  );
 
   // Advance / Dispatch / Settle Online or Delivery Orders
   const handleAdvanceOnlineOrder = async (
@@ -713,6 +806,9 @@ export default function PosTerminalPage() {
             discountAmount,
             tipAmount,
             cashierName: currentUser?.name || "كاشير المنظومة",
+            customerName: customerName.trim() || undefined,
+            customerPhone: customerPhone.trim() || undefined,
+            redeemRewardGift: canRedeemPosMilestone,
           }),
         });
 
@@ -721,7 +817,20 @@ export default function PosTerminalPage() {
           setLastPrintedOrder(data.order);
           setCart([]);
           setSelectedTable(null);
-          showToast("success", data.message || "تم تحصيل الشيك بنجاح 💵");
+          setRedeemPosGift(false);
+          setPosCustomer(null);
+          setPosCustomerProgress(null);
+          setCustomerName("");
+          setCustomerPhone("");
+          setDeliveryAddress("");
+          setDiscountAmount(0);
+          setTipAmount(0);
+          const earned = Number(data.pointsEarned || data.order?.pointsEarned || 0);
+          const loyaltyNote =
+            earned > 0
+              ? ` | ⭐ +${earned} نقطة للعميل (رصيده ${data.customer?.loyaltyPoints ?? earned})`
+              : "";
+          showToast("success", (data.message || "تم تحصيل الشيك بنجاح 💵") + loyaltyNote);
           await loadPosData();
           setTimeout(() => window.print(), 350);
         } else {
@@ -748,12 +857,13 @@ export default function PosTerminalPage() {
             cashierName: currentUser?.name || "كاشير المنظومة",
             discountAmount,
             tipAmount,
+            redeemRewardGift: canRedeemPosMilestone,
           }),
         });
 
         const data = await res.json();
         if (data.success && data.order) {
-          // Immediately settle it
+          // Immediately settle it (preserving server-applied total discountAmount incl. loyalty gift)
           const resSettle = await fetch("/api/orders", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
@@ -761,7 +871,7 @@ export default function PosTerminalPage() {
               orderId: data.order.id,
               action: "SETTLE",
               paymentMethod,
-              discountAmount,
+              discountAmount: Number(data.order.discountAmount ?? discountAmount),
               tipAmount,
               cashierName: currentUser?.name || "كاشير المنظومة",
             }),
@@ -771,9 +881,25 @@ export default function PosTerminalPage() {
             setLastPrintedOrder(settleData.order);
             setCart([]);
             setSelectedTable(null);
-            showToast("success", "تم تسجيل وتحصيل الشيك بنجاح 💵");
+            setRedeemPosGift(false);
+            setPosCustomer(null);
+            setPosCustomerProgress(null);
+            setCustomerName("");
+            setCustomerPhone("");
+            setDeliveryAddress("");
+            setDiscountAmount(0);
+            setTipAmount(0);
+            const earned = Number(settleData.pointsEarned || data.pointsEarned || settleData.order?.pointsEarned || 0);
+            const totalPts = settleData.customer?.loyaltyPoints ?? data.customer?.loyaltyPoints;
+            const loyaltyNote =
+              earned > 0
+                ? ` | ⭐ +${earned} نقطة للعميل${totalPts !== undefined ? ` (رصيده ${totalPts})` : ""}`
+                : "";
+            showToast("success", `تم تسجيل وتحصيل الشيك بنجاح 💵${loyaltyNote}`);
             await loadPosData();
             setTimeout(() => window.print(), 350);
+          } else {
+            showToast("error", settleData.error || "فشل تسوية الطلب");
           }
         } else {
           showToast("error", data.error || "فشل تسجيل الطلب");
@@ -1170,36 +1296,64 @@ export default function PosTerminalPage() {
             </div>
           </div>
 
+          {/* Live Promotional Discount Alert Strip when enabled */}
+          {offers?.enabled !== false && offers?.discount?.enabled && Number(offers?.discount?.value) > 0 && (
+            <div className="shrink-0 mb-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-rose-500/20 via-amber-500/15 to-rose-500/20 border border-rose-500/35 flex items-center justify-between text-[11px]">
+              <div className="flex items-center gap-1.5 text-rose-200 font-bold truncate">
+                <Tag className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                <span className="truncate">{offers.discount.title || "عرض خصم تلقائي مفعل"}</span>
+              </div>
+              <span className="shrink-0 px-2 py-0.5 rounded-full bg-rose-500 text-white font-black text-[10px]">
+                {offers.discount.type === "percentage" ? `خصم ${offers.discount.value}%` : `خصم ${offers.discount.value} ج`}
+              </span>
+            </div>
+          )}
+
           {/* Menu Items Grid: 4 columns on large screens! */}
           <div className="flex-1 overflow-y-auto min-h-0 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2.5 pr-1 content-start">
-            {filteredMenuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => addToCart(item)}
-                className="p-2.5 rounded-2xl bg-black/50 hover:bg-amber-500/10 border border-white/5 hover:border-amber-500/40 transition text-right flex flex-col justify-between space-y-1.5 group cursor-pointer shadow-sm hover:scale-[1.02]"
-              >
-                <div>
-                  <h4 className="font-black text-xs text-white group-hover:text-amber-300 line-clamp-2 leading-snug">
-                    {item.nameAr}
-                  </h4>
-                  {item.nameEn && (
-                    <span className="text-[10px] text-amber-200/70 font-mono block truncate" dir="ltr">
-                      {item.nameEn}
+            {filteredMenuItems.map((item) => {
+              const pricing = getItemDiscountPricing({ ...item, outlet: item.outlet || currentOutlet }, offers);
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => addToCart(item)}
+                  className="p-2.5 rounded-2xl bg-black/50 hover:bg-amber-500/10 border border-white/5 hover:border-amber-500/40 transition text-right flex flex-col justify-between space-y-1.5 group cursor-pointer shadow-sm hover:scale-[1.02]"
+                >
+                  <div>
+                    <div className="flex items-start justify-between gap-1">
+                      <h4 className="font-black text-xs text-white group-hover:text-amber-300 line-clamp-2 leading-snug">
+                        {item.nameAr}
+                      </h4>
+                      {pricing.hasDiscount && (
+                        <span className="shrink-0 px-1.5 py-0.5 rounded bg-rose-500/20 border border-rose-500/40 text-rose-300 text-[9px] font-black">
+                          {pricing.badgeText}
+                        </span>
+                      )}
+                    </div>
+                    {item.nameEn && (
+                      <span className="text-[10px] text-amber-200/70 font-mono block truncate" dir="ltr">
+                        {item.nameEn}
+                      </span>
+                    )}
+                    <span className="text-[10px] text-slate-400 block pt-0.5">
+                      {item.itemType === "READY_PASTRY" ? `رصيد: ${item.stockQty} ${item.unitType}` : "تحضير فوري ☕"}
                     </span>
-                  )}
-                  <span className="text-[10px] text-slate-400 block pt-0.5">
-                    {item.itemType === "READY_PASTRY" ? `رصيد: ${item.stockQty} ${item.unitType}` : "تحضير فوري ☕"}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between w-full pt-1.5 border-t border-white/5">
-                  <span className="font-mono font-black text-xs text-amber-400">{item.price} ج</span>
-                  <div className="w-5 h-5 rounded-lg bg-white/10 group-hover:bg-amber-500 group-hover:text-slate-950 text-white flex items-center justify-center transition">
-                    <Plus className="w-3 h-3" />
                   </div>
-                </div>
-              </button>
-            ))}
+
+                  <div className="flex items-center justify-between w-full pt-1.5 border-t border-white/5">
+                    <div className="flex items-center gap-1.5 font-mono">
+                      <span className="font-black text-xs text-amber-400">{pricing.finalPrice} ج</span>
+                      {pricing.hasDiscount && (
+                        <span className="text-[10px] text-slate-500 line-through">{pricing.originalPrice} ج</span>
+                      )}
+                    </div>
+                    <div className="w-5 h-5 rounded-lg bg-white/10 group-hover:bg-amber-500 group-hover:text-slate-950 text-white flex items-center justify-center transition">
+                      <Plus className="w-3 h-3" />
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -1395,28 +1549,6 @@ export default function PosTerminalPage() {
                         ))}
                     </select>
                   </div>
-                  <div className="grid grid-cols-2 gap-1.5">
-                    <div>
-                      <label className="text-[10px] text-slate-400 block mb-0.5 font-bold">اسم العميل:</label>
-                      <input
-                        type="text"
-                        placeholder="أ / أحمد..."
-                        value={customerName}
-                        onChange={(e) => setCustomerName(e.target.value)}
-                        className="w-full py-1.5 px-2 rounded-lg bg-black/60 border border-white/10 text-white text-xs outline-none focus:border-sky-400 font-bold"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[10px] text-slate-400 block mb-0.5 font-bold">رقم الهاتف:</label>
-                      <input
-                        type="tel"
-                        placeholder="010XXXXXXXX"
-                        value={customerPhone}
-                        onChange={(e) => setCustomerPhone(e.target.value)}
-                        className="w-full py-1.5 px-2 rounded-lg bg-black/60 border border-white/10 text-white text-xs font-mono outline-none focus:border-sky-400 font-bold"
-                      />
-                    </div>
-                  </div>
                   <div>
                     <label className="text-[10px] text-slate-400 block mb-0.5 font-bold">عنوان التوصيل بالتفصيل *:</label>
                     <input
@@ -1430,6 +1562,87 @@ export default function PosTerminalPage() {
                 </div>
               </div>
             )}
+
+            {/* Unified Customer CRM & Loyalty Phone/Name Lookup (ALL Modes: Dine-In, Takeaway, Delivery) */}
+            <div className="p-2 rounded-xl bg-black/55 border border-emerald-500/25 space-y-1.5 text-xs">
+              <div className="grid grid-cols-2 gap-1.5">
+                <div>
+                  <label className="text-[9px] text-emerald-300 block mb-0.5 font-bold">
+                    📱 موبايل العميل (CRM / النقاط):
+                  </label>
+                  <input
+                    type="tel"
+                    placeholder="010XXXXXXXX"
+                    value={customerPhone}
+                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    className="w-full py-1 px-2 rounded-lg bg-black/70 border border-white/10 text-white text-[11px] font-mono outline-none focus:border-emerald-400 font-bold"
+                    dir="ltr"
+                  />
+                </div>
+                <div>
+                  <label className="text-[9px] text-slate-400 block mb-0.5 font-bold">👤 اسم العميل:</label>
+                  <input
+                    type="text"
+                    placeholder="عميل مميز..."
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    className="w-full py-1 px-2 rounded-lg bg-black/70 border border-white/10 text-white text-[11px] outline-none focus:border-emerald-400 font-bold"
+                  />
+                </div>
+              </div>
+
+              {isLoyaltyOutletActive && posCustomer && liveCustomerProgress && (
+                <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 space-y-1.5">
+                  <div className="flex items-center justify-between text-[10px]">
+                    <span className="font-black text-emerald-300 flex items-center gap-1">
+                      <Crown className="w-3 h-3 text-amber-400" />
+                      <span>{posCustomer.name}</span>
+                    </span>
+                    <span className="font-mono font-black text-amber-300">
+                      ⭐ {Number(posCustomer.loyaltyPoints || 0).toLocaleString()} نقطة
+                    </span>
+                  </div>
+                  <div className="w-full h-1.5 rounded-full bg-black/60 overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-amber-400 to-emerald-400 rounded-full transition-all"
+                      style={{ width: `${liveCustomerProgress.progressPct}%` }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between text-[9px] text-slate-300">
+                    <span>التقدم: {liveCustomerProgress.progressPct}%</span>
+                    <span>
+                      {liveCustomerProgress.canRedeemMilestone
+                        ? `🎉 مؤهل لهدية ${loyaltyCfg.loyaltyRewardValue} ج.م!`
+                        : `متبقي ${liveCustomerProgress.pointsToNextReward} نقطة للهدية`}
+                    </span>
+                  </div>
+                  {liveCustomerProgress.canRedeemMilestone && (
+                    <button
+                      type="button"
+                      onClick={() => setRedeemPosGift((prev) => !prev)}
+                      className={`w-full py-1.5 px-2 rounded-lg text-[10px] font-black flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                        redeemPosGift
+                          ? "bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/25"
+                          : "bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-200"
+                      }`}
+                    >
+                      <Gift className="w-3.5 h-3.5" />
+                      <span>
+                        {redeemPosGift
+                          ? `✓ تم تفعيل خصم هدية الولاء (-${loyaltyCfg.loyaltyRewardValue} ج.م)`
+                          : `استبدال ${loyaltyCfg.loyaltyRewardThreshold} نقطة بهدية (-${loyaltyCfg.loyaltyRewardValue} ج.م)`}
+                      </span>
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {isLoyaltyOutletActive && customerPhone.replace(/\D/g, "").length >= 10 && !posCustomer && (
+                <p className="text-[9px] text-amber-300/90 font-bold">
+                  🆕 عميل جديد — سيتم حفظه تلقائياً في قاعدة CRM وإضافة نقاط هذه الفاتورة ⭐
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Cart Items List: SCROLLABLE INDEPENDENTLY */}
@@ -1614,6 +1827,18 @@ export default function PosTerminalPage() {
                 <div className="flex justify-between text-sky-300 font-mono text-[11px]">
                   <span>رسوم توصيل الطيار {selectedDeliveryZone ? `(${selectedDeliveryZone.nameAr})` : ""}:</span>
                   <span>+{deliveryFee} ج</span>
+                </div>
+              )}
+              {discountAmount > 0 && (
+                <div className="flex justify-between text-rose-300 font-mono text-[11px]">
+                  <span>خصم يدوي:</span>
+                  <span>-{discountAmount} ج</span>
+                </div>
+              )}
+              {loyaltyGiftDiscount > 0 && (
+                <div className="flex justify-between text-emerald-300 font-mono text-[11px] font-bold">
+                  <span>🎁 خصم هدية الولاء VIP:</span>
+                  <span>-{loyaltyGiftDiscount} ج</span>
                 </div>
               )}
               <div className="flex justify-between items-center text-sm font-black border-t border-white/10 pt-1">
@@ -2517,10 +2742,26 @@ export default function PosTerminalPage() {
                 <span className="font-mono">{lastPrintedOrder.deliveryFee} ج.م</span>
               </div>
             )}
+            {Number(lastPrintedOrder.discountAmount || 0) > 0 && (
+              <div className="flex justify-between text-[11px] font-normal">
+                <span>الخصم / هدية الولاء:</span>
+                <span className="font-mono">-{lastPrintedOrder.discountAmount} ج.م</span>
+              </div>
+            )}
             <div className="flex justify-between text-sm">
               <span>المبلغ الإجمالي:</span>
               <span className="font-mono text-base">{lastPrintedOrder.finalAmount} ج.م</span>
             </div>
+            {(Number(lastPrintedOrder.pointsEarned || 0) > 0 || Number(lastPrintedOrder.pointsRedeemed || 0) > 0) && (
+              <div className="pt-1 border-t border-dashed border-black text-[10px] font-bold text-center">
+                {Number(lastPrintedOrder.pointsEarned || 0) > 0 && (
+                  <span>⭐ مكتسب: +{lastPrintedOrder.pointsEarned} نقطة ولاء</span>
+                )}
+                {Number(lastPrintedOrder.pointsRedeemed || 0) > 0 && (
+                  <span className="mr-2">🎁 مستبدل: {lastPrintedOrder.pointsRedeemed} نقطة</span>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="text-center text-[10px] space-y-1 pt-1.5 border-t border-black">
@@ -3157,7 +3398,9 @@ export default function PosTerminalPage() {
       {/* ─────────────────────────────────────────────────────────────
           9C. MODAL: POS FRACTIONAL KG WEIGHT PICKER
          ───────────────────────────────────────────────────────────── */}
-      {weightPickerItem && (
+      {weightPickerItem && (() => {
+        const wPricing = getItemDiscountPricing({ ...weightPickerItem, outlet: weightPickerItem.outlet || currentOutlet }, offers);
+        return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md no-print">
           <div className="bg-[#140e16] border-2 border-emerald-500/40 rounded-3xl p-5 max-w-md w-full space-y-4 shadow-2xl relative">
             <button
@@ -3171,8 +3414,11 @@ export default function PosTerminalPage() {
                 <Scale className="w-4 h-4 text-emerald-400" />
                 <span>تحديد الوزن — {weightPickerItem.nameAr}</span>
               </h3>
-              <p className="text-xs text-amber-400 font-mono font-bold mt-0.5">
-                سعر الكيلو: {weightPickerItem.price} ج.م
+              <p className="text-xs text-amber-400 font-mono font-bold mt-0.5 flex items-center gap-2">
+                <span>سعر الكيلو: {wPricing.finalPrice} ج.م</span>
+                {wPricing.hasDiscount && (
+                  <span className="text-slate-500 line-through">{wPricing.originalPrice} ج</span>
+                )}
               </p>
             </div>
             <div className="grid grid-cols-3 gap-2 text-xs">
@@ -3193,7 +3439,7 @@ export default function PosTerminalPage() {
                   <div className="font-black text-white">{opt.label}</div>
                   <div className="text-[10px] text-slate-400 font-mono">{opt.sub}</div>
                   <div className="text-[11px] font-black text-emerald-400 font-mono">
-                    {Math.round(weightPickerItem.price * opt.kg)} ج
+                    {Math.round(wPricing.finalPrice * opt.kg)} ج
                   </div>
                 </button>
               ))}
@@ -3213,12 +3459,13 @@ export default function PosTerminalPage() {
                 onClick={() => addWeightToPosCart(weightPickerItem, Math.max(0.05, (Number(customGramsInput) || 250) / 1000))}
                 className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black cursor-pointer"
               >
-                إضافة ({Math.round(((Number(customGramsInput) || 250) / 1000) * weightPickerItem.price)} ج)
+                إضافة ({Math.round(((Number(customGramsInput) || 250) / 1000) * wPricing.finalPrice)} ج)
               </button>
             </div>
           </div>
         </div>
-      )}
+        );
+      })()}
 
       {previewPosImage && (
         <div

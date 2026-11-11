@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import CardQRModal from "@/components/CardQRModal";
+import AdminLoyaltyCrmOffersPanel from "@/components/AdminLoyaltyCrmOffersPanel";
 import {
   SOULMATE_CATEGORIES,
   ABU_ADEL_CATEGORIES,
@@ -2428,23 +2429,21 @@ export default function AdminDashboardPage() {
               </span>
             </button>
 
-            {/* Loyalty Tab (Soulmate only) */}
-            {(isViewingAll || isViewingSoulmate) && (
-              <button
-                onClick={() => setActiveTab("loyalty")}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                  activeTab === "loyalty"
-                    ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
-                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
-                }`}
-              >
-                <Award className="w-4 h-4" />
-                <span>برنامج الولاء (Soulmate Points)</span>
-                {settings?.isLoyaltyEnabled && (
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                )}
-              </button>
-            )}
+            {/* Loyalty, CRM & Offers Tab (Both Abu Adel & Soulmate!) */}
+            <button
+              onClick={() => setActiveTab("loyalty")}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+                activeTab === "loyalty"
+                  ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+              }`}
+            >
+              <Award className="w-4 h-4" />
+              <span>الولاء والعملاء والعروض 🎁👑</span>
+              {settings?.isLoyaltyEnabled && (
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              )}
+            </button>
 
             {/* Users & Permissions Tab (Maestro Exclusive!) */}
             {isOwner && (
@@ -6825,105 +6824,16 @@ export default function AdminDashboardPage() {
           );
         })()}
 
-        {/* TAB 8: LOYALTY PROGRAM & POINTS */}
+        {/* TAB 8: LOYALTY PROGRAM, CUSTOMERS CRM & SPECIAL OFFERS MANAGER */}
         {activeTab === "loyalty" && (
-          <div className="space-y-6">
-            <div
-              className={`rounded-2xl p-6 border transition shadow-xl ${
-                settings?.isLoyaltyEnabled
-                  ? "bg-gradient-to-r from-amber-950/40 via-slate-900 to-slate-900 border-amber-500/40"
-                  : "bg-slate-900 border-slate-800"
-              }`}
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <Award className="w-6 h-6 text-amber-400" />
-                    <h2 className="text-xl font-black text-white">
-                      برنامج ولاء ومكافآت سول ميت (Soulmate Points VIP)
-                    </h2>
-                  </div>
-                  <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
-                    ميزة حصرية لكافيه سول ميت: كل فنجان قهوة أو مشروب يمنح الزبون نقاط ولاء يمكن تجميعها واستبدالها بمشروبات مجانية أو خصومات.
-                    يمكن للمالك أو المدير العام تفعيل أو تعطيل هذا البرنامج فوراً بنقرة زر واحدة في أي وقت!
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-3 bg-slate-950/80 p-3 px-5 rounded-2xl border border-slate-800">
-                  <span className="text-xs font-bold text-slate-300">حالة البرنامج:</span>
-                  <button
-                    onClick={toggleLoyaltyProgram}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition ${
-                      settings?.isLoyaltyEnabled
-                        ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/20"
-                        : "bg-slate-800 hover:bg-slate-700 text-slate-400"
-                    }`}
-                  >
-                    {settings?.isLoyaltyEnabled ? (
-                      <>
-                        <ToggleRight className="w-5 h-5 text-white" />
-                        <span>مُفعّل ونشط الآن</span>
-                      </>
-                    ) : (
-                      <>
-                        <ToggleLeft className="w-5 h-5 text-slate-500" />
-                        <span>مُعطّل مؤقتاً</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Customers Loyalty CRM Table */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-              <h3 className="text-sm font-bold text-slate-200 mb-4 flex items-center gap-2">
-                <Users className="w-4 h-4 text-amber-400" />
-                <span>قاعدة بيانات العملاء المسجلين والتحقق بالجي ميل</span>
-              </h3>
-
-              <div className="overflow-x-auto">
-                <table className="w-full text-right text-xs">
-                  <thead className="bg-slate-950/60 text-slate-400 border-b border-slate-800">
-                    <tr>
-                      <th className="py-2.5 px-3">اسم العميل</th>
-                      <th className="py-2.5 px-3">رقم الهاتف</th>
-                      <th className="py-2.5 px-3">البريد الإلكتروني</th>
-                      <th className="py-2.5 px-3">حالة التحقق</th>
-                      <th className="py-2.5 px-3">رصيد النقاط</th>
-                      <th className="py-2.5 px-3">عدد الزيارات</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-800">
-                    {customers.map((c) => (
-                      <tr key={c.id} className="hover:bg-slate-800/40">
-                        <td className="py-3 px-3 font-bold text-white">{c.name}</td>
-                        <td className="py-3 px-3 font-mono text-slate-300">{c.phone}</td>
-                        <td className="py-3 px-3 font-mono text-slate-300">{c.email || "-"}</td>
-                        <td className="py-3 px-3">
-                          <span
-                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                              c.isVerified
-                                ? "bg-emerald-500/20 text-emerald-400"
-                                : "bg-slate-800 text-slate-400"
-                            }`}
-                          >
-                            {c.isVerified ? "مفعّل بالجي ميل ✓" : "غير مفعل"}
-                          </span>
-                        </td>
-                        <td className="py-3 px-3">
-                          <span className="px-2 py-0.5 rounded-full font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                            {c.loyaltyPoints} نقطة
-                          </span>
-                        </td>
-                        <td className="py-3 px-3 text-slate-300">{c.visitCount} زيارة</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+          <AdminLoyaltyCrmOffersPanel
+            settings={settings}
+            setSettings={setSettings}
+            menuItems={menuItems}
+            initialCustomers={customers}
+            onRefreshParent={fetchDashboardData}
+            addToast={addToast}
+          />
         )}
 
         {/* TAB: USERS & ROLES MANAGEMENT (MAESTRO & GM EXCLUSIVE) */}

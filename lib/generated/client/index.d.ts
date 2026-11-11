@@ -18270,8 +18270,10 @@ export namespace Prisma {
     loyaltyPoints: number | null
     totalSpent: number | null
     visitCount: number | null
+    lastVisitAt: Date | null
     notes: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type CustomerMaxAggregateOutputType = {
@@ -18287,8 +18289,10 @@ export namespace Prisma {
     loyaltyPoints: number | null
     totalSpent: number | null
     visitCount: number | null
+    lastVisitAt: Date | null
     notes: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type CustomerCountAggregateOutputType = {
@@ -18304,8 +18308,10 @@ export namespace Prisma {
     loyaltyPoints: number
     totalSpent: number
     visitCount: number
+    lastVisitAt: number
     notes: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -18335,8 +18341,10 @@ export namespace Prisma {
     loyaltyPoints?: true
     totalSpent?: true
     visitCount?: true
+    lastVisitAt?: true
     notes?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type CustomerMaxAggregateInputType = {
@@ -18352,8 +18360,10 @@ export namespace Prisma {
     loyaltyPoints?: true
     totalSpent?: true
     visitCount?: true
+    lastVisitAt?: true
     notes?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type CustomerCountAggregateInputType = {
@@ -18369,8 +18379,10 @@ export namespace Prisma {
     loyaltyPoints?: true
     totalSpent?: true
     visitCount?: true
+    lastVisitAt?: true
     notes?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -18473,8 +18485,10 @@ export namespace Prisma {
     loyaltyPoints: number
     totalSpent: number
     visitCount: number
+    lastVisitAt: Date | null
     notes: string | null
     createdAt: Date
+    updatedAt: Date
     _count: CustomerCountAggregateOutputType | null
     _avg: CustomerAvgAggregateOutputType | null
     _sum: CustomerSumAggregateOutputType | null
@@ -18509,8 +18523,10 @@ export namespace Prisma {
     loyaltyPoints?: boolean
     totalSpent?: boolean
     visitCount?: boolean
+    lastVisitAt?: boolean
     notes?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     orders?: boolean | Customer$ordersArgs<ExtArgs>
     _count?: boolean | CustomerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["customer"]>
@@ -18528,8 +18544,10 @@ export namespace Prisma {
     loyaltyPoints?: boolean
     totalSpent?: boolean
     visitCount?: boolean
+    lastVisitAt?: boolean
     notes?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["customer"]>
 
   export type CustomerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -18545,8 +18563,10 @@ export namespace Prisma {
     loyaltyPoints?: boolean
     totalSpent?: boolean
     visitCount?: boolean
+    lastVisitAt?: boolean
     notes?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["customer"]>
 
   export type CustomerSelectScalar = {
@@ -18562,11 +18582,13 @@ export namespace Prisma {
     loyaltyPoints?: boolean
     totalSpent?: boolean
     visitCount?: boolean
+    lastVisitAt?: boolean
     notes?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "phone" | "email" | "passwordHash" | "isVerified" | "verificationCode" | "address" | "city" | "loyaltyPoints" | "totalSpent" | "visitCount" | "notes" | "createdAt", ExtArgs["result"]["customer"]>
+  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "phone" | "email" | "passwordHash" | "isVerified" | "verificationCode" | "address" | "city" | "loyaltyPoints" | "totalSpent" | "visitCount" | "lastVisitAt" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["customer"]>
   export type CustomerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | Customer$ordersArgs<ExtArgs>
     _count?: boolean | CustomerCountOutputTypeDefaultArgs<ExtArgs>
@@ -18592,8 +18614,10 @@ export namespace Prisma {
       loyaltyPoints: number
       totalSpent: number
       visitCount: number
+      lastVisitAt: Date | null
       notes: string | null
       createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["customer"]>
     composites: {}
   }
@@ -19030,8 +19054,10 @@ export namespace Prisma {
     readonly loyaltyPoints: FieldRef<"Customer", 'Int'>
     readonly totalSpent: FieldRef<"Customer", 'Float'>
     readonly visitCount: FieldRef<"Customer", 'Int'>
+    readonly lastVisitAt: FieldRef<"Customer", 'DateTime'>
     readonly notes: FieldRef<"Customer", 'String'>
     readonly createdAt: FieldRef<"Customer", 'DateTime'>
+    readonly updatedAt: FieldRef<"Customer", 'DateTime'>
   }
     
 
@@ -28434,6 +28460,8 @@ export namespace Prisma {
     preOrderDepositPercent: number | null
     pointsPerPoundSpent: number | null
     poundValuePerPoint: number | null
+    loyaltyRewardThreshold: number | null
+    loyaltyRewardValue: number | null
   }
 
   export type SystemSettingsSumAggregateOutputType = {
@@ -28443,6 +28471,8 @@ export namespace Prisma {
     preOrderDepositPercent: number | null
     pointsPerPoundSpent: number | null
     poundValuePerPoint: number | null
+    loyaltyRewardThreshold: number | null
+    loyaltyRewardValue: number | null
   }
 
   export type SystemSettingsMinAggregateOutputType = {
@@ -28466,6 +28496,13 @@ export namespace Prisma {
     isLoyaltyEnabled: boolean | null
     pointsPerPoundSpent: number | null
     poundValuePerPoint: number | null
+    loyaltyRewardThreshold: number | null
+    loyaltyRewardValue: number | null
+    loyaltyAppliesToAbuAdel: boolean | null
+    loyaltyAppliesToSoulmate: boolean | null
+    loyaltyMotivationalMsg: string | null
+    offersEnabled: boolean | null
+    specialOffers: string | null
     receiptFooterNotes: string | null
     systemLocked: boolean | null
     lockMessage: string | null
@@ -28493,6 +28530,13 @@ export namespace Prisma {
     isLoyaltyEnabled: boolean | null
     pointsPerPoundSpent: number | null
     poundValuePerPoint: number | null
+    loyaltyRewardThreshold: number | null
+    loyaltyRewardValue: number | null
+    loyaltyAppliesToAbuAdel: boolean | null
+    loyaltyAppliesToSoulmate: boolean | null
+    loyaltyMotivationalMsg: string | null
+    offersEnabled: boolean | null
+    specialOffers: string | null
     receiptFooterNotes: string | null
     systemLocked: boolean | null
     lockMessage: string | null
@@ -28520,6 +28564,13 @@ export namespace Prisma {
     isLoyaltyEnabled: number
     pointsPerPoundSpent: number
     poundValuePerPoint: number
+    loyaltyRewardThreshold: number
+    loyaltyRewardValue: number
+    loyaltyAppliesToAbuAdel: number
+    loyaltyAppliesToSoulmate: number
+    loyaltyMotivationalMsg: number
+    offersEnabled: number
+    specialOffers: number
     receiptFooterNotes: number
     systemLocked: number
     lockMessage: number
@@ -28535,6 +28586,8 @@ export namespace Prisma {
     preOrderDepositPercent?: true
     pointsPerPoundSpent?: true
     poundValuePerPoint?: true
+    loyaltyRewardThreshold?: true
+    loyaltyRewardValue?: true
   }
 
   export type SystemSettingsSumAggregateInputType = {
@@ -28544,6 +28597,8 @@ export namespace Prisma {
     preOrderDepositPercent?: true
     pointsPerPoundSpent?: true
     poundValuePerPoint?: true
+    loyaltyRewardThreshold?: true
+    loyaltyRewardValue?: true
   }
 
   export type SystemSettingsMinAggregateInputType = {
@@ -28567,6 +28622,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: true
     pointsPerPoundSpent?: true
     poundValuePerPoint?: true
+    loyaltyRewardThreshold?: true
+    loyaltyRewardValue?: true
+    loyaltyAppliesToAbuAdel?: true
+    loyaltyAppliesToSoulmate?: true
+    loyaltyMotivationalMsg?: true
+    offersEnabled?: true
+    specialOffers?: true
     receiptFooterNotes?: true
     systemLocked?: true
     lockMessage?: true
@@ -28594,6 +28656,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: true
     pointsPerPoundSpent?: true
     poundValuePerPoint?: true
+    loyaltyRewardThreshold?: true
+    loyaltyRewardValue?: true
+    loyaltyAppliesToAbuAdel?: true
+    loyaltyAppliesToSoulmate?: true
+    loyaltyMotivationalMsg?: true
+    offersEnabled?: true
+    specialOffers?: true
     receiptFooterNotes?: true
     systemLocked?: true
     lockMessage?: true
@@ -28621,6 +28690,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: true
     pointsPerPoundSpent?: true
     poundValuePerPoint?: true
+    loyaltyRewardThreshold?: true
+    loyaltyRewardValue?: true
+    loyaltyAppliesToAbuAdel?: true
+    loyaltyAppliesToSoulmate?: true
+    loyaltyMotivationalMsg?: true
+    offersEnabled?: true
+    specialOffers?: true
     receiptFooterNotes?: true
     systemLocked?: true
     lockMessage?: true
@@ -28735,6 +28811,13 @@ export namespace Prisma {
     isLoyaltyEnabled: boolean
     pointsPerPoundSpent: number
     poundValuePerPoint: number
+    loyaltyRewardThreshold: number
+    loyaltyRewardValue: number
+    loyaltyAppliesToAbuAdel: boolean
+    loyaltyAppliesToSoulmate: boolean
+    loyaltyMotivationalMsg: string
+    offersEnabled: boolean
+    specialOffers: string | null
     receiptFooterNotes: string
     systemLocked: boolean
     lockMessage: string
@@ -28781,6 +28864,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: boolean
     pointsPerPoundSpent?: boolean
     poundValuePerPoint?: boolean
+    loyaltyRewardThreshold?: boolean
+    loyaltyRewardValue?: boolean
+    loyaltyAppliesToAbuAdel?: boolean
+    loyaltyAppliesToSoulmate?: boolean
+    loyaltyMotivationalMsg?: boolean
+    offersEnabled?: boolean
+    specialOffers?: boolean
     receiptFooterNotes?: boolean
     systemLocked?: boolean
     lockMessage?: boolean
@@ -28808,6 +28898,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: boolean
     pointsPerPoundSpent?: boolean
     poundValuePerPoint?: boolean
+    loyaltyRewardThreshold?: boolean
+    loyaltyRewardValue?: boolean
+    loyaltyAppliesToAbuAdel?: boolean
+    loyaltyAppliesToSoulmate?: boolean
+    loyaltyMotivationalMsg?: boolean
+    offersEnabled?: boolean
+    specialOffers?: boolean
     receiptFooterNotes?: boolean
     systemLocked?: boolean
     lockMessage?: boolean
@@ -28835,6 +28932,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: boolean
     pointsPerPoundSpent?: boolean
     poundValuePerPoint?: boolean
+    loyaltyRewardThreshold?: boolean
+    loyaltyRewardValue?: boolean
+    loyaltyAppliesToAbuAdel?: boolean
+    loyaltyAppliesToSoulmate?: boolean
+    loyaltyMotivationalMsg?: boolean
+    offersEnabled?: boolean
+    specialOffers?: boolean
     receiptFooterNotes?: boolean
     systemLocked?: boolean
     lockMessage?: boolean
@@ -28862,13 +28966,20 @@ export namespace Prisma {
     isLoyaltyEnabled?: boolean
     pointsPerPoundSpent?: boolean
     poundValuePerPoint?: boolean
+    loyaltyRewardThreshold?: boolean
+    loyaltyRewardValue?: boolean
+    loyaltyAppliesToAbuAdel?: boolean
+    loyaltyAppliesToSoulmate?: boolean
+    loyaltyMotivationalMsg?: boolean
+    offersEnabled?: boolean
+    specialOffers?: boolean
     receiptFooterNotes?: boolean
     systemLocked?: boolean
     lockMessage?: boolean
     updatedAt?: boolean
   }
 
-  export type SystemSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "brandNameAr" | "brandNameEn" | "soulmatePhone" | "abuAdelPhone" | "hotline" | "whatsapp" | "haliyomakUrl" | "facebookUrl" | "serviceChargePercent" | "taxPercent" | "deliveryFee" | "preOrderDepositPercent" | "instapayAccount" | "vodafoneCashNumber" | "isServiceChargeEnabled" | "isTaxEnabled" | "isLoyaltyEnabled" | "pointsPerPoundSpent" | "poundValuePerPoint" | "receiptFooterNotes" | "systemLocked" | "lockMessage" | "updatedAt", ExtArgs["result"]["systemSettings"]>
+  export type SystemSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "brandNameAr" | "brandNameEn" | "soulmatePhone" | "abuAdelPhone" | "hotline" | "whatsapp" | "haliyomakUrl" | "facebookUrl" | "serviceChargePercent" | "taxPercent" | "deliveryFee" | "preOrderDepositPercent" | "instapayAccount" | "vodafoneCashNumber" | "isServiceChargeEnabled" | "isTaxEnabled" | "isLoyaltyEnabled" | "pointsPerPoundSpent" | "poundValuePerPoint" | "loyaltyRewardThreshold" | "loyaltyRewardValue" | "loyaltyAppliesToAbuAdel" | "loyaltyAppliesToSoulmate" | "loyaltyMotivationalMsg" | "offersEnabled" | "specialOffers" | "receiptFooterNotes" | "systemLocked" | "lockMessage" | "updatedAt", ExtArgs["result"]["systemSettings"]>
 
   export type $SystemSettingsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SystemSettings"
@@ -28894,6 +29005,13 @@ export namespace Prisma {
       isLoyaltyEnabled: boolean
       pointsPerPoundSpent: number
       poundValuePerPoint: number
+      loyaltyRewardThreshold: number
+      loyaltyRewardValue: number
+      loyaltyAppliesToAbuAdel: boolean
+      loyaltyAppliesToSoulmate: boolean
+      loyaltyMotivationalMsg: string
+      offersEnabled: boolean
+      specialOffers: string | null
       receiptFooterNotes: string
       systemLocked: boolean
       lockMessage: string
@@ -29341,6 +29459,13 @@ export namespace Prisma {
     readonly isLoyaltyEnabled: FieldRef<"SystemSettings", 'Boolean'>
     readonly pointsPerPoundSpent: FieldRef<"SystemSettings", 'Float'>
     readonly poundValuePerPoint: FieldRef<"SystemSettings", 'Float'>
+    readonly loyaltyRewardThreshold: FieldRef<"SystemSettings", 'Int'>
+    readonly loyaltyRewardValue: FieldRef<"SystemSettings", 'Float'>
+    readonly loyaltyAppliesToAbuAdel: FieldRef<"SystemSettings", 'Boolean'>
+    readonly loyaltyAppliesToSoulmate: FieldRef<"SystemSettings", 'Boolean'>
+    readonly loyaltyMotivationalMsg: FieldRef<"SystemSettings", 'String'>
+    readonly offersEnabled: FieldRef<"SystemSettings", 'Boolean'>
+    readonly specialOffers: FieldRef<"SystemSettings", 'String'>
     readonly receiptFooterNotes: FieldRef<"SystemSettings", 'String'>
     readonly systemLocked: FieldRef<"SystemSettings", 'Boolean'>
     readonly lockMessage: FieldRef<"SystemSettings", 'String'>
@@ -34628,8 +34753,10 @@ export namespace Prisma {
     loyaltyPoints: 'loyaltyPoints',
     totalSpent: 'totalSpent',
     visitCount: 'visitCount',
+    lastVisitAt: 'lastVisitAt',
     notes: 'notes',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
@@ -34811,6 +34938,13 @@ export namespace Prisma {
     isLoyaltyEnabled: 'isLoyaltyEnabled',
     pointsPerPoundSpent: 'pointsPerPoundSpent',
     poundValuePerPoint: 'poundValuePerPoint',
+    loyaltyRewardThreshold: 'loyaltyRewardThreshold',
+    loyaltyRewardValue: 'loyaltyRewardValue',
+    loyaltyAppliesToAbuAdel: 'loyaltyAppliesToAbuAdel',
+    loyaltyAppliesToSoulmate: 'loyaltyAppliesToSoulmate',
+    loyaltyMotivationalMsg: 'loyaltyMotivationalMsg',
+    offersEnabled: 'offersEnabled',
+    specialOffers: 'specialOffers',
     receiptFooterNotes: 'receiptFooterNotes',
     systemLocked: 'systemLocked',
     lockMessage: 'lockMessage',
@@ -36094,8 +36228,10 @@ export namespace Prisma {
     loyaltyPoints?: IntFilter<"Customer"> | number
     totalSpent?: FloatFilter<"Customer"> | number
     visitCount?: IntFilter<"Customer"> | number
+    lastVisitAt?: DateTimeNullableFilter<"Customer"> | Date | string | null
     notes?: StringNullableFilter<"Customer"> | string | null
     createdAt?: DateTimeFilter<"Customer"> | Date | string
+    updatedAt?: DateTimeFilter<"Customer"> | Date | string
     orders?: OrderListRelationFilter
   }
 
@@ -36112,8 +36248,10 @@ export namespace Prisma {
     loyaltyPoints?: SortOrder
     totalSpent?: SortOrder
     visitCount?: SortOrder
+    lastVisitAt?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     orders?: OrderOrderByRelationAggregateInput
   }
 
@@ -36133,8 +36271,10 @@ export namespace Prisma {
     loyaltyPoints?: IntFilter<"Customer"> | number
     totalSpent?: FloatFilter<"Customer"> | number
     visitCount?: IntFilter<"Customer"> | number
+    lastVisitAt?: DateTimeNullableFilter<"Customer"> | Date | string | null
     notes?: StringNullableFilter<"Customer"> | string | null
     createdAt?: DateTimeFilter<"Customer"> | Date | string
+    updatedAt?: DateTimeFilter<"Customer"> | Date | string
     orders?: OrderListRelationFilter
   }, "id" | "phone">
 
@@ -36151,8 +36291,10 @@ export namespace Prisma {
     loyaltyPoints?: SortOrder
     totalSpent?: SortOrder
     visitCount?: SortOrder
+    lastVisitAt?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: CustomerCountOrderByAggregateInput
     _avg?: CustomerAvgOrderByAggregateInput
     _max?: CustomerMaxOrderByAggregateInput
@@ -36176,8 +36318,10 @@ export namespace Prisma {
     loyaltyPoints?: IntWithAggregatesFilter<"Customer"> | number
     totalSpent?: FloatWithAggregatesFilter<"Customer"> | number
     visitCount?: IntWithAggregatesFilter<"Customer"> | number
+    lastVisitAt?: DateTimeNullableWithAggregatesFilter<"Customer"> | Date | string | null
     notes?: StringNullableWithAggregatesFilter<"Customer"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Customer"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Customer"> | Date | string
   }
 
   export type DeliveryZoneWhereInput = {
@@ -37007,6 +37151,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: BoolFilter<"SystemSettings"> | boolean
     pointsPerPoundSpent?: FloatFilter<"SystemSettings"> | number
     poundValuePerPoint?: FloatFilter<"SystemSettings"> | number
+    loyaltyRewardThreshold?: IntFilter<"SystemSettings"> | number
+    loyaltyRewardValue?: FloatFilter<"SystemSettings"> | number
+    loyaltyAppliesToAbuAdel?: BoolFilter<"SystemSettings"> | boolean
+    loyaltyAppliesToSoulmate?: BoolFilter<"SystemSettings"> | boolean
+    loyaltyMotivationalMsg?: StringFilter<"SystemSettings"> | string
+    offersEnabled?: BoolFilter<"SystemSettings"> | boolean
+    specialOffers?: StringNullableFilter<"SystemSettings"> | string | null
     receiptFooterNotes?: StringFilter<"SystemSettings"> | string
     systemLocked?: BoolFilter<"SystemSettings"> | boolean
     lockMessage?: StringFilter<"SystemSettings"> | string
@@ -37034,6 +37185,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: SortOrder
     pointsPerPoundSpent?: SortOrder
     poundValuePerPoint?: SortOrder
+    loyaltyRewardThreshold?: SortOrder
+    loyaltyRewardValue?: SortOrder
+    loyaltyAppliesToAbuAdel?: SortOrder
+    loyaltyAppliesToSoulmate?: SortOrder
+    loyaltyMotivationalMsg?: SortOrder
+    offersEnabled?: SortOrder
+    specialOffers?: SortOrderInput | SortOrder
     receiptFooterNotes?: SortOrder
     systemLocked?: SortOrder
     lockMessage?: SortOrder
@@ -37064,6 +37222,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: BoolFilter<"SystemSettings"> | boolean
     pointsPerPoundSpent?: FloatFilter<"SystemSettings"> | number
     poundValuePerPoint?: FloatFilter<"SystemSettings"> | number
+    loyaltyRewardThreshold?: IntFilter<"SystemSettings"> | number
+    loyaltyRewardValue?: FloatFilter<"SystemSettings"> | number
+    loyaltyAppliesToAbuAdel?: BoolFilter<"SystemSettings"> | boolean
+    loyaltyAppliesToSoulmate?: BoolFilter<"SystemSettings"> | boolean
+    loyaltyMotivationalMsg?: StringFilter<"SystemSettings"> | string
+    offersEnabled?: BoolFilter<"SystemSettings"> | boolean
+    specialOffers?: StringNullableFilter<"SystemSettings"> | string | null
     receiptFooterNotes?: StringFilter<"SystemSettings"> | string
     systemLocked?: BoolFilter<"SystemSettings"> | boolean
     lockMessage?: StringFilter<"SystemSettings"> | string
@@ -37091,6 +37256,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: SortOrder
     pointsPerPoundSpent?: SortOrder
     poundValuePerPoint?: SortOrder
+    loyaltyRewardThreshold?: SortOrder
+    loyaltyRewardValue?: SortOrder
+    loyaltyAppliesToAbuAdel?: SortOrder
+    loyaltyAppliesToSoulmate?: SortOrder
+    loyaltyMotivationalMsg?: SortOrder
+    offersEnabled?: SortOrder
+    specialOffers?: SortOrderInput | SortOrder
     receiptFooterNotes?: SortOrder
     systemLocked?: SortOrder
     lockMessage?: SortOrder
@@ -37126,6 +37298,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
     pointsPerPoundSpent?: FloatWithAggregatesFilter<"SystemSettings"> | number
     poundValuePerPoint?: FloatWithAggregatesFilter<"SystemSettings"> | number
+    loyaltyRewardThreshold?: IntWithAggregatesFilter<"SystemSettings"> | number
+    loyaltyRewardValue?: FloatWithAggregatesFilter<"SystemSettings"> | number
+    loyaltyAppliesToAbuAdel?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
+    loyaltyAppliesToSoulmate?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
+    loyaltyMotivationalMsg?: StringWithAggregatesFilter<"SystemSettings"> | string
+    offersEnabled?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
+    specialOffers?: StringNullableWithAggregatesFilter<"SystemSettings"> | string | null
     receiptFooterNotes?: StringWithAggregatesFilter<"SystemSettings"> | string
     systemLocked?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
     lockMessage?: StringWithAggregatesFilter<"SystemSettings"> | string
@@ -38733,8 +38912,10 @@ export namespace Prisma {
     loyaltyPoints?: number
     totalSpent?: number
     visitCount?: number
+    lastVisitAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     orders?: OrderCreateNestedManyWithoutCustomerInput
   }
 
@@ -38751,8 +38932,10 @@ export namespace Prisma {
     loyaltyPoints?: number
     totalSpent?: number
     visitCount?: number
+    lastVisitAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     orders?: OrderUncheckedCreateNestedManyWithoutCustomerInput
   }
 
@@ -38769,8 +38952,10 @@ export namespace Prisma {
     loyaltyPoints?: IntFieldUpdateOperationsInput | number
     totalSpent?: FloatFieldUpdateOperationsInput | number
     visitCount?: IntFieldUpdateOperationsInput | number
+    lastVisitAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderUpdateManyWithoutCustomerNestedInput
   }
 
@@ -38787,8 +38972,10 @@ export namespace Prisma {
     loyaltyPoints?: IntFieldUpdateOperationsInput | number
     totalSpent?: FloatFieldUpdateOperationsInput | number
     visitCount?: IntFieldUpdateOperationsInput | number
+    lastVisitAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
@@ -38805,8 +38992,10 @@ export namespace Prisma {
     loyaltyPoints?: number
     totalSpent?: number
     visitCount?: number
+    lastVisitAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CustomerUpdateManyMutationInput = {
@@ -38822,8 +39011,10 @@ export namespace Prisma {
     loyaltyPoints?: IntFieldUpdateOperationsInput | number
     totalSpent?: FloatFieldUpdateOperationsInput | number
     visitCount?: IntFieldUpdateOperationsInput | number
+    lastVisitAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CustomerUncheckedUpdateManyInput = {
@@ -38839,8 +39030,10 @@ export namespace Prisma {
     loyaltyPoints?: IntFieldUpdateOperationsInput | number
     totalSpent?: FloatFieldUpdateOperationsInput | number
     visitCount?: IntFieldUpdateOperationsInput | number
+    lastVisitAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DeliveryZoneCreateInput = {
@@ -39804,6 +39997,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: boolean
     pointsPerPoundSpent?: number
     poundValuePerPoint?: number
+    loyaltyRewardThreshold?: number
+    loyaltyRewardValue?: number
+    loyaltyAppliesToAbuAdel?: boolean
+    loyaltyAppliesToSoulmate?: boolean
+    loyaltyMotivationalMsg?: string
+    offersEnabled?: boolean
+    specialOffers?: string | null
     receiptFooterNotes?: string
     systemLocked?: boolean
     lockMessage?: string
@@ -39831,6 +40031,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: boolean
     pointsPerPoundSpent?: number
     poundValuePerPoint?: number
+    loyaltyRewardThreshold?: number
+    loyaltyRewardValue?: number
+    loyaltyAppliesToAbuAdel?: boolean
+    loyaltyAppliesToSoulmate?: boolean
+    loyaltyMotivationalMsg?: string
+    offersEnabled?: boolean
+    specialOffers?: string | null
     receiptFooterNotes?: string
     systemLocked?: boolean
     lockMessage?: string
@@ -39858,6 +40065,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: BoolFieldUpdateOperationsInput | boolean
     pointsPerPoundSpent?: FloatFieldUpdateOperationsInput | number
     poundValuePerPoint?: FloatFieldUpdateOperationsInput | number
+    loyaltyRewardThreshold?: IntFieldUpdateOperationsInput | number
+    loyaltyRewardValue?: FloatFieldUpdateOperationsInput | number
+    loyaltyAppliesToAbuAdel?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyAppliesToSoulmate?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyMotivationalMsg?: StringFieldUpdateOperationsInput | string
+    offersEnabled?: BoolFieldUpdateOperationsInput | boolean
+    specialOffers?: NullableStringFieldUpdateOperationsInput | string | null
     receiptFooterNotes?: StringFieldUpdateOperationsInput | string
     systemLocked?: BoolFieldUpdateOperationsInput | boolean
     lockMessage?: StringFieldUpdateOperationsInput | string
@@ -39885,6 +40099,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: BoolFieldUpdateOperationsInput | boolean
     pointsPerPoundSpent?: FloatFieldUpdateOperationsInput | number
     poundValuePerPoint?: FloatFieldUpdateOperationsInput | number
+    loyaltyRewardThreshold?: IntFieldUpdateOperationsInput | number
+    loyaltyRewardValue?: FloatFieldUpdateOperationsInput | number
+    loyaltyAppliesToAbuAdel?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyAppliesToSoulmate?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyMotivationalMsg?: StringFieldUpdateOperationsInput | string
+    offersEnabled?: BoolFieldUpdateOperationsInput | boolean
+    specialOffers?: NullableStringFieldUpdateOperationsInput | string | null
     receiptFooterNotes?: StringFieldUpdateOperationsInput | string
     systemLocked?: BoolFieldUpdateOperationsInput | boolean
     lockMessage?: StringFieldUpdateOperationsInput | string
@@ -39912,6 +40133,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: boolean
     pointsPerPoundSpent?: number
     poundValuePerPoint?: number
+    loyaltyRewardThreshold?: number
+    loyaltyRewardValue?: number
+    loyaltyAppliesToAbuAdel?: boolean
+    loyaltyAppliesToSoulmate?: boolean
+    loyaltyMotivationalMsg?: string
+    offersEnabled?: boolean
+    specialOffers?: string | null
     receiptFooterNotes?: string
     systemLocked?: boolean
     lockMessage?: string
@@ -39939,6 +40167,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: BoolFieldUpdateOperationsInput | boolean
     pointsPerPoundSpent?: FloatFieldUpdateOperationsInput | number
     poundValuePerPoint?: FloatFieldUpdateOperationsInput | number
+    loyaltyRewardThreshold?: IntFieldUpdateOperationsInput | number
+    loyaltyRewardValue?: FloatFieldUpdateOperationsInput | number
+    loyaltyAppliesToAbuAdel?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyAppliesToSoulmate?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyMotivationalMsg?: StringFieldUpdateOperationsInput | string
+    offersEnabled?: BoolFieldUpdateOperationsInput | boolean
+    specialOffers?: NullableStringFieldUpdateOperationsInput | string | null
     receiptFooterNotes?: StringFieldUpdateOperationsInput | string
     systemLocked?: BoolFieldUpdateOperationsInput | boolean
     lockMessage?: StringFieldUpdateOperationsInput | string
@@ -39966,6 +40201,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: BoolFieldUpdateOperationsInput | boolean
     pointsPerPoundSpent?: FloatFieldUpdateOperationsInput | number
     poundValuePerPoint?: FloatFieldUpdateOperationsInput | number
+    loyaltyRewardThreshold?: IntFieldUpdateOperationsInput | number
+    loyaltyRewardValue?: FloatFieldUpdateOperationsInput | number
+    loyaltyAppliesToAbuAdel?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyAppliesToSoulmate?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyMotivationalMsg?: StringFieldUpdateOperationsInput | string
+    offersEnabled?: BoolFieldUpdateOperationsInput | boolean
+    specialOffers?: NullableStringFieldUpdateOperationsInput | string | null
     receiptFooterNotes?: StringFieldUpdateOperationsInput | string
     systemLocked?: BoolFieldUpdateOperationsInput | boolean
     lockMessage?: StringFieldUpdateOperationsInput | string
@@ -41404,6 +41646,17 @@ export namespace Prisma {
     qtyRequired?: SortOrder
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type CustomerCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -41417,8 +41670,10 @@ export namespace Prisma {
     loyaltyPoints?: SortOrder
     totalSpent?: SortOrder
     visitCount?: SortOrder
+    lastVisitAt?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CustomerAvgOrderByAggregateInput = {
@@ -41440,8 +41695,10 @@ export namespace Prisma {
     loyaltyPoints?: SortOrder
     totalSpent?: SortOrder
     visitCount?: SortOrder
+    lastVisitAt?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CustomerMinOrderByAggregateInput = {
@@ -41457,14 +41714,30 @@ export namespace Prisma {
     loyaltyPoints?: SortOrder
     totalSpent?: SortOrder
     visitCount?: SortOrder
+    lastVisitAt?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CustomerSumOrderByAggregateInput = {
     loyaltyPoints?: SortOrder
     totalSpent?: SortOrder
     visitCount?: SortOrder
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type DeliveryZoneCountOrderByAggregateInput = {
@@ -41541,17 +41814,6 @@ export namespace Prisma {
     notes?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
-  }
-
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type DiningTableNullableScalarRelationFilter = {
@@ -41751,20 +42013,6 @@ export namespace Prisma {
     finalAmount?: SortOrder
     pointsEarned?: SortOrder
     pointsRedeemed?: SortOrder
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type OrderScalarRelationFilter = {
@@ -42052,6 +42300,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: SortOrder
     pointsPerPoundSpent?: SortOrder
     poundValuePerPoint?: SortOrder
+    loyaltyRewardThreshold?: SortOrder
+    loyaltyRewardValue?: SortOrder
+    loyaltyAppliesToAbuAdel?: SortOrder
+    loyaltyAppliesToSoulmate?: SortOrder
+    loyaltyMotivationalMsg?: SortOrder
+    offersEnabled?: SortOrder
+    specialOffers?: SortOrder
     receiptFooterNotes?: SortOrder
     systemLocked?: SortOrder
     lockMessage?: SortOrder
@@ -42065,6 +42320,8 @@ export namespace Prisma {
     preOrderDepositPercent?: SortOrder
     pointsPerPoundSpent?: SortOrder
     poundValuePerPoint?: SortOrder
+    loyaltyRewardThreshold?: SortOrder
+    loyaltyRewardValue?: SortOrder
   }
 
   export type SystemSettingsMaxOrderByAggregateInput = {
@@ -42088,6 +42345,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: SortOrder
     pointsPerPoundSpent?: SortOrder
     poundValuePerPoint?: SortOrder
+    loyaltyRewardThreshold?: SortOrder
+    loyaltyRewardValue?: SortOrder
+    loyaltyAppliesToAbuAdel?: SortOrder
+    loyaltyAppliesToSoulmate?: SortOrder
+    loyaltyMotivationalMsg?: SortOrder
+    offersEnabled?: SortOrder
+    specialOffers?: SortOrder
     receiptFooterNotes?: SortOrder
     systemLocked?: SortOrder
     lockMessage?: SortOrder
@@ -42115,6 +42379,13 @@ export namespace Prisma {
     isLoyaltyEnabled?: SortOrder
     pointsPerPoundSpent?: SortOrder
     poundValuePerPoint?: SortOrder
+    loyaltyRewardThreshold?: SortOrder
+    loyaltyRewardValue?: SortOrder
+    loyaltyAppliesToAbuAdel?: SortOrder
+    loyaltyAppliesToSoulmate?: SortOrder
+    loyaltyMotivationalMsg?: SortOrder
+    offersEnabled?: SortOrder
+    specialOffers?: SortOrder
     receiptFooterNotes?: SortOrder
     systemLocked?: SortOrder
     lockMessage?: SortOrder
@@ -42128,6 +42399,8 @@ export namespace Prisma {
     preOrderDepositPercent?: SortOrder
     pointsPerPoundSpent?: SortOrder
     poundValuePerPoint?: SortOrder
+    loyaltyRewardThreshold?: SortOrder
+    loyaltyRewardValue?: SortOrder
   }
 
   export type ReservationCountOrderByAggregateInput = {
@@ -43445,6 +43718,10 @@ export namespace Prisma {
     connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
   }
 
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
   export type OrderUpdateManyWithoutCustomerNestedInput = {
     create?: XOR<OrderCreateWithoutCustomerInput, OrderUncheckedCreateWithoutCustomerInput> | OrderCreateWithoutCustomerInput[] | OrderUncheckedCreateWithoutCustomerInput[]
     connectOrCreate?: OrderCreateOrConnectWithoutCustomerInput | OrderCreateOrConnectWithoutCustomerInput[]
@@ -43615,10 +43892,6 @@ export namespace Prisma {
     connectOrCreate?: KdsTicketCreateOrConnectWithoutOrderInput | KdsTicketCreateOrConnectWithoutOrderInput[]
     createMany?: KdsTicketCreateManyOrderInputEnvelope
     connect?: KdsTicketWhereUniqueInput | KdsTicketWhereUniqueInput[]
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
   }
 
   export type OutletUpdateOneRequiredWithoutOrdersNestedInput = {
@@ -47512,8 +47785,10 @@ export namespace Prisma {
     loyaltyPoints?: number
     totalSpent?: number
     visitCount?: number
+    lastVisitAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CustomerUncheckedCreateWithoutOrdersInput = {
@@ -47529,8 +47804,10 @@ export namespace Prisma {
     loyaltyPoints?: number
     totalSpent?: number
     visitCount?: number
+    lastVisitAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CustomerCreateOrConnectWithoutOrdersInput = {
@@ -47756,8 +48033,10 @@ export namespace Prisma {
     loyaltyPoints?: IntFieldUpdateOperationsInput | number
     totalSpent?: FloatFieldUpdateOperationsInput | number
     visitCount?: IntFieldUpdateOperationsInput | number
+    lastVisitAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CustomerUncheckedUpdateWithoutOrdersInput = {
@@ -47773,8 +48052,10 @@ export namespace Prisma {
     loyaltyPoints?: IntFieldUpdateOperationsInput | number
     totalSpent?: FloatFieldUpdateOperationsInput | number
     visitCount?: IntFieldUpdateOperationsInput | number
+    lastVisitAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type KdsTicketUpsertWithWhereUniqueWithoutOrderInput = {

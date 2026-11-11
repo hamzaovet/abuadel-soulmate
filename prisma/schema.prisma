@@ -259,8 +259,10 @@ model Customer {
   loyaltyPoints     Int            @default(0)
   totalSpent        Float          @default(0)
   visitCount        Int            @default(0)
+  lastVisitAt       DateTime?
   notes             String?
   createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @default(now()) @updatedAt
 
   orders            Order[]
 }
@@ -465,15 +467,24 @@ model SystemSettings {
   isServiceChargeEnabled  Boolean        @default(false)
   isTaxEnabled            Boolean        @default(false)
 
-  // 👑 زر تفعيل / تعطيل برنامج الولاء في أي وقت
-  isLoyaltyEnabled        Boolean        @default(true)
-  pointsPerPoundSpent     Float          @default(0.1) // 1 point per 10 EGP
-  poundValuePerPoint      Float          @default(0.5) // Each point = 0.5 EGP
+  // 👑 برنامج الولاء والهدايا (يطبق على أبو عادل وسول ميت ديناميكياً)
+  isLoyaltyEnabled          Boolean        @default(true)
+  pointsPerPoundSpent       Float          @default(1.0) // مثال: 1 نقطة لكل 1 جنيه إنفاق
+  poundValuePerPoint        Float          @default(0.1) // قيمة الاستبدال المباشر لكل نقطة (اختياري)
+  loyaltyRewardThreshold    Int            @default(3000) // الهدف المطلوب (مثال: 3000 نقطة / جنيه)
+  loyaltyRewardValue        Float          @default(200) // قيمة الهدية عند الوصول للهدف (مثال: 200 جنيه)
+  loyaltyAppliesToAbuAdel   Boolean        @default(true)
+  loyaltyAppliesToSoulmate  Boolean        @default(true)
+  loyaltyMotivationalMsg    String         @default("جمع نقط مع كل أوردر من حلواني أبو عادل وسول ميت كافيه — وكل ما توصل للهدف هتاخد هدية فورية تختار بيها أي حاجة تحبها! 🎁✨")
 
-  receiptFooterNotes      String         @default("شكراً لزيارتكم حلواني أبو عادل وسول ميت كافيه • حلي يومك واستمتع بقهوتك ☕🍰")
-  systemLocked            Boolean        @default(false)
-  lockMessage             String         @default("النظام مغلق مؤقتاً لأعمال الجرد والصيانة الدورية.")
-  updatedAt               DateTime       @default(now()) @updatedAt
+  // 🎁 إدارة العروض الخاصة وماكينة الخصومات في اللاندينج بيدج
+  offersEnabled             Boolean        @default(true)
+  specialOffers             String?
+
+  receiptFooterNotes        String         @default("شكراً لزيارتكم حلواني أبو عادل وسول ميت كافيه • حلي يومك واستمتع بقهوتك ☕🍰")
+  systemLocked              Boolean        @default(false)
+  lockMessage               String         @default("النظام مغلق مؤقتاً لأعمال الجرد والصيانة الدورية.")
+  updatedAt                 DateTime       @default(now()) @updatedAt
 }
 
 // ----------------------------------------------------

@@ -9,6 +9,17 @@ import {
   getCategoryLabel,
 } from "@/lib/categories";
 import {
+  DEFAULT_OFFERS,
+  OfferData,
+  getItemDiscountPricing,
+} from "@/lib/offers";
+import {
+  calculateEarnedPoints,
+  extractLoyaltyConfig,
+  getLoyaltyProgress,
+  isLoyaltyActiveForOutlet,
+} from "@/lib/loyalty";
+import {
   Coffee,
   Cake,
   ShoppingBag,
@@ -93,6 +104,16 @@ function TableOrderContent() {
   const [deliveryZones, setDeliveryZones] = useState<any[]>([]);
   const [selectedZoneId, setSelectedZoneId] = useState<string>("");
   const [settings, setSettings] = useState<any>(null);
+  const [offers, setOffers] = useState<OfferData>(DEFAULT_OFFERS);
+  const [identifiedCustomer, setIdentifiedCustomer] = useState<any>(null);
+  const [redeemRewardGift, setRedeemRewardGift] = useState<boolean>(false);
+  const [loyaltyAlert, setLoyaltyAlert] = useState<{
+    earned: number;
+    redeemed: number;
+    total: number;
+    headline: string;
+    canRedeem: boolean;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Filter & Search
@@ -349,26 +370,31 @@ function TableOrderContent() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [resOutlets, resTables, resMenu, resSettings, resZones] = await Promise.all([
+        const [resOutlets, resTables, resMenu, resSettings, resZones, resOffers] = await Promise.all([
           fetch("/api/outlets"),
           fetch("/api/tables"),
           fetch("/api/menu"),
           fetch("/api/settings"),
           fetch("/api/delivery-zones"),
+          fetch("/api/public/offers", { cache: "no-store" }),
         ]);
 
-        const [dataOutlets, dataTables, dataMenu, dataSettings, dataZones] = await Promise.all([
+        const [dataOutlets, dataTables, dataMenu, dataSettings, dataZones, dataOffers] = await Promise.all([
           resOutlets.json(),
           resTables.json(),
           resMenu.json(),
           resSettings.json(),
           resZones.json(),
+          resOffers.ok ? resOffers.json() : null,
         ]);
 
         if (dataOutlets.success) setOutlets(dataOutlets.outlets);
         if (dataTables.success) setTables(dataTables.tables);
         if (dataMenu.success) setMenuItems(dataMenu.items);
         if (dataSettings.success) setSettings(dataSettings.settings);
+        if (dataOffers && typeof dataOffers === "object") {
+          setOffers({ ...DEFAULT_OFFERS, ...dataOffers });
+        }
         if (dataZones.success && dataZones.zones?.length > 0) {
           setDeliveryZones(dataZones.zones);
           setSelectedZoneId((prev) => prev || dataZones.zones[0].id);
@@ -581,15 +607,45 @@ function TableOrderContent() {
     }
   };
 
-  // Cart Functions (Supports fractional weights in KG as well as whole Units)
+  // Keep customer's live loyalty points synced from server whenever phone / login is active
+  useEffect(() => {
+    const activePhone = (loggedInCustomer?.phone || customerPhone || "").trim();
+    if (activePhone.length < 10) {
+      if (!loggedInCustomer) setIdentifiedCustomer(null);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/customers?phone=${encodeURIComponent(activePhone)}`);
+        const data = await res.json();
+        if (data.success && data.customer) {
+          setIdentifiedCustomer(data.customer);
+          if (loggedInCustomer && loggedInCustomer.phone === data.customer.phone) {
+            const merged = { ...loggedInCustomer, ...data.customer };
+            setLoggedInCustomer(merged);
+            localStorage.setItem("abuadel_customer_session", JSON.stringify(merged));
+          }
+        } else if (!loggedInCustomer) {
+          setIdentifiedCustomer(null);
+        }
+      } catch {
+        // silent
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [loggedInCustomer?.phone, customerPhone]);
+
+  // Cart Functions (Supports fractional weights in KG as well as whole Units + live Offers discount)
   const addWeightToCart = (item: any, weightKg: number) => {
     const cleanQty = Number(Math.max(0.1, weightKg).toFixed(3));
+    const pricing = getItemDiscountPricing(item, offers);
     setCart((prev) => {
       const idx = prev.findIndex((i) => i.menuItemId === item.id);
       if (idx > -1) {
         const updated = [...prev];
         updated[idx] = {
           ...updated[idx],
+          price: pricing.finalPrice,
           qty: Number((updated[idx].qty + cleanQty).toFixed(3)),
         };
         return updated;
@@ -599,7 +655,8 @@ function TableOrderContent() {
         {
           menuItemId: item.id,
           nameAr: item.nameAr,
-          price: item.price,
+          price: pricing.finalPrice,
+          originalPrice: pricing.originalPrice,
           qty: cleanQty,
           unitType: item.unitType || "KG",
           notes: "",
@@ -620,11 +677,12 @@ function TableOrderContent() {
       setWeightPickerItem(item);
       return;
     }
+    const pricing = getItemDiscountPricing(item, offers);
     setCart((prev) => {
       const idx = prev.findIndex((i) => i.menuItemId === item.id);
       if (idx > -1) {
         const updated = [...prev];
-        updated[idx] = { ...updated[idx], qty: updated[idx].qty + 1 };
+        updated[idx] = { ...updated[idx], price: pricing.finalPrice, qty: updated[idx].qty + 1 };
         return updated;
       }
       return [
@@ -632,7 +690,8 @@ function TableOrderContent() {
         {
           menuItemId: item.id,
           nameAr: item.nameAr,
-          price: item.price,
+          price: pricing.finalPrice,
+          originalPrice: pricing.originalPrice,
           qty: 1,
           unitType: item.unitType || "PIECE",
           notes: "",
@@ -661,7 +720,16 @@ function TableOrderContent() {
     );
   };
 
-  // Financials with Dynamic Delivery Zone Fee
+  // Financials with Dynamic Delivery Zone Fee + Loyalty Gift Redemption
+  const loyaltyCfg = extractLoyaltyConfig(settings);
+  const activeLoyaltyCustomer = identifiedCustomer || loggedInCustomer;
+  const activeLoyaltyOutletCode =
+    activeBrandTab === "ABU_ADEL" ? "ABU_ADEL_PATISSERIE" : "SOULMATE_CAFE";
+  const loyaltyActiveOnBrand = isLoyaltyActiveForOutlet(activeLoyaltyOutletCode, loyaltyCfg);
+  const activeCustomerProgress = activeLoyaltyCustomer
+    ? getLoyaltyProgress(activeLoyaltyCustomer.loyaltyPoints || 0, settings)
+    : null;
+
   const selectedZone = deliveryZones.find((z) => z.id === selectedZoneId) || deliveryZones[0];
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   const deliveryFee =
@@ -671,7 +739,16 @@ function TableOrderContent() {
       ? (subtotal * (settings.serviceChargePercent || 12)) / 100
       : 0;
   const taxAmount = settings?.isTaxEnabled ? (subtotal * (settings.taxPercent || 14)) / 100 : 0;
-  const finalAmount = Math.max(0, subtotal + serviceCharge + taxAmount + deliveryFee);
+  const loyaltyGiftDiscount =
+    redeemRewardGift && loyaltyActiveOnBrand && activeCustomerProgress?.canRedeemMilestone
+      ? Math.min(Math.max(0, subtotal + serviceCharge + taxAmount), loyaltyCfg.loyaltyRewardValue)
+      : 0;
+  const finalAmount = Math.max(0, subtotal + serviceCharge + taxAmount + deliveryFee - loyaltyGiftDiscount);
+  const projectedEarnedPoints = calculateEarnedPoints(
+    Math.max(0, subtotal + serviceCharge + taxAmount - loyaltyGiftDiscount),
+    activeLoyaltyOutletCode,
+    settings
+  );
 
   // Open Checkout Step (Clean Auth + Delivery Address Verification)
   const handleProceedToCheckout = () => {
@@ -768,6 +845,7 @@ function TableOrderContent() {
           deliveryAddress: actualOrderType === "DELIVERY" ? deliveryAddress.trim() : null,
           deliveryPhone: actualOrderType === "DELIVERY" ? customerPhone.trim() : null,
           paymentMethod,
+          redeemRewardGift: Boolean(redeemRewardGift && loyaltyGiftDiscount > 0),
           isScheduled,
           scheduledFor: scheduledForISO,
           depositRequired: computedDeposit,
@@ -786,10 +864,38 @@ function TableOrderContent() {
       if (data.success && data.order) {
         setCart([]);
         setIsScheduled(false);
+        setRedeemRewardGift(false);
         setDepositReceiptUrl("");
         setShowCheckoutModal(false);
-        // Save customer address locally too
-        if (loggedInCustomer) {
+
+        // Update live customer loyalty meter & show celebratory motivational notification
+        if (data.customer) {
+          setIdentifiedCustomer(data.customer);
+          if (loggedInCustomer) {
+            const updatedCust = {
+              ...loggedInCustomer,
+              ...data.customer,
+              address: deliveryAddress.trim() || data.customer.address || loggedInCustomer.address,
+              city: selectedZone?.nameAr || data.customer.city || loggedInCustomer.city,
+            };
+            setLoggedInCustomer(updatedCust);
+            localStorage.setItem("abuadel_customer_session", JSON.stringify(updatedCust));
+          }
+          if ((data.pointsEarned || 0) > 0 || (data.pointsRedeemed || 0) > 0) {
+            const prog = data.loyaltyProgress || getLoyaltyProgress(data.customer.loyaltyPoints, settings);
+            setLoyaltyAlert({
+              earned: data.pointsEarned || 0,
+              redeemed: data.pointsRedeemed || 0,
+              total: data.customer.loyaltyPoints || 0,
+              headline: prog.motivationalHeadline,
+              canRedeem: prog.canRedeemMilestone,
+            });
+            if (prog.canRedeemMilestone) {
+              playCelebrationChime();
+            }
+            setTimeout(() => setLoyaltyAlert(null), 9000);
+          }
+        } else if (loggedInCustomer) {
           const updatedCust = {
             ...loggedInCustomer,
             name: customerName.trim() || loggedInCustomer.name,
@@ -1482,6 +1588,91 @@ function TableOrderContent() {
           </div>
         )}
 
+        {/* LIVE LOYALTY COUNTER, PROGRESS BAR & MOTIVATIONAL BANNER */}
+        {loyaltyActiveOnBrand && (
+          <div className="bg-gradient-to-r from-amber-950/40 via-slate-900 to-emerald-950/35 border border-amber-500/40 rounded-2xl p-4 shadow-lg space-y-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-xl">
+                  {activeCustomerProgress?.canRedeemMilestone ? "🎁" : "⭐"}
+                </div>
+                <div>
+                  <div className="text-xs font-black text-white flex items-center gap-2 flex-wrap">
+                    <span>
+                      {activeLoyaltyCustomer
+                        ? `نقاطك يا ${activeLoyaltyCustomer.name}: ${(activeLoyaltyCustomer.loyaltyPoints || 0).toLocaleString()} ★`
+                        : `نادي نقاط الولاء والهدايا (أبو عادل & سول ميت)`}
+                    </span>
+                    {projectedEarnedPoints > 0 && (
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] border border-emerald-500/30 font-mono">
+                        +{projectedEarnedPoints}★ مع سلتك الآن!
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-amber-200/90 mt-0.5">
+                    {activeCustomerProgress
+                      ? activeCustomerProgress.motivationalHeadline
+                      : `اكسب ${loyaltyCfg.pointsPerPoundSpent} نقطة مع كل جنيه طلب — جمع ${loyaltyCfg.loyaltyRewardThreshold.toLocaleString()} نقطة واحصل على هدية ${loyaltyCfg.loyaltyRewardValue} ج.م!`}
+                  </p>
+                </div>
+              </div>
+
+              {!activeLoyaltyCustomer && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthTab("LOGIN");
+                    setShowAuthModal(true);
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-[11px] cursor-pointer shrink-0"
+                >
+                  استعلم عن نقاطك 📱
+                </button>
+              )}
+            </div>
+
+            {activeCustomerProgress && (
+              <div className="space-y-1">
+                <div className="flex justify-between text-[10px] font-bold">
+                  <span className="text-slate-300">
+                    التقدم نحو الهدية ({loyaltyCfg.loyaltyRewardValue} ج.م):{" "}
+                    <strong className="text-amber-300 font-mono">
+                      {activeCustomerProgress.cyclePoints.toLocaleString()} / {activeCustomerProgress.threshold.toLocaleString()}
+                    </strong>
+                  </span>
+                  <span className="text-emerald-400 font-mono">{activeCustomerProgress.progressPct}%</span>
+                </div>
+                <div className="w-full h-2 bg-black/70 rounded-full overflow-hidden border border-slate-800">
+                  <div
+                    className="h-full bg-gradient-to-r from-amber-500 to-emerald-400 transition-all duration-500"
+                    style={{ width: `${activeCustomerProgress.progressPct}%` }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* LIVE ACTIVE PROMOTIONAL DISCOUNT BANNER */}
+        {offers.enabled !== false && offers.discount?.enabled && offers.discount.value > 0 && (
+          <div className="bg-gradient-to-r from-rose-950/60 via-amber-950/35 to-rose-950/60 border border-rose-500/45 rounded-2xl p-3.5 flex items-center justify-between gap-3 shadow">
+            <div className="flex items-center gap-2.5">
+              <span className="text-xl animate-bounce">🔥</span>
+              <div>
+                <div className="text-xs font-black text-white">{offers.discount.title}</div>
+                <div className="text-[11px] text-rose-200">
+                  الأسعار في المنيو مخفضة تلقائياً الآن — استغل العرض قبل انتهائه!
+                </div>
+              </div>
+            </div>
+            <span className="px-3 py-1 rounded-full bg-rose-600 text-white text-[11px] font-black shrink-0">
+              {offers.discount.type === "percentage"
+                ? `خصم ${offers.discount.value}%`
+                : `وفر ${offers.discount.value} ج`}
+            </span>
+          </div>
+        )}
+
         {/* DYNAMIC DELIVERY ZONE SELECTOR BANNER (Shown whenever orderMode === "DELIVERY") */}
         {orderMode === "DELIVERY" && (
           <div className="bg-slate-900/95 border border-emerald-500/40 rounded-2xl p-4 shadow-lg space-y-2.5">
@@ -1693,6 +1884,12 @@ function TableOrderContent() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {filteredItems.map((item) => {
             const inCart = cart.find((i) => i.menuItemId === item.id);
+            const pricing = getItemDiscountPricing(item, offers);
+            const dynamicItemPoints = calculateEarnedPoints(
+              pricing.finalPrice,
+              item.outlet?.code,
+              settings
+            );
             const fallbackImage =
               item.itemType === "READY_PASTRY"
                 ? "/products/nawaem-mix-real.webp"
@@ -1712,6 +1909,11 @@ function TableOrderContent() {
                       (e.target as any).src = fallbackImage;
                     }}
                   />
+                  {pricing.hasDiscount && (
+                    <span className="absolute top-1 right-1 px-1.5 py-0.5 rounded bg-rose-600 text-white text-[9px] font-black shadow">
+                      {pricing.badgeText}
+                    </span>
+                  )}
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -1719,9 +1921,9 @@ function TableOrderContent() {
                     <span className="text-[9px] px-1.5 py-0.5 rounded font-bold bg-slate-800 text-slate-300 border border-slate-700">
                       {getCategoryLabel(item.category)}
                     </span>
-                    {item.loyaltyPointsEarned > 0 && settings?.isLoyaltyEnabled && (
+                    {dynamicItemPoints > 0 && loyaltyActiveOnBrand && (
                       <span className="text-[9px] px-1.5 py-0.2 rounded-full font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 whitespace-nowrap">
-                        +{item.loyaltyPointsEarned}★
+                        +{dynamicItemPoints}★
                       </span>
                     )}
                   </div>
@@ -1734,13 +1936,20 @@ function TableOrderContent() {
                   <p className="text-[11px] text-slate-400 line-clamp-1 mt-0.5">
                     {item.description || "صنف فاخر معد بأعلى معايير الجودة."}
                   </p>
-                  <div className="text-sm font-black text-amber-400 font-mono mt-1.5">
-                    {item.price} <span className="text-[10px] font-normal text-slate-400">ج.م</span>
-                    {item.itemType === "READY_PASTRY" && (
-                      <span className="text-[10px] text-slate-400 mr-1">
-                        ({item.unitType === "KG" ? "كجم" : "قطعة / علبة"})
+                  <div className="flex items-center gap-2 mt-1.5">
+                    {pricing.hasDiscount && (
+                      <span className="text-[11px] text-slate-500 line-through font-mono">
+                        {pricing.originalPrice}
                       </span>
                     )}
+                    <div className={`text-sm font-black font-mono ${pricing.hasDiscount ? "text-rose-400" : "text-amber-400"}`}>
+                      {pricing.finalPrice} <span className="text-[10px] font-normal text-slate-400">ج.م</span>
+                      {item.itemType === "READY_PASTRY" && (
+                        <span className="text-[10px] text-slate-400 mr-1">
+                          ({item.unitType === "KG" ? "كجم" : "قطعة / علبة"})
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -2315,6 +2524,46 @@ function TableOrderContent() {
                   />
                 </div>
 
+                {/* Loyalty Gift Redemption & Projected Points Card inside Checkout */}
+                {loyaltyActiveOnBrand && (
+                  <div className="bg-amber-950/25 border border-amber-500/35 rounded-2xl p-3 space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-black text-amber-300 flex items-center gap-1.5">
+                        <Gift className="w-4 h-4" />
+                        <span>نقاط الولاء على هذا الطلب:</span>
+                      </span>
+                      <span className="font-mono font-black text-emerald-400">
+                        +{projectedEarnedPoints} ★ مكتسبة
+                      </span>
+                    </div>
+
+                    {activeCustomerProgress && (
+                      <p className="text-[11px] text-slate-300 leading-relaxed">
+                        {activeCustomerProgress.motivationalHeadline}
+                      </p>
+                    )}
+
+                    {activeCustomerProgress?.canRedeemMilestone && (
+                      <button
+                        type="button"
+                        onClick={() => setRedeemRewardGift(!redeemRewardGift)}
+                        className={`w-full py-2 px-3 rounded-xl border text-xs font-black transition cursor-pointer flex items-center justify-center gap-2 ${
+                          redeemRewardGift
+                            ? "bg-emerald-500 text-slate-950 border-emerald-400 shadow-lg"
+                            : "bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border-amber-500/40"
+                        }`}
+                      >
+                        <Gift className="w-4 h-4" />
+                        <span>
+                          {redeemRewardGift
+                            ? `✅ تم تطبيق خصم الهدية (-${loyaltyGiftDiscount.toFixed(0)} ج.م مقابل ${loyaltyCfg.loyaltyRewardThreshold.toLocaleString()} ★)`
+                            : `🎁 استبدال هديتك الآن! خصم ${loyaltyCfg.loyaltyRewardValue} ج.م مقابل ${loyaltyCfg.loyaltyRewardThreshold.toLocaleString()} ★`}
+                        </span>
+                      </button>
+                    )}
+                  </div>
+                )}
+
                 {/* Live Receipt Preview */}
                 <div className="bg-black/60 border border-white/10 rounded-2xl p-3 space-y-2">
                   <div className="text-[11px] font-black text-amber-300 border-b border-white/10 pb-1 flex justify-between">
@@ -2345,6 +2594,12 @@ function TableOrderContent() {
                       <div className="flex justify-between text-emerald-400 font-bold">
                         <span>مصاريف التوصيل ({selectedZone?.nameAr}):</span>
                         <span className="font-mono">+{deliveryFee.toFixed(2)} ج.م</span>
+                      </div>
+                    )}
+                    {loyaltyGiftDiscount > 0 && (
+                      <div className="flex justify-between text-amber-300 font-black">
+                        <span>🎁 خصم هدية الولاء المستبدلة:</span>
+                        <span className="font-mono">-{loyaltyGiftDiscount.toFixed(2)} ج.م</span>
                       </div>
                     )}
                     <div className="flex justify-between text-sm font-black text-amber-400 border-t border-white/10 pt-1">
@@ -2862,9 +3117,37 @@ function TableOrderContent() {
                   <span className="font-mono text-amber-300">{loggedInCustomer.email || "-"}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">نقاط الولاء:</span>
-                  <span className="font-black text-amber-400">{loggedInCustomer.loyaltyPoints || 0} ★</span>
+                  <span className="text-slate-400">إجمالي المشتريات / الزيارات:</span>
+                  <span className="font-mono text-emerald-300 font-bold">
+                    {Number(loggedInCustomer.totalSpent || 0).toFixed(0)} ج.م ({loggedInCustomer.visitCount || 0} طلبات)
+                  </span>
                 </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-400">رصيد نقاط الولاء:</span>
+                  <span className="font-black text-amber-400 text-base">
+                    {(loggedInCustomer.loyaltyPoints || 0).toLocaleString()} ★
+                  </span>
+                </div>
+                {(() => {
+                  const prog = getLoyaltyProgress(loggedInCustomer.loyaltyPoints || 0, settings);
+                  return (
+                    <div className="bg-slate-900/90 border border-amber-500/30 rounded-xl p-3 space-y-1.5">
+                      <div className="flex justify-between text-[11px] font-bold">
+                        <span className="text-amber-300">الهدف: {prog.threshold.toLocaleString()} ★ = هدية {prog.rewardValue} ج.م</span>
+                        <span className="text-emerald-400 font-mono">{prog.progressPct}%</span>
+                      </div>
+                      <div className="w-full h-2 bg-black rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-amber-500 to-emerald-400"
+                          style={{ width: `${prog.progressPct}%` }}
+                        />
+                      </div>
+                      <p className="text-[11px] text-slate-300 leading-relaxed pt-1">
+                        {prog.motivationalHeadline}
+                      </p>
+                    </div>
+                  );
+                })()}
                 <button
                   onClick={handleCustomerLogout}
                   className="w-full py-2.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 font-bold text-xs cursor-pointer"
@@ -3014,6 +3297,35 @@ function TableOrderContent() {
               تسلم إيدك! بالهنا والشفا ❤️
             </button>
           </div>
+        </div>
+      )}
+
+      {/* CELEBRATORY LOYALTY POINTS EARNED NOTIFICATION */}
+      {loyaltyAlert && (
+        <div className="fixed bottom-20 right-4 z-50 max-w-sm bg-gradient-to-br from-amber-950 via-slate-900 to-emerald-950 border-2 border-amber-400/70 rounded-2xl p-4 shadow-2xl space-y-2 animate-fade-in">
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl animate-bounce">{loyaltyAlert.canRedeem ? "🎁" : "⭐"}</span>
+              <div>
+                <div className="text-xs font-black text-amber-300">
+                  {loyaltyAlert.earned > 0
+                    ? `ألف مبروك! كسبت +${loyaltyAlert.earned.toLocaleString()} نقطة ولاء 🎉`
+                    : "تم تحديث رصيد نقاط الولاء ✨"}
+                </div>
+                <div className="text-[11px] font-bold text-white font-mono">
+                  رصيدك الحالي الآن: {loyaltyAlert.total.toLocaleString()} ★
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setLoyaltyAlert(null)}
+              className="text-slate-400 hover:text-white cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          <p className="text-[11px] text-emerald-200 leading-relaxed">{loyaltyAlert.headline}</p>
         </div>
       )}
 

@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import {
+  calculateEarnedPoints,
+  extractLoyaltyConfig,
+  getLoyaltyProgress,
+  isLoyaltyActiveForOutlet,
+} from "@/lib/loyalty";
 
 export const dynamic = "force-dynamic";
 
@@ -249,6 +255,8 @@ export async function POST(req: Request) {
       waiterName,
       discountAmount,
       tipAmount,
+      pointsRedeemed,
+      redeemRewardGift,
       notes,
     } = body;
 
@@ -321,6 +329,26 @@ export async function POST(req: Request) {
           newSubtotal + newService + newTax - activeOrder.discountAmount + activeOrder.tipAmount
         );
 
+        const addedPoints = calculateEarnedPoints(addedSubtotal, targetOutletObj?.code, settings);
+        let customerSnapshot: any = null;
+        const targetCustPhone = activeOrder.customerPhone || customerPhone?.trim() || null;
+
+        if (activeOrder.customerId || targetCustPhone) {
+          const existingCust = activeOrder.customerId
+            ? await prisma.customer.findUnique({ where: { id: activeOrder.customerId } })
+            : await prisma.customer.findUnique({ where: { phone: targetCustPhone! } });
+          if (existingCust) {
+            customerSnapshot = await prisma.customer.update({
+              where: { id: existingCust.id },
+              data: {
+                loyaltyPoints: { increment: addedPoints },
+                totalSpent: { increment: addedSubtotal },
+                lastVisitAt: new Date(),
+              },
+            });
+          }
+        }
+
         const updatedOrder = await prisma.order.update({
           where: { id: activeOrder.id },
           data: {
@@ -329,6 +357,7 @@ export async function POST(req: Request) {
             serviceCharge: Number(newService.toFixed(2)),
             taxAmount: Number(newTax.toFixed(2)),
             finalAmount: Number(newFinal.toFixed(2)),
+            pointsEarned: { increment: addedPoints },
             status: "PREPARING", // Preparing round 2 / round 3
           },
         });
@@ -343,6 +372,11 @@ export async function POST(req: Request) {
           success: true,
           order: updatedOrder,
           isAppended: true,
+          pointsEarned: addedPoints,
+          customer: customerSnapshot,
+          loyaltyProgress: customerSnapshot
+            ? getLoyaltyProgress(customerSnapshot.loyaltyPoints, settings)
+            : null,
           message: `تمت إضافة المشروبات والأصناف الجديدة لشيك ترابيزة #${targetTable.tableNumber} بنجاح، وجاري تحضيرها فوراً ☕✨`,
         });
       }
@@ -375,51 +409,78 @@ export async function POST(req: Request) {
         ? (subtotal * (settings.serviceChargePercent || 12)) / 100
         : 0;
     const taxAmount = settings?.isTaxEnabled ? (subtotal * (settings.taxPercent || 14)) / 100 : 0;
-    const discount = Number(discountAmount) || 0;
+    const manualDiscount = Number(discountAmount) || 0;
     const tip = Number(tipAmount) || 0;
-    const finalAmount = Math.max(0, subtotal + serviceCharge + taxAmount + deliveryFee - discount + tip);
 
     // Generate Order Number (Brand-aware prefix!)
     const count = await prisma.order.count();
     const prefix = orderType === "DINE_IN" ? "DINE" : orderType === "DELIVERY" ? "DELV" : "TAKE";
     const orderNumber = `${prefix}-${1000 + count + 1}`;
 
-    // Handle Customer & Loyalty
+    // Handle Customer CRM & Dynamic Multi-Brand Loyalty (Abu Adel & Soulmate)
     let customerId: string | null = null;
     let pointsEarned = 0;
-    if (customerPhone?.trim()) {
-      const cleanPhone = customerPhone.trim();
-      let cust = await prisma.customer.findUnique({ where: { phone: cleanPhone } });
-      if (settings?.isLoyaltyEnabled) {
-        pointsEarned = Math.floor(finalAmount * (settings.pointsPerPoundSpent || 0.1));
-      }
+    let actualPointsRedeemed = 0;
+    let loyaltyDiscountEgp = 0;
+    let updatedCustomer: any = null;
 
-      if (cust) {
-        cust = await prisma.customer.update({
-          where: { id: cust.id },
+    const cleanPhone = customerPhone?.trim() || deliveryPhone?.trim() || "";
+    const loyaltyCfg = extractLoyaltyConfig(settings);
+    const loyaltyActiveHere = isLoyaltyActiveForOutlet(targetOutletObj?.code, loyaltyCfg);
+
+    let existingCust = cleanPhone
+      ? await prisma.customer.findUnique({ where: { phone: cleanPhone } })
+      : null;
+
+    if (existingCust && loyaltyActiveHere) {
+      const maxRedeemableStoreNet = Math.max(0, subtotal + serviceCharge + taxAmount - manualDiscount);
+      if (redeemRewardGift && existingCust.loyaltyPoints >= loyaltyCfg.loyaltyRewardThreshold) {
+        actualPointsRedeemed = loyaltyCfg.loyaltyRewardThreshold;
+        loyaltyDiscountEgp = Math.min(maxRedeemableStoreNet, loyaltyCfg.loyaltyRewardValue);
+      } else if (Number(pointsRedeemed) > 0 && existingCust.loyaltyPoints > 0) {
+        actualPointsRedeemed = Math.min(existingCust.loyaltyPoints, Math.floor(Number(pointsRedeemed)));
+        loyaltyDiscountEgp = Math.min(
+          maxRedeemableStoreNet,
+          Number((actualPointsRedeemed * loyaltyCfg.poundValuePerPoint).toFixed(2))
+        );
+      }
+    }
+
+    const discount = manualDiscount + loyaltyDiscountEgp;
+    const finalAmount = Math.max(0, subtotal + serviceCharge + taxAmount + deliveryFee - discount + tip);
+    const storeSpendForPoints = Math.max(0, finalAmount - deliveryFee - tip);
+
+    if (cleanPhone) {
+      pointsEarned = calculateEarnedPoints(storeSpendForPoints, targetOutletObj?.code, settings);
+
+      if (existingCust) {
+        updatedCustomer = await prisma.customer.update({
+          where: { id: existingCust.id },
           data: {
-            name: customerName?.trim() || cust.name,
-            address: deliveryAddress?.trim() || cust.address,
-            city: resolvedZoneName || cust.city,
-            totalSpent: cust.totalSpent + finalAmount,
-            visitCount: cust.visitCount + 1,
-            loyaltyPoints: cust.loyaltyPoints + pointsEarned,
+            name: customerName?.trim() || existingCust.name,
+            address: deliveryAddress?.trim() || existingCust.address,
+            city: resolvedZoneName || existingCust.city,
+            totalSpent: existingCust.totalSpent + storeSpendForPoints,
+            visitCount: existingCust.visitCount + 1,
+            lastVisitAt: new Date(),
+            loyaltyPoints: Math.max(0, existingCust.loyaltyPoints - actualPointsRedeemed + pointsEarned),
           },
         });
       } else {
-        cust = await prisma.customer.create({
+        updatedCustomer = await prisma.customer.create({
           data: {
             phone: cleanPhone,
             name: customerName?.trim() || "عميل VIP",
             address: deliveryAddress?.trim() || null,
             city: resolvedZoneName || null,
-            totalSpent: finalAmount,
+            totalSpent: storeSpendForPoints,
             visitCount: 1,
+            lastVisitAt: new Date(),
             loyaltyPoints: pointsEarned,
           },
         });
       }
-      customerId = cust.id;
+      customerId = updatedCustomer.id;
     }
 
     const scheduledFlag = Boolean(isScheduled && scheduledFor);
@@ -472,9 +533,10 @@ export async function POST(req: Request) {
         cashierName: cashierName || null,
         waiterName: waiterName || null,
         customerName: customerName || null,
-        customerPhone: customerPhone || null,
+        customerPhone: cleanPhone || null,
         customerId,
         pointsEarned,
+        pointsRedeemed: actualPointsRedeemed,
         notes: notes?.trim() || null,
         items: JSON.stringify(items),
       },
@@ -506,7 +568,29 @@ export async function POST(req: Request) {
       await createKdsTickets(items, order.id);
     }
 
-    return NextResponse.json({ success: true, order, isAppended: false });
+    return NextResponse.json({
+      success: true,
+      order,
+      isAppended: false,
+      pointsEarned,
+      pointsRedeemed: actualPointsRedeemed,
+      customer: updatedCustomer
+        ? {
+            id: updatedCustomer.id,
+            name: updatedCustomer.name,
+            phone: updatedCustomer.phone,
+            email: updatedCustomer.email,
+            loyaltyPoints: updatedCustomer.loyaltyPoints,
+            totalSpent: updatedCustomer.totalSpent,
+            visitCount: updatedCustomer.visitCount,
+            address: updatedCustomer.address,
+            city: updatedCustomer.city,
+          }
+        : null,
+      loyaltyProgress: updatedCustomer
+        ? getLoyaltyProgress(updatedCustomer.loyaltyPoints, settings)
+        : null,
+    });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
@@ -533,6 +617,10 @@ export async function PATCH(req: Request) {
       alertSent48h,
       alertSent24h,
       status,
+      customerName,
+      customerPhone,
+      pointsRedeemed,
+      redeemRewardGift,
     } = body;
 
     if (!orderId) {
@@ -687,8 +775,47 @@ export async function PATCH(req: Request) {
 
     // Action: Settle & Collect Cashier Payment (تقفيل الحساب ودفع الفاتورة مع فصل رسوم التوصيل عن إيراد المحل!)
     if (action === "SETTLE") {
-      const discount = discountAmount !== undefined ? Number(discountAmount) : order.discountAmount;
+      const [settings, orderOutlet] = await Promise.all([
+        prisma.systemSettings.findFirst(),
+        prisma.outlet.findUnique({ where: { id: order.outletId } }),
+      ]);
+      const loyaltyCfg = extractLoyaltyConfig(settings);
+      const loyaltyActiveHere = isLoyaltyActiveForOutlet(orderOutlet?.code, loyaltyCfg);
+
+      const baseDiscount =
+        discountAmount !== undefined
+          ? Math.max(order.pointsRedeemed > 0 ? order.discountAmount : 0, Number(discountAmount))
+          : order.discountAmount;
       const tip = tipAmount !== undefined ? Number(tipAmount) : order.tipAmount;
+
+      const cleanSettlePhone = customerPhone?.trim() || order.customerPhone || "";
+      let settleCust = order.customerId
+        ? await prisma.customer.findUnique({ where: { id: order.customerId } })
+        : cleanSettlePhone
+        ? await prisma.customer.findUnique({ where: { phone: cleanSettlePhone } })
+        : null;
+
+      let extraRedeemedPts = 0;
+      let extraLoyaltyDiscount = 0;
+
+      if (settleCust && loyaltyActiveHere && order.pointsRedeemed === 0) {
+        const maxRedeemable = Math.max(
+          0,
+          order.subtotal + order.serviceCharge + order.taxAmount - baseDiscount
+        );
+        if (redeemRewardGift && settleCust.loyaltyPoints >= loyaltyCfg.loyaltyRewardThreshold) {
+          extraRedeemedPts = loyaltyCfg.loyaltyRewardThreshold;
+          extraLoyaltyDiscount = Math.min(maxRedeemable, loyaltyCfg.loyaltyRewardValue);
+        } else if (Number(pointsRedeemed) > 0 && settleCust.loyaltyPoints > 0) {
+          extraRedeemedPts = Math.min(settleCust.loyaltyPoints, Math.floor(Number(pointsRedeemed)));
+          extraLoyaltyDiscount = Math.min(
+            maxRedeemable,
+            Number((extraRedeemedPts * loyaltyCfg.poundValuePerPoint).toFixed(2))
+          );
+        }
+      }
+
+      const discount = baseDiscount + extraLoyaltyDiscount;
       const newFinal = Math.max(
         0,
         order.subtotal + order.serviceCharge + order.taxAmount + (order.deliveryFee || 0) - discount + tip
@@ -697,6 +824,61 @@ export async function PATCH(req: Request) {
 
       if (order.isScheduled) {
         await ensureDepletedOnce();
+      }
+
+      const storeNetSettled = Math.max(0, newFinal - (order.deliveryFee || 0) - tip);
+      const prevStoreNet = Math.max(0, order.finalAmount - (order.deliveryFee || 0) - (order.tipAmount || 0));
+      const computedPointsEarned = cleanSettlePhone
+        ? calculateEarnedPoints(storeNetSettled, orderOutlet?.code, settings)
+        : order.pointsEarned;
+
+      let updatedCustomerSnapshot: any = null;
+      let linkedCustomerId = order.customerId;
+
+      if (cleanSettlePhone) {
+        if (!order.customerId) {
+          if (settleCust) {
+            updatedCustomerSnapshot = await prisma.customer.update({
+              where: { id: settleCust.id },
+              data: {
+                name: customerName?.trim() || settleCust.name,
+                totalSpent: settleCust.totalSpent + storeNetSettled,
+                visitCount: settleCust.visitCount + 1,
+                lastVisitAt: new Date(),
+                loyaltyPoints: Math.max(0, settleCust.loyaltyPoints - extraRedeemedPts + computedPointsEarned),
+              },
+            });
+          } else {
+            updatedCustomerSnapshot = await prisma.customer.create({
+              data: {
+                phone: cleanSettlePhone,
+                name: customerName?.trim() || order.customerName || "عميل VIP",
+                totalSpent: storeNetSettled,
+                visitCount: 1,
+                lastVisitAt: new Date(),
+                loyaltyPoints: computedPointsEarned,
+              },
+            });
+          }
+          linkedCustomerId = updatedCustomerSnapshot.id;
+        } else if (settleCust && order.paymentStatus !== "PAID") {
+          const ptsDelta = (computedPointsEarned - order.pointsEarned) - extraRedeemedPts;
+          const spendDelta = storeNetSettled - prevStoreNet;
+          if (ptsDelta !== 0 || Math.abs(spendDelta) > 0.01 || extraRedeemedPts > 0) {
+            updatedCustomerSnapshot = await prisma.customer.update({
+              where: { id: settleCust.id },
+              data: {
+                loyaltyPoints: Math.max(0, settleCust.loyaltyPoints + ptsDelta),
+                totalSpent: Math.max(0, settleCust.totalSpent + spendDelta),
+                lastVisitAt: new Date(),
+              },
+            });
+          } else {
+            updatedCustomerSnapshot = settleCust;
+          }
+        } else {
+          updatedCustomerSnapshot = settleCust;
+        }
       }
 
       const updatedOrder = await prisma.order.update({
@@ -709,6 +891,11 @@ export async function PATCH(req: Request) {
           tipAmount: tip,
           finalAmount: Number(newFinal.toFixed(2)),
           cashierName: cashierName || order.cashierName || "كاشير المنظومة",
+          customerId: linkedCustomerId,
+          customerPhone: cleanSettlePhone || order.customerPhone,
+          customerName: customerName?.trim() || order.customerName,
+          pointsEarned: computedPointsEarned,
+          pointsRedeemed: order.pointsRedeemed + extraRedeemedPts,
           settledAt: new Date(),
         },
         include: {
@@ -763,11 +950,36 @@ export async function PATCH(req: Request) {
         success: true,
         message: `تم تحصيل الشيك (${order.orderNumber}) بنجاح بمبلغ ${newFinal} ج.م 💵`,
         order: updatedOrder,
+        customer: updatedCustomerSnapshot,
+        pointsEarned: computedPointsEarned,
+        pointsRedeemed: order.pointsRedeemed + extraRedeemedPts,
+        loyaltyProgress: updatedCustomerSnapshot
+          ? getLoyaltyProgress(updatedCustomerSnapshot.loyaltyPoints, settings)
+          : null,
       });
     }
 
     // Action: Cancel Order
     if (action === "CANCEL") {
+      if (order.status !== "CANCELLED" && order.customerId) {
+        try {
+          const cust = await prisma.customer.findUnique({ where: { id: order.customerId } });
+          if (cust) {
+            const storeSpend = Math.max(0, order.finalAmount - (order.deliveryFee || 0) - (order.tipAmount || 0));
+            const revertedPts = Math.max(0, cust.loyaltyPoints - (order.pointsEarned || 0) + (order.pointsRedeemed || 0));
+            await prisma.customer.update({
+              where: { id: cust.id },
+              data: {
+                loyaltyPoints: revertedPts,
+                totalSpent: Math.max(0, cust.totalSpent - storeSpend),
+              },
+            });
+          }
+        } catch {
+          // Non-fatal
+        }
+      }
+
       const updatedOrder = await prisma.order.update({
         where: { id: orderId },
         data: { status: "CANCELLED" },
