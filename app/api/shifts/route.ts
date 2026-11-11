@@ -55,6 +55,7 @@ export async function GET(req: Request) {
       where: {
         ...whereOutlet,
         paymentStatus: "PAID",
+        status: { not: "CANCELLED" },
         settledAt: { gte: shiftStartTime },
       },
     });

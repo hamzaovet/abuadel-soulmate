@@ -361,10 +361,18 @@ model Order {
   notes               String?
   items               String         // JSON Array of ordered items [{ menuItemId, nameAr, price, qty, notes, itemType }]
 
+  isEdited            Boolean        @default(false) // تم تعديل أصناف/كميات الفاتورة ("فاتورة معدلة")
+  revisionCount       Int            @default(0)
+  paymentModified     Boolean        @default(false) // تم تغيير طريقة الدفع ("تعديل دفع")
+  lastEditReason      String?
+  lastEditedBy        String?
+  lastEditedAt        DateTime?
+
   createdAt           DateTime       @default(now())
   settledAt           DateTime?
 
   kdsTickets          KdsTicket[]
+  auditLogs           OrderAuditLog[]
 }
 
 // ----------------------------------------------------
@@ -619,4 +627,45 @@ model SupplierTransaction {
   notes           String?
   createdAt       DateTime  @default(now())
 }
+
+// ----------------------------------------------------
+// 17. ORDER AUDIT LOGS & ADMIN SECURITY ALERTS (سجل تعديل الفواتير والدفع وتنبيهات الإدارة)
+// ----------------------------------------------------
+model OrderAuditLog {
+  id               String   @id @default(cuid())
+  orderId          String
+  order            Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderNumber      String
+  outletId         String
+  outletName       String
+  actionType       String   // "INVOICE_EDIT" | "PAYMENT_EDIT"
+  performedBy      String   @default("كاشير الفرع")
+  reason           String
+  oldPaymentMethod String?
+  newPaymentMethod String?
+  oldFinalAmount   Float    @default(0)
+  newFinalAmount   Float    @default(0)
+  amountDiff       Float    @default(0)
+  oldItemsJson     String?
+  newItemsJson     String?
+  createdAt        DateTime @default(now())
+}
+
+model AdminNotification {
+  id           String    @id @default(cuid())
+  outletId     String?
+  orderId      String?
+  orderNumber  String?
+  category     String    @default("INVOICE_EDITED") // "INVOICE_EDITED" | "PAYMENT_EDITED" | "GENERAL"
+  severity     String    @default("HIGH")
+  title        String
+  message      String
+  actorName    String?
+  metadataJson String?
+  isRead       Boolean   @default(false)
+  readBy       String?
+  readAt       DateTime?
+  createdAt    DateTime  @default(now())
+}
+
 

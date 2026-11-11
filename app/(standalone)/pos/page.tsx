@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import CardQRModal from "@/components/CardQRModal";
+import OrderRevisionModals, { RevisionModalMode } from "@/components/OrderRevisionModals";
 import {
   SOULMATE_CATEGORIES,
   ABU_ADEL_CATEGORIES,
@@ -63,6 +64,7 @@ import {
   Calendar,
   Gift,
   Tag,
+  Edit3,
 } from "lucide-react";
 
 export default function PosTerminalPage() {
@@ -274,9 +276,12 @@ export default function PosTerminalPage() {
     showToast("success", `تمت إضافة ${newBoxCartItem.nameAr} بإجمالي ${totalBoxPrice.toFixed(2)} ج.م للفاتورة 📦✨`);
   };
 
-  // Completed Printed Receipt
+  // Completed Printed Receipt & Order Revision Modal
   const [lastPrintedOrder, setLastPrintedOrder] = useState<any>(null);
   const [settlingOrder, setSettlingOrder] = useState<boolean>(false);
+  const [revisionTargetOrder, setRevisionTargetOrder] = useState<any>(null);
+  const [revisionModalMode, setRevisionModalMode] = useState<RevisionModalMode>(null);
+  const [invoiceSearchTerm, setInvoiceSearchTerm] = useState<string>("");
 
   // Floating Toast
   const [toast, setToast] = useState<{ type: "success" | "error" | "info"; message: string } | null>(null);
@@ -1132,6 +1137,20 @@ export default function PosTerminalPage() {
               </button>
             );
           })()}
+
+          {/* Quick Invoice Revision / Payment Change Button */}
+          <button
+            type="button"
+            onClick={() => {
+              setOnlineStatusFilter("ALL_INVOICES");
+              setShowOnlineQueueModal(true);
+            }}
+            className="py-1.5 px-3 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/35 text-amber-300 text-xs font-black transition flex items-center gap-1.5 cursor-pointer"
+            title="تعديل أصناف وكميات فاتورة سابقة (فاتورة معدلة) أو تعديل وسيلة الدفع (تعديل دفع)"
+          >
+            <Edit3 className="w-3.5 h-3.5" />
+            <span className="hidden xl:inline">تعديل فاتورة / دفع</span>
+          </button>
 
           {/* Customer Live Chat Button (Both Outlets) */}
           {(() => {
@@ -2674,6 +2693,26 @@ export default function PosTerminalPage() {
             <p className="text-[11px] font-black font-mono">
               إيصال طلب رقم: #{lastPrintedOrder.orderNumber}
             </p>
+            {(lastPrintedOrder.isEdited || lastPrintedOrder.paymentModified) && (
+              <div className="mt-1 pt-1 border-t border-dashed border-black space-y-0.5 text-[10px] font-black">
+                {lastPrintedOrder.isEdited && (
+                  <p className="bg-black text-white px-2 py-0.5 inline-block">
+                    *** فاتورة معدلة (تعديل #{lastPrintedOrder.revisionCount || 1}) ***
+                  </p>
+                )}
+                {lastPrintedOrder.paymentModified && (
+                  <p className="border border-black px-2 py-0.5 inline-block mr-1">
+                    *** تعديل دفع ***
+                  </p>
+                )}
+                {lastPrintedOrder.lastEditReason && (
+                  <p className="text-[9px] font-bold">
+                    السبب: {lastPrintedOrder.lastEditReason}
+                    {lastPrintedOrder.lastEditedBy ? ` (${lastPrintedOrder.lastEditedBy})` : ""}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="text-[11px] space-y-1 border-b border-black pb-2 mb-2">
@@ -2922,6 +2961,7 @@ export default function PosTerminalPage() {
               <div className="flex flex-wrap items-center gap-1.5">
                 {[
                   { key: "ACTIVE", label: "🔥 النشط وقيد التوصيل" },
+                  { key: "ALL_INVOICES", label: "🧾 كل الفواتير (تعديل / دفع)" },
                   { key: "NEW_PENDING", label: "🆕 جديد" },
                   { key: "PREPARING", label: "📦 قيد التجهيز" },
                   { key: "READY_TO_SERVE", label: "✅ جاهز للطيار" },
@@ -2942,14 +2982,31 @@ export default function PosTerminalPage() {
                   </button>
                 ))}
               </div>
+              <div className="relative flex-1 min-w-[180px]">
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-2.5" />
+                <input
+                  type="text"
+                  value={invoiceSearchTerm}
+                  onChange={(e) => setInvoiceSearchTerm(e.target.value)}
+                  placeholder="بحث برقم الفاتورة أو اسم/موبايل العميل..."
+                  className="w-full bg-slate-950 border border-white/15 rounded-xl pr-8 pl-3 py-1.5 text-xs text-white placeholder:text-slate-500"
+                />
+              </div>
             </div>
 
             {/* Filtered Orders Cards */}
             <div className="flex-1 overflow-y-auto space-y-3 pr-1">
               {(() => {
+                const qTerm = invoiceSearchTerm.trim().toLowerCase();
                 const filteredQueue = posOrders.filter((o) => {
-                  if (o.orderType === "DINE_IN" && onlineStatusFilter === "ACTIVE") return false;
+                  if (o.status === "CANCELLED") return false;
+                  if (qTerm) {
+                    const hay = `${o.orderNumber || ""} ${o.customerName || ""} ${o.customerPhone || ""} ${o.deliveryPhone || ""}`.toLowerCase();
+                    if (!hay.includes(qTerm)) return false;
+                  }
                   if (onlineZoneFilter !== "ALL" && o.deliveryZoneId !== onlineZoneFilter) return false;
+                  if (onlineStatusFilter === "ALL_INVOICES") return true;
+                  if (o.orderType === "DINE_IN" && onlineStatusFilter === "ACTIVE") return false;
                   if (onlineStatusFilter === "ACTIVE") {
                     return ["NEW_PENDING", "PREPARING", "READY_TO_SERVE", "OUT_FOR_DELIVERY"].includes(o.status);
                   }
@@ -2998,6 +3055,16 @@ export default function PosTerminalPage() {
                           <span className="text-[10px] text-slate-400 font-mono">
                             {new Date(o.createdAt).toLocaleTimeString("ar-EG")}
                           </span>
+                          {o.isEdited && (
+                            <span className="px-2 py-0.5 rounded-lg text-[10px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                              ✏️ فاتورة معدلة{o.revisionCount > 1 ? ` (${o.revisionCount})` : ""}
+                            </span>
+                          )}
+                          {o.paymentModified && (
+                            <span className="px-2 py-0.5 rounded-lg text-[10px] font-black bg-sky-500/20 text-sky-300 border border-sky-500/40">
+                              💳 تعديل دفع
+                            </span>
+                          )}
                         </div>
 
                         <div className="text-xs text-slate-200 flex flex-wrap items-center gap-3">
@@ -3177,6 +3244,31 @@ export default function PosTerminalPage() {
                                 تأكيد التسليم النهائي ✔️
                               </button>
                             )}
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setRevisionTargetOrder(o);
+                              setRevisionModalMode("EDIT_INVOICE");
+                            }}
+                            className="px-2.5 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/35 text-[11px] font-black flex items-center gap-1 cursor-pointer"
+                            title="تعديل أصناف وكميات الفاتورة (فاتورة معدلة)"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                            <span>تعديل فاتورة</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setRevisionTargetOrder(o);
+                              setRevisionModalMode("CHANGE_PAYMENT");
+                            }}
+                            className="px-2.5 py-1.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/30 text-sky-300 border border-sky-500/35 text-[11px] font-black flex items-center gap-1 cursor-pointer"
+                            title="تغيير وسيلة الدفع (تعديل دفع)"
+                          >
+                            <CreditCard className="w-3.5 h-3.5" />
+                            <span>تعديل دفع</span>
+                          </button>
 
                           <button
                             type="button"
@@ -3486,6 +3578,31 @@ export default function PosTerminalPage() {
         hotline={settings?.hotline || "15992"}
         abuAdelPhone={settings?.abuAdelPhone || "15992"}
         soulmatePhone={settings?.soulmatePhone || "01099887766"}
+      />
+
+      {/* Order Revision & Payment Change Modals */}
+      <OrderRevisionModals
+        mode={revisionModalMode}
+        order={revisionTargetOrder}
+        menuItems={menuItems}
+        defaultActorName={currentUser?.name || "كاشير الفرع"}
+        onClose={() => {
+          setRevisionModalMode(null);
+          setRevisionTargetOrder(null);
+        }}
+        onSuccess={(updatedOrder, message, shouldPrint) => {
+          setRevisionModalMode(null);
+          setRevisionTargetOrder(null);
+          setPosOrders((prev) => prev.map((x) => (x.id === updatedOrder.id ? updatedOrder : x)));
+          if (shouldPrint || lastPrintedOrder?.id === updatedOrder.id) {
+            setLastPrintedOrder(updatedOrder);
+          }
+          showToast("success", message);
+          loadPosData();
+          if (shouldPrint) {
+            setTimeout(() => window.print(), 300);
+          }
+        }}
       />
 
       {/* ─────────────────────────────────────────────────────────────

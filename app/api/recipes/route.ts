@@ -105,6 +105,40 @@ export async function GET(req: Request) {
   }
 }
 
+async function recalculateAffectedMenuCosts(rawMaterialIds?: string[]) {
+  const recipeWhere = rawMaterialIds?.length
+    ? { rawMaterialId: { in: rawMaterialIds } }
+    : {};
+  const linkedRecipes = await prisma.recipeItem.findMany({
+    where: recipeWhere,
+    select: { menuItemId: true },
+  });
+  const menuIds = Array.from(new Set(linkedRecipes.map((r) => r.menuItemId)));
+  if (menuIds.length === 0) return 0;
+
+  const allMenuRecipes = await prisma.recipeItem.findMany({
+    where: { menuItemId: { in: menuIds } },
+    include: { rawMaterial: { select: { costPerUnit: true } } },
+  });
+
+  const costByMenuId = new Map<string, number>();
+  for (const row of allMenuRecipes) {
+    const prev = costByMenuId.get(row.menuItemId) || 0;
+    costByMenuId.set(
+      row.menuItemId,
+      prev + Number(row.qtyRequired || 0) * Number(row.rawMaterial?.costPerUnit || 0)
+    );
+  }
+
+  for (const [mId, totalCost] of costByMenuId.entries()) {
+    await prisma.menuItem.update({
+      where: { id: mId },
+      data: { costPrice: Number(totalCost.toFixed(2)) },
+    });
+  }
+  return menuIds.length;
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -279,11 +313,17 @@ export async function POST(req: Request) {
         },
       });
 
+      const updatedMenusCount =
+        effectiveCost !== existing.costPerUnit
+          ? await recalculateAffectedMenuCosts([existing.id])
+          : 0;
+
       return NextResponse.json({
         success: true,
         message: `تم تسجيل حركة توريد (+${inboundQty} ${existing.unit}) لخامة (${existing.nameAr}) بنجاح 📦`,
         rawMaterial: updated,
         movement,
+        updatedMenusCount,
       });
     }
 
@@ -425,6 +465,58 @@ export async function POST(req: Request) {
       });
     }
 
+    // 4. ACTION: BULK_UPDATE_RAW_PRICES (تحديث أسعار الخامات بالجملة مع إعادة تسعير كل الريسبي تلقائياً)
+    if (action === "BULK_UPDATE_RAW_PRICES") {
+      const updates = Array.isArray(body.updates) ? body.updates : [];
+      if (updates.length === 0) {
+        return NextResponse.json({ success: false, error: "لا توجد تحديثات لحفظها" }, { status: 400 });
+      }
+      const changedIds: string[] = [];
+      let updatedMaterialsCount = 0;
+
+      for (const u of updates) {
+        if (!u?.id) continue;
+        const data: any = {};
+        if (u.costPerUnit !== undefined && Number.isFinite(Number(u.costPerUnit))) {
+          data.costPerUnit = Math.max(0, Number(u.costPerUnit));
+          changedIds.push(u.id);
+        }
+        if (u.minStockAlert !== undefined && Number.isFinite(Number(u.minStockAlert))) {
+          data.minStockAlert = Math.max(0, Number(u.minStockAlert));
+        }
+        if (u.avgDailyUsage !== undefined && Number.isFinite(Number(u.avgDailyUsage))) {
+          data.avgDailyUsage = Math.max(0, Number(u.avgDailyUsage));
+        }
+        if (u.leadTimeDays !== undefined && Number.isFinite(Number(u.leadTimeDays))) {
+          data.leadTimeDays = Math.max(1, Math.round(Number(u.leadTimeDays)));
+        }
+        if (Object.keys(data).length > 0) {
+          await prisma.rawMaterial.update({ where: { id: u.id }, data });
+          updatedMaterialsCount += 1;
+        }
+      }
+
+      const updatedMenusCount =
+        changedIds.length > 0 ? await recalculateAffectedMenuCosts(changedIds) : 0;
+
+      return NextResponse.json({
+        success: true,
+        updatedMaterialsCount,
+        updatedMenusCount,
+        message: `تم تحديث أسعار ${updatedMaterialsCount} خامة وإعادة احتساب تكلفة ${updatedMenusCount} صنف في المنيو تلقائياً 💰✅`,
+      });
+    }
+
+    // 5. ACTION: RECALCULATE_ALL_COSTS (إعادة احتساب تكلفة كافة الأصناف المرتبطة بالريسبي)
+    if (action === "RECALCULATE_ALL_COSTS") {
+      const updatedMenusCount = await recalculateAffectedMenuCosts();
+      return NextResponse.json({
+        success: true,
+        updatedMenusCount,
+        message: `تم إعادة احتساب التكلفة الديناميكية لـ ${updatedMenusCount} صنف من المنيو ✅`,
+      });
+    }
+
     return NextResponse.json({ success: false, error: "إجراء غير معروف" }, { status: 400 });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
@@ -474,11 +566,17 @@ export async function PATCH(req: Request) {
         },
       });
 
+      const updatedMenusCount =
+        effectiveCost !== existing.costPerUnit
+          ? await recalculateAffectedMenuCosts([targetId])
+          : 0;
+
       return NextResponse.json({
         success: true,
         message: `تم توريد (+${inboundQty} ${existing.unit}) لخامة (${existing.nameAr}) بنجاح 📦`,
         rawMaterial: updated,
         movement,
+        updatedMenusCount,
       });
     }
 
@@ -498,7 +596,12 @@ export async function PATCH(req: Request) {
       },
     });
 
-    return NextResponse.json({ success: true, rawMaterial: raw });
+    const updatedMenusCount =
+      newCostPerUnit !== undefined || costPerUnit !== undefined
+        ? await recalculateAffectedMenuCosts([targetId])
+        : 0;
+
+    return NextResponse.json({ success: true, rawMaterial: raw, updatedMenusCount });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }

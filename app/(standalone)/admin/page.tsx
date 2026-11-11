@@ -7,6 +7,9 @@ import CardQRModal from "@/components/CardQRModal";
 import AdminLoyaltyCrmOffersPanel from "@/components/AdminLoyaltyCrmOffersPanel";
 import AdminDailyAlertAndBriefModal from "@/components/AdminDailyAlertAndBriefModal";
 import AdminSuppliersAndAiPanel from "@/components/AdminSuppliersAndAiPanel";
+import AdminAuditAlertsDrawer from "@/components/AdminAuditAlertsDrawer";
+import AdminBulkRawPriceEditor from "@/components/AdminBulkRawPriceEditor";
+import OrderRevisionModals, { RevisionModalMode } from "@/components/OrderRevisionModals";
 import {
   SOULMATE_CATEGORIES,
   ABU_ADEL_CATEGORIES,
@@ -407,8 +410,10 @@ export default function AdminDashboardPage() {
   const [dispatchDriverNames, setDispatchDriverNames] = useState<Record<string, string>>({});
   const [dispatchDriverIds, setDispatchDriverIds] = useState<Record<string, string>>({});
 
-  // Reprint / View Order Receipt Modal
+  // Reprint / View Order Receipt Modal & Audited Revisions
   const [selectedOrderForPrint, setSelectedOrderForPrint] = useState<any>(null);
+  const [revisionTargetOrder, setRevisionTargetOrder] = useState<any>(null);
+  const [revisionModalMode, setRevisionModalMode] = useState<RevisionModalMode>(null);
 
   // Image Uploading
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -2362,6 +2367,14 @@ export default function AdminDashboardPage() {
                   </span>
                 )}
               </button>
+            )}
+
+            {(isOwner || isBranchManager) && (
+              <AdminAuditAlertsDrawer
+                outletId={selectedOutletId || "ALL"}
+                actorName={currentUser?.name || "المدير العام"}
+                onToast={addToast}
+              />
             )}
 
             <button
@@ -4416,6 +4429,12 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
 
+                <AdminBulkRawPriceEditor
+                  rawMaterials={rawMaterials}
+                  onRefresh={fetchDashboardData}
+                  onToast={addToast}
+                />
+
                 {rawMaterials.some((r) => r.reorderUrgent) && (
                   <div className="bg-rose-950/40 border-2 border-rose-500/50 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex items-start gap-3 text-xs">
@@ -4837,11 +4856,20 @@ export default function AdminDashboardPage() {
                 <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                   <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
                     <Coffee className="w-4 h-4 text-amber-400" />
-                    <span>قائمة المشروبات وتكلفة الكوب وهامش الربح الفعلي</span>
+                    <span>قائمة المشروبات والبان كيك وتكلفة الكوب وهامش الربح الديناميكي</span>
                   </h3>
-                  <span className="text-xs text-slate-400">
-                    إجمالي المشروبات: {menuItems.filter((m) => m.itemType === "PREPARED_BEVERAGE").length} صنف
-                  </span>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <button
+                      type="button"
+                      onClick={() => setRecipeSubTab("cards")}
+                      className="px-3 py-1 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 text-xs font-bold cursor-pointer"
+                    >
+                      💰 تعديل أسعار الخامات بالجملة ⚡
+                    </button>
+                    <span className="text-xs text-slate-400">
+                      إجمالي الأصناف المربوطة: {menuItems.filter((m) => m.itemType === "PREPARED_BEVERAGE").length} صنف
+                    </span>
+                  </div>
                 </div>
 
                 <div className="overflow-x-auto">
@@ -6391,7 +6419,22 @@ export default function AdminDashboardPage() {
                                     📅 حجز
                                   </span>
                                 )}
+                                {o.isEdited && (
+                                  <span className="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[9px] font-sans font-black">
+                                    ✏️ فاتورة معدلة{o.revisionCount > 1 ? ` (${o.revisionCount})` : ""}
+                                  </span>
+                                )}
+                                {o.paymentModified && (
+                                  <span className="px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/40 text-[9px] font-sans font-black">
+                                    💳 تعديل دفع
+                                  </span>
+                                )}
                               </div>
+                              {o.lastEditReason && (o.isEdited || o.paymentModified) && (
+                                <div className="text-[10px] text-rose-300/90 mt-0.5 max-w-[170px] truncate" title={o.lastEditReason}>
+                                  📝 {o.lastEditReason}
+                                </div>
+                              )}
                               <div className="text-[10px] text-slate-500 font-mono mt-0.5">
                                 {new Date(o.createdAt).toLocaleString("ar-EG")}
                               </div>
@@ -6476,25 +6519,21 @@ export default function AdminDashboardPage() {
                                     : "سداد مرن / عند الاستلام ⏳"}
                                 </span>
                               </div>
-                              <div>
-                                <select
-                                  value={o.paymentMethod || "CASH"}
-                                  onChange={(e) =>
-                                    handleUpdateOrderDispatch(
-                                      o.id,
-                                      { action: "UPDATE_PAYMENT", paymentMethod: e.target.value },
-                                      `تم تعديل طريقة الدفع للطلب ${o.orderNumber} إلى ${PAYMENT_METHOD_LABELS[e.target.value] || e.target.value}`
-                                    )
-                                  }
-                                  className="bg-slate-950 border border-slate-700 rounded-lg px-2 py-0.5 text-[10px] text-slate-200 focus:outline-none focus:border-amber-500"
-                                  title="تغيير طريقة الدفع بحرية"
-                                >
-                                  <option value="CASH">💵 كاش</option>
-                                  <option value="CARD">💳 فيزا / بطاقة</option>
-                                  <option value="INSTAPAY">⚡ إنستاباي</option>
-                                  <option value="VODAFONE_CASH">📱 فودافون كاش</option>
-                                </select>
-                              </div>
+                              {o.status !== "CANCELLED" && (
+                                <div>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setRevisionTargetOrder(o);
+                                      setRevisionModalMode("CHANGE_PAYMENT");
+                                    }}
+                                    className="px-2 py-0.5 rounded-lg bg-sky-500/15 hover:bg-sky-500/30 border border-sky-500/35 text-sky-300 text-[10px] font-black transition cursor-pointer"
+                                    title="تعديل وسيلة الدفع (كاش ↔ فيزا / إنستاباي) مع تنبيه الإدارة"
+                                  >
+                                    💳 تعديل دفع
+                                  </button>
+                                </div>
+                              )}
                               {o.isScheduled && (
                                 <div className="space-y-1 pt-0.5">
                                   <div
@@ -6685,13 +6724,28 @@ export default function AdminDashboardPage() {
                               </div>
                             </td>
                             <td className="py-3 px-3 text-center">
-                              <button
-                                onClick={() => setSelectedOrderForPrint(o)}
-                                className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-amber-400 transition"
-                                title="طباعة الفاتورة / الإيصال"
-                              >
-                                <Printer className="w-4 h-4" />
-                              </button>
+                              <div className="flex items-center justify-center gap-1">
+                                {o.status !== "CANCELLED" && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setRevisionTargetOrder(o);
+                                      setRevisionModalMode("EDIT_INVOICE");
+                                    }}
+                                    className="p-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/35 transition cursor-pointer"
+                                    title="تعديل أصناف/أوزان الفاتورة (فاتورة معدلة)"
+                                  >
+                                    <Edit2 className="w-4 h-4" />
+                                  </button>
+                                )}
+                                <button
+                                  onClick={() => setSelectedOrderForPrint(o)}
+                                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-amber-400 transition cursor-pointer"
+                                  title="طباعة الفاتورة / الإيصال"
+                                >
+                                  <Printer className="w-4 h-4" />
+                                </button>
+                              </div>
                             </td>
                           </tr>
                         );
@@ -8941,6 +8995,26 @@ export default function AdminDashboardPage() {
                     ? "دليفري للمنزل"
                     : "تيك أواي"}
                 </div>
+                {(selectedOrderForPrint.isEdited || selectedOrderForPrint.paymentModified) && (
+                  <div className="mt-1 pt-1 border-t border-dashed border-black space-y-0.5 text-[10px] font-black">
+                    {selectedOrderForPrint.isEdited && (
+                      <div className="bg-black text-white px-2 py-0.5 inline-block">
+                        *** فاتورة معدلة (تعديل #{selectedOrderForPrint.revisionCount || 1}) ***
+                      </div>
+                    )}
+                    {selectedOrderForPrint.paymentModified && (
+                      <div className="border border-black px-2 py-0.5 inline-block mr-1">
+                        *** تعديل دفع ***
+                      </div>
+                    )}
+                    {selectedOrderForPrint.lastEditReason && (
+                      <div className="text-[9px] font-bold">
+                        السبب: {selectedOrderForPrint.lastEditReason}
+                        {selectedOrderForPrint.lastEditedBy ? ` (${selectedOrderForPrint.lastEditedBy})` : ""}
+                      </div>
+                    )}
+                  </div>
+                )}
                 {selectedOrderForPrint.isScheduled && selectedOrderForPrint.scheduledFor && (
                   <div className="text-[10px] font-bold">
                     📅 موعد الحجز والتسليم: {new Date(selectedOrderForPrint.scheduledFor).toLocaleString("ar-EG")}
@@ -9077,6 +9151,28 @@ export default function AdminDashboardPage() {
           onStatusChange={setDailyAlertStatus}
         />
       )}
+
+      {/* ORDER REVISION & PAYMENT CHANGE MODALS */}
+      <OrderRevisionModals
+        mode={revisionModalMode}
+        order={revisionTargetOrder}
+        menuItems={menuItems}
+        defaultActorName={currentUser?.name || "إدارة المنظومة"}
+        onClose={() => {
+          setRevisionModalMode(null);
+          setRevisionTargetOrder(null);
+        }}
+        onSuccess={(updatedOrder, message, shouldPrint) => {
+          setRevisionModalMode(null);
+          setRevisionTargetOrder(null);
+          setOrders((prev) => prev.map((x) => (x.id === updatedOrder.id ? updatedOrder : x)));
+          if (shouldPrint || selectedOrderForPrint?.id === updatedOrder.id) {
+            setSelectedOrderForPrint(updatedOrder);
+          }
+          addToast("success", message);
+          fetchDashboardData();
+        }}
+      />
 
       {/* FLOATING TOAST NOTIFICATIONS */}
       <div className="fixed bottom-4 left-4 z-50 flex flex-col gap-2 pointer-events-none">

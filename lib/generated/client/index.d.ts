@@ -148,6 +148,16 @@ export type Supplier = $Result.DefaultSelection<Prisma.$SupplierPayload>
  * 
  */
 export type SupplierTransaction = $Result.DefaultSelection<Prisma.$SupplierTransactionPayload>
+/**
+ * Model OrderAuditLog
+ * 
+ */
+export type OrderAuditLog = $Result.DefaultSelection<Prisma.$OrderAuditLogPayload>
+/**
+ * Model AdminNotification
+ * 
+ */
+export type AdminNotification = $Result.DefaultSelection<Prisma.$AdminNotificationPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -539,6 +549,26 @@ export class PrismaClient<
     * ```
     */
   get supplierTransaction(): Prisma.SupplierTransactionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.orderAuditLog`: Exposes CRUD operations for the **OrderAuditLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more OrderAuditLogs
+    * const orderAuditLogs = await prisma.orderAuditLog.findMany()
+    * ```
+    */
+  get orderAuditLog(): Prisma.OrderAuditLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.adminNotification`: Exposes CRUD operations for the **AdminNotification** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AdminNotifications
+    * const adminNotifications = await prisma.adminNotification.findMany()
+    * ```
+    */
+  get adminNotification(): Prisma.AdminNotificationDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1012,7 +1042,9 @@ export namespace Prisma {
     FactoryOrder: 'FactoryOrder',
     FactoryOrderItem: 'FactoryOrderItem',
     Supplier: 'Supplier',
-    SupplierTransaction: 'SupplierTransaction'
+    SupplierTransaction: 'SupplierTransaction',
+    OrderAuditLog: 'OrderAuditLog',
+    AdminNotification: 'AdminNotification'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1028,7 +1060,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "outlet" | "user" | "diningTable" | "menuItem" | "productMovement" | "pastryAudit" | "pastryAuditItem" | "rawMaterial" | "rawMaterialMovement" | "inventoryAudit" | "inventoryAuditItem" | "recipeItem" | "customer" | "deliveryZone" | "deliveryDriver" | "order" | "kdsTicket" | "shift" | "dailyClose" | "expense" | "systemSettings" | "reservation" | "chatMessage" | "factoryOrder" | "factoryOrderItem" | "supplier" | "supplierTransaction"
+      modelProps: "outlet" | "user" | "diningTable" | "menuItem" | "productMovement" | "pastryAudit" | "pastryAuditItem" | "rawMaterial" | "rawMaterialMovement" | "inventoryAudit" | "inventoryAuditItem" | "recipeItem" | "customer" | "deliveryZone" | "deliveryDriver" | "order" | "kdsTicket" | "shift" | "dailyClose" | "expense" | "systemSettings" | "reservation" | "chatMessage" | "factoryOrder" | "factoryOrderItem" | "supplier" | "supplierTransaction" | "orderAuditLog" | "adminNotification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3030,6 +3062,154 @@ export namespace Prisma {
           }
         }
       }
+      OrderAuditLog: {
+        payload: Prisma.$OrderAuditLogPayload<ExtArgs>
+        fields: Prisma.OrderAuditLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.OrderAuditLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderAuditLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.OrderAuditLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderAuditLogPayload>
+          }
+          findFirst: {
+            args: Prisma.OrderAuditLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderAuditLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.OrderAuditLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderAuditLogPayload>
+          }
+          findMany: {
+            args: Prisma.OrderAuditLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderAuditLogPayload>[]
+          }
+          create: {
+            args: Prisma.OrderAuditLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderAuditLogPayload>
+          }
+          createMany: {
+            args: Prisma.OrderAuditLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.OrderAuditLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderAuditLogPayload>[]
+          }
+          delete: {
+            args: Prisma.OrderAuditLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderAuditLogPayload>
+          }
+          update: {
+            args: Prisma.OrderAuditLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderAuditLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.OrderAuditLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.OrderAuditLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.OrderAuditLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderAuditLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.OrderAuditLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderAuditLogPayload>
+          }
+          aggregate: {
+            args: Prisma.OrderAuditLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateOrderAuditLog>
+          }
+          groupBy: {
+            args: Prisma.OrderAuditLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<OrderAuditLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.OrderAuditLogCountArgs<ExtArgs>
+            result: $Utils.Optional<OrderAuditLogCountAggregateOutputType> | number
+          }
+        }
+      }
+      AdminNotification: {
+        payload: Prisma.$AdminNotificationPayload<ExtArgs>
+        fields: Prisma.AdminNotificationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AdminNotificationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminNotificationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AdminNotificationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminNotificationPayload>
+          }
+          findFirst: {
+            args: Prisma.AdminNotificationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminNotificationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AdminNotificationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminNotificationPayload>
+          }
+          findMany: {
+            args: Prisma.AdminNotificationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminNotificationPayload>[]
+          }
+          create: {
+            args: Prisma.AdminNotificationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminNotificationPayload>
+          }
+          createMany: {
+            args: Prisma.AdminNotificationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AdminNotificationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminNotificationPayload>[]
+          }
+          delete: {
+            args: Prisma.AdminNotificationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminNotificationPayload>
+          }
+          update: {
+            args: Prisma.AdminNotificationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminNotificationPayload>
+          }
+          deleteMany: {
+            args: Prisma.AdminNotificationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AdminNotificationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AdminNotificationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminNotificationPayload>[]
+          }
+          upsert: {
+            args: Prisma.AdminNotificationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminNotificationPayload>
+          }
+          aggregate: {
+            args: Prisma.AdminNotificationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAdminNotification>
+          }
+          groupBy: {
+            args: Prisma.AdminNotificationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AdminNotificationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AdminNotificationCountArgs<ExtArgs>
+            result: $Utils.Optional<AdminNotificationCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3180,6 +3360,8 @@ export namespace Prisma {
     factoryOrderItem?: FactoryOrderItemOmit
     supplier?: SupplierOmit
     supplierTransaction?: SupplierTransactionOmit
+    orderAuditLog?: OrderAuditLogOmit
+    adminNotification?: AdminNotificationOmit
   }
 
   /* Types for Logging */
@@ -3693,10 +3875,12 @@ export namespace Prisma {
 
   export type OrderCountOutputType = {
     kdsTickets: number
+    auditLogs: number
   }
 
   export type OrderCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     kdsTickets?: boolean | OrderCountOutputTypeCountKdsTicketsArgs
+    auditLogs?: boolean | OrderCountOutputTypeCountAuditLogsArgs
   }
 
   // Custom InputTypes
@@ -3715,6 +3899,13 @@ export namespace Prisma {
    */
   export type OrderCountOutputTypeCountKdsTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: KdsTicketWhereInput
+  }
+
+  /**
+   * OrderCountOutputType without action
+   */
+  export type OrderCountOutputTypeCountAuditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrderAuditLogWhereInput
   }
 
 
@@ -22167,6 +22358,7 @@ export namespace Prisma {
     finalAmount: number | null
     pointsEarned: number | null
     pointsRedeemed: number | null
+    revisionCount: number | null
   }
 
   export type OrderSumAggregateOutputType = {
@@ -22181,6 +22373,7 @@ export namespace Prisma {
     finalAmount: number | null
     pointsEarned: number | null
     pointsRedeemed: number | null
+    revisionCount: number | null
   }
 
   export type OrderMinAggregateOutputType = {
@@ -22226,6 +22419,12 @@ export namespace Prisma {
     pointsRedeemed: number | null
     notes: string | null
     items: string | null
+    isEdited: boolean | null
+    revisionCount: number | null
+    paymentModified: boolean | null
+    lastEditReason: string | null
+    lastEditedBy: string | null
+    lastEditedAt: Date | null
     createdAt: Date | null
     settledAt: Date | null
   }
@@ -22273,6 +22472,12 @@ export namespace Prisma {
     pointsRedeemed: number | null
     notes: string | null
     items: string | null
+    isEdited: boolean | null
+    revisionCount: number | null
+    paymentModified: boolean | null
+    lastEditReason: string | null
+    lastEditedBy: string | null
+    lastEditedAt: Date | null
     createdAt: Date | null
     settledAt: Date | null
   }
@@ -22320,6 +22525,12 @@ export namespace Prisma {
     pointsRedeemed: number
     notes: number
     items: number
+    isEdited: number
+    revisionCount: number
+    paymentModified: number
+    lastEditReason: number
+    lastEditedBy: number
+    lastEditedAt: number
     createdAt: number
     settledAt: number
     _all: number
@@ -22338,6 +22549,7 @@ export namespace Prisma {
     finalAmount?: true
     pointsEarned?: true
     pointsRedeemed?: true
+    revisionCount?: true
   }
 
   export type OrderSumAggregateInputType = {
@@ -22352,6 +22564,7 @@ export namespace Prisma {
     finalAmount?: true
     pointsEarned?: true
     pointsRedeemed?: true
+    revisionCount?: true
   }
 
   export type OrderMinAggregateInputType = {
@@ -22397,6 +22610,12 @@ export namespace Prisma {
     pointsRedeemed?: true
     notes?: true
     items?: true
+    isEdited?: true
+    revisionCount?: true
+    paymentModified?: true
+    lastEditReason?: true
+    lastEditedBy?: true
+    lastEditedAt?: true
     createdAt?: true
     settledAt?: true
   }
@@ -22444,6 +22663,12 @@ export namespace Prisma {
     pointsRedeemed?: true
     notes?: true
     items?: true
+    isEdited?: true
+    revisionCount?: true
+    paymentModified?: true
+    lastEditReason?: true
+    lastEditedBy?: true
+    lastEditedAt?: true
     createdAt?: true
     settledAt?: true
   }
@@ -22491,6 +22716,12 @@ export namespace Prisma {
     pointsRedeemed?: true
     notes?: true
     items?: true
+    isEdited?: true
+    revisionCount?: true
+    paymentModified?: true
+    lastEditReason?: true
+    lastEditedBy?: true
+    lastEditedAt?: true
     createdAt?: true
     settledAt?: true
     _all?: true
@@ -22625,6 +22856,12 @@ export namespace Prisma {
     pointsRedeemed: number
     notes: string | null
     items: string
+    isEdited: boolean
+    revisionCount: number
+    paymentModified: boolean
+    lastEditReason: string | null
+    lastEditedBy: string | null
+    lastEditedAt: Date | null
     createdAt: Date
     settledAt: Date | null
     _count: OrderCountAggregateOutputType | null
@@ -22691,6 +22928,12 @@ export namespace Prisma {
     pointsRedeemed?: boolean
     notes?: boolean
     items?: boolean
+    isEdited?: boolean
+    revisionCount?: boolean
+    paymentModified?: boolean
+    lastEditReason?: boolean
+    lastEditedBy?: boolean
+    lastEditedAt?: boolean
     createdAt?: boolean
     settledAt?: boolean
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
@@ -22699,6 +22942,7 @@ export namespace Prisma {
     driver?: boolean | Order$driverArgs<ExtArgs>
     customer?: boolean | Order$customerArgs<ExtArgs>
     kdsTickets?: boolean | Order$kdsTicketsArgs<ExtArgs>
+    auditLogs?: boolean | Order$auditLogsArgs<ExtArgs>
     _count?: boolean | OrderCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
 
@@ -22745,6 +22989,12 @@ export namespace Prisma {
     pointsRedeemed?: boolean
     notes?: boolean
     items?: boolean
+    isEdited?: boolean
+    revisionCount?: boolean
+    paymentModified?: boolean
+    lastEditReason?: boolean
+    lastEditedBy?: boolean
+    lastEditedAt?: boolean
     createdAt?: boolean
     settledAt?: boolean
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
@@ -22797,6 +23047,12 @@ export namespace Prisma {
     pointsRedeemed?: boolean
     notes?: boolean
     items?: boolean
+    isEdited?: boolean
+    revisionCount?: boolean
+    paymentModified?: boolean
+    lastEditReason?: boolean
+    lastEditedBy?: boolean
+    lastEditedAt?: boolean
     createdAt?: boolean
     settledAt?: boolean
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
@@ -22849,11 +23105,17 @@ export namespace Prisma {
     pointsRedeemed?: boolean
     notes?: boolean
     items?: boolean
+    isEdited?: boolean
+    revisionCount?: boolean
+    paymentModified?: boolean
+    lastEditReason?: boolean
+    lastEditedBy?: boolean
+    lastEditedAt?: boolean
     createdAt?: boolean
     settledAt?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "orderNumber" | "orderType" | "tableId" | "tableNumber" | "deliveryZoneId" | "deliveryZoneName" | "deliveryAddress" | "deliveryPhone" | "deliveryNotes" | "driverId" | "driverName" | "driverPhone" | "dispatchedAt" | "isScheduled" | "scheduledFor" | "depositRequired" | "depositPaid" | "depositStatus" | "depositReceiptUrl" | "alertSent48h" | "alertSent24h" | "status" | "paymentStatus" | "paymentMethod" | "subtotal" | "serviceCharge" | "taxAmount" | "deliveryFee" | "discountAmount" | "tipAmount" | "finalAmount" | "cashierName" | "waiterName" | "customerName" | "customerPhone" | "customerId" | "pointsEarned" | "pointsRedeemed" | "notes" | "items" | "createdAt" | "settledAt", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "orderNumber" | "orderType" | "tableId" | "tableNumber" | "deliveryZoneId" | "deliveryZoneName" | "deliveryAddress" | "deliveryPhone" | "deliveryNotes" | "driverId" | "driverName" | "driverPhone" | "dispatchedAt" | "isScheduled" | "scheduledFor" | "depositRequired" | "depositPaid" | "depositStatus" | "depositReceiptUrl" | "alertSent48h" | "alertSent24h" | "status" | "paymentStatus" | "paymentMethod" | "subtotal" | "serviceCharge" | "taxAmount" | "deliveryFee" | "discountAmount" | "tipAmount" | "finalAmount" | "cashierName" | "waiterName" | "customerName" | "customerPhone" | "customerId" | "pointsEarned" | "pointsRedeemed" | "notes" | "items" | "isEdited" | "revisionCount" | "paymentModified" | "lastEditReason" | "lastEditedBy" | "lastEditedAt" | "createdAt" | "settledAt", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     table?: boolean | Order$tableArgs<ExtArgs>
@@ -22861,6 +23123,7 @@ export namespace Prisma {
     driver?: boolean | Order$driverArgs<ExtArgs>
     customer?: boolean | Order$customerArgs<ExtArgs>
     kdsTickets?: boolean | Order$kdsTicketsArgs<ExtArgs>
+    auditLogs?: boolean | Order$auditLogsArgs<ExtArgs>
     _count?: boolean | OrderCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -22887,6 +23150,7 @@ export namespace Prisma {
       driver: Prisma.$DeliveryDriverPayload<ExtArgs> | null
       customer: Prisma.$CustomerPayload<ExtArgs> | null
       kdsTickets: Prisma.$KdsTicketPayload<ExtArgs>[]
+      auditLogs: Prisma.$OrderAuditLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -22931,6 +23195,12 @@ export namespace Prisma {
       pointsRedeemed: number
       notes: string | null
       items: string
+      isEdited: boolean
+      revisionCount: number
+      paymentModified: boolean
+      lastEditReason: string | null
+      lastEditedBy: string | null
+      lastEditedAt: Date | null
       createdAt: Date
       settledAt: Date | null
     }, ExtArgs["result"]["order"]>
@@ -23333,6 +23603,7 @@ export namespace Prisma {
     driver<T extends Order$driverArgs<ExtArgs> = {}>(args?: Subset<T, Order$driverArgs<ExtArgs>>): Prisma__DeliveryDriverClient<$Result.GetResult<Prisma.$DeliveryDriverPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     customer<T extends Order$customerArgs<ExtArgs> = {}>(args?: Subset<T, Order$customerArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     kdsTickets<T extends Order$kdsTicketsArgs<ExtArgs> = {}>(args?: Subset<T, Order$kdsTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KdsTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    auditLogs<T extends Order$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, Order$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderAuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -23404,6 +23675,12 @@ export namespace Prisma {
     readonly pointsRedeemed: FieldRef<"Order", 'Int'>
     readonly notes: FieldRef<"Order", 'String'>
     readonly items: FieldRef<"Order", 'String'>
+    readonly isEdited: FieldRef<"Order", 'Boolean'>
+    readonly revisionCount: FieldRef<"Order", 'Int'>
+    readonly paymentModified: FieldRef<"Order", 'Boolean'>
+    readonly lastEditReason: FieldRef<"Order", 'String'>
+    readonly lastEditedBy: FieldRef<"Order", 'String'>
+    readonly lastEditedAt: FieldRef<"Order", 'DateTime'>
     readonly createdAt: FieldRef<"Order", 'DateTime'>
     readonly settledAt: FieldRef<"Order", 'DateTime'>
   }
@@ -23904,6 +24181,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: KdsTicketScalarFieldEnum | KdsTicketScalarFieldEnum[]
+  }
+
+  /**
+   * Order.auditLogs
+   */
+  export type Order$auditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderAuditLog
+     */
+    select?: OrderAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderAuditLog
+     */
+    omit?: OrderAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderAuditLogInclude<ExtArgs> | null
+    where?: OrderAuditLogWhereInput
+    orderBy?: OrderAuditLogOrderByWithRelationInput | OrderAuditLogOrderByWithRelationInput[]
+    cursor?: OrderAuditLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OrderAuditLogScalarFieldEnum | OrderAuditLogScalarFieldEnum[]
   }
 
   /**
@@ -37522,6 +37823,2371 @@ export namespace Prisma {
 
 
   /**
+   * Model OrderAuditLog
+   */
+
+  export type AggregateOrderAuditLog = {
+    _count: OrderAuditLogCountAggregateOutputType | null
+    _avg: OrderAuditLogAvgAggregateOutputType | null
+    _sum: OrderAuditLogSumAggregateOutputType | null
+    _min: OrderAuditLogMinAggregateOutputType | null
+    _max: OrderAuditLogMaxAggregateOutputType | null
+  }
+
+  export type OrderAuditLogAvgAggregateOutputType = {
+    oldFinalAmount: number | null
+    newFinalAmount: number | null
+    amountDiff: number | null
+  }
+
+  export type OrderAuditLogSumAggregateOutputType = {
+    oldFinalAmount: number | null
+    newFinalAmount: number | null
+    amountDiff: number | null
+  }
+
+  export type OrderAuditLogMinAggregateOutputType = {
+    id: string | null
+    orderId: string | null
+    orderNumber: string | null
+    outletId: string | null
+    outletName: string | null
+    actionType: string | null
+    performedBy: string | null
+    reason: string | null
+    oldPaymentMethod: string | null
+    newPaymentMethod: string | null
+    oldFinalAmount: number | null
+    newFinalAmount: number | null
+    amountDiff: number | null
+    oldItemsJson: string | null
+    newItemsJson: string | null
+    createdAt: Date | null
+  }
+
+  export type OrderAuditLogMaxAggregateOutputType = {
+    id: string | null
+    orderId: string | null
+    orderNumber: string | null
+    outletId: string | null
+    outletName: string | null
+    actionType: string | null
+    performedBy: string | null
+    reason: string | null
+    oldPaymentMethod: string | null
+    newPaymentMethod: string | null
+    oldFinalAmount: number | null
+    newFinalAmount: number | null
+    amountDiff: number | null
+    oldItemsJson: string | null
+    newItemsJson: string | null
+    createdAt: Date | null
+  }
+
+  export type OrderAuditLogCountAggregateOutputType = {
+    id: number
+    orderId: number
+    orderNumber: number
+    outletId: number
+    outletName: number
+    actionType: number
+    performedBy: number
+    reason: number
+    oldPaymentMethod: number
+    newPaymentMethod: number
+    oldFinalAmount: number
+    newFinalAmount: number
+    amountDiff: number
+    oldItemsJson: number
+    newItemsJson: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type OrderAuditLogAvgAggregateInputType = {
+    oldFinalAmount?: true
+    newFinalAmount?: true
+    amountDiff?: true
+  }
+
+  export type OrderAuditLogSumAggregateInputType = {
+    oldFinalAmount?: true
+    newFinalAmount?: true
+    amountDiff?: true
+  }
+
+  export type OrderAuditLogMinAggregateInputType = {
+    id?: true
+    orderId?: true
+    orderNumber?: true
+    outletId?: true
+    outletName?: true
+    actionType?: true
+    performedBy?: true
+    reason?: true
+    oldPaymentMethod?: true
+    newPaymentMethod?: true
+    oldFinalAmount?: true
+    newFinalAmount?: true
+    amountDiff?: true
+    oldItemsJson?: true
+    newItemsJson?: true
+    createdAt?: true
+  }
+
+  export type OrderAuditLogMaxAggregateInputType = {
+    id?: true
+    orderId?: true
+    orderNumber?: true
+    outletId?: true
+    outletName?: true
+    actionType?: true
+    performedBy?: true
+    reason?: true
+    oldPaymentMethod?: true
+    newPaymentMethod?: true
+    oldFinalAmount?: true
+    newFinalAmount?: true
+    amountDiff?: true
+    oldItemsJson?: true
+    newItemsJson?: true
+    createdAt?: true
+  }
+
+  export type OrderAuditLogCountAggregateInputType = {
+    id?: true
+    orderId?: true
+    orderNumber?: true
+    outletId?: true
+    outletName?: true
+    actionType?: true
+    performedBy?: true
+    reason?: true
+    oldPaymentMethod?: true
+    newPaymentMethod?: true
+    oldFinalAmount?: true
+    newFinalAmount?: true
+    amountDiff?: true
+    oldItemsJson?: true
+    newItemsJson?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type OrderAuditLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OrderAuditLog to aggregate.
+     */
+    where?: OrderAuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrderAuditLogs to fetch.
+     */
+    orderBy?: OrderAuditLogOrderByWithRelationInput | OrderAuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: OrderAuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrderAuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrderAuditLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned OrderAuditLogs
+    **/
+    _count?: true | OrderAuditLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: OrderAuditLogAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: OrderAuditLogSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: OrderAuditLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: OrderAuditLogMaxAggregateInputType
+  }
+
+  export type GetOrderAuditLogAggregateType<T extends OrderAuditLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateOrderAuditLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOrderAuditLog[P]>
+      : GetScalarType<T[P], AggregateOrderAuditLog[P]>
+  }
+
+
+
+
+  export type OrderAuditLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrderAuditLogWhereInput
+    orderBy?: OrderAuditLogOrderByWithAggregationInput | OrderAuditLogOrderByWithAggregationInput[]
+    by: OrderAuditLogScalarFieldEnum[] | OrderAuditLogScalarFieldEnum
+    having?: OrderAuditLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: OrderAuditLogCountAggregateInputType | true
+    _avg?: OrderAuditLogAvgAggregateInputType
+    _sum?: OrderAuditLogSumAggregateInputType
+    _min?: OrderAuditLogMinAggregateInputType
+    _max?: OrderAuditLogMaxAggregateInputType
+  }
+
+  export type OrderAuditLogGroupByOutputType = {
+    id: string
+    orderId: string
+    orderNumber: string
+    outletId: string
+    outletName: string
+    actionType: string
+    performedBy: string
+    reason: string
+    oldPaymentMethod: string | null
+    newPaymentMethod: string | null
+    oldFinalAmount: number
+    newFinalAmount: number
+    amountDiff: number
+    oldItemsJson: string | null
+    newItemsJson: string | null
+    createdAt: Date
+    _count: OrderAuditLogCountAggregateOutputType | null
+    _avg: OrderAuditLogAvgAggregateOutputType | null
+    _sum: OrderAuditLogSumAggregateOutputType | null
+    _min: OrderAuditLogMinAggregateOutputType | null
+    _max: OrderAuditLogMaxAggregateOutputType | null
+  }
+
+  type GetOrderAuditLogGroupByPayload<T extends OrderAuditLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<OrderAuditLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof OrderAuditLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], OrderAuditLogGroupByOutputType[P]>
+            : GetScalarType<T[P], OrderAuditLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type OrderAuditLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orderId?: boolean
+    orderNumber?: boolean
+    outletId?: boolean
+    outletName?: boolean
+    actionType?: boolean
+    performedBy?: boolean
+    reason?: boolean
+    oldPaymentMethod?: boolean
+    newPaymentMethod?: boolean
+    oldFinalAmount?: boolean
+    newFinalAmount?: boolean
+    amountDiff?: boolean
+    oldItemsJson?: boolean
+    newItemsJson?: boolean
+    createdAt?: boolean
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["orderAuditLog"]>
+
+  export type OrderAuditLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orderId?: boolean
+    orderNumber?: boolean
+    outletId?: boolean
+    outletName?: boolean
+    actionType?: boolean
+    performedBy?: boolean
+    reason?: boolean
+    oldPaymentMethod?: boolean
+    newPaymentMethod?: boolean
+    oldFinalAmount?: boolean
+    newFinalAmount?: boolean
+    amountDiff?: boolean
+    oldItemsJson?: boolean
+    newItemsJson?: boolean
+    createdAt?: boolean
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["orderAuditLog"]>
+
+  export type OrderAuditLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orderId?: boolean
+    orderNumber?: boolean
+    outletId?: boolean
+    outletName?: boolean
+    actionType?: boolean
+    performedBy?: boolean
+    reason?: boolean
+    oldPaymentMethod?: boolean
+    newPaymentMethod?: boolean
+    oldFinalAmount?: boolean
+    newFinalAmount?: boolean
+    amountDiff?: boolean
+    oldItemsJson?: boolean
+    newItemsJson?: boolean
+    createdAt?: boolean
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["orderAuditLog"]>
+
+  export type OrderAuditLogSelectScalar = {
+    id?: boolean
+    orderId?: boolean
+    orderNumber?: boolean
+    outletId?: boolean
+    outletName?: boolean
+    actionType?: boolean
+    performedBy?: boolean
+    reason?: boolean
+    oldPaymentMethod?: boolean
+    newPaymentMethod?: boolean
+    oldFinalAmount?: boolean
+    newFinalAmount?: boolean
+    amountDiff?: boolean
+    oldItemsJson?: boolean
+    newItemsJson?: boolean
+    createdAt?: boolean
+  }
+
+  export type OrderAuditLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderId" | "orderNumber" | "outletId" | "outletName" | "actionType" | "performedBy" | "reason" | "oldPaymentMethod" | "newPaymentMethod" | "oldFinalAmount" | "newFinalAmount" | "amountDiff" | "oldItemsJson" | "newItemsJson" | "createdAt", ExtArgs["result"]["orderAuditLog"]>
+  export type OrderAuditLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }
+  export type OrderAuditLogIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }
+  export type OrderAuditLogIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }
+
+  export type $OrderAuditLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "OrderAuditLog"
+    objects: {
+      order: Prisma.$OrderPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      orderId: string
+      orderNumber: string
+      outletId: string
+      outletName: string
+      actionType: string
+      performedBy: string
+      reason: string
+      oldPaymentMethod: string | null
+      newPaymentMethod: string | null
+      oldFinalAmount: number
+      newFinalAmount: number
+      amountDiff: number
+      oldItemsJson: string | null
+      newItemsJson: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["orderAuditLog"]>
+    composites: {}
+  }
+
+  type OrderAuditLogGetPayload<S extends boolean | null | undefined | OrderAuditLogDefaultArgs> = $Result.GetResult<Prisma.$OrderAuditLogPayload, S>
+
+  type OrderAuditLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<OrderAuditLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: OrderAuditLogCountAggregateInputType | true
+    }
+
+  export interface OrderAuditLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['OrderAuditLog'], meta: { name: 'OrderAuditLog' } }
+    /**
+     * Find zero or one OrderAuditLog that matches the filter.
+     * @param {OrderAuditLogFindUniqueArgs} args - Arguments to find a OrderAuditLog
+     * @example
+     * // Get one OrderAuditLog
+     * const orderAuditLog = await prisma.orderAuditLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends OrderAuditLogFindUniqueArgs>(args: SelectSubset<T, OrderAuditLogFindUniqueArgs<ExtArgs>>): Prisma__OrderAuditLogClient<$Result.GetResult<Prisma.$OrderAuditLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one OrderAuditLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {OrderAuditLogFindUniqueOrThrowArgs} args - Arguments to find a OrderAuditLog
+     * @example
+     * // Get one OrderAuditLog
+     * const orderAuditLog = await prisma.orderAuditLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends OrderAuditLogFindUniqueOrThrowArgs>(args: SelectSubset<T, OrderAuditLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__OrderAuditLogClient<$Result.GetResult<Prisma.$OrderAuditLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OrderAuditLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderAuditLogFindFirstArgs} args - Arguments to find a OrderAuditLog
+     * @example
+     * // Get one OrderAuditLog
+     * const orderAuditLog = await prisma.orderAuditLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends OrderAuditLogFindFirstArgs>(args?: SelectSubset<T, OrderAuditLogFindFirstArgs<ExtArgs>>): Prisma__OrderAuditLogClient<$Result.GetResult<Prisma.$OrderAuditLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OrderAuditLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderAuditLogFindFirstOrThrowArgs} args - Arguments to find a OrderAuditLog
+     * @example
+     * // Get one OrderAuditLog
+     * const orderAuditLog = await prisma.orderAuditLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends OrderAuditLogFindFirstOrThrowArgs>(args?: SelectSubset<T, OrderAuditLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__OrderAuditLogClient<$Result.GetResult<Prisma.$OrderAuditLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more OrderAuditLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderAuditLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all OrderAuditLogs
+     * const orderAuditLogs = await prisma.orderAuditLog.findMany()
+     * 
+     * // Get first 10 OrderAuditLogs
+     * const orderAuditLogs = await prisma.orderAuditLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const orderAuditLogWithIdOnly = await prisma.orderAuditLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends OrderAuditLogFindManyArgs>(args?: SelectSubset<T, OrderAuditLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderAuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a OrderAuditLog.
+     * @param {OrderAuditLogCreateArgs} args - Arguments to create a OrderAuditLog.
+     * @example
+     * // Create one OrderAuditLog
+     * const OrderAuditLog = await prisma.orderAuditLog.create({
+     *   data: {
+     *     // ... data to create a OrderAuditLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends OrderAuditLogCreateArgs>(args: SelectSubset<T, OrderAuditLogCreateArgs<ExtArgs>>): Prisma__OrderAuditLogClient<$Result.GetResult<Prisma.$OrderAuditLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many OrderAuditLogs.
+     * @param {OrderAuditLogCreateManyArgs} args - Arguments to create many OrderAuditLogs.
+     * @example
+     * // Create many OrderAuditLogs
+     * const orderAuditLog = await prisma.orderAuditLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends OrderAuditLogCreateManyArgs>(args?: SelectSubset<T, OrderAuditLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many OrderAuditLogs and returns the data saved in the database.
+     * @param {OrderAuditLogCreateManyAndReturnArgs} args - Arguments to create many OrderAuditLogs.
+     * @example
+     * // Create many OrderAuditLogs
+     * const orderAuditLog = await prisma.orderAuditLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many OrderAuditLogs and only return the `id`
+     * const orderAuditLogWithIdOnly = await prisma.orderAuditLog.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends OrderAuditLogCreateManyAndReturnArgs>(args?: SelectSubset<T, OrderAuditLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderAuditLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a OrderAuditLog.
+     * @param {OrderAuditLogDeleteArgs} args - Arguments to delete one OrderAuditLog.
+     * @example
+     * // Delete one OrderAuditLog
+     * const OrderAuditLog = await prisma.orderAuditLog.delete({
+     *   where: {
+     *     // ... filter to delete one OrderAuditLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends OrderAuditLogDeleteArgs>(args: SelectSubset<T, OrderAuditLogDeleteArgs<ExtArgs>>): Prisma__OrderAuditLogClient<$Result.GetResult<Prisma.$OrderAuditLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one OrderAuditLog.
+     * @param {OrderAuditLogUpdateArgs} args - Arguments to update one OrderAuditLog.
+     * @example
+     * // Update one OrderAuditLog
+     * const orderAuditLog = await prisma.orderAuditLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends OrderAuditLogUpdateArgs>(args: SelectSubset<T, OrderAuditLogUpdateArgs<ExtArgs>>): Prisma__OrderAuditLogClient<$Result.GetResult<Prisma.$OrderAuditLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more OrderAuditLogs.
+     * @param {OrderAuditLogDeleteManyArgs} args - Arguments to filter OrderAuditLogs to delete.
+     * @example
+     * // Delete a few OrderAuditLogs
+     * const { count } = await prisma.orderAuditLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends OrderAuditLogDeleteManyArgs>(args?: SelectSubset<T, OrderAuditLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OrderAuditLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderAuditLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many OrderAuditLogs
+     * const orderAuditLog = await prisma.orderAuditLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends OrderAuditLogUpdateManyArgs>(args: SelectSubset<T, OrderAuditLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OrderAuditLogs and returns the data updated in the database.
+     * @param {OrderAuditLogUpdateManyAndReturnArgs} args - Arguments to update many OrderAuditLogs.
+     * @example
+     * // Update many OrderAuditLogs
+     * const orderAuditLog = await prisma.orderAuditLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more OrderAuditLogs and only return the `id`
+     * const orderAuditLogWithIdOnly = await prisma.orderAuditLog.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends OrderAuditLogUpdateManyAndReturnArgs>(args: SelectSubset<T, OrderAuditLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderAuditLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one OrderAuditLog.
+     * @param {OrderAuditLogUpsertArgs} args - Arguments to update or create a OrderAuditLog.
+     * @example
+     * // Update or create a OrderAuditLog
+     * const orderAuditLog = await prisma.orderAuditLog.upsert({
+     *   create: {
+     *     // ... data to create a OrderAuditLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the OrderAuditLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends OrderAuditLogUpsertArgs>(args: SelectSubset<T, OrderAuditLogUpsertArgs<ExtArgs>>): Prisma__OrderAuditLogClient<$Result.GetResult<Prisma.$OrderAuditLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of OrderAuditLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderAuditLogCountArgs} args - Arguments to filter OrderAuditLogs to count.
+     * @example
+     * // Count the number of OrderAuditLogs
+     * const count = await prisma.orderAuditLog.count({
+     *   where: {
+     *     // ... the filter for the OrderAuditLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends OrderAuditLogCountArgs>(
+      args?: Subset<T, OrderAuditLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], OrderAuditLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a OrderAuditLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderAuditLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends OrderAuditLogAggregateArgs>(args: Subset<T, OrderAuditLogAggregateArgs>): Prisma.PrismaPromise<GetOrderAuditLogAggregateType<T>>
+
+    /**
+     * Group by OrderAuditLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderAuditLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends OrderAuditLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: OrderAuditLogGroupByArgs['orderBy'] }
+        : { orderBy?: OrderAuditLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, OrderAuditLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOrderAuditLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the OrderAuditLog model
+   */
+  readonly fields: OrderAuditLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for OrderAuditLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__OrderAuditLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    order<T extends OrderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrderDefaultArgs<ExtArgs>>): Prisma__OrderClient<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the OrderAuditLog model
+   */
+  interface OrderAuditLogFieldRefs {
+    readonly id: FieldRef<"OrderAuditLog", 'String'>
+    readonly orderId: FieldRef<"OrderAuditLog", 'String'>
+    readonly orderNumber: FieldRef<"OrderAuditLog", 'String'>
+    readonly outletId: FieldRef<"OrderAuditLog", 'String'>
+    readonly outletName: FieldRef<"OrderAuditLog", 'String'>
+    readonly actionType: FieldRef<"OrderAuditLog", 'String'>
+    readonly performedBy: FieldRef<"OrderAuditLog", 'String'>
+    readonly reason: FieldRef<"OrderAuditLog", 'String'>
+    readonly oldPaymentMethod: FieldRef<"OrderAuditLog", 'String'>
+    readonly newPaymentMethod: FieldRef<"OrderAuditLog", 'String'>
+    readonly oldFinalAmount: FieldRef<"OrderAuditLog", 'Float'>
+    readonly newFinalAmount: FieldRef<"OrderAuditLog", 'Float'>
+    readonly amountDiff: FieldRef<"OrderAuditLog", 'Float'>
+    readonly oldItemsJson: FieldRef<"OrderAuditLog", 'String'>
+    readonly newItemsJson: FieldRef<"OrderAuditLog", 'String'>
+    readonly createdAt: FieldRef<"OrderAuditLog", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * OrderAuditLog findUnique
+   */
+  export type OrderAuditLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderAuditLog
+     */
+    select?: OrderAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderAuditLog
+     */
+    omit?: OrderAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderAuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderAuditLog to fetch.
+     */
+    where: OrderAuditLogWhereUniqueInput
+  }
+
+  /**
+   * OrderAuditLog findUniqueOrThrow
+   */
+  export type OrderAuditLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderAuditLog
+     */
+    select?: OrderAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderAuditLog
+     */
+    omit?: OrderAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderAuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderAuditLog to fetch.
+     */
+    where: OrderAuditLogWhereUniqueInput
+  }
+
+  /**
+   * OrderAuditLog findFirst
+   */
+  export type OrderAuditLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderAuditLog
+     */
+    select?: OrderAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderAuditLog
+     */
+    omit?: OrderAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderAuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderAuditLog to fetch.
+     */
+    where?: OrderAuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrderAuditLogs to fetch.
+     */
+    orderBy?: OrderAuditLogOrderByWithRelationInput | OrderAuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OrderAuditLogs.
+     */
+    cursor?: OrderAuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrderAuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrderAuditLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OrderAuditLogs.
+     */
+    distinct?: OrderAuditLogScalarFieldEnum | OrderAuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * OrderAuditLog findFirstOrThrow
+   */
+  export type OrderAuditLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderAuditLog
+     */
+    select?: OrderAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderAuditLog
+     */
+    omit?: OrderAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderAuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderAuditLog to fetch.
+     */
+    where?: OrderAuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrderAuditLogs to fetch.
+     */
+    orderBy?: OrderAuditLogOrderByWithRelationInput | OrderAuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OrderAuditLogs.
+     */
+    cursor?: OrderAuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrderAuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrderAuditLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OrderAuditLogs.
+     */
+    distinct?: OrderAuditLogScalarFieldEnum | OrderAuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * OrderAuditLog findMany
+   */
+  export type OrderAuditLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderAuditLog
+     */
+    select?: OrderAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderAuditLog
+     */
+    omit?: OrderAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderAuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderAuditLogs to fetch.
+     */
+    where?: OrderAuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrderAuditLogs to fetch.
+     */
+    orderBy?: OrderAuditLogOrderByWithRelationInput | OrderAuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing OrderAuditLogs.
+     */
+    cursor?: OrderAuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrderAuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrderAuditLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OrderAuditLogs.
+     */
+    distinct?: OrderAuditLogScalarFieldEnum | OrderAuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * OrderAuditLog create
+   */
+  export type OrderAuditLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderAuditLog
+     */
+    select?: OrderAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderAuditLog
+     */
+    omit?: OrderAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderAuditLogInclude<ExtArgs> | null
+    /**
+     * The data needed to create a OrderAuditLog.
+     */
+    data: XOR<OrderAuditLogCreateInput, OrderAuditLogUncheckedCreateInput>
+  }
+
+  /**
+   * OrderAuditLog createMany
+   */
+  export type OrderAuditLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many OrderAuditLogs.
+     */
+    data: OrderAuditLogCreateManyInput | OrderAuditLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * OrderAuditLog createManyAndReturn
+   */
+  export type OrderAuditLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderAuditLog
+     */
+    select?: OrderAuditLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderAuditLog
+     */
+    omit?: OrderAuditLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many OrderAuditLogs.
+     */
+    data: OrderAuditLogCreateManyInput | OrderAuditLogCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderAuditLogIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OrderAuditLog update
+   */
+  export type OrderAuditLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderAuditLog
+     */
+    select?: OrderAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderAuditLog
+     */
+    omit?: OrderAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderAuditLogInclude<ExtArgs> | null
+    /**
+     * The data needed to update a OrderAuditLog.
+     */
+    data: XOR<OrderAuditLogUpdateInput, OrderAuditLogUncheckedUpdateInput>
+    /**
+     * Choose, which OrderAuditLog to update.
+     */
+    where: OrderAuditLogWhereUniqueInput
+  }
+
+  /**
+   * OrderAuditLog updateMany
+   */
+  export type OrderAuditLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update OrderAuditLogs.
+     */
+    data: XOR<OrderAuditLogUpdateManyMutationInput, OrderAuditLogUncheckedUpdateManyInput>
+    /**
+     * Filter which OrderAuditLogs to update
+     */
+    where?: OrderAuditLogWhereInput
+    /**
+     * Limit how many OrderAuditLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * OrderAuditLog updateManyAndReturn
+   */
+  export type OrderAuditLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderAuditLog
+     */
+    select?: OrderAuditLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderAuditLog
+     */
+    omit?: OrderAuditLogOmit<ExtArgs> | null
+    /**
+     * The data used to update OrderAuditLogs.
+     */
+    data: XOR<OrderAuditLogUpdateManyMutationInput, OrderAuditLogUncheckedUpdateManyInput>
+    /**
+     * Filter which OrderAuditLogs to update
+     */
+    where?: OrderAuditLogWhereInput
+    /**
+     * Limit how many OrderAuditLogs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderAuditLogIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OrderAuditLog upsert
+   */
+  export type OrderAuditLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderAuditLog
+     */
+    select?: OrderAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderAuditLog
+     */
+    omit?: OrderAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderAuditLogInclude<ExtArgs> | null
+    /**
+     * The filter to search for the OrderAuditLog to update in case it exists.
+     */
+    where: OrderAuditLogWhereUniqueInput
+    /**
+     * In case the OrderAuditLog found by the `where` argument doesn't exist, create a new OrderAuditLog with this data.
+     */
+    create: XOR<OrderAuditLogCreateInput, OrderAuditLogUncheckedCreateInput>
+    /**
+     * In case the OrderAuditLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<OrderAuditLogUpdateInput, OrderAuditLogUncheckedUpdateInput>
+  }
+
+  /**
+   * OrderAuditLog delete
+   */
+  export type OrderAuditLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderAuditLog
+     */
+    select?: OrderAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderAuditLog
+     */
+    omit?: OrderAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderAuditLogInclude<ExtArgs> | null
+    /**
+     * Filter which OrderAuditLog to delete.
+     */
+    where: OrderAuditLogWhereUniqueInput
+  }
+
+  /**
+   * OrderAuditLog deleteMany
+   */
+  export type OrderAuditLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OrderAuditLogs to delete
+     */
+    where?: OrderAuditLogWhereInput
+    /**
+     * Limit how many OrderAuditLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * OrderAuditLog without action
+   */
+  export type OrderAuditLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderAuditLog
+     */
+    select?: OrderAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderAuditLog
+     */
+    omit?: OrderAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderAuditLogInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AdminNotification
+   */
+
+  export type AggregateAdminNotification = {
+    _count: AdminNotificationCountAggregateOutputType | null
+    _min: AdminNotificationMinAggregateOutputType | null
+    _max: AdminNotificationMaxAggregateOutputType | null
+  }
+
+  export type AdminNotificationMinAggregateOutputType = {
+    id: string | null
+    outletId: string | null
+    orderId: string | null
+    orderNumber: string | null
+    category: string | null
+    severity: string | null
+    title: string | null
+    message: string | null
+    actorName: string | null
+    metadataJson: string | null
+    isRead: boolean | null
+    readBy: string | null
+    readAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type AdminNotificationMaxAggregateOutputType = {
+    id: string | null
+    outletId: string | null
+    orderId: string | null
+    orderNumber: string | null
+    category: string | null
+    severity: string | null
+    title: string | null
+    message: string | null
+    actorName: string | null
+    metadataJson: string | null
+    isRead: boolean | null
+    readBy: string | null
+    readAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type AdminNotificationCountAggregateOutputType = {
+    id: number
+    outletId: number
+    orderId: number
+    orderNumber: number
+    category: number
+    severity: number
+    title: number
+    message: number
+    actorName: number
+    metadataJson: number
+    isRead: number
+    readBy: number
+    readAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AdminNotificationMinAggregateInputType = {
+    id?: true
+    outletId?: true
+    orderId?: true
+    orderNumber?: true
+    category?: true
+    severity?: true
+    title?: true
+    message?: true
+    actorName?: true
+    metadataJson?: true
+    isRead?: true
+    readBy?: true
+    readAt?: true
+    createdAt?: true
+  }
+
+  export type AdminNotificationMaxAggregateInputType = {
+    id?: true
+    outletId?: true
+    orderId?: true
+    orderNumber?: true
+    category?: true
+    severity?: true
+    title?: true
+    message?: true
+    actorName?: true
+    metadataJson?: true
+    isRead?: true
+    readBy?: true
+    readAt?: true
+    createdAt?: true
+  }
+
+  export type AdminNotificationCountAggregateInputType = {
+    id?: true
+    outletId?: true
+    orderId?: true
+    orderNumber?: true
+    category?: true
+    severity?: true
+    title?: true
+    message?: true
+    actorName?: true
+    metadataJson?: true
+    isRead?: true
+    readBy?: true
+    readAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AdminNotificationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdminNotification to aggregate.
+     */
+    where?: AdminNotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminNotifications to fetch.
+     */
+    orderBy?: AdminNotificationOrderByWithRelationInput | AdminNotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AdminNotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminNotifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminNotifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AdminNotifications
+    **/
+    _count?: true | AdminNotificationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AdminNotificationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AdminNotificationMaxAggregateInputType
+  }
+
+  export type GetAdminNotificationAggregateType<T extends AdminNotificationAggregateArgs> = {
+        [P in keyof T & keyof AggregateAdminNotification]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAdminNotification[P]>
+      : GetScalarType<T[P], AggregateAdminNotification[P]>
+  }
+
+
+
+
+  export type AdminNotificationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdminNotificationWhereInput
+    orderBy?: AdminNotificationOrderByWithAggregationInput | AdminNotificationOrderByWithAggregationInput[]
+    by: AdminNotificationScalarFieldEnum[] | AdminNotificationScalarFieldEnum
+    having?: AdminNotificationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AdminNotificationCountAggregateInputType | true
+    _min?: AdminNotificationMinAggregateInputType
+    _max?: AdminNotificationMaxAggregateInputType
+  }
+
+  export type AdminNotificationGroupByOutputType = {
+    id: string
+    outletId: string | null
+    orderId: string | null
+    orderNumber: string | null
+    category: string
+    severity: string
+    title: string
+    message: string
+    actorName: string | null
+    metadataJson: string | null
+    isRead: boolean
+    readBy: string | null
+    readAt: Date | null
+    createdAt: Date
+    _count: AdminNotificationCountAggregateOutputType | null
+    _min: AdminNotificationMinAggregateOutputType | null
+    _max: AdminNotificationMaxAggregateOutputType | null
+  }
+
+  type GetAdminNotificationGroupByPayload<T extends AdminNotificationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AdminNotificationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AdminNotificationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AdminNotificationGroupByOutputType[P]>
+            : GetScalarType<T[P], AdminNotificationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AdminNotificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    orderId?: boolean
+    orderNumber?: boolean
+    category?: boolean
+    severity?: boolean
+    title?: boolean
+    message?: boolean
+    actorName?: boolean
+    metadataJson?: boolean
+    isRead?: boolean
+    readBy?: boolean
+    readAt?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["adminNotification"]>
+
+  export type AdminNotificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    orderId?: boolean
+    orderNumber?: boolean
+    category?: boolean
+    severity?: boolean
+    title?: boolean
+    message?: boolean
+    actorName?: boolean
+    metadataJson?: boolean
+    isRead?: boolean
+    readBy?: boolean
+    readAt?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["adminNotification"]>
+
+  export type AdminNotificationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    orderId?: boolean
+    orderNumber?: boolean
+    category?: boolean
+    severity?: boolean
+    title?: boolean
+    message?: boolean
+    actorName?: boolean
+    metadataJson?: boolean
+    isRead?: boolean
+    readBy?: boolean
+    readAt?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["adminNotification"]>
+
+  export type AdminNotificationSelectScalar = {
+    id?: boolean
+    outletId?: boolean
+    orderId?: boolean
+    orderNumber?: boolean
+    category?: boolean
+    severity?: boolean
+    title?: boolean
+    message?: boolean
+    actorName?: boolean
+    metadataJson?: boolean
+    isRead?: boolean
+    readBy?: boolean
+    readAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type AdminNotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "orderId" | "orderNumber" | "category" | "severity" | "title" | "message" | "actorName" | "metadataJson" | "isRead" | "readBy" | "readAt" | "createdAt", ExtArgs["result"]["adminNotification"]>
+
+  export type $AdminNotificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AdminNotification"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      outletId: string | null
+      orderId: string | null
+      orderNumber: string | null
+      category: string
+      severity: string
+      title: string
+      message: string
+      actorName: string | null
+      metadataJson: string | null
+      isRead: boolean
+      readBy: string | null
+      readAt: Date | null
+      createdAt: Date
+    }, ExtArgs["result"]["adminNotification"]>
+    composites: {}
+  }
+
+  type AdminNotificationGetPayload<S extends boolean | null | undefined | AdminNotificationDefaultArgs> = $Result.GetResult<Prisma.$AdminNotificationPayload, S>
+
+  type AdminNotificationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AdminNotificationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AdminNotificationCountAggregateInputType | true
+    }
+
+  export interface AdminNotificationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AdminNotification'], meta: { name: 'AdminNotification' } }
+    /**
+     * Find zero or one AdminNotification that matches the filter.
+     * @param {AdminNotificationFindUniqueArgs} args - Arguments to find a AdminNotification
+     * @example
+     * // Get one AdminNotification
+     * const adminNotification = await prisma.adminNotification.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AdminNotificationFindUniqueArgs>(args: SelectSubset<T, AdminNotificationFindUniqueArgs<ExtArgs>>): Prisma__AdminNotificationClient<$Result.GetResult<Prisma.$AdminNotificationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AdminNotification that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AdminNotificationFindUniqueOrThrowArgs} args - Arguments to find a AdminNotification
+     * @example
+     * // Get one AdminNotification
+     * const adminNotification = await prisma.adminNotification.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AdminNotificationFindUniqueOrThrowArgs>(args: SelectSubset<T, AdminNotificationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AdminNotificationClient<$Result.GetResult<Prisma.$AdminNotificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AdminNotification that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminNotificationFindFirstArgs} args - Arguments to find a AdminNotification
+     * @example
+     * // Get one AdminNotification
+     * const adminNotification = await prisma.adminNotification.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AdminNotificationFindFirstArgs>(args?: SelectSubset<T, AdminNotificationFindFirstArgs<ExtArgs>>): Prisma__AdminNotificationClient<$Result.GetResult<Prisma.$AdminNotificationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AdminNotification that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminNotificationFindFirstOrThrowArgs} args - Arguments to find a AdminNotification
+     * @example
+     * // Get one AdminNotification
+     * const adminNotification = await prisma.adminNotification.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AdminNotificationFindFirstOrThrowArgs>(args?: SelectSubset<T, AdminNotificationFindFirstOrThrowArgs<ExtArgs>>): Prisma__AdminNotificationClient<$Result.GetResult<Prisma.$AdminNotificationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AdminNotifications that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminNotificationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AdminNotifications
+     * const adminNotifications = await prisma.adminNotification.findMany()
+     * 
+     * // Get first 10 AdminNotifications
+     * const adminNotifications = await prisma.adminNotification.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const adminNotificationWithIdOnly = await prisma.adminNotification.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AdminNotificationFindManyArgs>(args?: SelectSubset<T, AdminNotificationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminNotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AdminNotification.
+     * @param {AdminNotificationCreateArgs} args - Arguments to create a AdminNotification.
+     * @example
+     * // Create one AdminNotification
+     * const AdminNotification = await prisma.adminNotification.create({
+     *   data: {
+     *     // ... data to create a AdminNotification
+     *   }
+     * })
+     * 
+     */
+    create<T extends AdminNotificationCreateArgs>(args: SelectSubset<T, AdminNotificationCreateArgs<ExtArgs>>): Prisma__AdminNotificationClient<$Result.GetResult<Prisma.$AdminNotificationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AdminNotifications.
+     * @param {AdminNotificationCreateManyArgs} args - Arguments to create many AdminNotifications.
+     * @example
+     * // Create many AdminNotifications
+     * const adminNotification = await prisma.adminNotification.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AdminNotificationCreateManyArgs>(args?: SelectSubset<T, AdminNotificationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AdminNotifications and returns the data saved in the database.
+     * @param {AdminNotificationCreateManyAndReturnArgs} args - Arguments to create many AdminNotifications.
+     * @example
+     * // Create many AdminNotifications
+     * const adminNotification = await prisma.adminNotification.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AdminNotifications and only return the `id`
+     * const adminNotificationWithIdOnly = await prisma.adminNotification.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AdminNotificationCreateManyAndReturnArgs>(args?: SelectSubset<T, AdminNotificationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminNotificationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AdminNotification.
+     * @param {AdminNotificationDeleteArgs} args - Arguments to delete one AdminNotification.
+     * @example
+     * // Delete one AdminNotification
+     * const AdminNotification = await prisma.adminNotification.delete({
+     *   where: {
+     *     // ... filter to delete one AdminNotification
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AdminNotificationDeleteArgs>(args: SelectSubset<T, AdminNotificationDeleteArgs<ExtArgs>>): Prisma__AdminNotificationClient<$Result.GetResult<Prisma.$AdminNotificationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AdminNotification.
+     * @param {AdminNotificationUpdateArgs} args - Arguments to update one AdminNotification.
+     * @example
+     * // Update one AdminNotification
+     * const adminNotification = await prisma.adminNotification.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AdminNotificationUpdateArgs>(args: SelectSubset<T, AdminNotificationUpdateArgs<ExtArgs>>): Prisma__AdminNotificationClient<$Result.GetResult<Prisma.$AdminNotificationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AdminNotifications.
+     * @param {AdminNotificationDeleteManyArgs} args - Arguments to filter AdminNotifications to delete.
+     * @example
+     * // Delete a few AdminNotifications
+     * const { count } = await prisma.adminNotification.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AdminNotificationDeleteManyArgs>(args?: SelectSubset<T, AdminNotificationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AdminNotifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminNotificationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AdminNotifications
+     * const adminNotification = await prisma.adminNotification.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AdminNotificationUpdateManyArgs>(args: SelectSubset<T, AdminNotificationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AdminNotifications and returns the data updated in the database.
+     * @param {AdminNotificationUpdateManyAndReturnArgs} args - Arguments to update many AdminNotifications.
+     * @example
+     * // Update many AdminNotifications
+     * const adminNotification = await prisma.adminNotification.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AdminNotifications and only return the `id`
+     * const adminNotificationWithIdOnly = await prisma.adminNotification.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AdminNotificationUpdateManyAndReturnArgs>(args: SelectSubset<T, AdminNotificationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminNotificationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AdminNotification.
+     * @param {AdminNotificationUpsertArgs} args - Arguments to update or create a AdminNotification.
+     * @example
+     * // Update or create a AdminNotification
+     * const adminNotification = await prisma.adminNotification.upsert({
+     *   create: {
+     *     // ... data to create a AdminNotification
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AdminNotification we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AdminNotificationUpsertArgs>(args: SelectSubset<T, AdminNotificationUpsertArgs<ExtArgs>>): Prisma__AdminNotificationClient<$Result.GetResult<Prisma.$AdminNotificationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AdminNotifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminNotificationCountArgs} args - Arguments to filter AdminNotifications to count.
+     * @example
+     * // Count the number of AdminNotifications
+     * const count = await prisma.adminNotification.count({
+     *   where: {
+     *     // ... the filter for the AdminNotifications we want to count
+     *   }
+     * })
+    **/
+    count<T extends AdminNotificationCountArgs>(
+      args?: Subset<T, AdminNotificationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AdminNotificationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AdminNotification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminNotificationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AdminNotificationAggregateArgs>(args: Subset<T, AdminNotificationAggregateArgs>): Prisma.PrismaPromise<GetAdminNotificationAggregateType<T>>
+
+    /**
+     * Group by AdminNotification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminNotificationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AdminNotificationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AdminNotificationGroupByArgs['orderBy'] }
+        : { orderBy?: AdminNotificationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AdminNotificationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdminNotificationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AdminNotification model
+   */
+  readonly fields: AdminNotificationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AdminNotification.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AdminNotificationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AdminNotification model
+   */
+  interface AdminNotificationFieldRefs {
+    readonly id: FieldRef<"AdminNotification", 'String'>
+    readonly outletId: FieldRef<"AdminNotification", 'String'>
+    readonly orderId: FieldRef<"AdminNotification", 'String'>
+    readonly orderNumber: FieldRef<"AdminNotification", 'String'>
+    readonly category: FieldRef<"AdminNotification", 'String'>
+    readonly severity: FieldRef<"AdminNotification", 'String'>
+    readonly title: FieldRef<"AdminNotification", 'String'>
+    readonly message: FieldRef<"AdminNotification", 'String'>
+    readonly actorName: FieldRef<"AdminNotification", 'String'>
+    readonly metadataJson: FieldRef<"AdminNotification", 'String'>
+    readonly isRead: FieldRef<"AdminNotification", 'Boolean'>
+    readonly readBy: FieldRef<"AdminNotification", 'String'>
+    readonly readAt: FieldRef<"AdminNotification", 'DateTime'>
+    readonly createdAt: FieldRef<"AdminNotification", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AdminNotification findUnique
+   */
+  export type AdminNotificationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminNotification
+     */
+    select?: AdminNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminNotification
+     */
+    omit?: AdminNotificationOmit<ExtArgs> | null
+    /**
+     * Filter, which AdminNotification to fetch.
+     */
+    where: AdminNotificationWhereUniqueInput
+  }
+
+  /**
+   * AdminNotification findUniqueOrThrow
+   */
+  export type AdminNotificationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminNotification
+     */
+    select?: AdminNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminNotification
+     */
+    omit?: AdminNotificationOmit<ExtArgs> | null
+    /**
+     * Filter, which AdminNotification to fetch.
+     */
+    where: AdminNotificationWhereUniqueInput
+  }
+
+  /**
+   * AdminNotification findFirst
+   */
+  export type AdminNotificationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminNotification
+     */
+    select?: AdminNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminNotification
+     */
+    omit?: AdminNotificationOmit<ExtArgs> | null
+    /**
+     * Filter, which AdminNotification to fetch.
+     */
+    where?: AdminNotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminNotifications to fetch.
+     */
+    orderBy?: AdminNotificationOrderByWithRelationInput | AdminNotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AdminNotifications.
+     */
+    cursor?: AdminNotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminNotifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminNotifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdminNotifications.
+     */
+    distinct?: AdminNotificationScalarFieldEnum | AdminNotificationScalarFieldEnum[]
+  }
+
+  /**
+   * AdminNotification findFirstOrThrow
+   */
+  export type AdminNotificationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminNotification
+     */
+    select?: AdminNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminNotification
+     */
+    omit?: AdminNotificationOmit<ExtArgs> | null
+    /**
+     * Filter, which AdminNotification to fetch.
+     */
+    where?: AdminNotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminNotifications to fetch.
+     */
+    orderBy?: AdminNotificationOrderByWithRelationInput | AdminNotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AdminNotifications.
+     */
+    cursor?: AdminNotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminNotifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminNotifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdminNotifications.
+     */
+    distinct?: AdminNotificationScalarFieldEnum | AdminNotificationScalarFieldEnum[]
+  }
+
+  /**
+   * AdminNotification findMany
+   */
+  export type AdminNotificationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminNotification
+     */
+    select?: AdminNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminNotification
+     */
+    omit?: AdminNotificationOmit<ExtArgs> | null
+    /**
+     * Filter, which AdminNotifications to fetch.
+     */
+    where?: AdminNotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminNotifications to fetch.
+     */
+    orderBy?: AdminNotificationOrderByWithRelationInput | AdminNotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AdminNotifications.
+     */
+    cursor?: AdminNotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminNotifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminNotifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdminNotifications.
+     */
+    distinct?: AdminNotificationScalarFieldEnum | AdminNotificationScalarFieldEnum[]
+  }
+
+  /**
+   * AdminNotification create
+   */
+  export type AdminNotificationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminNotification
+     */
+    select?: AdminNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminNotification
+     */
+    omit?: AdminNotificationOmit<ExtArgs> | null
+    /**
+     * The data needed to create a AdminNotification.
+     */
+    data: XOR<AdminNotificationCreateInput, AdminNotificationUncheckedCreateInput>
+  }
+
+  /**
+   * AdminNotification createMany
+   */
+  export type AdminNotificationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AdminNotifications.
+     */
+    data: AdminNotificationCreateManyInput | AdminNotificationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AdminNotification createManyAndReturn
+   */
+  export type AdminNotificationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminNotification
+     */
+    select?: AdminNotificationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminNotification
+     */
+    omit?: AdminNotificationOmit<ExtArgs> | null
+    /**
+     * The data used to create many AdminNotifications.
+     */
+    data: AdminNotificationCreateManyInput | AdminNotificationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AdminNotification update
+   */
+  export type AdminNotificationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminNotification
+     */
+    select?: AdminNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminNotification
+     */
+    omit?: AdminNotificationOmit<ExtArgs> | null
+    /**
+     * The data needed to update a AdminNotification.
+     */
+    data: XOR<AdminNotificationUpdateInput, AdminNotificationUncheckedUpdateInput>
+    /**
+     * Choose, which AdminNotification to update.
+     */
+    where: AdminNotificationWhereUniqueInput
+  }
+
+  /**
+   * AdminNotification updateMany
+   */
+  export type AdminNotificationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AdminNotifications.
+     */
+    data: XOR<AdminNotificationUpdateManyMutationInput, AdminNotificationUncheckedUpdateManyInput>
+    /**
+     * Filter which AdminNotifications to update
+     */
+    where?: AdminNotificationWhereInput
+    /**
+     * Limit how many AdminNotifications to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AdminNotification updateManyAndReturn
+   */
+  export type AdminNotificationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminNotification
+     */
+    select?: AdminNotificationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminNotification
+     */
+    omit?: AdminNotificationOmit<ExtArgs> | null
+    /**
+     * The data used to update AdminNotifications.
+     */
+    data: XOR<AdminNotificationUpdateManyMutationInput, AdminNotificationUncheckedUpdateManyInput>
+    /**
+     * Filter which AdminNotifications to update
+     */
+    where?: AdminNotificationWhereInput
+    /**
+     * Limit how many AdminNotifications to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AdminNotification upsert
+   */
+  export type AdminNotificationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminNotification
+     */
+    select?: AdminNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminNotification
+     */
+    omit?: AdminNotificationOmit<ExtArgs> | null
+    /**
+     * The filter to search for the AdminNotification to update in case it exists.
+     */
+    where: AdminNotificationWhereUniqueInput
+    /**
+     * In case the AdminNotification found by the `where` argument doesn't exist, create a new AdminNotification with this data.
+     */
+    create: XOR<AdminNotificationCreateInput, AdminNotificationUncheckedCreateInput>
+    /**
+     * In case the AdminNotification was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AdminNotificationUpdateInput, AdminNotificationUncheckedUpdateInput>
+  }
+
+  /**
+   * AdminNotification delete
+   */
+  export type AdminNotificationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminNotification
+     */
+    select?: AdminNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminNotification
+     */
+    omit?: AdminNotificationOmit<ExtArgs> | null
+    /**
+     * Filter which AdminNotification to delete.
+     */
+    where: AdminNotificationWhereUniqueInput
+  }
+
+  /**
+   * AdminNotification deleteMany
+   */
+  export type AdminNotificationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdminNotifications to delete
+     */
+    where?: AdminNotificationWhereInput
+    /**
+     * Limit how many AdminNotifications to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AdminNotification without action
+   */
+  export type AdminNotificationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminNotification
+     */
+    select?: AdminNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminNotification
+     */
+    omit?: AdminNotificationOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -37835,6 +40501,12 @@ export namespace Prisma {
     pointsRedeemed: 'pointsRedeemed',
     notes: 'notes',
     items: 'items',
+    isEdited: 'isEdited',
+    revisionCount: 'revisionCount',
+    paymentModified: 'paymentModified',
+    lastEditReason: 'lastEditReason',
+    lastEditedBy: 'lastEditedBy',
+    lastEditedAt: 'lastEditedAt',
     createdAt: 'createdAt',
     settledAt: 'settledAt'
   };
@@ -38075,6 +40747,48 @@ export namespace Prisma {
   };
 
   export type SupplierTransactionScalarFieldEnum = (typeof SupplierTransactionScalarFieldEnum)[keyof typeof SupplierTransactionScalarFieldEnum]
+
+
+  export const OrderAuditLogScalarFieldEnum: {
+    id: 'id',
+    orderId: 'orderId',
+    orderNumber: 'orderNumber',
+    outletId: 'outletId',
+    outletName: 'outletName',
+    actionType: 'actionType',
+    performedBy: 'performedBy',
+    reason: 'reason',
+    oldPaymentMethod: 'oldPaymentMethod',
+    newPaymentMethod: 'newPaymentMethod',
+    oldFinalAmount: 'oldFinalAmount',
+    newFinalAmount: 'newFinalAmount',
+    amountDiff: 'amountDiff',
+    oldItemsJson: 'oldItemsJson',
+    newItemsJson: 'newItemsJson',
+    createdAt: 'createdAt'
+  };
+
+  export type OrderAuditLogScalarFieldEnum = (typeof OrderAuditLogScalarFieldEnum)[keyof typeof OrderAuditLogScalarFieldEnum]
+
+
+  export const AdminNotificationScalarFieldEnum: {
+    id: 'id',
+    outletId: 'outletId',
+    orderId: 'orderId',
+    orderNumber: 'orderNumber',
+    category: 'category',
+    severity: 'severity',
+    title: 'title',
+    message: 'message',
+    actorName: 'actorName',
+    metadataJson: 'metadataJson',
+    isRead: 'isRead',
+    readBy: 'readBy',
+    readAt: 'readAt',
+    createdAt: 'createdAt'
+  };
+
+  export type AdminNotificationScalarFieldEnum = (typeof AdminNotificationScalarFieldEnum)[keyof typeof AdminNotificationScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -39596,6 +42310,12 @@ export namespace Prisma {
     pointsRedeemed?: IntFilter<"Order"> | number
     notes?: StringNullableFilter<"Order"> | string | null
     items?: StringFilter<"Order"> | string
+    isEdited?: BoolFilter<"Order"> | boolean
+    revisionCount?: IntFilter<"Order"> | number
+    paymentModified?: BoolFilter<"Order"> | boolean
+    lastEditReason?: StringNullableFilter<"Order"> | string | null
+    lastEditedBy?: StringNullableFilter<"Order"> | string | null
+    lastEditedAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     createdAt?: DateTimeFilter<"Order"> | Date | string
     settledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
@@ -39604,6 +42324,7 @@ export namespace Prisma {
     driver?: XOR<DeliveryDriverNullableScalarRelationFilter, DeliveryDriverWhereInput> | null
     customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
     kdsTickets?: KdsTicketListRelationFilter
+    auditLogs?: OrderAuditLogListRelationFilter
   }
 
   export type OrderOrderByWithRelationInput = {
@@ -39649,6 +42370,12 @@ export namespace Prisma {
     pointsRedeemed?: SortOrder
     notes?: SortOrderInput | SortOrder
     items?: SortOrder
+    isEdited?: SortOrder
+    revisionCount?: SortOrder
+    paymentModified?: SortOrder
+    lastEditReason?: SortOrderInput | SortOrder
+    lastEditedBy?: SortOrderInput | SortOrder
+    lastEditedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     settledAt?: SortOrderInput | SortOrder
     outlet?: OutletOrderByWithRelationInput
@@ -39657,6 +42384,7 @@ export namespace Prisma {
     driver?: DeliveryDriverOrderByWithRelationInput
     customer?: CustomerOrderByWithRelationInput
     kdsTickets?: KdsTicketOrderByRelationAggregateInput
+    auditLogs?: OrderAuditLogOrderByRelationAggregateInput
   }
 
   export type OrderWhereUniqueInput = Prisma.AtLeast<{
@@ -39705,6 +42433,12 @@ export namespace Prisma {
     pointsRedeemed?: IntFilter<"Order"> | number
     notes?: StringNullableFilter<"Order"> | string | null
     items?: StringFilter<"Order"> | string
+    isEdited?: BoolFilter<"Order"> | boolean
+    revisionCount?: IntFilter<"Order"> | number
+    paymentModified?: BoolFilter<"Order"> | boolean
+    lastEditReason?: StringNullableFilter<"Order"> | string | null
+    lastEditedBy?: StringNullableFilter<"Order"> | string | null
+    lastEditedAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     createdAt?: DateTimeFilter<"Order"> | Date | string
     settledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
@@ -39713,6 +42447,7 @@ export namespace Prisma {
     driver?: XOR<DeliveryDriverNullableScalarRelationFilter, DeliveryDriverWhereInput> | null
     customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
     kdsTickets?: KdsTicketListRelationFilter
+    auditLogs?: OrderAuditLogListRelationFilter
   }, "id" | "orderNumber">
 
   export type OrderOrderByWithAggregationInput = {
@@ -39758,6 +42493,12 @@ export namespace Prisma {
     pointsRedeemed?: SortOrder
     notes?: SortOrderInput | SortOrder
     items?: SortOrder
+    isEdited?: SortOrder
+    revisionCount?: SortOrder
+    paymentModified?: SortOrder
+    lastEditReason?: SortOrderInput | SortOrder
+    lastEditedBy?: SortOrderInput | SortOrder
+    lastEditedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     settledAt?: SortOrderInput | SortOrder
     _count?: OrderCountOrderByAggregateInput
@@ -39813,6 +42554,12 @@ export namespace Prisma {
     pointsRedeemed?: IntWithAggregatesFilter<"Order"> | number
     notes?: StringNullableWithAggregatesFilter<"Order"> | string | null
     items?: StringWithAggregatesFilter<"Order"> | string
+    isEdited?: BoolWithAggregatesFilter<"Order"> | boolean
+    revisionCount?: IntWithAggregatesFilter<"Order"> | number
+    paymentModified?: BoolWithAggregatesFilter<"Order"> | boolean
+    lastEditReason?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    lastEditedBy?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    lastEditedAt?: DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
     settledAt?: DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
   }
@@ -41012,6 +43759,215 @@ export namespace Prisma {
     recordedBy?: StringWithAggregatesFilter<"SupplierTransaction"> | string
     notes?: StringNullableWithAggregatesFilter<"SupplierTransaction"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"SupplierTransaction"> | Date | string
+  }
+
+  export type OrderAuditLogWhereInput = {
+    AND?: OrderAuditLogWhereInput | OrderAuditLogWhereInput[]
+    OR?: OrderAuditLogWhereInput[]
+    NOT?: OrderAuditLogWhereInput | OrderAuditLogWhereInput[]
+    id?: StringFilter<"OrderAuditLog"> | string
+    orderId?: StringFilter<"OrderAuditLog"> | string
+    orderNumber?: StringFilter<"OrderAuditLog"> | string
+    outletId?: StringFilter<"OrderAuditLog"> | string
+    outletName?: StringFilter<"OrderAuditLog"> | string
+    actionType?: StringFilter<"OrderAuditLog"> | string
+    performedBy?: StringFilter<"OrderAuditLog"> | string
+    reason?: StringFilter<"OrderAuditLog"> | string
+    oldPaymentMethod?: StringNullableFilter<"OrderAuditLog"> | string | null
+    newPaymentMethod?: StringNullableFilter<"OrderAuditLog"> | string | null
+    oldFinalAmount?: FloatFilter<"OrderAuditLog"> | number
+    newFinalAmount?: FloatFilter<"OrderAuditLog"> | number
+    amountDiff?: FloatFilter<"OrderAuditLog"> | number
+    oldItemsJson?: StringNullableFilter<"OrderAuditLog"> | string | null
+    newItemsJson?: StringNullableFilter<"OrderAuditLog"> | string | null
+    createdAt?: DateTimeFilter<"OrderAuditLog"> | Date | string
+    order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
+  }
+
+  export type OrderAuditLogOrderByWithRelationInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    orderNumber?: SortOrder
+    outletId?: SortOrder
+    outletName?: SortOrder
+    actionType?: SortOrder
+    performedBy?: SortOrder
+    reason?: SortOrder
+    oldPaymentMethod?: SortOrderInput | SortOrder
+    newPaymentMethod?: SortOrderInput | SortOrder
+    oldFinalAmount?: SortOrder
+    newFinalAmount?: SortOrder
+    amountDiff?: SortOrder
+    oldItemsJson?: SortOrderInput | SortOrder
+    newItemsJson?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    order?: OrderOrderByWithRelationInput
+  }
+
+  export type OrderAuditLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: OrderAuditLogWhereInput | OrderAuditLogWhereInput[]
+    OR?: OrderAuditLogWhereInput[]
+    NOT?: OrderAuditLogWhereInput | OrderAuditLogWhereInput[]
+    orderId?: StringFilter<"OrderAuditLog"> | string
+    orderNumber?: StringFilter<"OrderAuditLog"> | string
+    outletId?: StringFilter<"OrderAuditLog"> | string
+    outletName?: StringFilter<"OrderAuditLog"> | string
+    actionType?: StringFilter<"OrderAuditLog"> | string
+    performedBy?: StringFilter<"OrderAuditLog"> | string
+    reason?: StringFilter<"OrderAuditLog"> | string
+    oldPaymentMethod?: StringNullableFilter<"OrderAuditLog"> | string | null
+    newPaymentMethod?: StringNullableFilter<"OrderAuditLog"> | string | null
+    oldFinalAmount?: FloatFilter<"OrderAuditLog"> | number
+    newFinalAmount?: FloatFilter<"OrderAuditLog"> | number
+    amountDiff?: FloatFilter<"OrderAuditLog"> | number
+    oldItemsJson?: StringNullableFilter<"OrderAuditLog"> | string | null
+    newItemsJson?: StringNullableFilter<"OrderAuditLog"> | string | null
+    createdAt?: DateTimeFilter<"OrderAuditLog"> | Date | string
+    order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
+  }, "id">
+
+  export type OrderAuditLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    orderNumber?: SortOrder
+    outletId?: SortOrder
+    outletName?: SortOrder
+    actionType?: SortOrder
+    performedBy?: SortOrder
+    reason?: SortOrder
+    oldPaymentMethod?: SortOrderInput | SortOrder
+    newPaymentMethod?: SortOrderInput | SortOrder
+    oldFinalAmount?: SortOrder
+    newFinalAmount?: SortOrder
+    amountDiff?: SortOrder
+    oldItemsJson?: SortOrderInput | SortOrder
+    newItemsJson?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: OrderAuditLogCountOrderByAggregateInput
+    _avg?: OrderAuditLogAvgOrderByAggregateInput
+    _max?: OrderAuditLogMaxOrderByAggregateInput
+    _min?: OrderAuditLogMinOrderByAggregateInput
+    _sum?: OrderAuditLogSumOrderByAggregateInput
+  }
+
+  export type OrderAuditLogScalarWhereWithAggregatesInput = {
+    AND?: OrderAuditLogScalarWhereWithAggregatesInput | OrderAuditLogScalarWhereWithAggregatesInput[]
+    OR?: OrderAuditLogScalarWhereWithAggregatesInput[]
+    NOT?: OrderAuditLogScalarWhereWithAggregatesInput | OrderAuditLogScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"OrderAuditLog"> | string
+    orderId?: StringWithAggregatesFilter<"OrderAuditLog"> | string
+    orderNumber?: StringWithAggregatesFilter<"OrderAuditLog"> | string
+    outletId?: StringWithAggregatesFilter<"OrderAuditLog"> | string
+    outletName?: StringWithAggregatesFilter<"OrderAuditLog"> | string
+    actionType?: StringWithAggregatesFilter<"OrderAuditLog"> | string
+    performedBy?: StringWithAggregatesFilter<"OrderAuditLog"> | string
+    reason?: StringWithAggregatesFilter<"OrderAuditLog"> | string
+    oldPaymentMethod?: StringNullableWithAggregatesFilter<"OrderAuditLog"> | string | null
+    newPaymentMethod?: StringNullableWithAggregatesFilter<"OrderAuditLog"> | string | null
+    oldFinalAmount?: FloatWithAggregatesFilter<"OrderAuditLog"> | number
+    newFinalAmount?: FloatWithAggregatesFilter<"OrderAuditLog"> | number
+    amountDiff?: FloatWithAggregatesFilter<"OrderAuditLog"> | number
+    oldItemsJson?: StringNullableWithAggregatesFilter<"OrderAuditLog"> | string | null
+    newItemsJson?: StringNullableWithAggregatesFilter<"OrderAuditLog"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"OrderAuditLog"> | Date | string
+  }
+
+  export type AdminNotificationWhereInput = {
+    AND?: AdminNotificationWhereInput | AdminNotificationWhereInput[]
+    OR?: AdminNotificationWhereInput[]
+    NOT?: AdminNotificationWhereInput | AdminNotificationWhereInput[]
+    id?: StringFilter<"AdminNotification"> | string
+    outletId?: StringNullableFilter<"AdminNotification"> | string | null
+    orderId?: StringNullableFilter<"AdminNotification"> | string | null
+    orderNumber?: StringNullableFilter<"AdminNotification"> | string | null
+    category?: StringFilter<"AdminNotification"> | string
+    severity?: StringFilter<"AdminNotification"> | string
+    title?: StringFilter<"AdminNotification"> | string
+    message?: StringFilter<"AdminNotification"> | string
+    actorName?: StringNullableFilter<"AdminNotification"> | string | null
+    metadataJson?: StringNullableFilter<"AdminNotification"> | string | null
+    isRead?: BoolFilter<"AdminNotification"> | boolean
+    readBy?: StringNullableFilter<"AdminNotification"> | string | null
+    readAt?: DateTimeNullableFilter<"AdminNotification"> | Date | string | null
+    createdAt?: DateTimeFilter<"AdminNotification"> | Date | string
+  }
+
+  export type AdminNotificationOrderByWithRelationInput = {
+    id?: SortOrder
+    outletId?: SortOrderInput | SortOrder
+    orderId?: SortOrderInput | SortOrder
+    orderNumber?: SortOrderInput | SortOrder
+    category?: SortOrder
+    severity?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    actorName?: SortOrderInput | SortOrder
+    metadataJson?: SortOrderInput | SortOrder
+    isRead?: SortOrder
+    readBy?: SortOrderInput | SortOrder
+    readAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AdminNotificationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AdminNotificationWhereInput | AdminNotificationWhereInput[]
+    OR?: AdminNotificationWhereInput[]
+    NOT?: AdminNotificationWhereInput | AdminNotificationWhereInput[]
+    outletId?: StringNullableFilter<"AdminNotification"> | string | null
+    orderId?: StringNullableFilter<"AdminNotification"> | string | null
+    orderNumber?: StringNullableFilter<"AdminNotification"> | string | null
+    category?: StringFilter<"AdminNotification"> | string
+    severity?: StringFilter<"AdminNotification"> | string
+    title?: StringFilter<"AdminNotification"> | string
+    message?: StringFilter<"AdminNotification"> | string
+    actorName?: StringNullableFilter<"AdminNotification"> | string | null
+    metadataJson?: StringNullableFilter<"AdminNotification"> | string | null
+    isRead?: BoolFilter<"AdminNotification"> | boolean
+    readBy?: StringNullableFilter<"AdminNotification"> | string | null
+    readAt?: DateTimeNullableFilter<"AdminNotification"> | Date | string | null
+    createdAt?: DateTimeFilter<"AdminNotification"> | Date | string
+  }, "id">
+
+  export type AdminNotificationOrderByWithAggregationInput = {
+    id?: SortOrder
+    outletId?: SortOrderInput | SortOrder
+    orderId?: SortOrderInput | SortOrder
+    orderNumber?: SortOrderInput | SortOrder
+    category?: SortOrder
+    severity?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    actorName?: SortOrderInput | SortOrder
+    metadataJson?: SortOrderInput | SortOrder
+    isRead?: SortOrder
+    readBy?: SortOrderInput | SortOrder
+    readAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: AdminNotificationCountOrderByAggregateInput
+    _max?: AdminNotificationMaxOrderByAggregateInput
+    _min?: AdminNotificationMinOrderByAggregateInput
+  }
+
+  export type AdminNotificationScalarWhereWithAggregatesInput = {
+    AND?: AdminNotificationScalarWhereWithAggregatesInput | AdminNotificationScalarWhereWithAggregatesInput[]
+    OR?: AdminNotificationScalarWhereWithAggregatesInput[]
+    NOT?: AdminNotificationScalarWhereWithAggregatesInput | AdminNotificationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AdminNotification"> | string
+    outletId?: StringNullableWithAggregatesFilter<"AdminNotification"> | string | null
+    orderId?: StringNullableWithAggregatesFilter<"AdminNotification"> | string | null
+    orderNumber?: StringNullableWithAggregatesFilter<"AdminNotification"> | string | null
+    category?: StringWithAggregatesFilter<"AdminNotification"> | string
+    severity?: StringWithAggregatesFilter<"AdminNotification"> | string
+    title?: StringWithAggregatesFilter<"AdminNotification"> | string
+    message?: StringWithAggregatesFilter<"AdminNotification"> | string
+    actorName?: StringNullableWithAggregatesFilter<"AdminNotification"> | string | null
+    metadataJson?: StringNullableWithAggregatesFilter<"AdminNotification"> | string | null
+    isRead?: BoolWithAggregatesFilter<"AdminNotification"> | boolean
+    readBy?: StringNullableWithAggregatesFilter<"AdminNotification"> | string | null
+    readAt?: DateTimeNullableWithAggregatesFilter<"AdminNotification"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"AdminNotification"> | Date | string
   }
 
   export type OutletCreateInput = {
@@ -42627,6 +45583,12 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
     outlet: OutletCreateNestedOneWithoutOrdersInput
@@ -42635,6 +45597,7 @@ export namespace Prisma {
     driver?: DeliveryDriverCreateNestedOneWithoutOrdersInput
     customer?: CustomerCreateNestedOneWithoutOrdersInput
     kdsTickets?: KdsTicketCreateNestedManyWithoutOrderInput
+    auditLogs?: OrderAuditLogCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateInput = {
@@ -42680,9 +45643,16 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
     kdsTickets?: KdsTicketUncheckedCreateNestedManyWithoutOrderInput
+    auditLogs?: OrderAuditLogUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUpdateInput = {
@@ -42723,6 +45693,12 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     outlet?: OutletUpdateOneRequiredWithoutOrdersNestedInput
@@ -42731,6 +45707,7 @@ export namespace Prisma {
     driver?: DeliveryDriverUpdateOneWithoutOrdersNestedInput
     customer?: CustomerUpdateOneWithoutOrdersNestedInput
     kdsTickets?: KdsTicketUpdateManyWithoutOrderNestedInput
+    auditLogs?: OrderAuditLogUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateInput = {
@@ -42776,9 +45753,16 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kdsTickets?: KdsTicketUncheckedUpdateManyWithoutOrderNestedInput
+    auditLogs?: OrderAuditLogUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderCreateManyInput = {
@@ -42824,6 +45808,12 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
   }
@@ -42866,6 +45856,12 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -42913,6 +45909,12 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -44328,6 +47330,257 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type OrderAuditLogCreateInput = {
+    id?: string
+    orderNumber: string
+    outletId: string
+    outletName: string
+    actionType: string
+    performedBy?: string
+    reason: string
+    oldPaymentMethod?: string | null
+    newPaymentMethod?: string | null
+    oldFinalAmount?: number
+    newFinalAmount?: number
+    amountDiff?: number
+    oldItemsJson?: string | null
+    newItemsJson?: string | null
+    createdAt?: Date | string
+    order: OrderCreateNestedOneWithoutAuditLogsInput
+  }
+
+  export type OrderAuditLogUncheckedCreateInput = {
+    id?: string
+    orderId: string
+    orderNumber: string
+    outletId: string
+    outletName: string
+    actionType: string
+    performedBy?: string
+    reason: string
+    oldPaymentMethod?: string | null
+    newPaymentMethod?: string | null
+    oldFinalAmount?: number
+    newFinalAmount?: number
+    amountDiff?: number
+    oldItemsJson?: string | null
+    newItemsJson?: string | null
+    createdAt?: Date | string
+  }
+
+  export type OrderAuditLogUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    outletName?: StringFieldUpdateOperationsInput | string
+    actionType?: StringFieldUpdateOperationsInput | string
+    performedBy?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    oldPaymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    newPaymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    oldFinalAmount?: FloatFieldUpdateOperationsInput | number
+    newFinalAmount?: FloatFieldUpdateOperationsInput | number
+    amountDiff?: FloatFieldUpdateOperationsInput | number
+    oldItemsJson?: NullableStringFieldUpdateOperationsInput | string | null
+    newItemsJson?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateOneRequiredWithoutAuditLogsNestedInput
+  }
+
+  export type OrderAuditLogUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    outletName?: StringFieldUpdateOperationsInput | string
+    actionType?: StringFieldUpdateOperationsInput | string
+    performedBy?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    oldPaymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    newPaymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    oldFinalAmount?: FloatFieldUpdateOperationsInput | number
+    newFinalAmount?: FloatFieldUpdateOperationsInput | number
+    amountDiff?: FloatFieldUpdateOperationsInput | number
+    oldItemsJson?: NullableStringFieldUpdateOperationsInput | string | null
+    newItemsJson?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrderAuditLogCreateManyInput = {
+    id?: string
+    orderId: string
+    orderNumber: string
+    outletId: string
+    outletName: string
+    actionType: string
+    performedBy?: string
+    reason: string
+    oldPaymentMethod?: string | null
+    newPaymentMethod?: string | null
+    oldFinalAmount?: number
+    newFinalAmount?: number
+    amountDiff?: number
+    oldItemsJson?: string | null
+    newItemsJson?: string | null
+    createdAt?: Date | string
+  }
+
+  export type OrderAuditLogUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    outletName?: StringFieldUpdateOperationsInput | string
+    actionType?: StringFieldUpdateOperationsInput | string
+    performedBy?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    oldPaymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    newPaymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    oldFinalAmount?: FloatFieldUpdateOperationsInput | number
+    newFinalAmount?: FloatFieldUpdateOperationsInput | number
+    amountDiff?: FloatFieldUpdateOperationsInput | number
+    oldItemsJson?: NullableStringFieldUpdateOperationsInput | string | null
+    newItemsJson?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrderAuditLogUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    outletName?: StringFieldUpdateOperationsInput | string
+    actionType?: StringFieldUpdateOperationsInput | string
+    performedBy?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    oldPaymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    newPaymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    oldFinalAmount?: FloatFieldUpdateOperationsInput | number
+    newFinalAmount?: FloatFieldUpdateOperationsInput | number
+    amountDiff?: FloatFieldUpdateOperationsInput | number
+    oldItemsJson?: NullableStringFieldUpdateOperationsInput | string | null
+    newItemsJson?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminNotificationCreateInput = {
+    id?: string
+    outletId?: string | null
+    orderId?: string | null
+    orderNumber?: string | null
+    category?: string
+    severity?: string
+    title: string
+    message: string
+    actorName?: string | null
+    metadataJson?: string | null
+    isRead?: boolean
+    readBy?: string | null
+    readAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type AdminNotificationUncheckedCreateInput = {
+    id?: string
+    outletId?: string | null
+    orderId?: string | null
+    orderNumber?: string | null
+    category?: string
+    severity?: string
+    title: string
+    message: string
+    actorName?: string | null
+    metadataJson?: string | null
+    isRead?: boolean
+    readBy?: string | null
+    readAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type AdminNotificationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: NullableStringFieldUpdateOperationsInput | string | null
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    actorName?: NullableStringFieldUpdateOperationsInput | string | null
+    metadataJson?: NullableStringFieldUpdateOperationsInput | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    readBy?: NullableStringFieldUpdateOperationsInput | string | null
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminNotificationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: NullableStringFieldUpdateOperationsInput | string | null
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    actorName?: NullableStringFieldUpdateOperationsInput | string | null
+    metadataJson?: NullableStringFieldUpdateOperationsInput | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    readBy?: NullableStringFieldUpdateOperationsInput | string | null
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminNotificationCreateManyInput = {
+    id?: string
+    outletId?: string | null
+    orderId?: string | null
+    orderNumber?: string | null
+    category?: string
+    severity?: string
+    title: string
+    message: string
+    actorName?: string | null
+    metadataJson?: string | null
+    isRead?: boolean
+    readBy?: string | null
+    readAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type AdminNotificationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: NullableStringFieldUpdateOperationsInput | string | null
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    actorName?: NullableStringFieldUpdateOperationsInput | string | null
+    metadataJson?: NullableStringFieldUpdateOperationsInput | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    readBy?: NullableStringFieldUpdateOperationsInput | string | null
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminNotificationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: NullableStringFieldUpdateOperationsInput | string | null
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
+    orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    actorName?: NullableStringFieldUpdateOperationsInput | string | null
+    metadataJson?: NullableStringFieldUpdateOperationsInput | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    readBy?: NullableStringFieldUpdateOperationsInput | string | null
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -45600,7 +48853,17 @@ export namespace Prisma {
     none?: KdsTicketWhereInput
   }
 
+  export type OrderAuditLogListRelationFilter = {
+    every?: OrderAuditLogWhereInput
+    some?: OrderAuditLogWhereInput
+    none?: OrderAuditLogWhereInput
+  }
+
   export type KdsTicketOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type OrderAuditLogOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -45647,6 +48910,12 @@ export namespace Prisma {
     pointsRedeemed?: SortOrder
     notes?: SortOrder
     items?: SortOrder
+    isEdited?: SortOrder
+    revisionCount?: SortOrder
+    paymentModified?: SortOrder
+    lastEditReason?: SortOrder
+    lastEditedBy?: SortOrder
+    lastEditedAt?: SortOrder
     createdAt?: SortOrder
     settledAt?: SortOrder
   }
@@ -45663,6 +48932,7 @@ export namespace Prisma {
     finalAmount?: SortOrder
     pointsEarned?: SortOrder
     pointsRedeemed?: SortOrder
+    revisionCount?: SortOrder
   }
 
   export type OrderMaxOrderByAggregateInput = {
@@ -45708,6 +48978,12 @@ export namespace Prisma {
     pointsRedeemed?: SortOrder
     notes?: SortOrder
     items?: SortOrder
+    isEdited?: SortOrder
+    revisionCount?: SortOrder
+    paymentModified?: SortOrder
+    lastEditReason?: SortOrder
+    lastEditedBy?: SortOrder
+    lastEditedAt?: SortOrder
     createdAt?: SortOrder
     settledAt?: SortOrder
   }
@@ -45755,6 +49031,12 @@ export namespace Prisma {
     pointsRedeemed?: SortOrder
     notes?: SortOrder
     items?: SortOrder
+    isEdited?: SortOrder
+    revisionCount?: SortOrder
+    paymentModified?: SortOrder
+    lastEditReason?: SortOrder
+    lastEditedBy?: SortOrder
+    lastEditedAt?: SortOrder
     createdAt?: SortOrder
     settledAt?: SortOrder
   }
@@ -45771,6 +49053,7 @@ export namespace Prisma {
     finalAmount?: SortOrder
     pointsEarned?: SortOrder
     pointsRedeemed?: SortOrder
+    revisionCount?: SortOrder
   }
 
   export type OrderScalarRelationFilter = {
@@ -46538,6 +49821,126 @@ export namespace Prisma {
     totalAmount?: SortOrder
     paidAmount?: SortOrder
     remainingAmount?: SortOrder
+  }
+
+  export type OrderAuditLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    orderNumber?: SortOrder
+    outletId?: SortOrder
+    outletName?: SortOrder
+    actionType?: SortOrder
+    performedBy?: SortOrder
+    reason?: SortOrder
+    oldPaymentMethod?: SortOrder
+    newPaymentMethod?: SortOrder
+    oldFinalAmount?: SortOrder
+    newFinalAmount?: SortOrder
+    amountDiff?: SortOrder
+    oldItemsJson?: SortOrder
+    newItemsJson?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type OrderAuditLogAvgOrderByAggregateInput = {
+    oldFinalAmount?: SortOrder
+    newFinalAmount?: SortOrder
+    amountDiff?: SortOrder
+  }
+
+  export type OrderAuditLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    orderNumber?: SortOrder
+    outletId?: SortOrder
+    outletName?: SortOrder
+    actionType?: SortOrder
+    performedBy?: SortOrder
+    reason?: SortOrder
+    oldPaymentMethod?: SortOrder
+    newPaymentMethod?: SortOrder
+    oldFinalAmount?: SortOrder
+    newFinalAmount?: SortOrder
+    amountDiff?: SortOrder
+    oldItemsJson?: SortOrder
+    newItemsJson?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type OrderAuditLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    orderNumber?: SortOrder
+    outletId?: SortOrder
+    outletName?: SortOrder
+    actionType?: SortOrder
+    performedBy?: SortOrder
+    reason?: SortOrder
+    oldPaymentMethod?: SortOrder
+    newPaymentMethod?: SortOrder
+    oldFinalAmount?: SortOrder
+    newFinalAmount?: SortOrder
+    amountDiff?: SortOrder
+    oldItemsJson?: SortOrder
+    newItemsJson?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type OrderAuditLogSumOrderByAggregateInput = {
+    oldFinalAmount?: SortOrder
+    newFinalAmount?: SortOrder
+    amountDiff?: SortOrder
+  }
+
+  export type AdminNotificationCountOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    orderId?: SortOrder
+    orderNumber?: SortOrder
+    category?: SortOrder
+    severity?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    actorName?: SortOrder
+    metadataJson?: SortOrder
+    isRead?: SortOrder
+    readBy?: SortOrder
+    readAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AdminNotificationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    orderId?: SortOrder
+    orderNumber?: SortOrder
+    category?: SortOrder
+    severity?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    actorName?: SortOrder
+    metadataJson?: SortOrder
+    isRead?: SortOrder
+    readBy?: SortOrder
+    readAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AdminNotificationMinOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    orderId?: SortOrder
+    orderNumber?: SortOrder
+    category?: SortOrder
+    severity?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    actorName?: SortOrder
+    metadataJson?: SortOrder
+    isRead?: SortOrder
+    readBy?: SortOrder
+    readAt?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type UserCreateNestedManyWithoutOutletInput = {
@@ -47899,11 +51302,25 @@ export namespace Prisma {
     connect?: KdsTicketWhereUniqueInput | KdsTicketWhereUniqueInput[]
   }
 
+  export type OrderAuditLogCreateNestedManyWithoutOrderInput = {
+    create?: XOR<OrderAuditLogCreateWithoutOrderInput, OrderAuditLogUncheckedCreateWithoutOrderInput> | OrderAuditLogCreateWithoutOrderInput[] | OrderAuditLogUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: OrderAuditLogCreateOrConnectWithoutOrderInput | OrderAuditLogCreateOrConnectWithoutOrderInput[]
+    createMany?: OrderAuditLogCreateManyOrderInputEnvelope
+    connect?: OrderAuditLogWhereUniqueInput | OrderAuditLogWhereUniqueInput[]
+  }
+
   export type KdsTicketUncheckedCreateNestedManyWithoutOrderInput = {
     create?: XOR<KdsTicketCreateWithoutOrderInput, KdsTicketUncheckedCreateWithoutOrderInput> | KdsTicketCreateWithoutOrderInput[] | KdsTicketUncheckedCreateWithoutOrderInput[]
     connectOrCreate?: KdsTicketCreateOrConnectWithoutOrderInput | KdsTicketCreateOrConnectWithoutOrderInput[]
     createMany?: KdsTicketCreateManyOrderInputEnvelope
     connect?: KdsTicketWhereUniqueInput | KdsTicketWhereUniqueInput[]
+  }
+
+  export type OrderAuditLogUncheckedCreateNestedManyWithoutOrderInput = {
+    create?: XOR<OrderAuditLogCreateWithoutOrderInput, OrderAuditLogUncheckedCreateWithoutOrderInput> | OrderAuditLogCreateWithoutOrderInput[] | OrderAuditLogUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: OrderAuditLogCreateOrConnectWithoutOrderInput | OrderAuditLogCreateOrConnectWithoutOrderInput[]
+    createMany?: OrderAuditLogCreateManyOrderInputEnvelope
+    connect?: OrderAuditLogWhereUniqueInput | OrderAuditLogWhereUniqueInput[]
   }
 
   export type OutletUpdateOneRequiredWithoutOrdersNestedInput = {
@@ -47968,6 +51385,20 @@ export namespace Prisma {
     deleteMany?: KdsTicketScalarWhereInput | KdsTicketScalarWhereInput[]
   }
 
+  export type OrderAuditLogUpdateManyWithoutOrderNestedInput = {
+    create?: XOR<OrderAuditLogCreateWithoutOrderInput, OrderAuditLogUncheckedCreateWithoutOrderInput> | OrderAuditLogCreateWithoutOrderInput[] | OrderAuditLogUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: OrderAuditLogCreateOrConnectWithoutOrderInput | OrderAuditLogCreateOrConnectWithoutOrderInput[]
+    upsert?: OrderAuditLogUpsertWithWhereUniqueWithoutOrderInput | OrderAuditLogUpsertWithWhereUniqueWithoutOrderInput[]
+    createMany?: OrderAuditLogCreateManyOrderInputEnvelope
+    set?: OrderAuditLogWhereUniqueInput | OrderAuditLogWhereUniqueInput[]
+    disconnect?: OrderAuditLogWhereUniqueInput | OrderAuditLogWhereUniqueInput[]
+    delete?: OrderAuditLogWhereUniqueInput | OrderAuditLogWhereUniqueInput[]
+    connect?: OrderAuditLogWhereUniqueInput | OrderAuditLogWhereUniqueInput[]
+    update?: OrderAuditLogUpdateWithWhereUniqueWithoutOrderInput | OrderAuditLogUpdateWithWhereUniqueWithoutOrderInput[]
+    updateMany?: OrderAuditLogUpdateManyWithWhereWithoutOrderInput | OrderAuditLogUpdateManyWithWhereWithoutOrderInput[]
+    deleteMany?: OrderAuditLogScalarWhereInput | OrderAuditLogScalarWhereInput[]
+  }
+
   export type KdsTicketUncheckedUpdateManyWithoutOrderNestedInput = {
     create?: XOR<KdsTicketCreateWithoutOrderInput, KdsTicketUncheckedCreateWithoutOrderInput> | KdsTicketCreateWithoutOrderInput[] | KdsTicketUncheckedCreateWithoutOrderInput[]
     connectOrCreate?: KdsTicketCreateOrConnectWithoutOrderInput | KdsTicketCreateOrConnectWithoutOrderInput[]
@@ -47980,6 +51411,20 @@ export namespace Prisma {
     update?: KdsTicketUpdateWithWhereUniqueWithoutOrderInput | KdsTicketUpdateWithWhereUniqueWithoutOrderInput[]
     updateMany?: KdsTicketUpdateManyWithWhereWithoutOrderInput | KdsTicketUpdateManyWithWhereWithoutOrderInput[]
     deleteMany?: KdsTicketScalarWhereInput | KdsTicketScalarWhereInput[]
+  }
+
+  export type OrderAuditLogUncheckedUpdateManyWithoutOrderNestedInput = {
+    create?: XOR<OrderAuditLogCreateWithoutOrderInput, OrderAuditLogUncheckedCreateWithoutOrderInput> | OrderAuditLogCreateWithoutOrderInput[] | OrderAuditLogUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: OrderAuditLogCreateOrConnectWithoutOrderInput | OrderAuditLogCreateOrConnectWithoutOrderInput[]
+    upsert?: OrderAuditLogUpsertWithWhereUniqueWithoutOrderInput | OrderAuditLogUpsertWithWhereUniqueWithoutOrderInput[]
+    createMany?: OrderAuditLogCreateManyOrderInputEnvelope
+    set?: OrderAuditLogWhereUniqueInput | OrderAuditLogWhereUniqueInput[]
+    disconnect?: OrderAuditLogWhereUniqueInput | OrderAuditLogWhereUniqueInput[]
+    delete?: OrderAuditLogWhereUniqueInput | OrderAuditLogWhereUniqueInput[]
+    connect?: OrderAuditLogWhereUniqueInput | OrderAuditLogWhereUniqueInput[]
+    update?: OrderAuditLogUpdateWithWhereUniqueWithoutOrderInput | OrderAuditLogUpdateWithWhereUniqueWithoutOrderInput[]
+    updateMany?: OrderAuditLogUpdateManyWithWhereWithoutOrderInput | OrderAuditLogUpdateManyWithWhereWithoutOrderInput[]
+    deleteMany?: OrderAuditLogScalarWhereInput | OrderAuditLogScalarWhereInput[]
   }
 
   export type OrderCreateNestedOneWithoutKdsTicketsInput = {
@@ -48218,6 +51663,20 @@ export namespace Prisma {
     upsert?: OutletUpsertWithoutSupplierTransactionsInput
     connect?: OutletWhereUniqueInput
     update?: XOR<XOR<OutletUpdateToOneWithWhereWithoutSupplierTransactionsInput, OutletUpdateWithoutSupplierTransactionsInput>, OutletUncheckedUpdateWithoutSupplierTransactionsInput>
+  }
+
+  export type OrderCreateNestedOneWithoutAuditLogsInput = {
+    create?: XOR<OrderCreateWithoutAuditLogsInput, OrderUncheckedCreateWithoutAuditLogsInput>
+    connectOrCreate?: OrderCreateOrConnectWithoutAuditLogsInput
+    connect?: OrderWhereUniqueInput
+  }
+
+  export type OrderUpdateOneRequiredWithoutAuditLogsNestedInput = {
+    create?: XOR<OrderCreateWithoutAuditLogsInput, OrderUncheckedCreateWithoutAuditLogsInput>
+    connectOrCreate?: OrderCreateOrConnectWithoutAuditLogsInput
+    upsert?: OrderUpsertWithoutAuditLogsInput
+    connect?: OrderWhereUniqueInput
+    update?: XOR<XOR<OrderUpdateToOneWithWhereWithoutAuditLogsInput, OrderUpdateWithoutAuditLogsInput>, OrderUncheckedUpdateWithoutAuditLogsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -48651,6 +52110,12 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
     table?: DiningTableCreateNestedOneWithoutOrdersInput
@@ -48658,6 +52123,7 @@ export namespace Prisma {
     driver?: DeliveryDriverCreateNestedOneWithoutOrdersInput
     customer?: CustomerCreateNestedOneWithoutOrdersInput
     kdsTickets?: KdsTicketCreateNestedManyWithoutOrderInput
+    auditLogs?: OrderAuditLogCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutOutletInput = {
@@ -48702,9 +52168,16 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
     kdsTickets?: KdsTicketUncheckedCreateNestedManyWithoutOrderInput
+    auditLogs?: OrderAuditLogUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutOutletInput = {
@@ -49346,6 +52819,12 @@ export namespace Prisma {
     pointsRedeemed?: IntFilter<"Order"> | number
     notes?: StringNullableFilter<"Order"> | string | null
     items?: StringFilter<"Order"> | string
+    isEdited?: BoolFilter<"Order"> | boolean
+    revisionCount?: IntFilter<"Order"> | number
+    paymentModified?: BoolFilter<"Order"> | boolean
+    lastEditReason?: StringNullableFilter<"Order"> | string | null
+    lastEditedBy?: StringNullableFilter<"Order"> | string | null
+    lastEditedAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     createdAt?: DateTimeFilter<"Order"> | Date | string
     settledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
   }
@@ -49949,6 +53428,12 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
     outlet: OutletCreateNestedOneWithoutOrdersInput
@@ -49956,6 +53441,7 @@ export namespace Prisma {
     driver?: DeliveryDriverCreateNestedOneWithoutOrdersInput
     customer?: CustomerCreateNestedOneWithoutOrdersInput
     kdsTickets?: KdsTicketCreateNestedManyWithoutOrderInput
+    auditLogs?: OrderAuditLogCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutTableInput = {
@@ -50000,9 +53486,16 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
     kdsTickets?: KdsTicketUncheckedCreateNestedManyWithoutOrderInput
+    auditLogs?: OrderAuditLogUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutTableInput = {
@@ -51552,6 +55045,12 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
     outlet: OutletCreateNestedOneWithoutOrdersInput
@@ -51559,6 +55058,7 @@ export namespace Prisma {
     deliveryZone?: DeliveryZoneCreateNestedOneWithoutOrdersInput
     driver?: DeliveryDriverCreateNestedOneWithoutOrdersInput
     kdsTickets?: KdsTicketCreateNestedManyWithoutOrderInput
+    auditLogs?: OrderAuditLogCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutCustomerInput = {
@@ -51603,9 +55103,16 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
     kdsTickets?: KdsTicketUncheckedCreateNestedManyWithoutOrderInput
+    auditLogs?: OrderAuditLogUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutCustomerInput = {
@@ -51672,6 +55179,12 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
     outlet: OutletCreateNestedOneWithoutOrdersInput
@@ -51679,6 +55192,7 @@ export namespace Prisma {
     driver?: DeliveryDriverCreateNestedOneWithoutOrdersInput
     customer?: CustomerCreateNestedOneWithoutOrdersInput
     kdsTickets?: KdsTicketCreateNestedManyWithoutOrderInput
+    auditLogs?: OrderAuditLogCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutDeliveryZoneInput = {
@@ -51723,9 +55237,16 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
     kdsTickets?: KdsTicketUncheckedCreateNestedManyWithoutOrderInput
+    auditLogs?: OrderAuditLogUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutDeliveryZoneInput = {
@@ -51853,6 +55374,12 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
     outlet: OutletCreateNestedOneWithoutOrdersInput
@@ -51860,6 +55387,7 @@ export namespace Prisma {
     deliveryZone?: DeliveryZoneCreateNestedOneWithoutOrdersInput
     customer?: CustomerCreateNestedOneWithoutOrdersInput
     kdsTickets?: KdsTicketCreateNestedManyWithoutOrderInput
+    auditLogs?: OrderAuditLogCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutDriverInput = {
@@ -51904,9 +55432,16 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
     kdsTickets?: KdsTicketUncheckedCreateNestedManyWithoutOrderInput
+    auditLogs?: OrderAuditLogUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutDriverInput = {
@@ -52219,6 +55754,52 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type OrderAuditLogCreateWithoutOrderInput = {
+    id?: string
+    orderNumber: string
+    outletId: string
+    outletName: string
+    actionType: string
+    performedBy?: string
+    reason: string
+    oldPaymentMethod?: string | null
+    newPaymentMethod?: string | null
+    oldFinalAmount?: number
+    newFinalAmount?: number
+    amountDiff?: number
+    oldItemsJson?: string | null
+    newItemsJson?: string | null
+    createdAt?: Date | string
+  }
+
+  export type OrderAuditLogUncheckedCreateWithoutOrderInput = {
+    id?: string
+    orderNumber: string
+    outletId: string
+    outletName: string
+    actionType: string
+    performedBy?: string
+    reason: string
+    oldPaymentMethod?: string | null
+    newPaymentMethod?: string | null
+    oldFinalAmount?: number
+    newFinalAmount?: number
+    amountDiff?: number
+    oldItemsJson?: string | null
+    newItemsJson?: string | null
+    createdAt?: Date | string
+  }
+
+  export type OrderAuditLogCreateOrConnectWithoutOrderInput = {
+    where: OrderAuditLogWhereUniqueInput
+    create: XOR<OrderAuditLogCreateWithoutOrderInput, OrderAuditLogUncheckedCreateWithoutOrderInput>
+  }
+
+  export type OrderAuditLogCreateManyOrderInputEnvelope = {
+    data: OrderAuditLogCreateManyOrderInput | OrderAuditLogCreateManyOrderInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OutletUpsertWithoutOrdersInput = {
     update: XOR<OutletUpdateWithoutOrdersInput, OutletUncheckedUpdateWithoutOrdersInput>
     create: XOR<OutletCreateWithoutOrdersInput, OutletUncheckedCreateWithoutOrdersInput>
@@ -52467,6 +56048,44 @@ export namespace Prisma {
     completedAt?: DateTimeNullableFilter<"KdsTicket"> | Date | string | null
   }
 
+  export type OrderAuditLogUpsertWithWhereUniqueWithoutOrderInput = {
+    where: OrderAuditLogWhereUniqueInput
+    update: XOR<OrderAuditLogUpdateWithoutOrderInput, OrderAuditLogUncheckedUpdateWithoutOrderInput>
+    create: XOR<OrderAuditLogCreateWithoutOrderInput, OrderAuditLogUncheckedCreateWithoutOrderInput>
+  }
+
+  export type OrderAuditLogUpdateWithWhereUniqueWithoutOrderInput = {
+    where: OrderAuditLogWhereUniqueInput
+    data: XOR<OrderAuditLogUpdateWithoutOrderInput, OrderAuditLogUncheckedUpdateWithoutOrderInput>
+  }
+
+  export type OrderAuditLogUpdateManyWithWhereWithoutOrderInput = {
+    where: OrderAuditLogScalarWhereInput
+    data: XOR<OrderAuditLogUpdateManyMutationInput, OrderAuditLogUncheckedUpdateManyWithoutOrderInput>
+  }
+
+  export type OrderAuditLogScalarWhereInput = {
+    AND?: OrderAuditLogScalarWhereInput | OrderAuditLogScalarWhereInput[]
+    OR?: OrderAuditLogScalarWhereInput[]
+    NOT?: OrderAuditLogScalarWhereInput | OrderAuditLogScalarWhereInput[]
+    id?: StringFilter<"OrderAuditLog"> | string
+    orderId?: StringFilter<"OrderAuditLog"> | string
+    orderNumber?: StringFilter<"OrderAuditLog"> | string
+    outletId?: StringFilter<"OrderAuditLog"> | string
+    outletName?: StringFilter<"OrderAuditLog"> | string
+    actionType?: StringFilter<"OrderAuditLog"> | string
+    performedBy?: StringFilter<"OrderAuditLog"> | string
+    reason?: StringFilter<"OrderAuditLog"> | string
+    oldPaymentMethod?: StringNullableFilter<"OrderAuditLog"> | string | null
+    newPaymentMethod?: StringNullableFilter<"OrderAuditLog"> | string | null
+    oldFinalAmount?: FloatFilter<"OrderAuditLog"> | number
+    newFinalAmount?: FloatFilter<"OrderAuditLog"> | number
+    amountDiff?: FloatFilter<"OrderAuditLog"> | number
+    oldItemsJson?: StringNullableFilter<"OrderAuditLog"> | string | null
+    newItemsJson?: StringNullableFilter<"OrderAuditLog"> | string | null
+    createdAt?: DateTimeFilter<"OrderAuditLog"> | Date | string
+  }
+
   export type OrderCreateWithoutKdsTicketsInput = {
     id?: string
     orderNumber: string
@@ -52505,6 +56124,12 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
     outlet: OutletCreateNestedOneWithoutOrdersInput
@@ -52512,6 +56137,7 @@ export namespace Prisma {
     deliveryZone?: DeliveryZoneCreateNestedOneWithoutOrdersInput
     driver?: DeliveryDriverCreateNestedOneWithoutOrdersInput
     customer?: CustomerCreateNestedOneWithoutOrdersInput
+    auditLogs?: OrderAuditLogCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutKdsTicketsInput = {
@@ -52557,8 +56183,15 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
+    auditLogs?: OrderAuditLogUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutKdsTicketsInput = {
@@ -52615,6 +56248,12 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     outlet?: OutletUpdateOneRequiredWithoutOrdersNestedInput
@@ -52622,6 +56261,7 @@ export namespace Prisma {
     deliveryZone?: DeliveryZoneUpdateOneWithoutOrdersNestedInput
     driver?: DeliveryDriverUpdateOneWithoutOrdersNestedInput
     customer?: CustomerUpdateOneWithoutOrdersNestedInput
+    auditLogs?: OrderAuditLogUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutKdsTicketsInput = {
@@ -52667,8 +56307,15 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    auditLogs?: OrderAuditLogUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OutletCreateWithoutShiftsInput = {
@@ -53983,6 +57630,238 @@ export namespace Prisma {
     suppliers?: SupplierUncheckedUpdateManyWithoutOutletNestedInput
   }
 
+  export type OrderCreateWithoutAuditLogsInput = {
+    id?: string
+    orderNumber: string
+    orderType?: string
+    tableNumber?: string | null
+    deliveryZoneName?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
+    driverName?: string | null
+    driverPhone?: string | null
+    dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
+    status?: string
+    paymentStatus?: string
+    paymentMethod?: string
+    subtotal?: number
+    serviceCharge?: number
+    taxAmount?: number
+    deliveryFee?: number
+    discountAmount?: number
+    tipAmount?: number
+    finalAmount?: number
+    cashierName?: string | null
+    waiterName?: string | null
+    customerName?: string | null
+    customerPhone?: string | null
+    pointsEarned?: number
+    pointsRedeemed?: number
+    notes?: string | null
+    items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
+    createdAt?: Date | string
+    settledAt?: Date | string | null
+    outlet: OutletCreateNestedOneWithoutOrdersInput
+    table?: DiningTableCreateNestedOneWithoutOrdersInput
+    deliveryZone?: DeliveryZoneCreateNestedOneWithoutOrdersInput
+    driver?: DeliveryDriverCreateNestedOneWithoutOrdersInput
+    customer?: CustomerCreateNestedOneWithoutOrdersInput
+    kdsTickets?: KdsTicketCreateNestedManyWithoutOrderInput
+  }
+
+  export type OrderUncheckedCreateWithoutAuditLogsInput = {
+    id?: string
+    outletId: string
+    orderNumber: string
+    orderType?: string
+    tableId?: string | null
+    tableNumber?: string | null
+    deliveryZoneId?: string | null
+    deliveryZoneName?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
+    driverId?: string | null
+    driverName?: string | null
+    driverPhone?: string | null
+    dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
+    status?: string
+    paymentStatus?: string
+    paymentMethod?: string
+    subtotal?: number
+    serviceCharge?: number
+    taxAmount?: number
+    deliveryFee?: number
+    discountAmount?: number
+    tipAmount?: number
+    finalAmount?: number
+    cashierName?: string | null
+    waiterName?: string | null
+    customerName?: string | null
+    customerPhone?: string | null
+    customerId?: string | null
+    pointsEarned?: number
+    pointsRedeemed?: number
+    notes?: string | null
+    items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
+    createdAt?: Date | string
+    settledAt?: Date | string | null
+    kdsTickets?: KdsTicketUncheckedCreateNestedManyWithoutOrderInput
+  }
+
+  export type OrderCreateOrConnectWithoutAuditLogsInput = {
+    where: OrderWhereUniqueInput
+    create: XOR<OrderCreateWithoutAuditLogsInput, OrderUncheckedCreateWithoutAuditLogsInput>
+  }
+
+  export type OrderUpsertWithoutAuditLogsInput = {
+    update: XOR<OrderUpdateWithoutAuditLogsInput, OrderUncheckedUpdateWithoutAuditLogsInput>
+    create: XOR<OrderCreateWithoutAuditLogsInput, OrderUncheckedCreateWithoutAuditLogsInput>
+    where?: OrderWhereInput
+  }
+
+  export type OrderUpdateToOneWithWhereWithoutAuditLogsInput = {
+    where?: OrderWhereInput
+    data: XOR<OrderUpdateWithoutAuditLogsInput, OrderUncheckedUpdateWithoutAuditLogsInput>
+  }
+
+  export type OrderUpdateWithoutAuditLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    orderType?: StringFieldUpdateOperationsInput | string
+    tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    serviceCharge?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
+    discountAmount?: FloatFieldUpdateOperationsInput | number
+    tipAmount?: FloatFieldUpdateOperationsInput | number
+    finalAmount?: FloatFieldUpdateOperationsInput | number
+    cashierName?: NullableStringFieldUpdateOperationsInput | string | null
+    waiterName?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    pointsEarned?: IntFieldUpdateOperationsInput | number
+    pointsRedeemed?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    outlet?: OutletUpdateOneRequiredWithoutOrdersNestedInput
+    table?: DiningTableUpdateOneWithoutOrdersNestedInput
+    deliveryZone?: DeliveryZoneUpdateOneWithoutOrdersNestedInput
+    driver?: DeliveryDriverUpdateOneWithoutOrdersNestedInput
+    customer?: CustomerUpdateOneWithoutOrdersNestedInput
+    kdsTickets?: KdsTicketUpdateManyWithoutOrderNestedInput
+  }
+
+  export type OrderUncheckedUpdateWithoutAuditLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    orderType?: StringFieldUpdateOperationsInput | string
+    tableId?: NullableStringFieldUpdateOperationsInput | string | null
+    tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    serviceCharge?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
+    discountAmount?: FloatFieldUpdateOperationsInput | number
+    tipAmount?: FloatFieldUpdateOperationsInput | number
+    finalAmount?: FloatFieldUpdateOperationsInput | number
+    cashierName?: NullableStringFieldUpdateOperationsInput | string | null
+    waiterName?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    pointsEarned?: IntFieldUpdateOperationsInput | number
+    pointsRedeemed?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    kdsTickets?: KdsTicketUncheckedUpdateManyWithoutOrderNestedInput
+  }
+
   export type UserCreateManyOutletInput = {
     id?: string
     name: string
@@ -54088,6 +57967,12 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
   }
@@ -54481,6 +58366,12 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     table?: DiningTableUpdateOneWithoutOrdersNestedInput
@@ -54488,6 +58379,7 @@ export namespace Prisma {
     driver?: DeliveryDriverUpdateOneWithoutOrdersNestedInput
     customer?: CustomerUpdateOneWithoutOrdersNestedInput
     kdsTickets?: KdsTicketUpdateManyWithoutOrderNestedInput
+    auditLogs?: OrderAuditLogUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutOutletInput = {
@@ -54532,9 +58424,16 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kdsTickets?: KdsTicketUncheckedUpdateManyWithoutOrderNestedInput
+    auditLogs?: OrderAuditLogUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateManyWithoutOutletInput = {
@@ -54579,6 +58478,12 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -55091,6 +58996,12 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
   }
@@ -55133,6 +59044,12 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     outlet?: OutletUpdateOneRequiredWithoutOrdersNestedInput
@@ -55140,6 +59057,7 @@ export namespace Prisma {
     driver?: DeliveryDriverUpdateOneWithoutOrdersNestedInput
     customer?: CustomerUpdateOneWithoutOrdersNestedInput
     kdsTickets?: KdsTicketUpdateManyWithoutOrderNestedInput
+    auditLogs?: OrderAuditLogUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutTableInput = {
@@ -55184,9 +59102,16 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kdsTickets?: KdsTicketUncheckedUpdateManyWithoutOrderNestedInput
+    auditLogs?: OrderAuditLogUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateManyWithoutTableInput = {
@@ -55231,6 +59156,12 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -55585,6 +59516,12 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
   }
@@ -55627,6 +59564,12 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     outlet?: OutletUpdateOneRequiredWithoutOrdersNestedInput
@@ -55634,6 +59577,7 @@ export namespace Prisma {
     deliveryZone?: DeliveryZoneUpdateOneWithoutOrdersNestedInput
     driver?: DeliveryDriverUpdateOneWithoutOrdersNestedInput
     kdsTickets?: KdsTicketUpdateManyWithoutOrderNestedInput
+    auditLogs?: OrderAuditLogUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutCustomerInput = {
@@ -55678,9 +59622,16 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kdsTickets?: KdsTicketUncheckedUpdateManyWithoutOrderNestedInput
+    auditLogs?: OrderAuditLogUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateManyWithoutCustomerInput = {
@@ -55725,6 +59676,12 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -55771,6 +59728,12 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
   }
@@ -55813,6 +59776,12 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     outlet?: OutletUpdateOneRequiredWithoutOrdersNestedInput
@@ -55820,6 +59789,7 @@ export namespace Prisma {
     driver?: DeliveryDriverUpdateOneWithoutOrdersNestedInput
     customer?: CustomerUpdateOneWithoutOrdersNestedInput
     kdsTickets?: KdsTicketUpdateManyWithoutOrderNestedInput
+    auditLogs?: OrderAuditLogUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutDeliveryZoneInput = {
@@ -55864,9 +59834,16 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kdsTickets?: KdsTicketUncheckedUpdateManyWithoutOrderNestedInput
+    auditLogs?: OrderAuditLogUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateManyWithoutDeliveryZoneInput = {
@@ -55911,6 +59888,12 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -55957,6 +59940,12 @@ export namespace Prisma {
     pointsRedeemed?: number
     notes?: string | null
     items: string
+    isEdited?: boolean
+    revisionCount?: number
+    paymentModified?: boolean
+    lastEditReason?: string | null
+    lastEditedBy?: string | null
+    lastEditedAt?: Date | string | null
     createdAt?: Date | string
     settledAt?: Date | string | null
   }
@@ -55999,6 +59988,12 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     outlet?: OutletUpdateOneRequiredWithoutOrdersNestedInput
@@ -56006,6 +60001,7 @@ export namespace Prisma {
     deliveryZone?: DeliveryZoneUpdateOneWithoutOrdersNestedInput
     customer?: CustomerUpdateOneWithoutOrdersNestedInput
     kdsTickets?: KdsTicketUpdateManyWithoutOrderNestedInput
+    auditLogs?: OrderAuditLogUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutDriverInput = {
@@ -56050,9 +60046,16 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kdsTickets?: KdsTicketUncheckedUpdateManyWithoutOrderNestedInput
+    auditLogs?: OrderAuditLogUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateManyWithoutDriverInput = {
@@ -56097,6 +60100,12 @@ export namespace Prisma {
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    revisionCount?: IntFieldUpdateOperationsInput | number
+    paymentModified?: BoolFieldUpdateOperationsInput | boolean
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -56108,6 +60117,24 @@ export namespace Prisma {
     status?: string
     createdAt?: Date | string
     completedAt?: Date | string | null
+  }
+
+  export type OrderAuditLogCreateManyOrderInput = {
+    id?: string
+    orderNumber: string
+    outletId: string
+    outletName: string
+    actionType: string
+    performedBy?: string
+    reason: string
+    oldPaymentMethod?: string | null
+    newPaymentMethod?: string | null
+    oldFinalAmount?: number
+    newFinalAmount?: number
+    amountDiff?: number
+    oldItemsJson?: string | null
+    newItemsJson?: string | null
+    createdAt?: Date | string
   }
 
   export type KdsTicketUpdateWithoutOrderInput = {
@@ -56135,6 +60162,60 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type OrderAuditLogUpdateWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    outletName?: StringFieldUpdateOperationsInput | string
+    actionType?: StringFieldUpdateOperationsInput | string
+    performedBy?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    oldPaymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    newPaymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    oldFinalAmount?: FloatFieldUpdateOperationsInput | number
+    newFinalAmount?: FloatFieldUpdateOperationsInput | number
+    amountDiff?: FloatFieldUpdateOperationsInput | number
+    oldItemsJson?: NullableStringFieldUpdateOperationsInput | string | null
+    newItemsJson?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrderAuditLogUncheckedUpdateWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    outletName?: StringFieldUpdateOperationsInput | string
+    actionType?: StringFieldUpdateOperationsInput | string
+    performedBy?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    oldPaymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    newPaymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    oldFinalAmount?: FloatFieldUpdateOperationsInput | number
+    newFinalAmount?: FloatFieldUpdateOperationsInput | number
+    amountDiff?: FloatFieldUpdateOperationsInput | number
+    oldItemsJson?: NullableStringFieldUpdateOperationsInput | string | null
+    newItemsJson?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrderAuditLogUncheckedUpdateManyWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    outletName?: StringFieldUpdateOperationsInput | string
+    actionType?: StringFieldUpdateOperationsInput | string
+    performedBy?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    oldPaymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    newPaymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    oldFinalAmount?: FloatFieldUpdateOperationsInput | number
+    newFinalAmount?: FloatFieldUpdateOperationsInput | number
+    amountDiff?: FloatFieldUpdateOperationsInput | number
+    oldItemsJson?: NullableStringFieldUpdateOperationsInput | string | null
+    newItemsJson?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type FactoryOrderItemCreateManyFactoryOrderInput = {

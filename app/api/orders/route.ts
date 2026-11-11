@@ -105,6 +105,149 @@ async function depleteInventory(items: any[], orderNumber: string) {
   }
 }
 
+function getPaymentMethodLabelAr(method?: string | null) {
+  switch (method) {
+    case "CASH":
+      return "كاش (نقدي)";
+    case "CARD":
+      return "فيزا / بطاقة بنكية";
+    case "INSTAPAY":
+      return "إنستاباي (InstaPay)";
+    case "VODAFONE_CASH":
+      return "فودافون كاش";
+    default:
+      return method || "كاش";
+  }
+}
+
+function buildShiftMethodIncrement(method: string, delta: number) {
+  const cleanDelta = Number(delta.toFixed(2));
+  if (!cleanDelta) return {};
+  if (method === "CASH") {
+    return {
+      cashCollected: { increment: cleanDelta },
+      expectedCash: { increment: cleanDelta },
+    };
+  }
+  if (method === "CARD") return { visaCollected: { increment: cleanDelta } };
+  if (method === "INSTAPAY") return { instapayCollected: { increment: cleanDelta } };
+  if (method === "VODAFONE_CASH") return { vodafoneCollected: { increment: cleanDelta } };
+  return {};
+}
+
+// Helper: Reconcile inventory deltas cleanly when an already-created order is edited
+async function applyInventoryDelta(
+  oldItems: any[],
+  newItems: any[],
+  orderNumber: string,
+  reason: string,
+  actor: string
+) {
+  const productDelta = new Map<string, { delta: number; name: string; cost: number; unit: string }>();
+  const rawDelta = new Map<string, { delta: number; name: string; costPerUnit: number }>();
+
+  const accumulateProduct = (menuId: string, delta: number, name: string, cost: number, unit: string) => {
+    if (!menuId || menuId.startsWith("custom-")) return;
+    const prev = productDelta.get(menuId) || { delta: 0, name, cost, unit };
+    prev.delta += delta;
+    productDelta.set(menuId, prev);
+  };
+
+  const processSide = async (items: any[], sign: 1 | -1) => {
+    for (const it of items) {
+      const qty = Number(it.qty) || 1;
+      if (it.isCustomBox && Array.isArray(it.boxComponents)) {
+        for (const comp of it.boxComponents) {
+          const weightKg = Number(comp.weightKg) || Number(comp.grams) / 1000 || 0.25;
+          accumulateProduct(
+            comp.id,
+            sign * weightKg,
+            comp.nameAr || "صنف علبة مشكل",
+            Number(comp.pricePerKg) || 0,
+            "KG"
+          );
+        }
+        continue;
+      }
+      if (it.itemType === "READY_PASTRY" && it.menuItemId) {
+        accumulateProduct(
+          it.menuItemId,
+          sign * qty,
+          it.nameAr || it.name || "منتج",
+          Number(it.costPrice) || 0,
+          it.unitType || "PIECE"
+        );
+      }
+      if (it.itemType === "PREPARED_BEVERAGE" && it.menuItemId) {
+        const recipes = await prisma.recipeItem.findMany({
+          where: { menuItemId: it.menuItemId },
+          include: { rawMaterial: true },
+        });
+        for (const r of recipes) {
+          const prev = rawDelta.get(r.rawMaterialId) || {
+            delta: 0,
+            name: r.rawMaterial?.nameAr || "خامة",
+            costPerUnit: Number(r.rawMaterial?.costPerUnit) || 0,
+          };
+          prev.delta += sign * r.qtyRequired * qty;
+          rawDelta.set(r.rawMaterialId, prev);
+        }
+      }
+    }
+  };
+
+  await processSide(oldItems, -1);
+  await processSide(newItems, 1);
+
+  for (const [menuItemId, info] of productDelta.entries()) {
+    if (Math.abs(info.delta) < 0.0001) continue;
+    try {
+      await prisma.menuItem.update({
+        where: { id: menuItemId },
+        data: { stockQty: { decrement: info.delta } },
+      });
+      await prisma.productMovement.create({
+        data: {
+          menuItemId,
+          type: info.delta > 0 ? "SALE" : "RETURN",
+          quantity: -info.delta,
+          unitCost: info.cost,
+          totalCost: Math.abs(info.cost * info.delta),
+          orderNumber,
+          recordedBy: actor,
+          notes: `تسوية مخزون فاتورة معدلة #${orderNumber} (${info.name}) - السبب: ${reason}`,
+        },
+      });
+    } catch (e) {
+      console.error("Failed product delta during invoice edit:", e);
+    }
+  }
+
+  for (const [rawMaterialId, info] of rawDelta.entries()) {
+    if (Math.abs(info.delta) < 0.0001) continue;
+    try {
+      await prisma.rawMaterial.update({
+        where: { id: rawMaterialId },
+        data: { currentStock: { decrement: info.delta } },
+      });
+      await prisma.rawMaterialMovement.create({
+        data: {
+          rawMaterialId,
+          type: info.delta > 0 ? "CONSUMPTION" : "ADJUSTMENT",
+          quantity: -info.delta,
+          costPerUnit: info.costPerUnit,
+          totalCost: Math.abs(info.costPerUnit * info.delta),
+          orderNumber,
+          recordedBy: actor,
+          notes: `تسوية ريسيبي فاتورة معدلة #${orderNumber} - السبب: ${reason}`,
+        },
+      });
+    } catch (e) {
+      console.error("Failed raw delta during invoice edit:", e);
+    }
+  }
+}
+
 // Helper: Create KDS Tickets for Barista / Kitchen Stations
 async function createKdsTickets(items: any[], orderId: string) {
   const baristaItems = items.filter(
@@ -218,6 +361,7 @@ export async function GET(req: Request) {
         deliveryZone: { select: { id: true, nameAr: true, fee: true, estimatedTime: true } },
         driver: { select: { id: true, name: true, phone: true } },
         kdsTickets: true,
+        auditLogs: { orderBy: { createdAt: "desc" }, take: 10 },
       },
     });
 
@@ -719,6 +863,311 @@ export async function PATCH(req: Request) {
       });
     }
 
+    // Action: EDIT_INVOICE (تعديل أصناف وكميات فاتورة قائمة ➔ فاتورة معدلة + تسوية مخزون/شيفت + تنبيه فوري للإدارة)
+    if (action === "EDIT_INVOICE") {
+      if (order.status === "CANCELLED") {
+        return NextResponse.json({ success: false, error: "لا يمكن تعديل فاتورة ملغاة" }, { status: 400 });
+      }
+      const nextItems = Array.isArray(body.items) ? body.items : [];
+      if (nextItems.length === 0) {
+        return NextResponse.json({ success: false, error: "يجب أن تحتوي الفاتورة على صنف واحد على الأقل" }, { status: 400 });
+      }
+      const cleanReason = String(body.reason || "").trim();
+      if (!cleanReason) {
+        return NextResponse.json({ success: false, error: "يرجى كتابة سبب تعديل الفاتورة لإثباته في سجل الرقابة" }, { status: 400 });
+      }
+      const actor = String(body.performedBy || cashierName || order.cashierName || "كاشير الفرع").trim();
+
+      let oldItems: any[] = [];
+      try {
+        oldItems = typeof order.items === "string" ? JSON.parse(order.items) : order.items || [];
+      } catch {
+        oldItems = [];
+      }
+
+      const [settings, outletObj] = await Promise.all([
+        prisma.systemSettings.findFirst(),
+        prisma.outlet.findUnique({ where: { id: order.outletId } }),
+      ]);
+
+      const normalizedItems = nextItems.map((it: any) => ({
+        ...it,
+        price: Number(it.price) || 0,
+        qty: Number(it.qty) || 0,
+      })).filter((it: any) => it.qty > 0);
+
+      if (normalizedItems.length === 0) {
+        return NextResponse.json({ success: false, error: "الكميات المعدلة يجب أن تكون أكبر من صفر" }, { status: 400 });
+      }
+
+      const newSubtotal = normalizedItems.reduce((sum: number, it: any) => sum + it.price * it.qty, 0);
+      const newService =
+        order.orderType === "DINE_IN" && settings?.isServiceChargeEnabled
+          ? (newSubtotal * (settings.serviceChargePercent || 12)) / 100
+          : 0;
+      const newTax = settings?.isTaxEnabled ? (newSubtotal * (settings.taxPercent || 14)) / 100 : 0;
+      const effectiveDiscount = discountAmount !== undefined ? Number(discountAmount) : Number(order.discountAmount || 0);
+      const effectiveDeliveryFee =
+        body.deliveryFee !== undefined ? Number(body.deliveryFee) : Number(order.deliveryFee || 0);
+      const effectiveTip = tipAmount !== undefined ? Number(tipAmount) : Number(order.tipAmount || 0);
+      const newFinalAmount = Math.max(
+        0,
+        Number((newSubtotal + newService + newTax + effectiveDeliveryFee - effectiveDiscount + effectiveTip).toFixed(2))
+      );
+
+      const oldFinalAmount = Number(order.finalAmount || 0);
+      const finalDiff = Number((newFinalAmount - oldFinalAmount).toFixed(2));
+      const oldStoreNet = Math.max(0, oldFinalAmount - (order.deliveryFee || 0));
+      const newStoreNet = Math.max(0, newFinalAmount - effectiveDeliveryFee);
+      const storeNetDiff = Number((newStoreNet - oldStoreNet).toFixed(2));
+      const deliveryFeeDiff = Number((effectiveDeliveryFee - (order.deliveryFee || 0)).toFixed(2));
+
+      // Reconcile inventory only if order already depleted stock
+      const [existingProdMov, existingRawMov] = await Promise.all([
+        prisma.productMovement.findFirst({ where: { orderNumber: order.orderNumber } }),
+        prisma.rawMaterialMovement.findFirst({ where: { orderNumber: order.orderNumber } }),
+      ]);
+      if (!order.isScheduled || existingProdMov || existingRawMov) {
+        await applyInventoryDelta(oldItems, normalizedItems, order.orderNumber, cleanReason, actor);
+      }
+
+      // Update customer spend & loyalty delta
+      let newPointsEarned = order.pointsEarned || 0;
+      if (order.customerId) {
+        try {
+          const cust = await prisma.customer.findUnique({ where: { id: order.customerId } });
+          if (cust) {
+            const newSpendForPts = Math.max(0, newFinalAmount - effectiveDeliveryFee - effectiveTip);
+            const oldSpendForPts = Math.max(0, oldFinalAmount - (order.deliveryFee || 0) - (order.tipAmount || 0));
+            newPointsEarned = calculateEarnedPoints(newSpendForPts, outletObj?.code, settings);
+            const ptsDiff = newPointsEarned - (order.pointsEarned || 0);
+            const spendDiff = newSpendForPts - oldSpendForPts;
+            await prisma.customer.update({
+              where: { id: cust.id },
+              data: {
+                loyaltyPoints: Math.max(0, cust.loyaltyPoints + ptsDiff),
+                totalSpent: Math.max(0, cust.totalSpent + spendDiff),
+              },
+            });
+          }
+        } catch (e) {
+          console.error("Failed customer loyalty adjustment during invoice edit:", e);
+        }
+      }
+
+      // Adjust open Shift if already paid
+      if (order.paymentStatus === "PAID") {
+        try {
+          const activeShift = await prisma.shift.findFirst({
+            where: { outletId: order.outletId, status: "OPEN" },
+            orderBy: { openedAt: "desc" },
+          });
+          if (activeShift && (storeNetDiff !== 0 || deliveryFeeDiff !== 0)) {
+            await prisma.shift.update({
+              where: { id: activeShift.id },
+              data: {
+                totalRevenue: { increment: storeNetDiff },
+                deliveryFeesTotal: { increment: deliveryFeeDiff },
+                ...buildShiftMethodIncrement(order.paymentMethod, storeNetDiff),
+              },
+            });
+          }
+        } catch (e) {
+          console.error("Failed shift adjustment during invoice edit:", e);
+        }
+      }
+
+      const updatedOrder = await prisma.order.update({
+        where: { id: orderId },
+        data: {
+          items: JSON.stringify(normalizedItems),
+          subtotal: Number(newSubtotal.toFixed(2)),
+          serviceCharge: Number(newService.toFixed(2)),
+          taxAmount: Number(newTax.toFixed(2)),
+          deliveryFee: Number(effectiveDeliveryFee.toFixed(2)),
+          discountAmount: Number(effectiveDiscount.toFixed(2)),
+          tipAmount: Number(effectiveTip.toFixed(2)),
+          finalAmount: newFinalAmount,
+          pointsEarned: newPointsEarned,
+          isEdited: true,
+          revisionCount: { increment: 1 },
+          lastEditReason: cleanReason,
+          lastEditedBy: actor,
+          lastEditedAt: new Date(),
+        },
+        include: {
+          outlet: { select: { id: true, name: true, code: true } },
+          table: { select: { id: true, tableNumber: true, zone: true } },
+          deliveryZone: { select: { id: true, nameAr: true, fee: true, estimatedTime: true } },
+          driver: { select: { id: true, name: true, phone: true } },
+          auditLogs: { orderBy: { createdAt: "desc" }, take: 10 },
+        },
+      });
+
+      const outletLabel = outletObj?.name || "الفرع";
+      const auditLog = await prisma.orderAuditLog.create({
+        data: {
+          orderId: order.id,
+          orderNumber: order.orderNumber,
+          outletId: order.outletId,
+          outletName: outletLabel,
+          actionType: "INVOICE_EDIT",
+          performedBy: actor,
+          reason: cleanReason,
+          oldFinalAmount,
+          newFinalAmount,
+          amountDiff: finalDiff,
+          oldItemsJson: JSON.stringify(oldItems),
+          newItemsJson: JSON.stringify(normalizedItems),
+        },
+      });
+
+      const diffDesc =
+        finalDiff > 0
+          ? `زيادة +${finalDiff} ج.م`
+          : finalDiff < 0
+          ? `تخفيض/مرتجع ${finalDiff} ج.م`
+          : "نفس القيمة الإجمالية";
+
+      await prisma.adminNotification.create({
+        data: {
+          outletId: order.outletId,
+          orderId: order.id,
+          orderNumber: order.orderNumber,
+          category: "INVOICE_EDITED",
+          severity: "HIGH",
+          actorName: actor,
+          title: `✏️ فاتورة معدلة: ${order.orderNumber} (${outletLabel})`,
+          message: `تم تعديل الفاتورة #${order.orderNumber} من ${oldFinalAmount} ج.م إلى ${newFinalAmount} ج.م (${diffDesc}) بواسطة ${actor} — السبب: ${cleanReason}`,
+          metadataJson: JSON.stringify({
+            oldFinalAmount,
+            newFinalAmount,
+            amountDiff: finalDiff,
+            reason: cleanReason,
+            paymentMethod: order.paymentMethod,
+            paymentStatus: order.paymentStatus,
+            auditLogId: auditLog.id,
+          }),
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: `تم حفظ التعديل وختم الفاتورة (${order.orderNumber}) بعلامة [فاتورة معدلة] وإرسال تنبيه فوري للإدارة 🚨✅`,
+        order: updatedOrder,
+        auditLog,
+      });
+    }
+
+    // Action: CHANGE_PAYMENT_METHOD (تعديل وسيلة الدفع ➔ تحويل الدرج + ختم تعديل دفع + تنبيه فوري للإدارة)
+    if (action === "CHANGE_PAYMENT_METHOD") {
+      const targetMethod = String(body.newPaymentMethod || paymentMethod || "").trim();
+      if (!targetMethod) {
+        return NextResponse.json({ success: false, error: "يرجى اختيار وسيلة الدفع الجديدة" }, { status: 400 });
+      }
+      const oldMethod = order.paymentMethod || "CASH";
+      if (targetMethod === oldMethod) {
+        return NextResponse.json({ success: false, error: "وسيلة الدفع الجديدة مطابقة للوسيلة الحالية" }, { status: 400 });
+      }
+      const cleanReason = String(body.reason || "").trim();
+      if (!cleanReason) {
+        return NextResponse.json({ success: false, error: "يرجى كتابة سبب تعديل وسيلة الدفع لإرساله في تنبيه الإدارة" }, { status: 400 });
+      }
+      const actor = String(body.performedBy || cashierName || order.cashierName || "كاشير الفرع").trim();
+      const storeRevenuePortion = Number(
+        Math.max(0, Number(order.finalAmount || 0) - Number(order.deliveryFee || 0)).toFixed(2)
+      );
+
+      // Move paid amount between payment buckets in open shift
+      if (order.paymentStatus === "PAID" && storeRevenuePortion > 0) {
+        try {
+          const activeShift = await prisma.shift.findFirst({
+            where: { outletId: order.outletId, status: "OPEN" },
+            orderBy: { openedAt: "desc" },
+          });
+          if (activeShift) {
+            await prisma.shift.update({
+              where: { id: activeShift.id },
+              data: {
+                ...buildShiftMethodIncrement(oldMethod, -storeRevenuePortion),
+                ...buildShiftMethodIncrement(targetMethod, storeRevenuePortion),
+              },
+            });
+          }
+        } catch (e) {
+          console.error("Failed shift transfer during payment edit:", e);
+        }
+      }
+
+      const [outletObj, updatedOrder] = await Promise.all([
+        prisma.outlet.findUnique({ where: { id: order.outletId } }),
+        prisma.order.update({
+          where: { id: orderId },
+          data: {
+            paymentMethod: targetMethod,
+            paymentModified: true,
+            lastEditReason: cleanReason,
+            lastEditedBy: actor,
+            lastEditedAt: new Date(),
+          },
+          include: {
+            outlet: { select: { id: true, name: true, code: true } },
+            table: { select: { id: true, tableNumber: true, zone: true } },
+            deliveryZone: { select: { id: true, nameAr: true, fee: true, estimatedTime: true } },
+            driver: { select: { id: true, name: true, phone: true } },
+            auditLogs: { orderBy: { createdAt: "desc" }, take: 10 },
+          },
+        }),
+      ]);
+
+      const outletLabel = outletObj?.name || "الفرع";
+      const auditLog = await prisma.orderAuditLog.create({
+        data: {
+          orderId: order.id,
+          orderNumber: order.orderNumber,
+          outletId: order.outletId,
+          outletName: outletLabel,
+          actionType: "PAYMENT_EDIT",
+          performedBy: actor,
+          reason: cleanReason,
+          oldPaymentMethod: oldMethod,
+          newPaymentMethod: targetMethod,
+          oldFinalAmount: order.finalAmount,
+          newFinalAmount: order.finalAmount,
+          amountDiff: 0,
+        },
+      });
+
+      await prisma.adminNotification.create({
+        data: {
+          outletId: order.outletId,
+          orderId: order.id,
+          orderNumber: order.orderNumber,
+          category: "PAYMENT_EDITED",
+          severity: "HIGH",
+          actorName: actor,
+          title: `💳 تعديل دفع: ${order.orderNumber} (${outletLabel})`,
+          message: `تم تغيير طريقة سداد الفاتورة #${order.orderNumber} (${order.finalAmount} ج.م) من [${getPaymentMethodLabelAr(oldMethod)}] إلى [${getPaymentMethodLabelAr(targetMethod)}] بواسطة ${actor} — السبب: ${cleanReason}`,
+          metadataJson: JSON.stringify({
+            oldPaymentMethod: oldMethod,
+            newPaymentMethod: targetMethod,
+            finalAmount: order.finalAmount,
+            storeRevenuePortion,
+            reason: cleanReason,
+            paymentStatus: order.paymentStatus,
+            auditLogId: auditLog.id,
+          }),
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: `تم تحويل وسيلة الدفع إلى ${getPaymentMethodLabelAr(targetMethod)} وختم الفاتورة [تعديل دفع] مع إخطار الإدارة 🚨💳`,
+        order: updatedOrder,
+        auditLog,
+      });
+    }
+
     // Action: UPDATE_PAYMENT (تعديل طريقة الدفع أو إرسال إيصال عربون بعد الطلب)
     if (action === "UPDATE_PAYMENT") {
       const updatedOrder = await prisma.order.update({
@@ -933,12 +1382,7 @@ export async function PATCH(req: Request) {
               totalRevenue: { increment: storeRevenuePortion },
               deliveryFeesTotal: { increment: deliveryPortion },
               ticketsCount: { increment: 1 },
-              ...(effectiveMethod === "CASH"
-                ? { cashCollected: { increment: storeRevenuePortion }, expectedCash: { increment: storeRevenuePortion } }
-                : {}),
-              ...(effectiveMethod === "CARD" ? { visaCollected: { increment: storeRevenuePortion } } : {}),
-              ...(effectiveMethod === "INSTAPAY" ? { instapayCollected: { increment: storeRevenuePortion } } : {}),
-              ...(effectiveMethod === "VODAFONE_CASH" ? { vodafoneCollected: { increment: storeRevenuePortion } } : {}),
+              ...buildShiftMethodIncrement(effectiveMethod, storeRevenuePortion),
             },
           });
         }
