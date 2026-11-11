@@ -25,6 +25,14 @@ async function ensureCoreSuppliers() {
           notes: "المصنع الرئيسي المورد لمنتجات وحلويات حلواني أبو عادل يومياً",
         },
       });
+    } else if (hasFactory.name.includes("??") || hasFactory.notes?.includes("??")) {
+      await prisma.supplier.update({
+        where: { id: hasFactory.id },
+        data: {
+          name: "مصنع حلواني أبو عادل الرئيسي",
+          notes: "المصنع الرئيسي المورد لمنتجات وحلويات حلواني أبو عادل يومياً",
+        },
+      });
     }
   }
 
@@ -44,6 +52,14 @@ async function ensureCoreSuppliers() {
           notes: "حساب توريد الحلويات من أبو عادل إلى سول ميت كافيه بنفس التكلفة أو بهامش بسيط",
         },
       });
+    } else if (hasInternal.name.includes("??") || hasInternal.notes?.includes("??")) {
+      await prisma.supplier.update({
+        where: { id: hasInternal.id },
+        data: {
+          name: "حلواني أبو عادل (توريد حلويات لسول ميت)",
+          notes: "حساب توريد الحلويات من أبو عادل إلى سول ميت كافيه بنفس التكلفة أو بهامش بسيط",
+        },
+      });
     }
 
     const hasCups = await prisma.supplier.findFirst({
@@ -57,6 +73,14 @@ async function ensureCoreSuppliers() {
           name: "مورد الأكواب الكرتون والتغليف (مهلة 3 أسابيع)",
           supplierType: "RAW_MATERIALS",
           isInternalSupply: false,
+          notes: "مورد الأكواب الكرتون ومستلزمات التغليف لكافيه سول ميت — يحتاج الطلب قبلها بـ 21 يوم",
+        },
+      });
+    } else if (hasCups.name.includes("??") || hasCups.notes?.includes("??")) {
+      await prisma.supplier.update({
+        where: { id: hasCups.id },
+        data: {
+          name: "مورد الأكواب الكرتون والتغليف (مهلة 3 أسابيع)",
           notes: "مورد الأكواب الكرتون ومستلزمات التغليف لكافيه سول ميت — يحتاج الطلب قبلها بـ 21 يوم",
         },
       });
