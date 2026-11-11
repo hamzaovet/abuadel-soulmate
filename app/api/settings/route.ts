@@ -33,6 +33,10 @@ export async function PATCH(req: Request) {
         ...(body.facebookUrl !== undefined && { facebookUrl: body.facebookUrl }),
         ...(body.serviceChargePercent !== undefined && { serviceChargePercent: Number(body.serviceChargePercent) }),
         ...(body.taxPercent !== undefined && { taxPercent: Number(body.taxPercent) }),
+        ...(body.deliveryFee !== undefined && { deliveryFee: Number(body.deliveryFee) }),
+        ...(body.preOrderDepositPercent !== undefined && { preOrderDepositPercent: Number(body.preOrderDepositPercent) }),
+        ...(body.instapayAccount !== undefined && { instapayAccount: body.instapayAccount }),
+        ...(body.vodafoneCashNumber !== undefined && { vodafoneCashNumber: body.vodafoneCashNumber }),
         ...(body.isServiceChargeEnabled !== undefined && { isServiceChargeEnabled: Boolean(body.isServiceChargeEnabled) }),
         ...(body.isTaxEnabled !== undefined && { isTaxEnabled: Boolean(body.isTaxEnabled) }),
         ...(body.isLoyaltyEnabled !== undefined && { isLoyaltyEnabled: Boolean(body.isLoyaltyEnabled) }),
@@ -53,3 +57,5 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
+export { PATCH as PUT };

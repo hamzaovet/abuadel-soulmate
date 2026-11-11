@@ -3,6 +3,9 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
+const getStoreNet = (o: { finalAmount: number; deliveryFee?: number | null }) =>
+  Math.max(0, (Number(o.finalAmount) || 0) - (Number(o.deliveryFee) || 0));
+
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
@@ -23,7 +26,7 @@ export async function GET(req: Request) {
       include: { outlet: true },
     });
 
-    // If no open shift, create one automatically (default shift 1)
+    // If no open shift, create one automatically with 0 opening cash float (editable anytime)
     if (!openShift) {
       const defaultOutlet = await prisma.outlet.findFirst({
         where: outletId && outletId !== "ALL" ? { id: outletId } : {},
@@ -37,7 +40,7 @@ export async function GET(req: Request) {
             outletId: defaultOutlet.id,
             shiftNumber: shiftNum,
             openedBy: "كاشير الوردية",
-            openingCashFloat: 500,
+            openingCashFloat: 0,
             status: "OPEN",
           },
           include: { outlet: true },
@@ -45,7 +48,7 @@ export async function GET(req: Request) {
       }
     }
 
-    // Calculate live statistics for orders settled during this open shift
+    // Calculate live statistics for orders settled during this open shift (EXCLUDING deliveryFee from store revenue)
     const shiftStartTime = openShift ? openShift.openedAt : new Date(Date.now() - 24 * 3600 * 1000);
 
     const shiftOrders = await prisma.order.findMany({
@@ -53,6 +56,16 @@ export async function GET(req: Request) {
         ...whereOutlet,
         paymentStatus: "PAID",
         settledAt: { gte: shiftStartTime },
+      },
+    });
+
+    // Also inspect all delivery orders created/dispatched during this shift (even if still OUT_FOR_DELIVERY)
+    const shiftDeliveryOrders = await prisma.order.findMany({
+      where: {
+        ...whereOutlet,
+        orderType: "DELIVERY",
+        status: { not: "CANCELLED" },
+        createdAt: { gte: shiftStartTime },
       },
     });
 
@@ -65,36 +78,74 @@ export async function GET(req: Request) {
 
     const cashCollected = shiftOrders
       .filter((o) => o.paymentMethod === "CASH")
-      .reduce((sum, o) => sum + o.finalAmount, 0);
+      .reduce((sum, o) => sum + getStoreNet(o), 0);
 
     const visaCollected = shiftOrders
       .filter((o) => o.paymentMethod === "CARD")
-      .reduce((sum, o) => sum + o.finalAmount, 0);
+      .reduce((sum, o) => sum + getStoreNet(o), 0);
 
     const instapayCollected = shiftOrders
       .filter((o) => o.paymentMethod === "INSTAPAY")
-      .reduce((sum, o) => sum + o.finalAmount, 0);
+      .reduce((sum, o) => sum + getStoreNet(o), 0);
 
     const vodafoneCollected = shiftOrders
       .filter((o) => o.paymentMethod === "VODAFONE_CASH")
-      .reduce((sum, o) => sum + o.finalAmount, 0);
+      .reduce((sum, o) => sum + getStoreNet(o), 0);
 
-    const totalRevenue = shiftOrders.reduce((sum, o) => sum + o.finalAmount, 0);
+    const totalRevenue = shiftOrders.reduce((sum, o) => sum + getStoreNet(o), 0);
+    const deliveryFeesTotal = shiftOrders.reduce((sum, o) => sum + (Number(o.deliveryFee) || 0), 0);
+    const deliveryFeesAllOrders = shiftDeliveryOrders.reduce((sum, o) => sum + (Number(o.deliveryFee) || 0), 0);
+    const deliveryFeesCash = shiftOrders
+      .filter((o) => o.paymentMethod === "CASH")
+      .reduce((sum, o) => sum + (Number(o.deliveryFee) || 0), 0);
+    const deliveryFeesElectronic = Math.max(0, deliveryFeesTotal - deliveryFeesCash);
+
     const expensesTotal = shiftExpenses.reduce((sum, e) => sum + e.amount, 0);
 
-    const openingFloat = openShift?.openingCashFloat || 500;
+    // IMPORTANT: Never coerce 0 to 500!
+    const openingFloat = openShift?.openingCashFloat ?? 0;
     const expectedCash = openingFloat + cashCollected - expensesTotal;
 
+    // Driver settlement breakdown for current shift
+    const driverMap: Record<
+      string,
+      { driverName: string; driverPhone: string; tripsCount: number; deliveryFeesDue: number; cashFromCustomers: number; storeNetDue: number }
+    > = {};
+    for (const o of shiftDeliveryOrders) {
+      const key = `${o.driverName || "غير محدد"}|${o.driverPhone || ""}`;
+      if (!driverMap[key]) {
+        driverMap[key] = {
+          driverName: o.driverName || "غير محدد",
+          driverPhone: o.driverPhone || "",
+          tripsCount: 0,
+          deliveryFeesDue: 0,
+          cashFromCustomers: 0,
+          storeNetDue: 0,
+        };
+      }
+      driverMap[key].tripsCount += 1;
+      driverMap[key].deliveryFeesDue += Number(o.deliveryFee) || 0;
+      if (o.paymentMethod === "CASH") {
+        driverMap[key].cashFromCustomers += Number(o.finalAmount) || 0;
+        driverMap[key].storeNetDue += getStoreNet(o);
+      }
+    }
+
     const liveStats = {
-      openingFloat,
-      cashCollected,
-      visaCollected,
-      instapayCollected,
-      vodafoneCollected,
-      totalRevenue,
-      expensesTotal,
-      expectedCash,
+      openingFloat: Number(openingFloat.toFixed(2)),
+      cashCollected: Number(cashCollected.toFixed(2)),
+      visaCollected: Number(visaCollected.toFixed(2)),
+      instapayCollected: Number(instapayCollected.toFixed(2)),
+      vodafoneCollected: Number(vodafoneCollected.toFixed(2)),
+      totalRevenue: Number(totalRevenue.toFixed(2)),
+      deliveryFeesTotal: Number(deliveryFeesTotal.toFixed(2)),
+      deliveryFeesAllOrders: Number(deliveryFeesAllOrders.toFixed(2)),
+      deliveryFeesCash: Number(deliveryFeesCash.toFixed(2)),
+      deliveryFeesElectronic: Number(deliveryFeesElectronic.toFixed(2)),
+      expensesTotal: Number(expensesTotal.toFixed(2)),
+      expectedCash: Number(expectedCash.toFixed(2)),
       ticketsCount: shiftOrders.length,
+      driverBreakdown: Object.values(driverMap),
     };
 
     // Last closed shift for reprint
@@ -178,21 +229,22 @@ export async function POST(req: Request) {
 
       const totalCash = todayOrders
         .filter((o) => o.paymentMethod === "CASH")
-        .reduce((sum, o) => sum + o.finalAmount, 0);
+        .reduce((sum, o) => sum + getStoreNet(o), 0);
 
       const totalVisa = todayOrders
         .filter((o) => o.paymentMethod === "CARD")
-        .reduce((sum, o) => sum + o.finalAmount, 0);
+        .reduce((sum, o) => sum + getStoreNet(o), 0);
 
       const totalInstapay = todayOrders
         .filter((o) => o.paymentMethod === "INSTAPAY")
-        .reduce((sum, o) => sum + o.finalAmount, 0);
+        .reduce((sum, o) => sum + getStoreNet(o), 0);
 
       const totalVodafone = todayOrders
         .filter((o) => o.paymentMethod === "VODAFONE_CASH")
-        .reduce((sum, o) => sum + o.finalAmount, 0);
+        .reduce((sum, o) => sum + getStoreNet(o), 0);
 
-      const totalRevenue = todayOrders.reduce((sum, o) => sum + o.finalAmount, 0);
+      const totalRevenue = todayOrders.reduce((sum, o) => sum + getStoreNet(o), 0);
+      const totalDeliveryFees = todayOrders.reduce((sum, o) => sum + (Number(o.deliveryFee) || 0), 0);
       const totalExpenses = todayExpenses.reduce((sum, e) => sum + e.amount, 0);
       const netCashInSafe = Math.max(0, totalCash - totalExpenses);
 
@@ -213,15 +265,37 @@ export async function POST(req: Request) {
           netCashInSafe: Number(netCashInSafe.toFixed(2)),
           ordersCount: todayOrders.length,
           closedBy: closedBy || "المايسترو (المالك)",
-          notes: notes?.trim() || null,
+          notes:
+            notes?.trim() ||
+            (totalDeliveryFees > 0 ? `رسوم التوصيل المنفصلة للطيارين: ${totalDeliveryFees} ج.م` : null),
         },
         include: { outlet: true },
       });
 
       return NextResponse.json({
         success: true,
-        message: `تم اعتماد تقرير إقفال اليومية الشامل ليوم (${dayName}) بنجاح بمجموع إيراد ${totalRevenue} ج.م 📑✨`,
+        message: `تم اعتماد تقرير إقفال اليومية الشامل ليوم (${dayName}) بنجاح بمجموع إيراد محل ${totalRevenue} ج.م (مستقل عن ${totalDeliveryFees} ج.م رسوم طيارين) 📑✨`,
         dailyClose,
+      });
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // 1.5 ACTION: UPDATE OPENING CASH FLOAT (تعديل رصيد بداية الدرج 0 أو أي مبلغ)
+    // ─────────────────────────────────────────────────────────────
+    if (action === "UPDATE_OPENING_FLOAT") {
+      if (!shiftId) {
+        return NextResponse.json({ success: false, error: "معرف الوردية مطلوب" }, { status: 400 });
+      }
+      const nextFloat = Math.max(0, Number(body.openingCashFloat) || 0);
+      const updatedShift = await prisma.shift.update({
+        where: { id: shiftId },
+        data: { openingCashFloat: Number(nextFloat.toFixed(2)) },
+        include: { outlet: true },
+      });
+      return NextResponse.json({
+        success: true,
+        shift: updatedShift,
+        message: `تم تحديث عهدة بداية الدرج إلى ${nextFloat} ج.م بنجاح 💵`,
       });
     }
 
@@ -259,21 +333,22 @@ export async function POST(req: Request) {
 
     const cashCollected = shiftOrders
       .filter((o) => o.paymentMethod === "CASH")
-      .reduce((sum, o) => sum + o.finalAmount, 0);
+      .reduce((sum, o) => sum + getStoreNet(o), 0);
 
     const visaCollected = shiftOrders
       .filter((o) => o.paymentMethod === "CARD")
-      .reduce((sum, o) => sum + o.finalAmount, 0);
+      .reduce((sum, o) => sum + getStoreNet(o), 0);
 
     const instapayCollected = shiftOrders
       .filter((o) => o.paymentMethod === "INSTAPAY")
-      .reduce((sum, o) => sum + o.finalAmount, 0);
+      .reduce((sum, o) => sum + getStoreNet(o), 0);
 
     const vodafoneCollected = shiftOrders
       .filter((o) => o.paymentMethod === "VODAFONE_CASH")
-      .reduce((sum, o) => sum + o.finalAmount, 0);
+      .reduce((sum, o) => sum + getStoreNet(o), 0);
 
-    const totalRevenue = shiftOrders.reduce((sum, o) => sum + o.finalAmount, 0);
+    const totalRevenue = shiftOrders.reduce((sum, o) => sum + getStoreNet(o), 0);
+    const deliveryFeesTotal = shiftOrders.reduce((sum, o) => sum + (Number(o.deliveryFee) || 0), 0);
     const expensesTotal = shiftExpenses.reduce((sum, e) => sum + e.amount, 0);
     const expectedCash = shift.openingCashFloat + cashCollected - expensesTotal;
     const actual = Number(actualCash) || 0;
@@ -296,6 +371,7 @@ export async function POST(req: Request) {
         visaCollected: Number(visaCollected.toFixed(2)),
         instapayCollected: Number(instapayCollected.toFixed(2)),
         vodafoneCollected: Number(vodafoneCollected.toFixed(2)),
+        deliveryFeesTotal: Number(deliveryFeesTotal.toFixed(2)),
         totalRevenue: Number(totalRevenue.toFixed(2)),
         expensesTotal: Number(expensesTotal.toFixed(2)),
         ticketsCount: shiftOrders.length,
@@ -305,14 +381,14 @@ export async function POST(req: Request) {
       include: { outlet: true },
     });
 
-    // Automatically open next shift (if closed #1, opens #2; if closed #2, opens #1)
+    // Automatically open next shift with 0 opening cash float (editable anytime by cashier/admin)
     const nextShiftNum = assignedShiftNum === 1 ? 2 : 1;
     await prisma.shift.create({
       data: {
         outletId: shift.outletId,
         shiftNumber: nextShiftNum,
         openedBy: closedBy || "الكاشير",
-        openingCashFloat: 500,
+        openingCashFloat: 0,
         status: "OPEN",
       },
     });

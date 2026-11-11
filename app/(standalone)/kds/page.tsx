@@ -376,7 +376,7 @@ export default function KdsScreenPage() {
                           setTimeout(() => window.print(), 300);
                         }}
                         className="py-2 px-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs transition flex items-center gap-1 cursor-pointer shrink-0 shadow-sm"
-                        title="طباعة بون الطيار 80 مم"
+                        title="طباعة بون الطيار"
                       >
                         <Printer className="w-3.5 h-3.5" />
                         <span>بون الطيار 🛵</span>
@@ -409,13 +409,13 @@ export default function KdsScreenPage() {
       </main>
 
       {/* ─────────────────────────────────────────────────────────────
-          PRINTABLE DRIVER RECEIPT (بون الطيار 80MM)
+          PRINTABLE DRIVER RECEIPT (بون الطيار)
          ───────────────────────────────────────────────────────────── */}
       {printingDeliveryTicket && (
         <div id="driver-dispatch-receipt" className="hidden print:block text-black font-sans p-2" dir="rtl">
           <div className="text-center space-y-1 border-b-2 border-black pb-2 mb-2">
             <h2 className="text-base font-black tracking-wider">سول ميت كافيه VIP</h2>
-            <p className="text-[11px] font-bold">بون توصيل طلب دليفري (Driver Dispatch Slip 🛵)</p>
+            <p className="text-[11px] font-bold">بون توصيل طلب دليفري 🛵</p>
             <p className="text-[11px] font-mono font-black">رقم الشيك: #{printingDeliveryTicket.order?.orderNumber}</p>
             <p className="text-[10px] font-mono">
               التاريخ: {new Date(printingDeliveryTicket.createdAt).toLocaleString("ar-EG")}

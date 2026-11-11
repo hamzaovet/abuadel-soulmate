@@ -49,6 +49,8 @@ import {
   User,
   ShoppingBag,
   Package,
+  Image as ImageIcon,
+  Calendar,
 } from "lucide-react";
 
 export default function PosTerminalPage() {
@@ -127,9 +129,18 @@ export default function PosTerminalPage() {
   const [onlineZoneFilter, setOnlineZoneFilter] = useState<string>("ALL");
   const [onlineStatusFilter, setOnlineStatusFilter] = useState<string>("ACTIVE");
   const [driverNamesByOrder, setDriverNamesByOrder] = useState<Record<string, string>>({});
+  const [drivers, setDrivers] = useState<any[]>([]);
+  const [selectedDriverByOrder, setSelectedDriverByOrder] = useState<Record<string, string>>({});
+  const [weightPickerItem, setWeightPickerItem] = useState<any>(null);
+  const [customGramsInput, setCustomGramsInput] = useState<number>(500);
+  const [editingFloat, setEditingFloat] = useState<boolean>(false);
+  const [floatInput, setFloatInput] = useState<string>("0");
   const [showPosChatModal, setShowPosChatModal] = useState<boolean>(false);
   const [selectedChatThread, setSelectedChatThread] = useState<string>("ALL");
   const [posChatReply, setPosChatReply] = useState<string>("");
+  const [posChatImage, setPosChatImage] = useState<string>("");
+  const [uploadingPosChatImage, setUploadingPosChatImage] = useState<boolean>(false);
+  const [previewPosImage, setPreviewPosImage] = useState<string | null>(null);
   const lastPendingCountRef = useRef<number>(0);
   const [discountAmount, setDiscountAmount] = useState<number>(0);
   const [tipAmount, setTipAmount] = useState<number>(0);
@@ -313,7 +324,7 @@ export default function PosTerminalPage() {
         ? `/api/chat?outletId=${effectiveOutletId}`
         : "/api/chat";
 
-      const [resOutlets, resTables, resMenu, resSettings, resShifts, resZones, resOrders, resChat] =
+      const [resOutlets, resTables, resMenu, resSettings, resShifts, resZones, resOrders, resChat, resDrivers] =
         await Promise.all([
           fetch("/api/outlets"),
           fetch("/api/tables"),
@@ -323,6 +334,7 @@ export default function PosTerminalPage() {
           fetch("/api/delivery-zones"),
           fetch(ordersQuery),
           fetch(chatQuery),
+          fetch("/api/drivers?onlyActive=true"),
         ]);
 
       const [
@@ -334,6 +346,7 @@ export default function PosTerminalPage() {
         dataZones,
         dataOrders,
         dataChat,
+        dataDrivers,
       ] = await Promise.all([
         resOutlets.json(),
         resTables.json(),
@@ -343,7 +356,12 @@ export default function PosTerminalPage() {
         resZones.json(),
         resOrders.json(),
         resChat.json(),
+        resDrivers.json(),
       ]);
+
+      if (dataDrivers?.success && Array.isArray(dataDrivers.drivers)) {
+        setDrivers(dataDrivers.drivers);
+      }
 
       if (dataOutlets.success) {
         setOutlets(dataOutlets.outlets);
@@ -462,8 +480,52 @@ export default function PosTerminalPage() {
     }
   };
 
-  // Cart operations
+  // Format KG vs Unit Qty cleanly
+  const formatPosQty = (qty: number, unitType?: string) => {
+    const q = Number(qty || 0);
+    if (unitType === "KG") {
+      if (q < 1) return `${Math.round(q * 1000)} جم`;
+      return `${Number(q.toFixed(2))} كجم`;
+    }
+    return `×${q}`;
+  };
+
+  // Cart operations (Supports KG fractional weights + Units)
+  const addWeightToPosCart = (item: any, weightKg: number) => {
+    const cleanQty = Number(Math.max(0.05, weightKg).toFixed(3));
+    setCart((prev) => {
+      const idx = prev.findIndex((i) => i.menuItemId === item.id);
+      if (idx > -1) {
+        const copy = [...prev];
+        copy[idx] = {
+          ...copy[idx],
+          qty: Number((copy[idx].qty + cleanQty).toFixed(3)),
+        };
+        return copy;
+      }
+      return [
+        ...prev,
+        {
+          menuItemId: item.id,
+          nameAr: item.nameAr,
+          price: item.price,
+          qty: cleanQty,
+          unitType: item.unitType || "KG",
+          notes: "",
+          itemType: item.itemType,
+          category: item.category,
+        },
+      ];
+    });
+    setWeightPickerItem(null);
+  };
+
   const addToCart = (item: any) => {
+    if (item.unitType === "KG") {
+      setCustomGramsInput(500);
+      setWeightPickerItem(item);
+      return;
+    }
     setCart((prev) => {
       const idx = prev.findIndex((i) => i.menuItemId === item.id);
       if (idx > -1) {
@@ -478,6 +540,7 @@ export default function PosTerminalPage() {
           nameAr: item.nameAr,
           price: item.price,
           qty: 1,
+          unitType: item.unitType || "PIECE",
           notes: "",
           itemType: item.itemType,
           category: item.category,
@@ -491,8 +554,9 @@ export default function PosTerminalPage() {
       return prev
         .map((i) => {
           if (i.menuItemId === menuItemId) {
-            const next = i.qty + delta;
-            return next > 0 ? { ...i, qty: next } : null;
+            const step = i.unitType === "KG" ? delta * 0.25 : delta;
+            const next = Number((i.qty + step).toFixed(3));
+            return next >= 0.05 ? { ...i, qty: next } : null;
           }
           return i;
         })
@@ -547,13 +611,39 @@ export default function PosTerminalPage() {
     }
   };
 
-  // Send Cashier Staff Reply in Direct Customer Chat
+  // Update Opening Cash Float on Active Shift (0 or custom)
+  const handleUpdateOpeningFloat = async () => {
+    if (!openShift?.id) return;
+    try {
+      const res = await fetch("/api/shifts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "UPDATE_OPENING_FLOAT",
+          shiftId: openShift.id,
+          openingCashFloat: Math.max(0, Number(floatInput) || 0),
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setEditingFloat(false);
+        showToast("success", data.message || "تم تحديث عهدة بداية الدرج بنجاح ✅");
+        await loadPosData();
+      } else {
+        showToast("error", data.error || "تعذر تحديث عهدة الدرج");
+      }
+    } catch {
+      showToast("error", "فشل الاتصال بالخادم");
+    }
+  };
+
+  // Send Cashier Staff Reply in Direct Customer Chat (Auto-targets selected or latest customer thread!)
   const handleSendPosChatReply = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!posChatReply.trim()) return;
+    if (!posChatReply.trim() && !posChatImage) return;
 
     const threadMsgs = posChatMessages.filter((m) => {
-      if (selectedChatThread === "ALL") return false;
+      if (selectedChatThread === "ALL") return m.senderType === "CUSTOMER";
       if (selectedChatThread.startsWith("PHONE:")) return m.senderPhone === selectedChatThread.slice(6);
       if (selectedChatThread.startsWith("TABLE:")) return m.tableNumber === selectedChatThread.slice(6);
       return false;
@@ -566,6 +656,11 @@ export default function PosTerminalPage() {
       ? selectedChatThread.slice(6)
       : lastMsg?.tableNumber || null;
 
+    if (!senderPhone && !tableNumber) {
+      showToast("error", "اختر محادثة العميل من القائمة الجانبية أولاً للرد عليه");
+      return;
+    }
+
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -576,12 +671,14 @@ export default function PosTerminalPage() {
           senderName: currentUser?.name || "كاشير الفرع",
           senderPhone,
           tableNumber,
-          message: posChatReply.trim(),
+          message: posChatReply.trim() || "📎 صورة مرفقة",
+          imageUrl: posChatImage || null,
         }),
       });
       const data = await res.json();
       if (data.success) {
         setPosChatReply("");
+        setPosChatImage("");
         showToast("success", "تم إرسال ردك للعميل 💬");
         await loadPosData();
       }
@@ -1391,7 +1488,10 @@ export default function PosTerminalPage() {
                     <div className="flex-1 min-w-0">
                       <span className="font-bold text-white block truncate">{it.nameAr}</span>
                       <span className="text-[10px] text-slate-400 font-mono">
-                        {it.price} ج × {it.qty} = <strong className="text-amber-300 font-black">{it.price * it.qty} ج</strong>
+                        {it.price} ج × {formatPosQty(it.qty, it.unitType)} ={" "}
+                        <strong className="text-amber-300 font-black">
+                          {(it.price * it.qty).toFixed(2)} ج
+                        </strong>
                       </span>
                     </div>
 
@@ -1402,7 +1502,9 @@ export default function PosTerminalPage() {
                       >
                         <Minus className="w-3 h-3" />
                       </button>
-                      <span className="font-mono font-bold text-xs px-1 text-white">{it.qty}</span>
+                      <span className="font-mono font-bold text-[11px] px-1 text-white">
+                        {formatPosQty(it.qty, it.unitType)}
+                      </span>
                       <button
                         onClick={() => updateCartQty(it.menuItemId, 1)}
                         className="w-5 h-5 rounded bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer"
@@ -1494,14 +1596,8 @@ export default function PosTerminalPage() {
             <div className="space-y-1 border-t border-white/10 pt-1.5 text-xs">
               <div className="flex justify-between text-slate-400 font-mono text-[11px]">
                 <span>المجموع الفرعي:</span>
-                <span>{rawSubtotal} ج</span>
+                <span>{rawSubtotal.toFixed(2)} ج</span>
               </div>
-              {orderType === "DELIVERY" && (
-                <div className="flex justify-between text-sky-400 font-mono text-[11px]">
-                  <span>خدمة توصيل دليفري:</span>
-                  <span>+{settings?.deliveryFee || 20} ج</span>
-                </div>
-              )}
               {settings?.isServiceChargeEnabled && (
                 <div className="flex justify-between text-slate-400 font-mono text-[11px]">
                   <span>خدمة ({settings.serviceChargePercent}%):</span>
@@ -1516,7 +1612,7 @@ export default function PosTerminalPage() {
               )}
               {orderType === "DELIVERY" && (
                 <div className="flex justify-between text-sky-300 font-mono text-[11px]">
-                  <span>توصيل دليفري {selectedDeliveryZone ? `(${selectedDeliveryZone.nameAr})` : ""}:</span>
+                  <span>رسوم توصيل الطيار {selectedDeliveryZone ? `(${selectedDeliveryZone.nameAr})` : ""}:</span>
                   <span>+{deliveryFee} ج</span>
                 </div>
               )}
@@ -2143,12 +2239,50 @@ export default function PosTerminalPage() {
 
                 {/* Live Stats */}
                 <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1.5 text-xs font-mono">
-                  <div className="flex justify-between text-slate-400">
+                  <div className="flex items-center justify-between text-slate-400">
                     <span>فكة الدرج الافتتاحية:</span>
-                    <span>{shiftLiveStats?.openingFloat || 500} ج</span>
+                    {editingFloat ? (
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="number"
+                          min={0}
+                          value={floatInput}
+                          onChange={(e) => setFloatInput(e.target.value)}
+                          className="w-20 px-2 py-0.5 rounded bg-slate-900 border border-amber-500/50 text-amber-300 font-bold text-center"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleUpdateOpeningFloat}
+                          className="px-2 py-0.5 rounded bg-emerald-600 text-white text-[10px] font-bold cursor-pointer"
+                        >
+                          حفظ
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setEditingFloat(false)}
+                          className="px-1.5 py-0.5 rounded bg-white/10 text-slate-300 text-[10px] cursor-pointer"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <span className="text-white font-bold">{shiftLiveStats?.openingFloat ?? 0} ج</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFloatInput(String(shiftLiveStats?.openingFloat ?? 0));
+                            setEditingFloat(true);
+                          }}
+                          className="text-[10px] text-amber-300 underline cursor-pointer font-sans"
+                        >
+                          تعديل
+                        </button>
+                      </div>
+                    )}
                   </div>
                   <div className="flex justify-between text-emerald-400">
-                    <span>مقبوضات الكاش النقدية (+):</span>
+                    <span>مقبوضات مبيعات المحل كاش (+):</span>
                     <span>+{shiftLiveStats?.cashCollected || 0} ج</span>
                   </div>
                   <div className="flex justify-between text-sky-400">
@@ -2159,13 +2293,23 @@ export default function PosTerminalPage() {
                     <span>انستاباي InstaPay:</span>
                     <span>{shiftLiveStats?.instapayCollected || 0} ج</span>
                   </div>
+                  <div className="flex justify-between text-rose-300">
+                    <span>فودافون كاش:</span>
+                    <span>{shiftLiveStats?.vodafoneCollected || 0} ج</span>
+                  </div>
+                  {(shiftLiveStats?.deliveryFeesTotal || 0) > 0 && (
+                    <div className="flex justify-between text-cyan-300 bg-cyan-950/30 px-2 py-1 rounded-lg border border-cyan-500/20">
+                      <span>🛵 رسوم توصيل (حق الطيارين — مفصولة):</span>
+                      <span>{shiftLiveStats?.deliveryFeesTotal || 0} ج</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-rose-400">
                     <span>مصروفات ونثريات الدرج (-):</span>
                     <span>-{shiftLiveStats?.expensesTotal || 0} ج</span>
                   </div>
                   <div className="flex justify-between text-amber-300 font-bold border-t border-white/10 pt-1 text-sm">
                     <span>النقدية المتوقعة بالدرج:</span>
-                    <span>{shiftLiveStats?.expectedCash || 0} ج.م</span>
+                    <span>{shiftLiveStats?.expectedCash ?? 0} ج.م</span>
                   </div>
                 </div>
 
@@ -2265,7 +2409,7 @@ export default function PosTerminalPage() {
       )}
 
       {/* ─────────────────────────────────────────────────────────────
-          7. THERMAL RECEIPT PRINT TEMPLATE (80MM CLIENT RECEIPT)
+          7. THERMAL RECEIPT PRINT TEMPLATE (CLIENT RECEIPT)
          ───────────────────────────────────────────────────────────── */}
       {lastPrintedOrder && (
         <div id="thermal-receipt" className="hidden print:block text-black font-sans" dir="rtl">
@@ -2292,13 +2436,18 @@ export default function PosTerminalPage() {
               </p>
             )}
             {lastPrintedOrder.driverName && (
-              <p className="text-[10px] font-bold">الطيار: {lastPrintedOrder.driverName}</p>
+              <p className="text-[10px] font-bold">
+                الطيار: {lastPrintedOrder.driverName}
+                {(lastPrintedOrder.driverPhone || lastPrintedOrder.driver?.phone)
+                  ? ` (${lastPrintedOrder.driverPhone || lastPrintedOrder.driver?.phone})`
+                  : ""}
+              </p>
             )}
             <p className="text-[10px] font-mono">
               تاريخ: {new Date().toLocaleDateString("ar-EG")} • {new Date().toLocaleTimeString("ar-EG")}
             </p>
             <p className="text-[11px] font-black font-mono">
-              فاتورة رقم: #{lastPrintedOrder.orderNumber}
+              إيصال طلب رقم: #{lastPrintedOrder.orderNumber}
             </p>
           </div>
 
@@ -2353,8 +2502,8 @@ export default function PosTerminalPage() {
 
                 return (
                   <div key={idx} className="flex justify-between">
-                    <span>{it.nameAr} (×{it.qty || 1})</span>
-                    <span className="font-mono font-bold">{(it.price * (it.qty || 1))} ج</span>
+                    <span>{it.nameAr} ({formatPosQty(it.qty || 1, it.unitType)})</span>
+                    <span className="font-mono font-bold">{(it.price * (it.qty || 1)).toFixed(2)} ج</span>
                   </div>
                 );
               });
@@ -2362,8 +2511,14 @@ export default function PosTerminalPage() {
           </div>
 
           <div className="text-[12px] space-y-1 font-black border-b-2 border-black pb-2 mb-2">
+            {Number(lastPrintedOrder.deliveryFee || 0) > 0 && (
+              <div className="flex justify-between text-[11px] font-normal">
+                <span>رسوم توصيل الطيار:</span>
+                <span className="font-mono">{lastPrintedOrder.deliveryFee} ج.م</span>
+              </div>
+            )}
             <div className="flex justify-between text-sm">
-              <span>المبلغ الإجمالي المدفوع:</span>
+              <span>المبلغ الإجمالي:</span>
               <span className="font-mono text-base">{lastPrintedOrder.finalAmount} ج.م</span>
             </div>
           </div>
@@ -2378,7 +2533,7 @@ export default function PosTerminalPage() {
       )}
 
       {/* ─────────────────────────────────────────────────────────────
-          8. THERMAL SHIFT Z-REPORT PRINT TEMPLATE (80MM)
+          8. THERMAL SHIFT Z-REPORT PRINT TEMPLATE
          ───────────────────────────────────────────────────────────── */}
       {lastClosedShift && (
         <div id="shift-handover-receipt" className="hidden print:block text-black font-sans" dir="rtl">
@@ -2614,6 +2769,14 @@ export default function PosTerminalPage() {
                           {o.driverName && (
                             <span className="text-purple-300 font-bold">
                               🏍️ الطيار: {o.driverName}
+                              {(o.driverPhone || o.driver?.phone)
+                                ? ` (${o.driverPhone || o.driver?.phone})`
+                                : ""}
+                            </span>
+                          )}
+                          {o.isScheduled && o.scheduledFor && (
+                            <span className="text-amber-300 font-bold bg-amber-500/15 px-2 py-0.5 rounded-lg border border-amber-500/30">
+                              📅 حجز: {new Date(o.scheduledFor).toLocaleString("ar-EG", { dateStyle: "short", timeStyle: "short" })}
                             </span>
                           )}
                         </div>
@@ -2627,7 +2790,7 @@ export default function PosTerminalPage() {
                         <div className="text-[11px] text-slate-300 flex flex-wrap gap-1.5 pt-1">
                           {parsedItems.map((it: any, idx: number) => (
                             <span key={idx} className="bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
-                              {it.qty}× {it.nameAr}
+                              {it.nameAr} ({formatPosQty(it.qty || 1, it.unitType)})
                             </span>
                           ))}
                         </div>
@@ -2639,8 +2802,8 @@ export default function PosTerminalPage() {
                             {o.finalAmount} ج.م
                           </span>
                           {Number(o.deliveryFee) > 0 && (
-                            <span className="text-[10px] text-slate-400 block">
-                              (شامل توصيل {o.deliveryFee} ج)
+                            <span className="text-[10px] text-cyan-300 block">
+                              (توصيل الطيار: {o.deliveryFee} ج)
                             </span>
                           )}
                         </div>
@@ -2679,31 +2842,54 @@ export default function PosTerminalPage() {
                           )}
 
                           {o.status === "READY_TO_SERVE" && o.orderType === "DELIVERY" && (
-                            <div className="flex items-center gap-1">
-                              <input
-                                type="text"
-                                placeholder="اسم الطيار..."
-                                value={driverNamesByOrder[o.id] || ""}
-                                onChange={(e) =>
-                                  setDriverNamesByOrder((prev) => ({
-                                    ...prev,
-                                    [o.id]: e.target.value,
-                                  }))
-                                }
-                                className="w-28 bg-slate-950 border border-white/15 rounded-xl px-2.5 py-1.5 text-xs text-white"
-                              />
+                            <div className="flex items-center gap-1 flex-wrap">
+                              {drivers.length > 0 ? (
+                                <select
+                                  value={selectedDriverByOrder[o.id] || ""}
+                                  onChange={(e) =>
+                                    setSelectedDriverByOrder((prev) => ({
+                                      ...prev,
+                                      [o.id]: e.target.value,
+                                    }))
+                                  }
+                                  className="bg-slate-950 border border-purple-500/40 rounded-xl px-2.5 py-1.5 text-xs text-white font-bold"
+                                >
+                                  <option value="">-- اختر الطيار --</option>
+                                  {drivers.map((d) => (
+                                    <option key={d.id} value={d.id}>
+                                      🛵 {d.name} ({d.phone})
+                                    </option>
+                                  ))}
+                                </select>
+                              ) : (
+                                <input
+                                  type="text"
+                                  placeholder="اسم الطيار..."
+                                  value={driverNamesByOrder[o.id] || ""}
+                                  onChange={(e) =>
+                                    setDriverNamesByOrder((prev) => ({
+                                      ...prev,
+                                      [o.id]: e.target.value,
+                                    }))
+                                  }
+                                  className="w-28 bg-slate-950 border border-white/15 rounded-xl px-2.5 py-1.5 text-xs text-white"
+                                />
+                              )}
                               <button
                                 type="button"
-                                onClick={() =>
+                                onClick={() => {
+                                  const pickedDriver = drivers.find((d) => d.id === selectedDriverByOrder[o.id]);
                                   handleAdvanceOnlineOrder(
                                     o.id,
                                     {
                                       action: "DISPATCH_DRIVER",
-                                      driverName: driverNamesByOrder[o.id] || "مندوب التوصيل",
+                                      driverId: pickedDriver?.id || null,
+                                      driverName: pickedDriver?.name || driverNamesByOrder[o.id] || "مندوب التوصيل",
+                                      driverPhone: pickedDriver?.phone || null,
                                     },
                                     `خرج الطلب #${o.orderNumber} مع الطيار 🛵`
-                                  )
-                                }
+                                  );
+                                }}
                                 className="px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold cursor-pointer"
                               >
                                 تسليم للطيار 🛵
@@ -2721,7 +2907,7 @@ export default function PosTerminalPage() {
                                     o.id,
                                     {
                                       action: "SETTLE",
-                                      paymentMethod: o.paymentMethod || "CASH",
+                                      paymentMethod: o.paymentMethod || paymentMethod || "CASH",
                                       cashierName: currentUser?.name || "كاشير الفرع",
                                     },
                                     `تم تحصيل الطلب #${o.orderNumber} وإضافته للدرج 💵`
@@ -2758,7 +2944,7 @@ export default function PosTerminalPage() {
                               setTimeout(() => window.print(), 250);
                             }}
                             className="p-2 rounded-xl bg-white/5 hover:bg-white/15 text-amber-300 border border-white/10 cursor-pointer"
-                            title="طباعة بون الطلب 80 مم"
+                            title="طباعة بون الطلب"
                           >
                             <Printer className="w-4 h-4" />
                           </button>
@@ -2887,6 +3073,16 @@ export default function PosTerminalPage() {
                                 : ""}
                             </div>
                             <div>{msg.message}</div>
+                            {msg.imageUrl && (
+                              <button
+                                type="button"
+                                onClick={() => setPreviewPosImage(msg.imageUrl)}
+                                className="mt-2 block rounded-lg overflow-hidden border border-white/20 cursor-pointer"
+                              >
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src={msg.imageUrl} alt="مرفق" className="max-w-[180px] max-h-[160px] object-cover" />
+                              </button>
+                            )}
                           </div>
                           <span className="text-[9px] text-slate-500 font-mono mt-0.5">
                             {new Date(msg.createdAt).toLocaleTimeString("ar-EG")}
@@ -2900,17 +3096,51 @@ export default function PosTerminalPage() {
                       )}
                     </div>
 
-                    <form onSubmit={handleSendPosChatReply} className="flex gap-2">
+                    {posChatImage && (
+                      <div className="flex items-center justify-between bg-slate-900 px-3 py-1.5 rounded-xl border border-amber-500/30 text-xs">
+                        <span className="text-emerald-300 font-bold">📎 تم إرفاق صورة وجاهزة للإرسال</span>
+                        <button type="button" onClick={() => setPosChatImage("")} className="text-rose-400 font-bold cursor-pointer">حذف ✕</button>
+                      </div>
+                    )}
+
+                    <form onSubmit={handleSendPosChatReply} className="flex items-center gap-2">
+                      <label className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-white/15 text-amber-300 cursor-pointer shrink-0" title="إرفاق صورة">
+                        <ImageIcon className="w-4 h-4" />
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          disabled={uploadingPosChatImage}
+                          onChange={async (e) => {
+                            const f = e.target.files?.[0];
+                            if (!f) return;
+                            setUploadingPosChatImage(true);
+                            const fd = new FormData();
+                            fd.append("image", f);
+                            try {
+                              const r = await fetch("/api/upload", { method: "POST", body: fd });
+                              const d = await r.json();
+                              if (d.success && d.url) setPosChatImage(d.url);
+                            } catch {}
+                            setUploadingPosChatImage(false);
+                            e.target.value = "";
+                          }}
+                        />
+                      </label>
                       <input
                         type="text"
-                        placeholder="اكتب رد الكاشير للعميل المحدد..."
+                        placeholder={
+                          selectedChatThread === "ALL"
+                            ? "سيتم الرد على أحدث عميل (أو اختر عميلاً من اليمين)..."
+                            : "اكتب رد الكاشير للعميل المحدد..."
+                        }
                         value={posChatReply}
                         onChange={(e) => setPosChatReply(e.target.value)}
                         className="flex-1 py-2 px-3 rounded-xl bg-black/60 border border-white/15 text-xs text-white outline-none focus:border-sky-400"
                       />
                       <button
                         type="submit"
-                        disabled={!posChatReply.trim()}
+                        disabled={!posChatReply.trim() && !posChatImage}
                         className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-xs transition cursor-pointer disabled:opacity-50"
                       >
                         إرسال 💬
@@ -2921,6 +3151,82 @@ export default function PosTerminalPage() {
               );
             })()}
           </div>
+        </div>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          9C. MODAL: POS FRACTIONAL KG WEIGHT PICKER
+         ───────────────────────────────────────────────────────────── */}
+      {weightPickerItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md no-print">
+          <div className="bg-[#140e16] border-2 border-emerald-500/40 rounded-3xl p-5 max-w-md w-full space-y-4 shadow-2xl relative">
+            <button
+              onClick={() => setWeightPickerItem(null)}
+              className="absolute left-4 top-4 text-slate-400 hover:text-white cursor-pointer"
+            >
+              ✕
+            </button>
+            <div>
+              <h3 className="font-black text-sm text-white flex items-center gap-2">
+                <Scale className="w-4 h-4 text-emerald-400" />
+                <span>تحديد الوزن — {weightPickerItem.nameAr}</span>
+              </h3>
+              <p className="text-xs text-amber-400 font-mono font-bold mt-0.5">
+                سعر الكيلو: {weightPickerItem.price} ج.م
+              </p>
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-xs">
+              {[
+                { label: "ربع كيلو", sub: "250 جم", kg: 0.25 },
+                { label: "نصف كيلو", sub: "500 جم", kg: 0.5 },
+                { label: "كيلو إلا ربع", sub: "750 جم", kg: 0.75 },
+                { label: "1 كيلو", sub: "1000 جم", kg: 1 },
+                { label: "1.5 كيلو", sub: "1500 جم", kg: 1.5 },
+                { label: "2 كيلو", sub: "2000 جم", kg: 2 },
+              ].map((opt) => (
+                <button
+                  key={opt.kg}
+                  type="button"
+                  onClick={() => addWeightToPosCart(weightPickerItem, opt.kg)}
+                  className="p-2.5 rounded-2xl bg-black/60 hover:bg-emerald-600/20 border border-white/10 hover:border-emerald-400 text-center cursor-pointer"
+                >
+                  <div className="font-black text-white">{opt.label}</div>
+                  <div className="text-[10px] text-slate-400 font-mono">{opt.sub}</div>
+                  <div className="text-[11px] font-black text-emerald-400 font-mono">
+                    {Math.round(weightPickerItem.price * opt.kg)} ج
+                  </div>
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-2 text-xs">
+              <input
+                type="number"
+                min={50}
+                step={50}
+                value={customGramsInput || ""}
+                onChange={(e) => setCustomGramsInput(Number(e.target.value))}
+                className="flex-1 py-2 px-3 rounded-xl bg-black/60 border border-white/15 text-white font-mono"
+                placeholder="وزن بالجرام (مثال: 350)"
+              />
+              <button
+                type="button"
+                onClick={() => addWeightToPosCart(weightPickerItem, Math.max(0.05, (Number(customGramsInput) || 250) / 1000))}
+                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black cursor-pointer"
+              >
+                إضافة ({Math.round(((Number(customGramsInput) || 250) / 1000) * weightPickerItem.price)} ج)
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {previewPosImage && (
+        <div
+          onClick={() => setPreviewPosImage(null)}
+          className="fixed inset-0 z-[60] bg-black/90 flex items-center justify-center p-4 cursor-pointer no-print"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={previewPosImage} alt="صورة" className="max-w-full max-h-[85vh] rounded-2xl border border-white/20" />
         </div>
       )}
 

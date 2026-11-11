@@ -84,6 +84,11 @@ export type Customer = $Result.DefaultSelection<Prisma.$CustomerPayload>
  */
 export type DeliveryZone = $Result.DefaultSelection<Prisma.$DeliveryZonePayload>
 /**
+ * Model DeliveryDriver
+ * 
+ */
+export type DeliveryDriver = $Result.DefaultSelection<Prisma.$DeliveryDriverPayload>
+/**
  * Model Order
  * 
  */
@@ -123,6 +128,16 @@ export type Reservation = $Result.DefaultSelection<Prisma.$ReservationPayload>
  * 
  */
 export type ChatMessage = $Result.DefaultSelection<Prisma.$ChatMessagePayload>
+/**
+ * Model FactoryOrder
+ * 
+ */
+export type FactoryOrder = $Result.DefaultSelection<Prisma.$FactoryOrderPayload>
+/**
+ * Model FactoryOrderItem
+ * 
+ */
+export type FactoryOrderItem = $Result.DefaultSelection<Prisma.$FactoryOrderItemPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -386,6 +401,16 @@ export class PrismaClient<
   get deliveryZone(): Prisma.DeliveryZoneDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.deliveryDriver`: Exposes CRUD operations for the **DeliveryDriver** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DeliveryDrivers
+    * const deliveryDrivers = await prisma.deliveryDriver.findMany()
+    * ```
+    */
+  get deliveryDriver(): Prisma.DeliveryDriverDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.order`: Exposes CRUD operations for the **Order** model.
     * Example usage:
     * ```ts
@@ -464,6 +489,26 @@ export class PrismaClient<
     * ```
     */
   get chatMessage(): Prisma.ChatMessageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.factoryOrder`: Exposes CRUD operations for the **FactoryOrder** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FactoryOrders
+    * const factoryOrders = await prisma.factoryOrder.findMany()
+    * ```
+    */
+  get factoryOrder(): Prisma.FactoryOrderDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.factoryOrderItem`: Exposes CRUD operations for the **FactoryOrderItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FactoryOrderItems
+    * const factoryOrderItems = await prisma.factoryOrderItem.findMany()
+    * ```
+    */
+  get factoryOrderItem(): Prisma.FactoryOrderItemDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -925,6 +970,7 @@ export namespace Prisma {
     RecipeItem: 'RecipeItem',
     Customer: 'Customer',
     DeliveryZone: 'DeliveryZone',
+    DeliveryDriver: 'DeliveryDriver',
     Order: 'Order',
     KdsTicket: 'KdsTicket',
     Shift: 'Shift',
@@ -932,7 +978,9 @@ export namespace Prisma {
     Expense: 'Expense',
     SystemSettings: 'SystemSettings',
     Reservation: 'Reservation',
-    ChatMessage: 'ChatMessage'
+    ChatMessage: 'ChatMessage',
+    FactoryOrder: 'FactoryOrder',
+    FactoryOrderItem: 'FactoryOrderItem'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -948,7 +996,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "outlet" | "user" | "diningTable" | "menuItem" | "productMovement" | "pastryAudit" | "pastryAuditItem" | "rawMaterial" | "rawMaterialMovement" | "inventoryAudit" | "inventoryAuditItem" | "recipeItem" | "customer" | "deliveryZone" | "order" | "kdsTicket" | "shift" | "dailyClose" | "expense" | "systemSettings" | "reservation" | "chatMessage"
+      modelProps: "outlet" | "user" | "diningTable" | "menuItem" | "productMovement" | "pastryAudit" | "pastryAuditItem" | "rawMaterial" | "rawMaterialMovement" | "inventoryAudit" | "inventoryAuditItem" | "recipeItem" | "customer" | "deliveryZone" | "deliveryDriver" | "order" | "kdsTicket" | "shift" | "dailyClose" | "expense" | "systemSettings" | "reservation" | "chatMessage" | "factoryOrder" | "factoryOrderItem"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1988,6 +2036,80 @@ export namespace Prisma {
           }
         }
       }
+      DeliveryDriver: {
+        payload: Prisma.$DeliveryDriverPayload<ExtArgs>
+        fields: Prisma.DeliveryDriverFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DeliveryDriverFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDriverPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DeliveryDriverFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDriverPayload>
+          }
+          findFirst: {
+            args: Prisma.DeliveryDriverFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDriverPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DeliveryDriverFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDriverPayload>
+          }
+          findMany: {
+            args: Prisma.DeliveryDriverFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDriverPayload>[]
+          }
+          create: {
+            args: Prisma.DeliveryDriverCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDriverPayload>
+          }
+          createMany: {
+            args: Prisma.DeliveryDriverCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DeliveryDriverCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDriverPayload>[]
+          }
+          delete: {
+            args: Prisma.DeliveryDriverDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDriverPayload>
+          }
+          update: {
+            args: Prisma.DeliveryDriverUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDriverPayload>
+          }
+          deleteMany: {
+            args: Prisma.DeliveryDriverDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DeliveryDriverUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DeliveryDriverUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDriverPayload>[]
+          }
+          upsert: {
+            args: Prisma.DeliveryDriverUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDriverPayload>
+          }
+          aggregate: {
+            args: Prisma.DeliveryDriverAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDeliveryDriver>
+          }
+          groupBy: {
+            args: Prisma.DeliveryDriverGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DeliveryDriverGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DeliveryDriverCountArgs<ExtArgs>
+            result: $Utils.Optional<DeliveryDriverCountAggregateOutputType> | number
+          }
+        }
+      }
       Order: {
         payload: Prisma.$OrderPayload<ExtArgs>
         fields: Prisma.OrderFieldRefs
@@ -2580,6 +2702,154 @@ export namespace Prisma {
           }
         }
       }
+      FactoryOrder: {
+        payload: Prisma.$FactoryOrderPayload<ExtArgs>
+        fields: Prisma.FactoryOrderFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FactoryOrderFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FactoryOrderFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderPayload>
+          }
+          findFirst: {
+            args: Prisma.FactoryOrderFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FactoryOrderFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderPayload>
+          }
+          findMany: {
+            args: Prisma.FactoryOrderFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderPayload>[]
+          }
+          create: {
+            args: Prisma.FactoryOrderCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderPayload>
+          }
+          createMany: {
+            args: Prisma.FactoryOrderCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FactoryOrderCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderPayload>[]
+          }
+          delete: {
+            args: Prisma.FactoryOrderDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderPayload>
+          }
+          update: {
+            args: Prisma.FactoryOrderUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderPayload>
+          }
+          deleteMany: {
+            args: Prisma.FactoryOrderDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FactoryOrderUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FactoryOrderUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderPayload>[]
+          }
+          upsert: {
+            args: Prisma.FactoryOrderUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderPayload>
+          }
+          aggregate: {
+            args: Prisma.FactoryOrderAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFactoryOrder>
+          }
+          groupBy: {
+            args: Prisma.FactoryOrderGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FactoryOrderGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FactoryOrderCountArgs<ExtArgs>
+            result: $Utils.Optional<FactoryOrderCountAggregateOutputType> | number
+          }
+        }
+      }
+      FactoryOrderItem: {
+        payload: Prisma.$FactoryOrderItemPayload<ExtArgs>
+        fields: Prisma.FactoryOrderItemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FactoryOrderItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderItemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FactoryOrderItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderItemPayload>
+          }
+          findFirst: {
+            args: Prisma.FactoryOrderItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderItemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FactoryOrderItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderItemPayload>
+          }
+          findMany: {
+            args: Prisma.FactoryOrderItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderItemPayload>[]
+          }
+          create: {
+            args: Prisma.FactoryOrderItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderItemPayload>
+          }
+          createMany: {
+            args: Prisma.FactoryOrderItemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FactoryOrderItemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderItemPayload>[]
+          }
+          delete: {
+            args: Prisma.FactoryOrderItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderItemPayload>
+          }
+          update: {
+            args: Prisma.FactoryOrderItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderItemPayload>
+          }
+          deleteMany: {
+            args: Prisma.FactoryOrderItemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FactoryOrderItemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FactoryOrderItemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderItemPayload>[]
+          }
+          upsert: {
+            args: Prisma.FactoryOrderItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FactoryOrderItemPayload>
+          }
+          aggregate: {
+            args: Prisma.FactoryOrderItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFactoryOrderItem>
+          }
+          groupBy: {
+            args: Prisma.FactoryOrderItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FactoryOrderItemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FactoryOrderItemCountArgs<ExtArgs>
+            result: $Utils.Optional<FactoryOrderItemCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2717,6 +2987,7 @@ export namespace Prisma {
     recipeItem?: RecipeItemOmit
     customer?: CustomerOmit
     deliveryZone?: DeliveryZoneOmit
+    deliveryDriver?: DeliveryDriverOmit
     order?: OrderOmit
     kdsTicket?: KdsTicketOmit
     shift?: ShiftOmit
@@ -2725,6 +2996,8 @@ export namespace Prisma {
     systemSettings?: SystemSettingsOmit
     reservation?: ReservationOmit
     chatMessage?: ChatMessageOmit
+    factoryOrder?: FactoryOrderOmit
+    factoryOrderItem?: FactoryOrderItemOmit
   }
 
   /* Types for Logging */
@@ -2817,6 +3090,8 @@ export namespace Prisma {
     inventoryAudits: number
     pastryAudits: number
     dailyCloses: number
+    deliveryDrivers: number
+    factoryOrders: number
   }
 
   export type OutletCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2832,6 +3107,8 @@ export namespace Prisma {
     inventoryAudits?: boolean | OutletCountOutputTypeCountInventoryAuditsArgs
     pastryAudits?: boolean | OutletCountOutputTypeCountPastryAuditsArgs
     dailyCloses?: boolean | OutletCountOutputTypeCountDailyClosesArgs
+    deliveryDrivers?: boolean | OutletCountOutputTypeCountDeliveryDriversArgs
+    factoryOrders?: boolean | OutletCountOutputTypeCountFactoryOrdersArgs
   }
 
   // Custom InputTypes
@@ -2927,6 +3204,20 @@ export namespace Prisma {
    */
   export type OutletCountOutputTypeCountDailyClosesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DailyCloseWhereInput
+  }
+
+  /**
+   * OutletCountOutputType without action
+   */
+  export type OutletCountOutputTypeCountDeliveryDriversArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DeliveryDriverWhereInput
+  }
+
+  /**
+   * OutletCountOutputType without action
+   */
+  export type OutletCountOutputTypeCountFactoryOrdersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FactoryOrderWhereInput
   }
 
 
@@ -3166,6 +3457,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type DeliveryDriverCountOutputType
+   */
+
+  export type DeliveryDriverCountOutputType = {
+    orders: number
+  }
+
+  export type DeliveryDriverCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    orders?: boolean | DeliveryDriverCountOutputTypeCountOrdersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * DeliveryDriverCountOutputType without action
+   */
+  export type DeliveryDriverCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDriverCountOutputType
+     */
+    select?: DeliveryDriverCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * DeliveryDriverCountOutputType without action
+   */
+  export type DeliveryDriverCountOutputTypeCountOrdersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrderWhereInput
+  }
+
+
+  /**
    * Count Type OrderCountOutputType
    */
 
@@ -3193,6 +3515,37 @@ export namespace Prisma {
    */
   export type OrderCountOutputTypeCountKdsTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: KdsTicketWhereInput
+  }
+
+
+  /**
+   * Count Type FactoryOrderCountOutputType
+   */
+
+  export type FactoryOrderCountOutputType = {
+    items: number
+  }
+
+  export type FactoryOrderCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    items?: boolean | FactoryOrderCountOutputTypeCountItemsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FactoryOrderCountOutputType without action
+   */
+  export type FactoryOrderCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrderCountOutputType
+     */
+    select?: FactoryOrderCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FactoryOrderCountOutputType without action
+   */
+  export type FactoryOrderCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FactoryOrderItemWhereInput
   }
 
 
@@ -3416,6 +3769,8 @@ export namespace Prisma {
     inventoryAudits?: boolean | Outlet$inventoryAuditsArgs<ExtArgs>
     pastryAudits?: boolean | Outlet$pastryAuditsArgs<ExtArgs>
     dailyCloses?: boolean | Outlet$dailyClosesArgs<ExtArgs>
+    deliveryDrivers?: boolean | Outlet$deliveryDriversArgs<ExtArgs>
+    factoryOrders?: boolean | Outlet$factoryOrdersArgs<ExtArgs>
     _count?: boolean | OutletCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["outlet"]>
 
@@ -3472,6 +3827,8 @@ export namespace Prisma {
     inventoryAudits?: boolean | Outlet$inventoryAuditsArgs<ExtArgs>
     pastryAudits?: boolean | Outlet$pastryAuditsArgs<ExtArgs>
     dailyCloses?: boolean | Outlet$dailyClosesArgs<ExtArgs>
+    deliveryDrivers?: boolean | Outlet$deliveryDriversArgs<ExtArgs>
+    factoryOrders?: boolean | Outlet$factoryOrdersArgs<ExtArgs>
     _count?: boolean | OutletCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OutletIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3492,6 +3849,8 @@ export namespace Prisma {
       inventoryAudits: Prisma.$InventoryAuditPayload<ExtArgs>[]
       pastryAudits: Prisma.$PastryAuditPayload<ExtArgs>[]
       dailyCloses: Prisma.$DailyClosePayload<ExtArgs>[]
+      deliveryDrivers: Prisma.$DeliveryDriverPayload<ExtArgs>[]
+      factoryOrders: Prisma.$FactoryOrderPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3910,6 +4269,8 @@ export namespace Prisma {
     inventoryAudits<T extends Outlet$inventoryAuditsArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$inventoryAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InventoryAuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     pastryAudits<T extends Outlet$pastryAuditsArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$pastryAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PastryAuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     dailyCloses<T extends Outlet$dailyClosesArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$dailyClosesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DailyClosePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    deliveryDrivers<T extends Outlet$deliveryDriversArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$deliveryDriversArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliveryDriverPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    factoryOrders<T extends Outlet$factoryOrdersArgs<ExtArgs> = {}>(args?: Subset<T, Outlet$factoryOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FactoryOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4627,6 +4988,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: DailyCloseScalarFieldEnum | DailyCloseScalarFieldEnum[]
+  }
+
+  /**
+   * Outlet.deliveryDrivers
+   */
+  export type Outlet$deliveryDriversArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDriver
+     */
+    select?: DeliveryDriverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDriver
+     */
+    omit?: DeliveryDriverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDriverInclude<ExtArgs> | null
+    where?: DeliveryDriverWhereInput
+    orderBy?: DeliveryDriverOrderByWithRelationInput | DeliveryDriverOrderByWithRelationInput[]
+    cursor?: DeliveryDriverWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DeliveryDriverScalarFieldEnum | DeliveryDriverScalarFieldEnum[]
+  }
+
+  /**
+   * Outlet.factoryOrders
+   */
+  export type Outlet$factoryOrdersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrder
+     */
+    select?: FactoryOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrder
+     */
+    omit?: FactoryOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderInclude<ExtArgs> | null
+    where?: FactoryOrderWhereInput
+    orderBy?: FactoryOrderOrderByWithRelationInput | FactoryOrderOrderByWithRelationInput[]
+    cursor?: FactoryOrderWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FactoryOrderScalarFieldEnum | FactoryOrderScalarFieldEnum[]
   }
 
   /**
@@ -7895,8 +8304,8 @@ export namespace Prisma {
     readonly itemType: FieldRef<"MenuItem", 'String'>
     readonly unitType: FieldRef<"MenuItem", 'String'>
     readonly openingStock: FieldRef<"MenuItem", 'Float'>
-    readonly stockQty: FieldRef<"MenuItem", 'Int'>
-    readonly minStockAlert: FieldRef<"MenuItem", 'Int'>
+    readonly stockQty: FieldRef<"MenuItem", 'Float'>
+    readonly minStockAlert: FieldRef<"MenuItem", 'Float'>
     readonly isAvailable: FieldRef<"MenuItem", 'Boolean'>
     readonly sortOrder: FieldRef<"MenuItem", 'Int'>
     readonly loyaltyPointsEarned: FieldRef<"MenuItem", 'Int'>
@@ -20211,6 +20620,1157 @@ export namespace Prisma {
 
 
   /**
+   * Model DeliveryDriver
+   */
+
+  export type AggregateDeliveryDriver = {
+    _count: DeliveryDriverCountAggregateOutputType | null
+    _min: DeliveryDriverMinAggregateOutputType | null
+    _max: DeliveryDriverMaxAggregateOutputType | null
+  }
+
+  export type DeliveryDriverMinAggregateOutputType = {
+    id: string | null
+    outletId: string | null
+    name: string | null
+    phone: string | null
+    vehicleInfo: string | null
+    notes: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+  }
+
+  export type DeliveryDriverMaxAggregateOutputType = {
+    id: string | null
+    outletId: string | null
+    name: string | null
+    phone: string | null
+    vehicleInfo: string | null
+    notes: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+  }
+
+  export type DeliveryDriverCountAggregateOutputType = {
+    id: number
+    outletId: number
+    name: number
+    phone: number
+    vehicleInfo: number
+    notes: number
+    isActive: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type DeliveryDriverMinAggregateInputType = {
+    id?: true
+    outletId?: true
+    name?: true
+    phone?: true
+    vehicleInfo?: true
+    notes?: true
+    isActive?: true
+    createdAt?: true
+  }
+
+  export type DeliveryDriverMaxAggregateInputType = {
+    id?: true
+    outletId?: true
+    name?: true
+    phone?: true
+    vehicleInfo?: true
+    notes?: true
+    isActive?: true
+    createdAt?: true
+  }
+
+  export type DeliveryDriverCountAggregateInputType = {
+    id?: true
+    outletId?: true
+    name?: true
+    phone?: true
+    vehicleInfo?: true
+    notes?: true
+    isActive?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type DeliveryDriverAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DeliveryDriver to aggregate.
+     */
+    where?: DeliveryDriverWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeliveryDrivers to fetch.
+     */
+    orderBy?: DeliveryDriverOrderByWithRelationInput | DeliveryDriverOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DeliveryDriverWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeliveryDrivers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeliveryDrivers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DeliveryDrivers
+    **/
+    _count?: true | DeliveryDriverCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DeliveryDriverMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DeliveryDriverMaxAggregateInputType
+  }
+
+  export type GetDeliveryDriverAggregateType<T extends DeliveryDriverAggregateArgs> = {
+        [P in keyof T & keyof AggregateDeliveryDriver]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDeliveryDriver[P]>
+      : GetScalarType<T[P], AggregateDeliveryDriver[P]>
+  }
+
+
+
+
+  export type DeliveryDriverGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DeliveryDriverWhereInput
+    orderBy?: DeliveryDriverOrderByWithAggregationInput | DeliveryDriverOrderByWithAggregationInput[]
+    by: DeliveryDriverScalarFieldEnum[] | DeliveryDriverScalarFieldEnum
+    having?: DeliveryDriverScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DeliveryDriverCountAggregateInputType | true
+    _min?: DeliveryDriverMinAggregateInputType
+    _max?: DeliveryDriverMaxAggregateInputType
+  }
+
+  export type DeliveryDriverGroupByOutputType = {
+    id: string
+    outletId: string | null
+    name: string
+    phone: string
+    vehicleInfo: string | null
+    notes: string | null
+    isActive: boolean
+    createdAt: Date
+    _count: DeliveryDriverCountAggregateOutputType | null
+    _min: DeliveryDriverMinAggregateOutputType | null
+    _max: DeliveryDriverMaxAggregateOutputType | null
+  }
+
+  type GetDeliveryDriverGroupByPayload<T extends DeliveryDriverGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DeliveryDriverGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DeliveryDriverGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DeliveryDriverGroupByOutputType[P]>
+            : GetScalarType<T[P], DeliveryDriverGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DeliveryDriverSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    name?: boolean
+    phone?: boolean
+    vehicleInfo?: boolean
+    notes?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    outlet?: boolean | DeliveryDriver$outletArgs<ExtArgs>
+    orders?: boolean | DeliveryDriver$ordersArgs<ExtArgs>
+    _count?: boolean | DeliveryDriverCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["deliveryDriver"]>
+
+  export type DeliveryDriverSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    name?: boolean
+    phone?: boolean
+    vehicleInfo?: boolean
+    notes?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    outlet?: boolean | DeliveryDriver$outletArgs<ExtArgs>
+  }, ExtArgs["result"]["deliveryDriver"]>
+
+  export type DeliveryDriverSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    name?: boolean
+    phone?: boolean
+    vehicleInfo?: boolean
+    notes?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    outlet?: boolean | DeliveryDriver$outletArgs<ExtArgs>
+  }, ExtArgs["result"]["deliveryDriver"]>
+
+  export type DeliveryDriverSelectScalar = {
+    id?: boolean
+    outletId?: boolean
+    name?: boolean
+    phone?: boolean
+    vehicleInfo?: boolean
+    notes?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+  }
+
+  export type DeliveryDriverOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "name" | "phone" | "vehicleInfo" | "notes" | "isActive" | "createdAt", ExtArgs["result"]["deliveryDriver"]>
+  export type DeliveryDriverInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | DeliveryDriver$outletArgs<ExtArgs>
+    orders?: boolean | DeliveryDriver$ordersArgs<ExtArgs>
+    _count?: boolean | DeliveryDriverCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type DeliveryDriverIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | DeliveryDriver$outletArgs<ExtArgs>
+  }
+  export type DeliveryDriverIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | DeliveryDriver$outletArgs<ExtArgs>
+  }
+
+  export type $DeliveryDriverPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DeliveryDriver"
+    objects: {
+      outlet: Prisma.$OutletPayload<ExtArgs> | null
+      orders: Prisma.$OrderPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      outletId: string | null
+      name: string
+      phone: string
+      vehicleInfo: string | null
+      notes: string | null
+      isActive: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["deliveryDriver"]>
+    composites: {}
+  }
+
+  type DeliveryDriverGetPayload<S extends boolean | null | undefined | DeliveryDriverDefaultArgs> = $Result.GetResult<Prisma.$DeliveryDriverPayload, S>
+
+  type DeliveryDriverCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DeliveryDriverFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DeliveryDriverCountAggregateInputType | true
+    }
+
+  export interface DeliveryDriverDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DeliveryDriver'], meta: { name: 'DeliveryDriver' } }
+    /**
+     * Find zero or one DeliveryDriver that matches the filter.
+     * @param {DeliveryDriverFindUniqueArgs} args - Arguments to find a DeliveryDriver
+     * @example
+     * // Get one DeliveryDriver
+     * const deliveryDriver = await prisma.deliveryDriver.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DeliveryDriverFindUniqueArgs>(args: SelectSubset<T, DeliveryDriverFindUniqueArgs<ExtArgs>>): Prisma__DeliveryDriverClient<$Result.GetResult<Prisma.$DeliveryDriverPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DeliveryDriver that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DeliveryDriverFindUniqueOrThrowArgs} args - Arguments to find a DeliveryDriver
+     * @example
+     * // Get one DeliveryDriver
+     * const deliveryDriver = await prisma.deliveryDriver.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DeliveryDriverFindUniqueOrThrowArgs>(args: SelectSubset<T, DeliveryDriverFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DeliveryDriverClient<$Result.GetResult<Prisma.$DeliveryDriverPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DeliveryDriver that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryDriverFindFirstArgs} args - Arguments to find a DeliveryDriver
+     * @example
+     * // Get one DeliveryDriver
+     * const deliveryDriver = await prisma.deliveryDriver.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DeliveryDriverFindFirstArgs>(args?: SelectSubset<T, DeliveryDriverFindFirstArgs<ExtArgs>>): Prisma__DeliveryDriverClient<$Result.GetResult<Prisma.$DeliveryDriverPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DeliveryDriver that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryDriverFindFirstOrThrowArgs} args - Arguments to find a DeliveryDriver
+     * @example
+     * // Get one DeliveryDriver
+     * const deliveryDriver = await prisma.deliveryDriver.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DeliveryDriverFindFirstOrThrowArgs>(args?: SelectSubset<T, DeliveryDriverFindFirstOrThrowArgs<ExtArgs>>): Prisma__DeliveryDriverClient<$Result.GetResult<Prisma.$DeliveryDriverPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DeliveryDrivers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryDriverFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DeliveryDrivers
+     * const deliveryDrivers = await prisma.deliveryDriver.findMany()
+     * 
+     * // Get first 10 DeliveryDrivers
+     * const deliveryDrivers = await prisma.deliveryDriver.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const deliveryDriverWithIdOnly = await prisma.deliveryDriver.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DeliveryDriverFindManyArgs>(args?: SelectSubset<T, DeliveryDriverFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliveryDriverPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DeliveryDriver.
+     * @param {DeliveryDriverCreateArgs} args - Arguments to create a DeliveryDriver.
+     * @example
+     * // Create one DeliveryDriver
+     * const DeliveryDriver = await prisma.deliveryDriver.create({
+     *   data: {
+     *     // ... data to create a DeliveryDriver
+     *   }
+     * })
+     * 
+     */
+    create<T extends DeliveryDriverCreateArgs>(args: SelectSubset<T, DeliveryDriverCreateArgs<ExtArgs>>): Prisma__DeliveryDriverClient<$Result.GetResult<Prisma.$DeliveryDriverPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DeliveryDrivers.
+     * @param {DeliveryDriverCreateManyArgs} args - Arguments to create many DeliveryDrivers.
+     * @example
+     * // Create many DeliveryDrivers
+     * const deliveryDriver = await prisma.deliveryDriver.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DeliveryDriverCreateManyArgs>(args?: SelectSubset<T, DeliveryDriverCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DeliveryDrivers and returns the data saved in the database.
+     * @param {DeliveryDriverCreateManyAndReturnArgs} args - Arguments to create many DeliveryDrivers.
+     * @example
+     * // Create many DeliveryDrivers
+     * const deliveryDriver = await prisma.deliveryDriver.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DeliveryDrivers and only return the `id`
+     * const deliveryDriverWithIdOnly = await prisma.deliveryDriver.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DeliveryDriverCreateManyAndReturnArgs>(args?: SelectSubset<T, DeliveryDriverCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliveryDriverPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DeliveryDriver.
+     * @param {DeliveryDriverDeleteArgs} args - Arguments to delete one DeliveryDriver.
+     * @example
+     * // Delete one DeliveryDriver
+     * const DeliveryDriver = await prisma.deliveryDriver.delete({
+     *   where: {
+     *     // ... filter to delete one DeliveryDriver
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DeliveryDriverDeleteArgs>(args: SelectSubset<T, DeliveryDriverDeleteArgs<ExtArgs>>): Prisma__DeliveryDriverClient<$Result.GetResult<Prisma.$DeliveryDriverPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DeliveryDriver.
+     * @param {DeliveryDriverUpdateArgs} args - Arguments to update one DeliveryDriver.
+     * @example
+     * // Update one DeliveryDriver
+     * const deliveryDriver = await prisma.deliveryDriver.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DeliveryDriverUpdateArgs>(args: SelectSubset<T, DeliveryDriverUpdateArgs<ExtArgs>>): Prisma__DeliveryDriverClient<$Result.GetResult<Prisma.$DeliveryDriverPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DeliveryDrivers.
+     * @param {DeliveryDriverDeleteManyArgs} args - Arguments to filter DeliveryDrivers to delete.
+     * @example
+     * // Delete a few DeliveryDrivers
+     * const { count } = await prisma.deliveryDriver.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DeliveryDriverDeleteManyArgs>(args?: SelectSubset<T, DeliveryDriverDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DeliveryDrivers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryDriverUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DeliveryDrivers
+     * const deliveryDriver = await prisma.deliveryDriver.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DeliveryDriverUpdateManyArgs>(args: SelectSubset<T, DeliveryDriverUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DeliveryDrivers and returns the data updated in the database.
+     * @param {DeliveryDriverUpdateManyAndReturnArgs} args - Arguments to update many DeliveryDrivers.
+     * @example
+     * // Update many DeliveryDrivers
+     * const deliveryDriver = await prisma.deliveryDriver.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DeliveryDrivers and only return the `id`
+     * const deliveryDriverWithIdOnly = await prisma.deliveryDriver.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DeliveryDriverUpdateManyAndReturnArgs>(args: SelectSubset<T, DeliveryDriverUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliveryDriverPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DeliveryDriver.
+     * @param {DeliveryDriverUpsertArgs} args - Arguments to update or create a DeliveryDriver.
+     * @example
+     * // Update or create a DeliveryDriver
+     * const deliveryDriver = await prisma.deliveryDriver.upsert({
+     *   create: {
+     *     // ... data to create a DeliveryDriver
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DeliveryDriver we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DeliveryDriverUpsertArgs>(args: SelectSubset<T, DeliveryDriverUpsertArgs<ExtArgs>>): Prisma__DeliveryDriverClient<$Result.GetResult<Prisma.$DeliveryDriverPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DeliveryDrivers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryDriverCountArgs} args - Arguments to filter DeliveryDrivers to count.
+     * @example
+     * // Count the number of DeliveryDrivers
+     * const count = await prisma.deliveryDriver.count({
+     *   where: {
+     *     // ... the filter for the DeliveryDrivers we want to count
+     *   }
+     * })
+    **/
+    count<T extends DeliveryDriverCountArgs>(
+      args?: Subset<T, DeliveryDriverCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DeliveryDriverCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DeliveryDriver.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryDriverAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DeliveryDriverAggregateArgs>(args: Subset<T, DeliveryDriverAggregateArgs>): Prisma.PrismaPromise<GetDeliveryDriverAggregateType<T>>
+
+    /**
+     * Group by DeliveryDriver.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryDriverGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DeliveryDriverGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DeliveryDriverGroupByArgs['orderBy'] }
+        : { orderBy?: DeliveryDriverGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DeliveryDriverGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDeliveryDriverGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DeliveryDriver model
+   */
+  readonly fields: DeliveryDriverFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DeliveryDriver.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DeliveryDriverClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    outlet<T extends DeliveryDriver$outletArgs<ExtArgs> = {}>(args?: Subset<T, DeliveryDriver$outletArgs<ExtArgs>>): Prisma__OutletClient<$Result.GetResult<Prisma.$OutletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    orders<T extends DeliveryDriver$ordersArgs<ExtArgs> = {}>(args?: Subset<T, DeliveryDriver$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DeliveryDriver model
+   */
+  interface DeliveryDriverFieldRefs {
+    readonly id: FieldRef<"DeliveryDriver", 'String'>
+    readonly outletId: FieldRef<"DeliveryDriver", 'String'>
+    readonly name: FieldRef<"DeliveryDriver", 'String'>
+    readonly phone: FieldRef<"DeliveryDriver", 'String'>
+    readonly vehicleInfo: FieldRef<"DeliveryDriver", 'String'>
+    readonly notes: FieldRef<"DeliveryDriver", 'String'>
+    readonly isActive: FieldRef<"DeliveryDriver", 'Boolean'>
+    readonly createdAt: FieldRef<"DeliveryDriver", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DeliveryDriver findUnique
+   */
+  export type DeliveryDriverFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDriver
+     */
+    select?: DeliveryDriverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDriver
+     */
+    omit?: DeliveryDriverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDriverInclude<ExtArgs> | null
+    /**
+     * Filter, which DeliveryDriver to fetch.
+     */
+    where: DeliveryDriverWhereUniqueInput
+  }
+
+  /**
+   * DeliveryDriver findUniqueOrThrow
+   */
+  export type DeliveryDriverFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDriver
+     */
+    select?: DeliveryDriverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDriver
+     */
+    omit?: DeliveryDriverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDriverInclude<ExtArgs> | null
+    /**
+     * Filter, which DeliveryDriver to fetch.
+     */
+    where: DeliveryDriverWhereUniqueInput
+  }
+
+  /**
+   * DeliveryDriver findFirst
+   */
+  export type DeliveryDriverFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDriver
+     */
+    select?: DeliveryDriverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDriver
+     */
+    omit?: DeliveryDriverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDriverInclude<ExtArgs> | null
+    /**
+     * Filter, which DeliveryDriver to fetch.
+     */
+    where?: DeliveryDriverWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeliveryDrivers to fetch.
+     */
+    orderBy?: DeliveryDriverOrderByWithRelationInput | DeliveryDriverOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DeliveryDrivers.
+     */
+    cursor?: DeliveryDriverWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeliveryDrivers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeliveryDrivers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeliveryDrivers.
+     */
+    distinct?: DeliveryDriverScalarFieldEnum | DeliveryDriverScalarFieldEnum[]
+  }
+
+  /**
+   * DeliveryDriver findFirstOrThrow
+   */
+  export type DeliveryDriverFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDriver
+     */
+    select?: DeliveryDriverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDriver
+     */
+    omit?: DeliveryDriverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDriverInclude<ExtArgs> | null
+    /**
+     * Filter, which DeliveryDriver to fetch.
+     */
+    where?: DeliveryDriverWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeliveryDrivers to fetch.
+     */
+    orderBy?: DeliveryDriverOrderByWithRelationInput | DeliveryDriverOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DeliveryDrivers.
+     */
+    cursor?: DeliveryDriverWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeliveryDrivers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeliveryDrivers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeliveryDrivers.
+     */
+    distinct?: DeliveryDriverScalarFieldEnum | DeliveryDriverScalarFieldEnum[]
+  }
+
+  /**
+   * DeliveryDriver findMany
+   */
+  export type DeliveryDriverFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDriver
+     */
+    select?: DeliveryDriverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDriver
+     */
+    omit?: DeliveryDriverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDriverInclude<ExtArgs> | null
+    /**
+     * Filter, which DeliveryDrivers to fetch.
+     */
+    where?: DeliveryDriverWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeliveryDrivers to fetch.
+     */
+    orderBy?: DeliveryDriverOrderByWithRelationInput | DeliveryDriverOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DeliveryDrivers.
+     */
+    cursor?: DeliveryDriverWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeliveryDrivers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeliveryDrivers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeliveryDrivers.
+     */
+    distinct?: DeliveryDriverScalarFieldEnum | DeliveryDriverScalarFieldEnum[]
+  }
+
+  /**
+   * DeliveryDriver create
+   */
+  export type DeliveryDriverCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDriver
+     */
+    select?: DeliveryDriverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDriver
+     */
+    omit?: DeliveryDriverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDriverInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DeliveryDriver.
+     */
+    data: XOR<DeliveryDriverCreateInput, DeliveryDriverUncheckedCreateInput>
+  }
+
+  /**
+   * DeliveryDriver createMany
+   */
+  export type DeliveryDriverCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DeliveryDrivers.
+     */
+    data: DeliveryDriverCreateManyInput | DeliveryDriverCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DeliveryDriver createManyAndReturn
+   */
+  export type DeliveryDriverCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDriver
+     */
+    select?: DeliveryDriverSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDriver
+     */
+    omit?: DeliveryDriverOmit<ExtArgs> | null
+    /**
+     * The data used to create many DeliveryDrivers.
+     */
+    data: DeliveryDriverCreateManyInput | DeliveryDriverCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDriverIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DeliveryDriver update
+   */
+  export type DeliveryDriverUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDriver
+     */
+    select?: DeliveryDriverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDriver
+     */
+    omit?: DeliveryDriverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDriverInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DeliveryDriver.
+     */
+    data: XOR<DeliveryDriverUpdateInput, DeliveryDriverUncheckedUpdateInput>
+    /**
+     * Choose, which DeliveryDriver to update.
+     */
+    where: DeliveryDriverWhereUniqueInput
+  }
+
+  /**
+   * DeliveryDriver updateMany
+   */
+  export type DeliveryDriverUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DeliveryDrivers.
+     */
+    data: XOR<DeliveryDriverUpdateManyMutationInput, DeliveryDriverUncheckedUpdateManyInput>
+    /**
+     * Filter which DeliveryDrivers to update
+     */
+    where?: DeliveryDriverWhereInput
+    /**
+     * Limit how many DeliveryDrivers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeliveryDriver updateManyAndReturn
+   */
+  export type DeliveryDriverUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDriver
+     */
+    select?: DeliveryDriverSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDriver
+     */
+    omit?: DeliveryDriverOmit<ExtArgs> | null
+    /**
+     * The data used to update DeliveryDrivers.
+     */
+    data: XOR<DeliveryDriverUpdateManyMutationInput, DeliveryDriverUncheckedUpdateManyInput>
+    /**
+     * Filter which DeliveryDrivers to update
+     */
+    where?: DeliveryDriverWhereInput
+    /**
+     * Limit how many DeliveryDrivers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDriverIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DeliveryDriver upsert
+   */
+  export type DeliveryDriverUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDriver
+     */
+    select?: DeliveryDriverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDriver
+     */
+    omit?: DeliveryDriverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDriverInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DeliveryDriver to update in case it exists.
+     */
+    where: DeliveryDriverWhereUniqueInput
+    /**
+     * In case the DeliveryDriver found by the `where` argument doesn't exist, create a new DeliveryDriver with this data.
+     */
+    create: XOR<DeliveryDriverCreateInput, DeliveryDriverUncheckedCreateInput>
+    /**
+     * In case the DeliveryDriver was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DeliveryDriverUpdateInput, DeliveryDriverUncheckedUpdateInput>
+  }
+
+  /**
+   * DeliveryDriver delete
+   */
+  export type DeliveryDriverDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDriver
+     */
+    select?: DeliveryDriverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDriver
+     */
+    omit?: DeliveryDriverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDriverInclude<ExtArgs> | null
+    /**
+     * Filter which DeliveryDriver to delete.
+     */
+    where: DeliveryDriverWhereUniqueInput
+  }
+
+  /**
+   * DeliveryDriver deleteMany
+   */
+  export type DeliveryDriverDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DeliveryDrivers to delete
+     */
+    where?: DeliveryDriverWhereInput
+    /**
+     * Limit how many DeliveryDrivers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeliveryDriver.outlet
+   */
+  export type DeliveryDriver$outletArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Outlet
+     */
+    select?: OutletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Outlet
+     */
+    omit?: OutletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutletInclude<ExtArgs> | null
+    where?: OutletWhereInput
+  }
+
+  /**
+   * DeliveryDriver.orders
+   */
+  export type DeliveryDriver$ordersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Order
+     */
+    select?: OrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Order
+     */
+    omit?: OrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderInclude<ExtArgs> | null
+    where?: OrderWhereInput
+    orderBy?: OrderOrderByWithRelationInput | OrderOrderByWithRelationInput[]
+    cursor?: OrderWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OrderScalarFieldEnum | OrderScalarFieldEnum[]
+  }
+
+  /**
+   * DeliveryDriver without action
+   */
+  export type DeliveryDriverDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDriver
+     */
+    select?: DeliveryDriverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDriver
+     */
+    omit?: DeliveryDriverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDriverInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Order
    */
 
@@ -20223,6 +21783,8 @@ export namespace Prisma {
   }
 
   export type OrderAvgAggregateOutputType = {
+    depositRequired: number | null
+    depositPaid: number | null
     subtotal: number | null
     serviceCharge: number | null
     taxAmount: number | null
@@ -20235,6 +21797,8 @@ export namespace Prisma {
   }
 
   export type OrderSumAggregateOutputType = {
+    depositRequired: number | null
+    depositPaid: number | null
     subtotal: number | null
     serviceCharge: number | null
     taxAmount: number | null
@@ -20258,8 +21822,18 @@ export namespace Prisma {
     deliveryAddress: string | null
     deliveryPhone: string | null
     deliveryNotes: string | null
+    driverId: string | null
     driverName: string | null
+    driverPhone: string | null
     dispatchedAt: Date | null
+    isScheduled: boolean | null
+    scheduledFor: Date | null
+    depositRequired: number | null
+    depositPaid: number | null
+    depositStatus: string | null
+    depositReceiptUrl: string | null
+    alertSent48h: boolean | null
+    alertSent24h: boolean | null
     status: string | null
     paymentStatus: string | null
     paymentMethod: string | null
@@ -20295,8 +21869,18 @@ export namespace Prisma {
     deliveryAddress: string | null
     deliveryPhone: string | null
     deliveryNotes: string | null
+    driverId: string | null
     driverName: string | null
+    driverPhone: string | null
     dispatchedAt: Date | null
+    isScheduled: boolean | null
+    scheduledFor: Date | null
+    depositRequired: number | null
+    depositPaid: number | null
+    depositStatus: string | null
+    depositReceiptUrl: string | null
+    alertSent48h: boolean | null
+    alertSent24h: boolean | null
     status: string | null
     paymentStatus: string | null
     paymentMethod: string | null
@@ -20332,8 +21916,18 @@ export namespace Prisma {
     deliveryAddress: number
     deliveryPhone: number
     deliveryNotes: number
+    driverId: number
     driverName: number
+    driverPhone: number
     dispatchedAt: number
+    isScheduled: number
+    scheduledFor: number
+    depositRequired: number
+    depositPaid: number
+    depositStatus: number
+    depositReceiptUrl: number
+    alertSent48h: number
+    alertSent24h: number
     status: number
     paymentStatus: number
     paymentMethod: number
@@ -20360,6 +21954,8 @@ export namespace Prisma {
 
 
   export type OrderAvgAggregateInputType = {
+    depositRequired?: true
+    depositPaid?: true
     subtotal?: true
     serviceCharge?: true
     taxAmount?: true
@@ -20372,6 +21968,8 @@ export namespace Prisma {
   }
 
   export type OrderSumAggregateInputType = {
+    depositRequired?: true
+    depositPaid?: true
     subtotal?: true
     serviceCharge?: true
     taxAmount?: true
@@ -20395,8 +21993,18 @@ export namespace Prisma {
     deliveryAddress?: true
     deliveryPhone?: true
     deliveryNotes?: true
+    driverId?: true
     driverName?: true
+    driverPhone?: true
     dispatchedAt?: true
+    isScheduled?: true
+    scheduledFor?: true
+    depositRequired?: true
+    depositPaid?: true
+    depositStatus?: true
+    depositReceiptUrl?: true
+    alertSent48h?: true
+    alertSent24h?: true
     status?: true
     paymentStatus?: true
     paymentMethod?: true
@@ -20432,8 +22040,18 @@ export namespace Prisma {
     deliveryAddress?: true
     deliveryPhone?: true
     deliveryNotes?: true
+    driverId?: true
     driverName?: true
+    driverPhone?: true
     dispatchedAt?: true
+    isScheduled?: true
+    scheduledFor?: true
+    depositRequired?: true
+    depositPaid?: true
+    depositStatus?: true
+    depositReceiptUrl?: true
+    alertSent48h?: true
+    alertSent24h?: true
     status?: true
     paymentStatus?: true
     paymentMethod?: true
@@ -20469,8 +22087,18 @@ export namespace Prisma {
     deliveryAddress?: true
     deliveryPhone?: true
     deliveryNotes?: true
+    driverId?: true
     driverName?: true
+    driverPhone?: true
     dispatchedAt?: true
+    isScheduled?: true
+    scheduledFor?: true
+    depositRequired?: true
+    depositPaid?: true
+    depositStatus?: true
+    depositReceiptUrl?: true
+    alertSent48h?: true
+    alertSent24h?: true
     status?: true
     paymentStatus?: true
     paymentMethod?: true
@@ -20593,8 +22221,18 @@ export namespace Prisma {
     deliveryAddress: string | null
     deliveryPhone: string | null
     deliveryNotes: string | null
+    driverId: string | null
     driverName: string | null
+    driverPhone: string | null
     dispatchedAt: Date | null
+    isScheduled: boolean
+    scheduledFor: Date | null
+    depositRequired: number
+    depositPaid: number
+    depositStatus: string
+    depositReceiptUrl: string | null
+    alertSent48h: boolean
+    alertSent24h: boolean
     status: string
     paymentStatus: string
     paymentMethod: string
@@ -20649,8 +22287,18 @@ export namespace Prisma {
     deliveryAddress?: boolean
     deliveryPhone?: boolean
     deliveryNotes?: boolean
+    driverId?: boolean
     driverName?: boolean
+    driverPhone?: boolean
     dispatchedAt?: boolean
+    isScheduled?: boolean
+    scheduledFor?: boolean
+    depositRequired?: boolean
+    depositPaid?: boolean
+    depositStatus?: boolean
+    depositReceiptUrl?: boolean
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: boolean
     paymentStatus?: boolean
     paymentMethod?: boolean
@@ -20675,6 +22323,7 @@ export namespace Prisma {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     table?: boolean | Order$tableArgs<ExtArgs>
     deliveryZone?: boolean | Order$deliveryZoneArgs<ExtArgs>
+    driver?: boolean | Order$driverArgs<ExtArgs>
     customer?: boolean | Order$customerArgs<ExtArgs>
     kdsTickets?: boolean | Order$kdsTicketsArgs<ExtArgs>
     _count?: boolean | OrderCountOutputTypeDefaultArgs<ExtArgs>
@@ -20692,8 +22341,18 @@ export namespace Prisma {
     deliveryAddress?: boolean
     deliveryPhone?: boolean
     deliveryNotes?: boolean
+    driverId?: boolean
     driverName?: boolean
+    driverPhone?: boolean
     dispatchedAt?: boolean
+    isScheduled?: boolean
+    scheduledFor?: boolean
+    depositRequired?: boolean
+    depositPaid?: boolean
+    depositStatus?: boolean
+    depositReceiptUrl?: boolean
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: boolean
     paymentStatus?: boolean
     paymentMethod?: boolean
@@ -20718,6 +22377,7 @@ export namespace Prisma {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     table?: boolean | Order$tableArgs<ExtArgs>
     deliveryZone?: boolean | Order$deliveryZoneArgs<ExtArgs>
+    driver?: boolean | Order$driverArgs<ExtArgs>
     customer?: boolean | Order$customerArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
 
@@ -20733,8 +22393,18 @@ export namespace Prisma {
     deliveryAddress?: boolean
     deliveryPhone?: boolean
     deliveryNotes?: boolean
+    driverId?: boolean
     driverName?: boolean
+    driverPhone?: boolean
     dispatchedAt?: boolean
+    isScheduled?: boolean
+    scheduledFor?: boolean
+    depositRequired?: boolean
+    depositPaid?: boolean
+    depositStatus?: boolean
+    depositReceiptUrl?: boolean
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: boolean
     paymentStatus?: boolean
     paymentMethod?: boolean
@@ -20759,6 +22429,7 @@ export namespace Prisma {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     table?: boolean | Order$tableArgs<ExtArgs>
     deliveryZone?: boolean | Order$deliveryZoneArgs<ExtArgs>
+    driver?: boolean | Order$driverArgs<ExtArgs>
     customer?: boolean | Order$customerArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
 
@@ -20774,8 +22445,18 @@ export namespace Prisma {
     deliveryAddress?: boolean
     deliveryPhone?: boolean
     deliveryNotes?: boolean
+    driverId?: boolean
     driverName?: boolean
+    driverPhone?: boolean
     dispatchedAt?: boolean
+    isScheduled?: boolean
+    scheduledFor?: boolean
+    depositRequired?: boolean
+    depositPaid?: boolean
+    depositStatus?: boolean
+    depositReceiptUrl?: boolean
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: boolean
     paymentStatus?: boolean
     paymentMethod?: boolean
@@ -20799,11 +22480,12 @@ export namespace Prisma {
     settledAt?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "orderNumber" | "orderType" | "tableId" | "tableNumber" | "deliveryZoneId" | "deliveryZoneName" | "deliveryAddress" | "deliveryPhone" | "deliveryNotes" | "driverName" | "dispatchedAt" | "status" | "paymentStatus" | "paymentMethod" | "subtotal" | "serviceCharge" | "taxAmount" | "deliveryFee" | "discountAmount" | "tipAmount" | "finalAmount" | "cashierName" | "waiterName" | "customerName" | "customerPhone" | "customerId" | "pointsEarned" | "pointsRedeemed" | "notes" | "items" | "createdAt" | "settledAt", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "orderNumber" | "orderType" | "tableId" | "tableNumber" | "deliveryZoneId" | "deliveryZoneName" | "deliveryAddress" | "deliveryPhone" | "deliveryNotes" | "driverId" | "driverName" | "driverPhone" | "dispatchedAt" | "isScheduled" | "scheduledFor" | "depositRequired" | "depositPaid" | "depositStatus" | "depositReceiptUrl" | "alertSent48h" | "alertSent24h" | "status" | "paymentStatus" | "paymentMethod" | "subtotal" | "serviceCharge" | "taxAmount" | "deliveryFee" | "discountAmount" | "tipAmount" | "finalAmount" | "cashierName" | "waiterName" | "customerName" | "customerPhone" | "customerId" | "pointsEarned" | "pointsRedeemed" | "notes" | "items" | "createdAt" | "settledAt", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     table?: boolean | Order$tableArgs<ExtArgs>
     deliveryZone?: boolean | Order$deliveryZoneArgs<ExtArgs>
+    driver?: boolean | Order$driverArgs<ExtArgs>
     customer?: boolean | Order$customerArgs<ExtArgs>
     kdsTickets?: boolean | Order$kdsTicketsArgs<ExtArgs>
     _count?: boolean | OrderCountOutputTypeDefaultArgs<ExtArgs>
@@ -20812,12 +22494,14 @@ export namespace Prisma {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     table?: boolean | Order$tableArgs<ExtArgs>
     deliveryZone?: boolean | Order$deliveryZoneArgs<ExtArgs>
+    driver?: boolean | Order$driverArgs<ExtArgs>
     customer?: boolean | Order$customerArgs<ExtArgs>
   }
   export type OrderIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     table?: boolean | Order$tableArgs<ExtArgs>
     deliveryZone?: boolean | Order$deliveryZoneArgs<ExtArgs>
+    driver?: boolean | Order$driverArgs<ExtArgs>
     customer?: boolean | Order$customerArgs<ExtArgs>
   }
 
@@ -20827,6 +22511,7 @@ export namespace Prisma {
       outlet: Prisma.$OutletPayload<ExtArgs>
       table: Prisma.$DiningTablePayload<ExtArgs> | null
       deliveryZone: Prisma.$DeliveryZonePayload<ExtArgs> | null
+      driver: Prisma.$DeliveryDriverPayload<ExtArgs> | null
       customer: Prisma.$CustomerPayload<ExtArgs> | null
       kdsTickets: Prisma.$KdsTicketPayload<ExtArgs>[]
     }
@@ -20842,8 +22527,18 @@ export namespace Prisma {
       deliveryAddress: string | null
       deliveryPhone: string | null
       deliveryNotes: string | null
+      driverId: string | null
       driverName: string | null
+      driverPhone: string | null
       dispatchedAt: Date | null
+      isScheduled: boolean
+      scheduledFor: Date | null
+      depositRequired: number
+      depositPaid: number
+      depositStatus: string
+      depositReceiptUrl: string | null
+      alertSent48h: boolean
+      alertSent24h: boolean
       status: string
       paymentStatus: string
       paymentMethod: string
@@ -21262,6 +22957,7 @@ export namespace Prisma {
     outlet<T extends OutletDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OutletDefaultArgs<ExtArgs>>): Prisma__OutletClient<$Result.GetResult<Prisma.$OutletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     table<T extends Order$tableArgs<ExtArgs> = {}>(args?: Subset<T, Order$tableArgs<ExtArgs>>): Prisma__DiningTableClient<$Result.GetResult<Prisma.$DiningTablePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     deliveryZone<T extends Order$deliveryZoneArgs<ExtArgs> = {}>(args?: Subset<T, Order$deliveryZoneArgs<ExtArgs>>): Prisma__DeliveryZoneClient<$Result.GetResult<Prisma.$DeliveryZonePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    driver<T extends Order$driverArgs<ExtArgs> = {}>(args?: Subset<T, Order$driverArgs<ExtArgs>>): Prisma__DeliveryDriverClient<$Result.GetResult<Prisma.$DeliveryDriverPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     customer<T extends Order$customerArgs<ExtArgs> = {}>(args?: Subset<T, Order$customerArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     kdsTickets<T extends Order$kdsTicketsArgs<ExtArgs> = {}>(args?: Subset<T, Order$kdsTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KdsTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -21304,8 +23000,18 @@ export namespace Prisma {
     readonly deliveryAddress: FieldRef<"Order", 'String'>
     readonly deliveryPhone: FieldRef<"Order", 'String'>
     readonly deliveryNotes: FieldRef<"Order", 'String'>
+    readonly driverId: FieldRef<"Order", 'String'>
     readonly driverName: FieldRef<"Order", 'String'>
+    readonly driverPhone: FieldRef<"Order", 'String'>
     readonly dispatchedAt: FieldRef<"Order", 'DateTime'>
+    readonly isScheduled: FieldRef<"Order", 'Boolean'>
+    readonly scheduledFor: FieldRef<"Order", 'DateTime'>
+    readonly depositRequired: FieldRef<"Order", 'Float'>
+    readonly depositPaid: FieldRef<"Order", 'Float'>
+    readonly depositStatus: FieldRef<"Order", 'String'>
+    readonly depositReceiptUrl: FieldRef<"Order", 'String'>
+    readonly alertSent48h: FieldRef<"Order", 'Boolean'>
+    readonly alertSent24h: FieldRef<"Order", 'Boolean'>
     readonly status: FieldRef<"Order", 'String'>
     readonly paymentStatus: FieldRef<"Order", 'String'>
     readonly paymentMethod: FieldRef<"Order", 'String'>
@@ -21763,6 +23469,25 @@ export namespace Prisma {
      */
     include?: DeliveryZoneInclude<ExtArgs> | null
     where?: DeliveryZoneWhereInput
+  }
+
+  /**
+   * Order.driver
+   */
+  export type Order$driverArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDriver
+     */
+    select?: DeliveryDriverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDriver
+     */
+    omit?: DeliveryDriverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDriverInclude<ExtArgs> | null
+    where?: DeliveryDriverWhereInput
   }
 
   /**
@@ -22938,6 +24663,7 @@ export namespace Prisma {
     visaCollected: number | null
     instapayCollected: number | null
     vodafoneCollected: number | null
+    deliveryFeesTotal: number | null
     totalRevenue: number | null
     expensesTotal: number | null
     ticketsCount: number | null
@@ -22953,6 +24679,7 @@ export namespace Prisma {
     visaCollected: number | null
     instapayCollected: number | null
     vodafoneCollected: number | null
+    deliveryFeesTotal: number | null
     totalRevenue: number | null
     expensesTotal: number | null
     ticketsCount: number | null
@@ -22972,6 +24699,7 @@ export namespace Prisma {
     visaCollected: number | null
     instapayCollected: number | null
     vodafoneCollected: number | null
+    deliveryFeesTotal: number | null
     totalRevenue: number | null
     expensesTotal: number | null
     ticketsCount: number | null
@@ -22996,6 +24724,7 @@ export namespace Prisma {
     visaCollected: number | null
     instapayCollected: number | null
     vodafoneCollected: number | null
+    deliveryFeesTotal: number | null
     totalRevenue: number | null
     expensesTotal: number | null
     ticketsCount: number | null
@@ -23020,6 +24749,7 @@ export namespace Prisma {
     visaCollected: number
     instapayCollected: number
     vodafoneCollected: number
+    deliveryFeesTotal: number
     totalRevenue: number
     expensesTotal: number
     ticketsCount: number
@@ -23042,6 +24772,7 @@ export namespace Prisma {
     visaCollected?: true
     instapayCollected?: true
     vodafoneCollected?: true
+    deliveryFeesTotal?: true
     totalRevenue?: true
     expensesTotal?: true
     ticketsCount?: true
@@ -23057,6 +24788,7 @@ export namespace Prisma {
     visaCollected?: true
     instapayCollected?: true
     vodafoneCollected?: true
+    deliveryFeesTotal?: true
     totalRevenue?: true
     expensesTotal?: true
     ticketsCount?: true
@@ -23076,6 +24808,7 @@ export namespace Prisma {
     visaCollected?: true
     instapayCollected?: true
     vodafoneCollected?: true
+    deliveryFeesTotal?: true
     totalRevenue?: true
     expensesTotal?: true
     ticketsCount?: true
@@ -23100,6 +24833,7 @@ export namespace Prisma {
     visaCollected?: true
     instapayCollected?: true
     vodafoneCollected?: true
+    deliveryFeesTotal?: true
     totalRevenue?: true
     expensesTotal?: true
     ticketsCount?: true
@@ -23124,6 +24858,7 @@ export namespace Prisma {
     visaCollected?: true
     instapayCollected?: true
     vodafoneCollected?: true
+    deliveryFeesTotal?: true
     totalRevenue?: true
     expensesTotal?: true
     ticketsCount?: true
@@ -23235,6 +24970,7 @@ export namespace Prisma {
     visaCollected: number
     instapayCollected: number
     vodafoneCollected: number
+    deliveryFeesTotal: number
     totalRevenue: number
     expensesTotal: number
     ticketsCount: number
@@ -23278,6 +25014,7 @@ export namespace Prisma {
     visaCollected?: boolean
     instapayCollected?: boolean
     vodafoneCollected?: boolean
+    deliveryFeesTotal?: boolean
     totalRevenue?: boolean
     expensesTotal?: boolean
     ticketsCount?: boolean
@@ -23303,6 +25040,7 @@ export namespace Prisma {
     visaCollected?: boolean
     instapayCollected?: boolean
     vodafoneCollected?: boolean
+    deliveryFeesTotal?: boolean
     totalRevenue?: boolean
     expensesTotal?: boolean
     ticketsCount?: boolean
@@ -23328,6 +25066,7 @@ export namespace Prisma {
     visaCollected?: boolean
     instapayCollected?: boolean
     vodafoneCollected?: boolean
+    deliveryFeesTotal?: boolean
     totalRevenue?: boolean
     expensesTotal?: boolean
     ticketsCount?: boolean
@@ -23353,6 +25092,7 @@ export namespace Prisma {
     visaCollected?: boolean
     instapayCollected?: boolean
     vodafoneCollected?: boolean
+    deliveryFeesTotal?: boolean
     totalRevenue?: boolean
     expensesTotal?: boolean
     ticketsCount?: boolean
@@ -23363,7 +25103,7 @@ export namespace Prisma {
     closedAt?: boolean
   }
 
-  export type ShiftOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "shiftNumber" | "openedBy" | "closedBy" | "openingCashFloat" | "expectedCash" | "actualCash" | "difference" | "cashCollected" | "visaCollected" | "instapayCollected" | "vodafoneCollected" | "totalRevenue" | "expensesTotal" | "ticketsCount" | "handedTo" | "notes" | "status" | "openedAt" | "closedAt", ExtArgs["result"]["shift"]>
+  export type ShiftOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "shiftNumber" | "openedBy" | "closedBy" | "openingCashFloat" | "expectedCash" | "actualCash" | "difference" | "cashCollected" | "visaCollected" | "instapayCollected" | "vodafoneCollected" | "deliveryFeesTotal" | "totalRevenue" | "expensesTotal" | "ticketsCount" | "handedTo" | "notes" | "status" | "openedAt" | "closedAt", ExtArgs["result"]["shift"]>
   export type ShiftInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
   }
@@ -23393,6 +25133,7 @@ export namespace Prisma {
       visaCollected: number
       instapayCollected: number
       vodafoneCollected: number
+      deliveryFeesTotal: number
       totalRevenue: number
       expensesTotal: number
       ticketsCount: number
@@ -23838,6 +25579,7 @@ export namespace Prisma {
     readonly visaCollected: FieldRef<"Shift", 'Float'>
     readonly instapayCollected: FieldRef<"Shift", 'Float'>
     readonly vodafoneCollected: FieldRef<"Shift", 'Float'>
+    readonly deliveryFeesTotal: FieldRef<"Shift", 'Float'>
     readonly totalRevenue: FieldRef<"Shift", 'Float'>
     readonly expensesTotal: FieldRef<"Shift", 'Float'>
     readonly ticketsCount: FieldRef<"Shift", 'Int'>
@@ -26689,6 +28431,7 @@ export namespace Prisma {
     serviceChargePercent: number | null
     taxPercent: number | null
     deliveryFee: number | null
+    preOrderDepositPercent: number | null
     pointsPerPoundSpent: number | null
     poundValuePerPoint: number | null
   }
@@ -26697,6 +28440,7 @@ export namespace Prisma {
     serviceChargePercent: number | null
     taxPercent: number | null
     deliveryFee: number | null
+    preOrderDepositPercent: number | null
     pointsPerPoundSpent: number | null
     poundValuePerPoint: number | null
   }
@@ -26714,6 +28458,9 @@ export namespace Prisma {
     serviceChargePercent: number | null
     taxPercent: number | null
     deliveryFee: number | null
+    preOrderDepositPercent: number | null
+    instapayAccount: string | null
+    vodafoneCashNumber: string | null
     isServiceChargeEnabled: boolean | null
     isTaxEnabled: boolean | null
     isLoyaltyEnabled: boolean | null
@@ -26738,6 +28485,9 @@ export namespace Prisma {
     serviceChargePercent: number | null
     taxPercent: number | null
     deliveryFee: number | null
+    preOrderDepositPercent: number | null
+    instapayAccount: string | null
+    vodafoneCashNumber: string | null
     isServiceChargeEnabled: boolean | null
     isTaxEnabled: boolean | null
     isLoyaltyEnabled: boolean | null
@@ -26762,6 +28512,9 @@ export namespace Prisma {
     serviceChargePercent: number
     taxPercent: number
     deliveryFee: number
+    preOrderDepositPercent: number
+    instapayAccount: number
+    vodafoneCashNumber: number
     isServiceChargeEnabled: number
     isTaxEnabled: number
     isLoyaltyEnabled: number
@@ -26779,6 +28532,7 @@ export namespace Prisma {
     serviceChargePercent?: true
     taxPercent?: true
     deliveryFee?: true
+    preOrderDepositPercent?: true
     pointsPerPoundSpent?: true
     poundValuePerPoint?: true
   }
@@ -26787,6 +28541,7 @@ export namespace Prisma {
     serviceChargePercent?: true
     taxPercent?: true
     deliveryFee?: true
+    preOrderDepositPercent?: true
     pointsPerPoundSpent?: true
     poundValuePerPoint?: true
   }
@@ -26804,6 +28559,9 @@ export namespace Prisma {
     serviceChargePercent?: true
     taxPercent?: true
     deliveryFee?: true
+    preOrderDepositPercent?: true
+    instapayAccount?: true
+    vodafoneCashNumber?: true
     isServiceChargeEnabled?: true
     isTaxEnabled?: true
     isLoyaltyEnabled?: true
@@ -26828,6 +28586,9 @@ export namespace Prisma {
     serviceChargePercent?: true
     taxPercent?: true
     deliveryFee?: true
+    preOrderDepositPercent?: true
+    instapayAccount?: true
+    vodafoneCashNumber?: true
     isServiceChargeEnabled?: true
     isTaxEnabled?: true
     isLoyaltyEnabled?: true
@@ -26852,6 +28613,9 @@ export namespace Prisma {
     serviceChargePercent?: true
     taxPercent?: true
     deliveryFee?: true
+    preOrderDepositPercent?: true
+    instapayAccount?: true
+    vodafoneCashNumber?: true
     isServiceChargeEnabled?: true
     isTaxEnabled?: true
     isLoyaltyEnabled?: true
@@ -26963,6 +28727,9 @@ export namespace Prisma {
     serviceChargePercent: number
     taxPercent: number
     deliveryFee: number
+    preOrderDepositPercent: number
+    instapayAccount: string | null
+    vodafoneCashNumber: string | null
     isServiceChargeEnabled: boolean
     isTaxEnabled: boolean
     isLoyaltyEnabled: boolean
@@ -27006,6 +28773,9 @@ export namespace Prisma {
     serviceChargePercent?: boolean
     taxPercent?: boolean
     deliveryFee?: boolean
+    preOrderDepositPercent?: boolean
+    instapayAccount?: boolean
+    vodafoneCashNumber?: boolean
     isServiceChargeEnabled?: boolean
     isTaxEnabled?: boolean
     isLoyaltyEnabled?: boolean
@@ -27030,6 +28800,9 @@ export namespace Prisma {
     serviceChargePercent?: boolean
     taxPercent?: boolean
     deliveryFee?: boolean
+    preOrderDepositPercent?: boolean
+    instapayAccount?: boolean
+    vodafoneCashNumber?: boolean
     isServiceChargeEnabled?: boolean
     isTaxEnabled?: boolean
     isLoyaltyEnabled?: boolean
@@ -27054,6 +28827,9 @@ export namespace Prisma {
     serviceChargePercent?: boolean
     taxPercent?: boolean
     deliveryFee?: boolean
+    preOrderDepositPercent?: boolean
+    instapayAccount?: boolean
+    vodafoneCashNumber?: boolean
     isServiceChargeEnabled?: boolean
     isTaxEnabled?: boolean
     isLoyaltyEnabled?: boolean
@@ -27078,6 +28854,9 @@ export namespace Prisma {
     serviceChargePercent?: boolean
     taxPercent?: boolean
     deliveryFee?: boolean
+    preOrderDepositPercent?: boolean
+    instapayAccount?: boolean
+    vodafoneCashNumber?: boolean
     isServiceChargeEnabled?: boolean
     isTaxEnabled?: boolean
     isLoyaltyEnabled?: boolean
@@ -27089,7 +28868,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SystemSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "brandNameAr" | "brandNameEn" | "soulmatePhone" | "abuAdelPhone" | "hotline" | "whatsapp" | "haliyomakUrl" | "facebookUrl" | "serviceChargePercent" | "taxPercent" | "deliveryFee" | "isServiceChargeEnabled" | "isTaxEnabled" | "isLoyaltyEnabled" | "pointsPerPoundSpent" | "poundValuePerPoint" | "receiptFooterNotes" | "systemLocked" | "lockMessage" | "updatedAt", ExtArgs["result"]["systemSettings"]>
+  export type SystemSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "brandNameAr" | "brandNameEn" | "soulmatePhone" | "abuAdelPhone" | "hotline" | "whatsapp" | "haliyomakUrl" | "facebookUrl" | "serviceChargePercent" | "taxPercent" | "deliveryFee" | "preOrderDepositPercent" | "instapayAccount" | "vodafoneCashNumber" | "isServiceChargeEnabled" | "isTaxEnabled" | "isLoyaltyEnabled" | "pointsPerPoundSpent" | "poundValuePerPoint" | "receiptFooterNotes" | "systemLocked" | "lockMessage" | "updatedAt", ExtArgs["result"]["systemSettings"]>
 
   export type $SystemSettingsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SystemSettings"
@@ -27107,6 +28886,9 @@ export namespace Prisma {
       serviceChargePercent: number
       taxPercent: number
       deliveryFee: number
+      preOrderDepositPercent: number
+      instapayAccount: string | null
+      vodafoneCashNumber: string | null
       isServiceChargeEnabled: boolean
       isTaxEnabled: boolean
       isLoyaltyEnabled: boolean
@@ -27551,6 +29333,9 @@ export namespace Prisma {
     readonly serviceChargePercent: FieldRef<"SystemSettings", 'Float'>
     readonly taxPercent: FieldRef<"SystemSettings", 'Float'>
     readonly deliveryFee: FieldRef<"SystemSettings", 'Float'>
+    readonly preOrderDepositPercent: FieldRef<"SystemSettings", 'Float'>
+    readonly instapayAccount: FieldRef<"SystemSettings", 'String'>
+    readonly vodafoneCashNumber: FieldRef<"SystemSettings", 'String'>
     readonly isServiceChargeEnabled: FieldRef<"SystemSettings", 'Boolean'>
     readonly isTaxEnabled: FieldRef<"SystemSettings", 'Boolean'>
     readonly isLoyaltyEnabled: FieldRef<"SystemSettings", 'Boolean'>
@@ -29151,6 +30936,7 @@ export namespace Prisma {
     tableNumber: string | null
     orderNumber: string | null
     message: string | null
+    imageUrl: string | null
     isRead: boolean | null
     createdAt: Date | null
   }
@@ -29164,6 +30950,7 @@ export namespace Prisma {
     tableNumber: string | null
     orderNumber: string | null
     message: string | null
+    imageUrl: string | null
     isRead: boolean | null
     createdAt: Date | null
   }
@@ -29177,6 +30964,7 @@ export namespace Prisma {
     tableNumber: number
     orderNumber: number
     message: number
+    imageUrl: number
     isRead: number
     createdAt: number
     _all: number
@@ -29192,6 +30980,7 @@ export namespace Prisma {
     tableNumber?: true
     orderNumber?: true
     message?: true
+    imageUrl?: true
     isRead?: true
     createdAt?: true
   }
@@ -29205,6 +30994,7 @@ export namespace Prisma {
     tableNumber?: true
     orderNumber?: true
     message?: true
+    imageUrl?: true
     isRead?: true
     createdAt?: true
   }
@@ -29218,6 +31008,7 @@ export namespace Prisma {
     tableNumber?: true
     orderNumber?: true
     message?: true
+    imageUrl?: true
     isRead?: true
     createdAt?: true
     _all?: true
@@ -29304,6 +31095,7 @@ export namespace Prisma {
     tableNumber: string | null
     orderNumber: string | null
     message: string
+    imageUrl: string | null
     isRead: boolean
     createdAt: Date
     _count: ChatMessageCountAggregateOutputType | null
@@ -29334,6 +31126,7 @@ export namespace Prisma {
     tableNumber?: boolean
     orderNumber?: boolean
     message?: boolean
+    imageUrl?: boolean
     isRead?: boolean
     createdAt?: boolean
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
@@ -29348,6 +31141,7 @@ export namespace Prisma {
     tableNumber?: boolean
     orderNumber?: boolean
     message?: boolean
+    imageUrl?: boolean
     isRead?: boolean
     createdAt?: boolean
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
@@ -29362,6 +31156,7 @@ export namespace Prisma {
     tableNumber?: boolean
     orderNumber?: boolean
     message?: boolean
+    imageUrl?: boolean
     isRead?: boolean
     createdAt?: boolean
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
@@ -29376,11 +31171,12 @@ export namespace Prisma {
     tableNumber?: boolean
     orderNumber?: boolean
     message?: boolean
+    imageUrl?: boolean
     isRead?: boolean
     createdAt?: boolean
   }
 
-  export type ChatMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "senderType" | "senderName" | "senderPhone" | "tableNumber" | "orderNumber" | "message" | "isRead" | "createdAt", ExtArgs["result"]["chatMessage"]>
+  export type ChatMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "senderType" | "senderName" | "senderPhone" | "tableNumber" | "orderNumber" | "message" | "imageUrl" | "isRead" | "createdAt", ExtArgs["result"]["chatMessage"]>
   export type ChatMessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
   }
@@ -29405,6 +31201,7 @@ export namespace Prisma {
       tableNumber: string | null
       orderNumber: string | null
       message: string
+      imageUrl: string | null
       isRead: boolean
       createdAt: Date
     }, ExtArgs["result"]["chatMessage"]>
@@ -29839,6 +31636,7 @@ export namespace Prisma {
     readonly tableNumber: FieldRef<"ChatMessage", 'String'>
     readonly orderNumber: FieldRef<"ChatMessage", 'String'>
     readonly message: FieldRef<"ChatMessage", 'String'>
+    readonly imageUrl: FieldRef<"ChatMessage", 'String'>
     readonly isRead: FieldRef<"ChatMessage", 'Boolean'>
     readonly createdAt: FieldRef<"ChatMessage", 'DateTime'>
   }
@@ -30261,6 +32059,2346 @@ export namespace Prisma {
 
 
   /**
+   * Model FactoryOrder
+   */
+
+  export type AggregateFactoryOrder = {
+    _count: FactoryOrderCountAggregateOutputType | null
+    _min: FactoryOrderMinAggregateOutputType | null
+    _max: FactoryOrderMaxAggregateOutputType | null
+  }
+
+  export type FactoryOrderMinAggregateOutputType = {
+    id: string | null
+    outletId: string | null
+    targetDate: Date | null
+    status: string | null
+    createdBy: string | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FactoryOrderMaxAggregateOutputType = {
+    id: string | null
+    outletId: string | null
+    targetDate: Date | null
+    status: string | null
+    createdBy: string | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FactoryOrderCountAggregateOutputType = {
+    id: number
+    outletId: number
+    targetDate: number
+    status: number
+    createdBy: number
+    notes: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type FactoryOrderMinAggregateInputType = {
+    id?: true
+    outletId?: true
+    targetDate?: true
+    status?: true
+    createdBy?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FactoryOrderMaxAggregateInputType = {
+    id?: true
+    outletId?: true
+    targetDate?: true
+    status?: true
+    createdBy?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FactoryOrderCountAggregateInputType = {
+    id?: true
+    outletId?: true
+    targetDate?: true
+    status?: true
+    createdBy?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type FactoryOrderAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FactoryOrder to aggregate.
+     */
+    where?: FactoryOrderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FactoryOrders to fetch.
+     */
+    orderBy?: FactoryOrderOrderByWithRelationInput | FactoryOrderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FactoryOrderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FactoryOrders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FactoryOrders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FactoryOrders
+    **/
+    _count?: true | FactoryOrderCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FactoryOrderMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FactoryOrderMaxAggregateInputType
+  }
+
+  export type GetFactoryOrderAggregateType<T extends FactoryOrderAggregateArgs> = {
+        [P in keyof T & keyof AggregateFactoryOrder]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFactoryOrder[P]>
+      : GetScalarType<T[P], AggregateFactoryOrder[P]>
+  }
+
+
+
+
+  export type FactoryOrderGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FactoryOrderWhereInput
+    orderBy?: FactoryOrderOrderByWithAggregationInput | FactoryOrderOrderByWithAggregationInput[]
+    by: FactoryOrderScalarFieldEnum[] | FactoryOrderScalarFieldEnum
+    having?: FactoryOrderScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FactoryOrderCountAggregateInputType | true
+    _min?: FactoryOrderMinAggregateInputType
+    _max?: FactoryOrderMaxAggregateInputType
+  }
+
+  export type FactoryOrderGroupByOutputType = {
+    id: string
+    outletId: string
+    targetDate: Date
+    status: string
+    createdBy: string
+    notes: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: FactoryOrderCountAggregateOutputType | null
+    _min: FactoryOrderMinAggregateOutputType | null
+    _max: FactoryOrderMaxAggregateOutputType | null
+  }
+
+  type GetFactoryOrderGroupByPayload<T extends FactoryOrderGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FactoryOrderGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FactoryOrderGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FactoryOrderGroupByOutputType[P]>
+            : GetScalarType<T[P], FactoryOrderGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FactoryOrderSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    targetDate?: boolean
+    status?: boolean
+    createdBy?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+    items?: boolean | FactoryOrder$itemsArgs<ExtArgs>
+    _count?: boolean | FactoryOrderCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["factoryOrder"]>
+
+  export type FactoryOrderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    targetDate?: boolean
+    status?: boolean
+    createdBy?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["factoryOrder"]>
+
+  export type FactoryOrderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletId?: boolean
+    targetDate?: boolean
+    status?: boolean
+    createdBy?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["factoryOrder"]>
+
+  export type FactoryOrderSelectScalar = {
+    id?: boolean
+    outletId?: boolean
+    targetDate?: boolean
+    status?: boolean
+    createdBy?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type FactoryOrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "targetDate" | "status" | "createdBy" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["factoryOrder"]>
+  export type FactoryOrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+    items?: boolean | FactoryOrder$itemsArgs<ExtArgs>
+    _count?: boolean | FactoryOrderCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type FactoryOrderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }
+  export type FactoryOrderIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outlet?: boolean | OutletDefaultArgs<ExtArgs>
+  }
+
+  export type $FactoryOrderPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FactoryOrder"
+    objects: {
+      outlet: Prisma.$OutletPayload<ExtArgs>
+      items: Prisma.$FactoryOrderItemPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      outletId: string
+      targetDate: Date
+      status: string
+      createdBy: string
+      notes: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["factoryOrder"]>
+    composites: {}
+  }
+
+  type FactoryOrderGetPayload<S extends boolean | null | undefined | FactoryOrderDefaultArgs> = $Result.GetResult<Prisma.$FactoryOrderPayload, S>
+
+  type FactoryOrderCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FactoryOrderFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FactoryOrderCountAggregateInputType | true
+    }
+
+  export interface FactoryOrderDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FactoryOrder'], meta: { name: 'FactoryOrder' } }
+    /**
+     * Find zero or one FactoryOrder that matches the filter.
+     * @param {FactoryOrderFindUniqueArgs} args - Arguments to find a FactoryOrder
+     * @example
+     * // Get one FactoryOrder
+     * const factoryOrder = await prisma.factoryOrder.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FactoryOrderFindUniqueArgs>(args: SelectSubset<T, FactoryOrderFindUniqueArgs<ExtArgs>>): Prisma__FactoryOrderClient<$Result.GetResult<Prisma.$FactoryOrderPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FactoryOrder that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FactoryOrderFindUniqueOrThrowArgs} args - Arguments to find a FactoryOrder
+     * @example
+     * // Get one FactoryOrder
+     * const factoryOrder = await prisma.factoryOrder.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FactoryOrderFindUniqueOrThrowArgs>(args: SelectSubset<T, FactoryOrderFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FactoryOrderClient<$Result.GetResult<Prisma.$FactoryOrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FactoryOrder that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactoryOrderFindFirstArgs} args - Arguments to find a FactoryOrder
+     * @example
+     * // Get one FactoryOrder
+     * const factoryOrder = await prisma.factoryOrder.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FactoryOrderFindFirstArgs>(args?: SelectSubset<T, FactoryOrderFindFirstArgs<ExtArgs>>): Prisma__FactoryOrderClient<$Result.GetResult<Prisma.$FactoryOrderPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FactoryOrder that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactoryOrderFindFirstOrThrowArgs} args - Arguments to find a FactoryOrder
+     * @example
+     * // Get one FactoryOrder
+     * const factoryOrder = await prisma.factoryOrder.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FactoryOrderFindFirstOrThrowArgs>(args?: SelectSubset<T, FactoryOrderFindFirstOrThrowArgs<ExtArgs>>): Prisma__FactoryOrderClient<$Result.GetResult<Prisma.$FactoryOrderPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FactoryOrders that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactoryOrderFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FactoryOrders
+     * const factoryOrders = await prisma.factoryOrder.findMany()
+     * 
+     * // Get first 10 FactoryOrders
+     * const factoryOrders = await prisma.factoryOrder.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const factoryOrderWithIdOnly = await prisma.factoryOrder.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FactoryOrderFindManyArgs>(args?: SelectSubset<T, FactoryOrderFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FactoryOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FactoryOrder.
+     * @param {FactoryOrderCreateArgs} args - Arguments to create a FactoryOrder.
+     * @example
+     * // Create one FactoryOrder
+     * const FactoryOrder = await prisma.factoryOrder.create({
+     *   data: {
+     *     // ... data to create a FactoryOrder
+     *   }
+     * })
+     * 
+     */
+    create<T extends FactoryOrderCreateArgs>(args: SelectSubset<T, FactoryOrderCreateArgs<ExtArgs>>): Prisma__FactoryOrderClient<$Result.GetResult<Prisma.$FactoryOrderPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FactoryOrders.
+     * @param {FactoryOrderCreateManyArgs} args - Arguments to create many FactoryOrders.
+     * @example
+     * // Create many FactoryOrders
+     * const factoryOrder = await prisma.factoryOrder.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FactoryOrderCreateManyArgs>(args?: SelectSubset<T, FactoryOrderCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FactoryOrders and returns the data saved in the database.
+     * @param {FactoryOrderCreateManyAndReturnArgs} args - Arguments to create many FactoryOrders.
+     * @example
+     * // Create many FactoryOrders
+     * const factoryOrder = await prisma.factoryOrder.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FactoryOrders and only return the `id`
+     * const factoryOrderWithIdOnly = await prisma.factoryOrder.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FactoryOrderCreateManyAndReturnArgs>(args?: SelectSubset<T, FactoryOrderCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FactoryOrderPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FactoryOrder.
+     * @param {FactoryOrderDeleteArgs} args - Arguments to delete one FactoryOrder.
+     * @example
+     * // Delete one FactoryOrder
+     * const FactoryOrder = await prisma.factoryOrder.delete({
+     *   where: {
+     *     // ... filter to delete one FactoryOrder
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FactoryOrderDeleteArgs>(args: SelectSubset<T, FactoryOrderDeleteArgs<ExtArgs>>): Prisma__FactoryOrderClient<$Result.GetResult<Prisma.$FactoryOrderPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FactoryOrder.
+     * @param {FactoryOrderUpdateArgs} args - Arguments to update one FactoryOrder.
+     * @example
+     * // Update one FactoryOrder
+     * const factoryOrder = await prisma.factoryOrder.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FactoryOrderUpdateArgs>(args: SelectSubset<T, FactoryOrderUpdateArgs<ExtArgs>>): Prisma__FactoryOrderClient<$Result.GetResult<Prisma.$FactoryOrderPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FactoryOrders.
+     * @param {FactoryOrderDeleteManyArgs} args - Arguments to filter FactoryOrders to delete.
+     * @example
+     * // Delete a few FactoryOrders
+     * const { count } = await prisma.factoryOrder.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FactoryOrderDeleteManyArgs>(args?: SelectSubset<T, FactoryOrderDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FactoryOrders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactoryOrderUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FactoryOrders
+     * const factoryOrder = await prisma.factoryOrder.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FactoryOrderUpdateManyArgs>(args: SelectSubset<T, FactoryOrderUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FactoryOrders and returns the data updated in the database.
+     * @param {FactoryOrderUpdateManyAndReturnArgs} args - Arguments to update many FactoryOrders.
+     * @example
+     * // Update many FactoryOrders
+     * const factoryOrder = await prisma.factoryOrder.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FactoryOrders and only return the `id`
+     * const factoryOrderWithIdOnly = await prisma.factoryOrder.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FactoryOrderUpdateManyAndReturnArgs>(args: SelectSubset<T, FactoryOrderUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FactoryOrderPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FactoryOrder.
+     * @param {FactoryOrderUpsertArgs} args - Arguments to update or create a FactoryOrder.
+     * @example
+     * // Update or create a FactoryOrder
+     * const factoryOrder = await prisma.factoryOrder.upsert({
+     *   create: {
+     *     // ... data to create a FactoryOrder
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FactoryOrder we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FactoryOrderUpsertArgs>(args: SelectSubset<T, FactoryOrderUpsertArgs<ExtArgs>>): Prisma__FactoryOrderClient<$Result.GetResult<Prisma.$FactoryOrderPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FactoryOrders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactoryOrderCountArgs} args - Arguments to filter FactoryOrders to count.
+     * @example
+     * // Count the number of FactoryOrders
+     * const count = await prisma.factoryOrder.count({
+     *   where: {
+     *     // ... the filter for the FactoryOrders we want to count
+     *   }
+     * })
+    **/
+    count<T extends FactoryOrderCountArgs>(
+      args?: Subset<T, FactoryOrderCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FactoryOrderCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FactoryOrder.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactoryOrderAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FactoryOrderAggregateArgs>(args: Subset<T, FactoryOrderAggregateArgs>): Prisma.PrismaPromise<GetFactoryOrderAggregateType<T>>
+
+    /**
+     * Group by FactoryOrder.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactoryOrderGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FactoryOrderGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FactoryOrderGroupByArgs['orderBy'] }
+        : { orderBy?: FactoryOrderGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FactoryOrderGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFactoryOrderGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FactoryOrder model
+   */
+  readonly fields: FactoryOrderFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FactoryOrder.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FactoryOrderClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    outlet<T extends OutletDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OutletDefaultArgs<ExtArgs>>): Prisma__OutletClient<$Result.GetResult<Prisma.$OutletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    items<T extends FactoryOrder$itemsArgs<ExtArgs> = {}>(args?: Subset<T, FactoryOrder$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FactoryOrderItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FactoryOrder model
+   */
+  interface FactoryOrderFieldRefs {
+    readonly id: FieldRef<"FactoryOrder", 'String'>
+    readonly outletId: FieldRef<"FactoryOrder", 'String'>
+    readonly targetDate: FieldRef<"FactoryOrder", 'DateTime'>
+    readonly status: FieldRef<"FactoryOrder", 'String'>
+    readonly createdBy: FieldRef<"FactoryOrder", 'String'>
+    readonly notes: FieldRef<"FactoryOrder", 'String'>
+    readonly createdAt: FieldRef<"FactoryOrder", 'DateTime'>
+    readonly updatedAt: FieldRef<"FactoryOrder", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FactoryOrder findUnique
+   */
+  export type FactoryOrderFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrder
+     */
+    select?: FactoryOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrder
+     */
+    omit?: FactoryOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderInclude<ExtArgs> | null
+    /**
+     * Filter, which FactoryOrder to fetch.
+     */
+    where: FactoryOrderWhereUniqueInput
+  }
+
+  /**
+   * FactoryOrder findUniqueOrThrow
+   */
+  export type FactoryOrderFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrder
+     */
+    select?: FactoryOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrder
+     */
+    omit?: FactoryOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderInclude<ExtArgs> | null
+    /**
+     * Filter, which FactoryOrder to fetch.
+     */
+    where: FactoryOrderWhereUniqueInput
+  }
+
+  /**
+   * FactoryOrder findFirst
+   */
+  export type FactoryOrderFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrder
+     */
+    select?: FactoryOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrder
+     */
+    omit?: FactoryOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderInclude<ExtArgs> | null
+    /**
+     * Filter, which FactoryOrder to fetch.
+     */
+    where?: FactoryOrderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FactoryOrders to fetch.
+     */
+    orderBy?: FactoryOrderOrderByWithRelationInput | FactoryOrderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FactoryOrders.
+     */
+    cursor?: FactoryOrderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FactoryOrders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FactoryOrders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FactoryOrders.
+     */
+    distinct?: FactoryOrderScalarFieldEnum | FactoryOrderScalarFieldEnum[]
+  }
+
+  /**
+   * FactoryOrder findFirstOrThrow
+   */
+  export type FactoryOrderFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrder
+     */
+    select?: FactoryOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrder
+     */
+    omit?: FactoryOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderInclude<ExtArgs> | null
+    /**
+     * Filter, which FactoryOrder to fetch.
+     */
+    where?: FactoryOrderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FactoryOrders to fetch.
+     */
+    orderBy?: FactoryOrderOrderByWithRelationInput | FactoryOrderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FactoryOrders.
+     */
+    cursor?: FactoryOrderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FactoryOrders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FactoryOrders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FactoryOrders.
+     */
+    distinct?: FactoryOrderScalarFieldEnum | FactoryOrderScalarFieldEnum[]
+  }
+
+  /**
+   * FactoryOrder findMany
+   */
+  export type FactoryOrderFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrder
+     */
+    select?: FactoryOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrder
+     */
+    omit?: FactoryOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderInclude<ExtArgs> | null
+    /**
+     * Filter, which FactoryOrders to fetch.
+     */
+    where?: FactoryOrderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FactoryOrders to fetch.
+     */
+    orderBy?: FactoryOrderOrderByWithRelationInput | FactoryOrderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FactoryOrders.
+     */
+    cursor?: FactoryOrderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FactoryOrders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FactoryOrders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FactoryOrders.
+     */
+    distinct?: FactoryOrderScalarFieldEnum | FactoryOrderScalarFieldEnum[]
+  }
+
+  /**
+   * FactoryOrder create
+   */
+  export type FactoryOrderCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrder
+     */
+    select?: FactoryOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrder
+     */
+    omit?: FactoryOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FactoryOrder.
+     */
+    data: XOR<FactoryOrderCreateInput, FactoryOrderUncheckedCreateInput>
+  }
+
+  /**
+   * FactoryOrder createMany
+   */
+  export type FactoryOrderCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FactoryOrders.
+     */
+    data: FactoryOrderCreateManyInput | FactoryOrderCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FactoryOrder createManyAndReturn
+   */
+  export type FactoryOrderCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrder
+     */
+    select?: FactoryOrderSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrder
+     */
+    omit?: FactoryOrderOmit<ExtArgs> | null
+    /**
+     * The data used to create many FactoryOrders.
+     */
+    data: FactoryOrderCreateManyInput | FactoryOrderCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FactoryOrder update
+   */
+  export type FactoryOrderUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrder
+     */
+    select?: FactoryOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrder
+     */
+    omit?: FactoryOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FactoryOrder.
+     */
+    data: XOR<FactoryOrderUpdateInput, FactoryOrderUncheckedUpdateInput>
+    /**
+     * Choose, which FactoryOrder to update.
+     */
+    where: FactoryOrderWhereUniqueInput
+  }
+
+  /**
+   * FactoryOrder updateMany
+   */
+  export type FactoryOrderUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FactoryOrders.
+     */
+    data: XOR<FactoryOrderUpdateManyMutationInput, FactoryOrderUncheckedUpdateManyInput>
+    /**
+     * Filter which FactoryOrders to update
+     */
+    where?: FactoryOrderWhereInput
+    /**
+     * Limit how many FactoryOrders to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FactoryOrder updateManyAndReturn
+   */
+  export type FactoryOrderUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrder
+     */
+    select?: FactoryOrderSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrder
+     */
+    omit?: FactoryOrderOmit<ExtArgs> | null
+    /**
+     * The data used to update FactoryOrders.
+     */
+    data: XOR<FactoryOrderUpdateManyMutationInput, FactoryOrderUncheckedUpdateManyInput>
+    /**
+     * Filter which FactoryOrders to update
+     */
+    where?: FactoryOrderWhereInput
+    /**
+     * Limit how many FactoryOrders to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FactoryOrder upsert
+   */
+  export type FactoryOrderUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrder
+     */
+    select?: FactoryOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrder
+     */
+    omit?: FactoryOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FactoryOrder to update in case it exists.
+     */
+    where: FactoryOrderWhereUniqueInput
+    /**
+     * In case the FactoryOrder found by the `where` argument doesn't exist, create a new FactoryOrder with this data.
+     */
+    create: XOR<FactoryOrderCreateInput, FactoryOrderUncheckedCreateInput>
+    /**
+     * In case the FactoryOrder was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FactoryOrderUpdateInput, FactoryOrderUncheckedUpdateInput>
+  }
+
+  /**
+   * FactoryOrder delete
+   */
+  export type FactoryOrderDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrder
+     */
+    select?: FactoryOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrder
+     */
+    omit?: FactoryOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderInclude<ExtArgs> | null
+    /**
+     * Filter which FactoryOrder to delete.
+     */
+    where: FactoryOrderWhereUniqueInput
+  }
+
+  /**
+   * FactoryOrder deleteMany
+   */
+  export type FactoryOrderDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FactoryOrders to delete
+     */
+    where?: FactoryOrderWhereInput
+    /**
+     * Limit how many FactoryOrders to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FactoryOrder.items
+   */
+  export type FactoryOrder$itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrderItem
+     */
+    select?: FactoryOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrderItem
+     */
+    omit?: FactoryOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderItemInclude<ExtArgs> | null
+    where?: FactoryOrderItemWhereInput
+    orderBy?: FactoryOrderItemOrderByWithRelationInput | FactoryOrderItemOrderByWithRelationInput[]
+    cursor?: FactoryOrderItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FactoryOrderItemScalarFieldEnum | FactoryOrderItemScalarFieldEnum[]
+  }
+
+  /**
+   * FactoryOrder without action
+   */
+  export type FactoryOrderDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrder
+     */
+    select?: FactoryOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrder
+     */
+    omit?: FactoryOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FactoryOrderItem
+   */
+
+  export type AggregateFactoryOrderItem = {
+    _count: FactoryOrderItemCountAggregateOutputType | null
+    _avg: FactoryOrderItemAvgAggregateOutputType | null
+    _sum: FactoryOrderItemSumAggregateOutputType | null
+    _min: FactoryOrderItemMinAggregateOutputType | null
+    _max: FactoryOrderItemMaxAggregateOutputType | null
+  }
+
+  export type FactoryOrderItemAvgAggregateOutputType = {
+    currentStock: number | null
+    minStockLevel: number | null
+    shortageQty: number | null
+    preOrderQty: number | null
+    suggestedQty: number | null
+    approvedQty: number | null
+  }
+
+  export type FactoryOrderItemSumAggregateOutputType = {
+    currentStock: number | null
+    minStockLevel: number | null
+    shortageQty: number | null
+    preOrderQty: number | null
+    suggestedQty: number | null
+    approvedQty: number | null
+  }
+
+  export type FactoryOrderItemMinAggregateOutputType = {
+    id: string | null
+    factoryOrderId: string | null
+    menuItemId: string | null
+    menuItemName: string | null
+    unitType: string | null
+    currentStock: number | null
+    minStockLevel: number | null
+    shortageQty: number | null
+    preOrderQty: number | null
+    suggestedQty: number | null
+    approvedQty: number | null
+    notes: string | null
+  }
+
+  export type FactoryOrderItemMaxAggregateOutputType = {
+    id: string | null
+    factoryOrderId: string | null
+    menuItemId: string | null
+    menuItemName: string | null
+    unitType: string | null
+    currentStock: number | null
+    minStockLevel: number | null
+    shortageQty: number | null
+    preOrderQty: number | null
+    suggestedQty: number | null
+    approvedQty: number | null
+    notes: string | null
+  }
+
+  export type FactoryOrderItemCountAggregateOutputType = {
+    id: number
+    factoryOrderId: number
+    menuItemId: number
+    menuItemName: number
+    unitType: number
+    currentStock: number
+    minStockLevel: number
+    shortageQty: number
+    preOrderQty: number
+    suggestedQty: number
+    approvedQty: number
+    notes: number
+    _all: number
+  }
+
+
+  export type FactoryOrderItemAvgAggregateInputType = {
+    currentStock?: true
+    minStockLevel?: true
+    shortageQty?: true
+    preOrderQty?: true
+    suggestedQty?: true
+    approvedQty?: true
+  }
+
+  export type FactoryOrderItemSumAggregateInputType = {
+    currentStock?: true
+    minStockLevel?: true
+    shortageQty?: true
+    preOrderQty?: true
+    suggestedQty?: true
+    approvedQty?: true
+  }
+
+  export type FactoryOrderItemMinAggregateInputType = {
+    id?: true
+    factoryOrderId?: true
+    menuItemId?: true
+    menuItemName?: true
+    unitType?: true
+    currentStock?: true
+    minStockLevel?: true
+    shortageQty?: true
+    preOrderQty?: true
+    suggestedQty?: true
+    approvedQty?: true
+    notes?: true
+  }
+
+  export type FactoryOrderItemMaxAggregateInputType = {
+    id?: true
+    factoryOrderId?: true
+    menuItemId?: true
+    menuItemName?: true
+    unitType?: true
+    currentStock?: true
+    minStockLevel?: true
+    shortageQty?: true
+    preOrderQty?: true
+    suggestedQty?: true
+    approvedQty?: true
+    notes?: true
+  }
+
+  export type FactoryOrderItemCountAggregateInputType = {
+    id?: true
+    factoryOrderId?: true
+    menuItemId?: true
+    menuItemName?: true
+    unitType?: true
+    currentStock?: true
+    minStockLevel?: true
+    shortageQty?: true
+    preOrderQty?: true
+    suggestedQty?: true
+    approvedQty?: true
+    notes?: true
+    _all?: true
+  }
+
+  export type FactoryOrderItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FactoryOrderItem to aggregate.
+     */
+    where?: FactoryOrderItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FactoryOrderItems to fetch.
+     */
+    orderBy?: FactoryOrderItemOrderByWithRelationInput | FactoryOrderItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FactoryOrderItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FactoryOrderItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FactoryOrderItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FactoryOrderItems
+    **/
+    _count?: true | FactoryOrderItemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FactoryOrderItemAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FactoryOrderItemSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FactoryOrderItemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FactoryOrderItemMaxAggregateInputType
+  }
+
+  export type GetFactoryOrderItemAggregateType<T extends FactoryOrderItemAggregateArgs> = {
+        [P in keyof T & keyof AggregateFactoryOrderItem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFactoryOrderItem[P]>
+      : GetScalarType<T[P], AggregateFactoryOrderItem[P]>
+  }
+
+
+
+
+  export type FactoryOrderItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FactoryOrderItemWhereInput
+    orderBy?: FactoryOrderItemOrderByWithAggregationInput | FactoryOrderItemOrderByWithAggregationInput[]
+    by: FactoryOrderItemScalarFieldEnum[] | FactoryOrderItemScalarFieldEnum
+    having?: FactoryOrderItemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FactoryOrderItemCountAggregateInputType | true
+    _avg?: FactoryOrderItemAvgAggregateInputType
+    _sum?: FactoryOrderItemSumAggregateInputType
+    _min?: FactoryOrderItemMinAggregateInputType
+    _max?: FactoryOrderItemMaxAggregateInputType
+  }
+
+  export type FactoryOrderItemGroupByOutputType = {
+    id: string
+    factoryOrderId: string
+    menuItemId: string
+    menuItemName: string
+    unitType: string
+    currentStock: number
+    minStockLevel: number
+    shortageQty: number
+    preOrderQty: number
+    suggestedQty: number
+    approvedQty: number
+    notes: string | null
+    _count: FactoryOrderItemCountAggregateOutputType | null
+    _avg: FactoryOrderItemAvgAggregateOutputType | null
+    _sum: FactoryOrderItemSumAggregateOutputType | null
+    _min: FactoryOrderItemMinAggregateOutputType | null
+    _max: FactoryOrderItemMaxAggregateOutputType | null
+  }
+
+  type GetFactoryOrderItemGroupByPayload<T extends FactoryOrderItemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FactoryOrderItemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FactoryOrderItemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FactoryOrderItemGroupByOutputType[P]>
+            : GetScalarType<T[P], FactoryOrderItemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FactoryOrderItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    factoryOrderId?: boolean
+    menuItemId?: boolean
+    menuItemName?: boolean
+    unitType?: boolean
+    currentStock?: boolean
+    minStockLevel?: boolean
+    shortageQty?: boolean
+    preOrderQty?: boolean
+    suggestedQty?: boolean
+    approvedQty?: boolean
+    notes?: boolean
+    factoryOrder?: boolean | FactoryOrderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["factoryOrderItem"]>
+
+  export type FactoryOrderItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    factoryOrderId?: boolean
+    menuItemId?: boolean
+    menuItemName?: boolean
+    unitType?: boolean
+    currentStock?: boolean
+    minStockLevel?: boolean
+    shortageQty?: boolean
+    preOrderQty?: boolean
+    suggestedQty?: boolean
+    approvedQty?: boolean
+    notes?: boolean
+    factoryOrder?: boolean | FactoryOrderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["factoryOrderItem"]>
+
+  export type FactoryOrderItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    factoryOrderId?: boolean
+    menuItemId?: boolean
+    menuItemName?: boolean
+    unitType?: boolean
+    currentStock?: boolean
+    minStockLevel?: boolean
+    shortageQty?: boolean
+    preOrderQty?: boolean
+    suggestedQty?: boolean
+    approvedQty?: boolean
+    notes?: boolean
+    factoryOrder?: boolean | FactoryOrderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["factoryOrderItem"]>
+
+  export type FactoryOrderItemSelectScalar = {
+    id?: boolean
+    factoryOrderId?: boolean
+    menuItemId?: boolean
+    menuItemName?: boolean
+    unitType?: boolean
+    currentStock?: boolean
+    minStockLevel?: boolean
+    shortageQty?: boolean
+    preOrderQty?: boolean
+    suggestedQty?: boolean
+    approvedQty?: boolean
+    notes?: boolean
+  }
+
+  export type FactoryOrderItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "factoryOrderId" | "menuItemId" | "menuItemName" | "unitType" | "currentStock" | "minStockLevel" | "shortageQty" | "preOrderQty" | "suggestedQty" | "approvedQty" | "notes", ExtArgs["result"]["factoryOrderItem"]>
+  export type FactoryOrderItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    factoryOrder?: boolean | FactoryOrderDefaultArgs<ExtArgs>
+  }
+  export type FactoryOrderItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    factoryOrder?: boolean | FactoryOrderDefaultArgs<ExtArgs>
+  }
+  export type FactoryOrderItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    factoryOrder?: boolean | FactoryOrderDefaultArgs<ExtArgs>
+  }
+
+  export type $FactoryOrderItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FactoryOrderItem"
+    objects: {
+      factoryOrder: Prisma.$FactoryOrderPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      factoryOrderId: string
+      menuItemId: string
+      menuItemName: string
+      unitType: string
+      currentStock: number
+      minStockLevel: number
+      shortageQty: number
+      preOrderQty: number
+      suggestedQty: number
+      approvedQty: number
+      notes: string | null
+    }, ExtArgs["result"]["factoryOrderItem"]>
+    composites: {}
+  }
+
+  type FactoryOrderItemGetPayload<S extends boolean | null | undefined | FactoryOrderItemDefaultArgs> = $Result.GetResult<Prisma.$FactoryOrderItemPayload, S>
+
+  type FactoryOrderItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FactoryOrderItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FactoryOrderItemCountAggregateInputType | true
+    }
+
+  export interface FactoryOrderItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FactoryOrderItem'], meta: { name: 'FactoryOrderItem' } }
+    /**
+     * Find zero or one FactoryOrderItem that matches the filter.
+     * @param {FactoryOrderItemFindUniqueArgs} args - Arguments to find a FactoryOrderItem
+     * @example
+     * // Get one FactoryOrderItem
+     * const factoryOrderItem = await prisma.factoryOrderItem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FactoryOrderItemFindUniqueArgs>(args: SelectSubset<T, FactoryOrderItemFindUniqueArgs<ExtArgs>>): Prisma__FactoryOrderItemClient<$Result.GetResult<Prisma.$FactoryOrderItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FactoryOrderItem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FactoryOrderItemFindUniqueOrThrowArgs} args - Arguments to find a FactoryOrderItem
+     * @example
+     * // Get one FactoryOrderItem
+     * const factoryOrderItem = await prisma.factoryOrderItem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FactoryOrderItemFindUniqueOrThrowArgs>(args: SelectSubset<T, FactoryOrderItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FactoryOrderItemClient<$Result.GetResult<Prisma.$FactoryOrderItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FactoryOrderItem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactoryOrderItemFindFirstArgs} args - Arguments to find a FactoryOrderItem
+     * @example
+     * // Get one FactoryOrderItem
+     * const factoryOrderItem = await prisma.factoryOrderItem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FactoryOrderItemFindFirstArgs>(args?: SelectSubset<T, FactoryOrderItemFindFirstArgs<ExtArgs>>): Prisma__FactoryOrderItemClient<$Result.GetResult<Prisma.$FactoryOrderItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FactoryOrderItem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactoryOrderItemFindFirstOrThrowArgs} args - Arguments to find a FactoryOrderItem
+     * @example
+     * // Get one FactoryOrderItem
+     * const factoryOrderItem = await prisma.factoryOrderItem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FactoryOrderItemFindFirstOrThrowArgs>(args?: SelectSubset<T, FactoryOrderItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__FactoryOrderItemClient<$Result.GetResult<Prisma.$FactoryOrderItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FactoryOrderItems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactoryOrderItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FactoryOrderItems
+     * const factoryOrderItems = await prisma.factoryOrderItem.findMany()
+     * 
+     * // Get first 10 FactoryOrderItems
+     * const factoryOrderItems = await prisma.factoryOrderItem.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const factoryOrderItemWithIdOnly = await prisma.factoryOrderItem.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FactoryOrderItemFindManyArgs>(args?: SelectSubset<T, FactoryOrderItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FactoryOrderItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FactoryOrderItem.
+     * @param {FactoryOrderItemCreateArgs} args - Arguments to create a FactoryOrderItem.
+     * @example
+     * // Create one FactoryOrderItem
+     * const FactoryOrderItem = await prisma.factoryOrderItem.create({
+     *   data: {
+     *     // ... data to create a FactoryOrderItem
+     *   }
+     * })
+     * 
+     */
+    create<T extends FactoryOrderItemCreateArgs>(args: SelectSubset<T, FactoryOrderItemCreateArgs<ExtArgs>>): Prisma__FactoryOrderItemClient<$Result.GetResult<Prisma.$FactoryOrderItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FactoryOrderItems.
+     * @param {FactoryOrderItemCreateManyArgs} args - Arguments to create many FactoryOrderItems.
+     * @example
+     * // Create many FactoryOrderItems
+     * const factoryOrderItem = await prisma.factoryOrderItem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FactoryOrderItemCreateManyArgs>(args?: SelectSubset<T, FactoryOrderItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FactoryOrderItems and returns the data saved in the database.
+     * @param {FactoryOrderItemCreateManyAndReturnArgs} args - Arguments to create many FactoryOrderItems.
+     * @example
+     * // Create many FactoryOrderItems
+     * const factoryOrderItem = await prisma.factoryOrderItem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FactoryOrderItems and only return the `id`
+     * const factoryOrderItemWithIdOnly = await prisma.factoryOrderItem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FactoryOrderItemCreateManyAndReturnArgs>(args?: SelectSubset<T, FactoryOrderItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FactoryOrderItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FactoryOrderItem.
+     * @param {FactoryOrderItemDeleteArgs} args - Arguments to delete one FactoryOrderItem.
+     * @example
+     * // Delete one FactoryOrderItem
+     * const FactoryOrderItem = await prisma.factoryOrderItem.delete({
+     *   where: {
+     *     // ... filter to delete one FactoryOrderItem
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FactoryOrderItemDeleteArgs>(args: SelectSubset<T, FactoryOrderItemDeleteArgs<ExtArgs>>): Prisma__FactoryOrderItemClient<$Result.GetResult<Prisma.$FactoryOrderItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FactoryOrderItem.
+     * @param {FactoryOrderItemUpdateArgs} args - Arguments to update one FactoryOrderItem.
+     * @example
+     * // Update one FactoryOrderItem
+     * const factoryOrderItem = await prisma.factoryOrderItem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FactoryOrderItemUpdateArgs>(args: SelectSubset<T, FactoryOrderItemUpdateArgs<ExtArgs>>): Prisma__FactoryOrderItemClient<$Result.GetResult<Prisma.$FactoryOrderItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FactoryOrderItems.
+     * @param {FactoryOrderItemDeleteManyArgs} args - Arguments to filter FactoryOrderItems to delete.
+     * @example
+     * // Delete a few FactoryOrderItems
+     * const { count } = await prisma.factoryOrderItem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FactoryOrderItemDeleteManyArgs>(args?: SelectSubset<T, FactoryOrderItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FactoryOrderItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactoryOrderItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FactoryOrderItems
+     * const factoryOrderItem = await prisma.factoryOrderItem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FactoryOrderItemUpdateManyArgs>(args: SelectSubset<T, FactoryOrderItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FactoryOrderItems and returns the data updated in the database.
+     * @param {FactoryOrderItemUpdateManyAndReturnArgs} args - Arguments to update many FactoryOrderItems.
+     * @example
+     * // Update many FactoryOrderItems
+     * const factoryOrderItem = await prisma.factoryOrderItem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FactoryOrderItems and only return the `id`
+     * const factoryOrderItemWithIdOnly = await prisma.factoryOrderItem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FactoryOrderItemUpdateManyAndReturnArgs>(args: SelectSubset<T, FactoryOrderItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FactoryOrderItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FactoryOrderItem.
+     * @param {FactoryOrderItemUpsertArgs} args - Arguments to update or create a FactoryOrderItem.
+     * @example
+     * // Update or create a FactoryOrderItem
+     * const factoryOrderItem = await prisma.factoryOrderItem.upsert({
+     *   create: {
+     *     // ... data to create a FactoryOrderItem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FactoryOrderItem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FactoryOrderItemUpsertArgs>(args: SelectSubset<T, FactoryOrderItemUpsertArgs<ExtArgs>>): Prisma__FactoryOrderItemClient<$Result.GetResult<Prisma.$FactoryOrderItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FactoryOrderItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactoryOrderItemCountArgs} args - Arguments to filter FactoryOrderItems to count.
+     * @example
+     * // Count the number of FactoryOrderItems
+     * const count = await prisma.factoryOrderItem.count({
+     *   where: {
+     *     // ... the filter for the FactoryOrderItems we want to count
+     *   }
+     * })
+    **/
+    count<T extends FactoryOrderItemCountArgs>(
+      args?: Subset<T, FactoryOrderItemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FactoryOrderItemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FactoryOrderItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactoryOrderItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FactoryOrderItemAggregateArgs>(args: Subset<T, FactoryOrderItemAggregateArgs>): Prisma.PrismaPromise<GetFactoryOrderItemAggregateType<T>>
+
+    /**
+     * Group by FactoryOrderItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactoryOrderItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FactoryOrderItemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FactoryOrderItemGroupByArgs['orderBy'] }
+        : { orderBy?: FactoryOrderItemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FactoryOrderItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFactoryOrderItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FactoryOrderItem model
+   */
+  readonly fields: FactoryOrderItemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FactoryOrderItem.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FactoryOrderItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    factoryOrder<T extends FactoryOrderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FactoryOrderDefaultArgs<ExtArgs>>): Prisma__FactoryOrderClient<$Result.GetResult<Prisma.$FactoryOrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FactoryOrderItem model
+   */
+  interface FactoryOrderItemFieldRefs {
+    readonly id: FieldRef<"FactoryOrderItem", 'String'>
+    readonly factoryOrderId: FieldRef<"FactoryOrderItem", 'String'>
+    readonly menuItemId: FieldRef<"FactoryOrderItem", 'String'>
+    readonly menuItemName: FieldRef<"FactoryOrderItem", 'String'>
+    readonly unitType: FieldRef<"FactoryOrderItem", 'String'>
+    readonly currentStock: FieldRef<"FactoryOrderItem", 'Float'>
+    readonly minStockLevel: FieldRef<"FactoryOrderItem", 'Float'>
+    readonly shortageQty: FieldRef<"FactoryOrderItem", 'Float'>
+    readonly preOrderQty: FieldRef<"FactoryOrderItem", 'Float'>
+    readonly suggestedQty: FieldRef<"FactoryOrderItem", 'Float'>
+    readonly approvedQty: FieldRef<"FactoryOrderItem", 'Float'>
+    readonly notes: FieldRef<"FactoryOrderItem", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FactoryOrderItem findUnique
+   */
+  export type FactoryOrderItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrderItem
+     */
+    select?: FactoryOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrderItem
+     */
+    omit?: FactoryOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderItemInclude<ExtArgs> | null
+    /**
+     * Filter, which FactoryOrderItem to fetch.
+     */
+    where: FactoryOrderItemWhereUniqueInput
+  }
+
+  /**
+   * FactoryOrderItem findUniqueOrThrow
+   */
+  export type FactoryOrderItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrderItem
+     */
+    select?: FactoryOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrderItem
+     */
+    omit?: FactoryOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderItemInclude<ExtArgs> | null
+    /**
+     * Filter, which FactoryOrderItem to fetch.
+     */
+    where: FactoryOrderItemWhereUniqueInput
+  }
+
+  /**
+   * FactoryOrderItem findFirst
+   */
+  export type FactoryOrderItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrderItem
+     */
+    select?: FactoryOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrderItem
+     */
+    omit?: FactoryOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderItemInclude<ExtArgs> | null
+    /**
+     * Filter, which FactoryOrderItem to fetch.
+     */
+    where?: FactoryOrderItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FactoryOrderItems to fetch.
+     */
+    orderBy?: FactoryOrderItemOrderByWithRelationInput | FactoryOrderItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FactoryOrderItems.
+     */
+    cursor?: FactoryOrderItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FactoryOrderItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FactoryOrderItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FactoryOrderItems.
+     */
+    distinct?: FactoryOrderItemScalarFieldEnum | FactoryOrderItemScalarFieldEnum[]
+  }
+
+  /**
+   * FactoryOrderItem findFirstOrThrow
+   */
+  export type FactoryOrderItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrderItem
+     */
+    select?: FactoryOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrderItem
+     */
+    omit?: FactoryOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderItemInclude<ExtArgs> | null
+    /**
+     * Filter, which FactoryOrderItem to fetch.
+     */
+    where?: FactoryOrderItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FactoryOrderItems to fetch.
+     */
+    orderBy?: FactoryOrderItemOrderByWithRelationInput | FactoryOrderItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FactoryOrderItems.
+     */
+    cursor?: FactoryOrderItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FactoryOrderItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FactoryOrderItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FactoryOrderItems.
+     */
+    distinct?: FactoryOrderItemScalarFieldEnum | FactoryOrderItemScalarFieldEnum[]
+  }
+
+  /**
+   * FactoryOrderItem findMany
+   */
+  export type FactoryOrderItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrderItem
+     */
+    select?: FactoryOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrderItem
+     */
+    omit?: FactoryOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderItemInclude<ExtArgs> | null
+    /**
+     * Filter, which FactoryOrderItems to fetch.
+     */
+    where?: FactoryOrderItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FactoryOrderItems to fetch.
+     */
+    orderBy?: FactoryOrderItemOrderByWithRelationInput | FactoryOrderItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FactoryOrderItems.
+     */
+    cursor?: FactoryOrderItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FactoryOrderItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FactoryOrderItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FactoryOrderItems.
+     */
+    distinct?: FactoryOrderItemScalarFieldEnum | FactoryOrderItemScalarFieldEnum[]
+  }
+
+  /**
+   * FactoryOrderItem create
+   */
+  export type FactoryOrderItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrderItem
+     */
+    select?: FactoryOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrderItem
+     */
+    omit?: FactoryOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderItemInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FactoryOrderItem.
+     */
+    data: XOR<FactoryOrderItemCreateInput, FactoryOrderItemUncheckedCreateInput>
+  }
+
+  /**
+   * FactoryOrderItem createMany
+   */
+  export type FactoryOrderItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FactoryOrderItems.
+     */
+    data: FactoryOrderItemCreateManyInput | FactoryOrderItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FactoryOrderItem createManyAndReturn
+   */
+  export type FactoryOrderItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrderItem
+     */
+    select?: FactoryOrderItemSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrderItem
+     */
+    omit?: FactoryOrderItemOmit<ExtArgs> | null
+    /**
+     * The data used to create many FactoryOrderItems.
+     */
+    data: FactoryOrderItemCreateManyInput | FactoryOrderItemCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderItemIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FactoryOrderItem update
+   */
+  export type FactoryOrderItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrderItem
+     */
+    select?: FactoryOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrderItem
+     */
+    omit?: FactoryOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderItemInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FactoryOrderItem.
+     */
+    data: XOR<FactoryOrderItemUpdateInput, FactoryOrderItemUncheckedUpdateInput>
+    /**
+     * Choose, which FactoryOrderItem to update.
+     */
+    where: FactoryOrderItemWhereUniqueInput
+  }
+
+  /**
+   * FactoryOrderItem updateMany
+   */
+  export type FactoryOrderItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FactoryOrderItems.
+     */
+    data: XOR<FactoryOrderItemUpdateManyMutationInput, FactoryOrderItemUncheckedUpdateManyInput>
+    /**
+     * Filter which FactoryOrderItems to update
+     */
+    where?: FactoryOrderItemWhereInput
+    /**
+     * Limit how many FactoryOrderItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FactoryOrderItem updateManyAndReturn
+   */
+  export type FactoryOrderItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrderItem
+     */
+    select?: FactoryOrderItemSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrderItem
+     */
+    omit?: FactoryOrderItemOmit<ExtArgs> | null
+    /**
+     * The data used to update FactoryOrderItems.
+     */
+    data: XOR<FactoryOrderItemUpdateManyMutationInput, FactoryOrderItemUncheckedUpdateManyInput>
+    /**
+     * Filter which FactoryOrderItems to update
+     */
+    where?: FactoryOrderItemWhereInput
+    /**
+     * Limit how many FactoryOrderItems to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderItemIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FactoryOrderItem upsert
+   */
+  export type FactoryOrderItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrderItem
+     */
+    select?: FactoryOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrderItem
+     */
+    omit?: FactoryOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderItemInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FactoryOrderItem to update in case it exists.
+     */
+    where: FactoryOrderItemWhereUniqueInput
+    /**
+     * In case the FactoryOrderItem found by the `where` argument doesn't exist, create a new FactoryOrderItem with this data.
+     */
+    create: XOR<FactoryOrderItemCreateInput, FactoryOrderItemUncheckedCreateInput>
+    /**
+     * In case the FactoryOrderItem was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FactoryOrderItemUpdateInput, FactoryOrderItemUncheckedUpdateInput>
+  }
+
+  /**
+   * FactoryOrderItem delete
+   */
+  export type FactoryOrderItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrderItem
+     */
+    select?: FactoryOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrderItem
+     */
+    omit?: FactoryOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderItemInclude<ExtArgs> | null
+    /**
+     * Filter which FactoryOrderItem to delete.
+     */
+    where: FactoryOrderItemWhereUniqueInput
+  }
+
+  /**
+   * FactoryOrderItem deleteMany
+   */
+  export type FactoryOrderItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FactoryOrderItems to delete
+     */
+    where?: FactoryOrderItemWhereInput
+    /**
+     * Limit how many FactoryOrderItems to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FactoryOrderItem without action
+   */
+  export type FactoryOrderItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactoryOrderItem
+     */
+    select?: FactoryOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FactoryOrderItem
+     */
+    omit?: FactoryOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactoryOrderItemInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -30511,6 +34649,20 @@ export namespace Prisma {
   export type DeliveryZoneScalarFieldEnum = (typeof DeliveryZoneScalarFieldEnum)[keyof typeof DeliveryZoneScalarFieldEnum]
 
 
+  export const DeliveryDriverScalarFieldEnum: {
+    id: 'id',
+    outletId: 'outletId',
+    name: 'name',
+    phone: 'phone',
+    vehicleInfo: 'vehicleInfo',
+    notes: 'notes',
+    isActive: 'isActive',
+    createdAt: 'createdAt'
+  };
+
+  export type DeliveryDriverScalarFieldEnum = (typeof DeliveryDriverScalarFieldEnum)[keyof typeof DeliveryDriverScalarFieldEnum]
+
+
   export const OrderScalarFieldEnum: {
     id: 'id',
     outletId: 'outletId',
@@ -30523,8 +34675,18 @@ export namespace Prisma {
     deliveryAddress: 'deliveryAddress',
     deliveryPhone: 'deliveryPhone',
     deliveryNotes: 'deliveryNotes',
+    driverId: 'driverId',
     driverName: 'driverName',
+    driverPhone: 'driverPhone',
     dispatchedAt: 'dispatchedAt',
+    isScheduled: 'isScheduled',
+    scheduledFor: 'scheduledFor',
+    depositRequired: 'depositRequired',
+    depositPaid: 'depositPaid',
+    depositStatus: 'depositStatus',
+    depositReceiptUrl: 'depositReceiptUrl',
+    alertSent48h: 'alertSent48h',
+    alertSent24h: 'alertSent24h',
     status: 'status',
     paymentStatus: 'paymentStatus',
     paymentMethod: 'paymentMethod',
@@ -30578,6 +34740,7 @@ export namespace Prisma {
     visaCollected: 'visaCollected',
     instapayCollected: 'instapayCollected',
     vodafoneCollected: 'vodafoneCollected',
+    deliveryFeesTotal: 'deliveryFeesTotal',
     totalRevenue: 'totalRevenue',
     expensesTotal: 'expensesTotal',
     ticketsCount: 'ticketsCount',
@@ -30640,6 +34803,9 @@ export namespace Prisma {
     serviceChargePercent: 'serviceChargePercent',
     taxPercent: 'taxPercent',
     deliveryFee: 'deliveryFee',
+    preOrderDepositPercent: 'preOrderDepositPercent',
+    instapayAccount: 'instapayAccount',
+    vodafoneCashNumber: 'vodafoneCashNumber',
     isServiceChargeEnabled: 'isServiceChargeEnabled',
     isTaxEnabled: 'isTaxEnabled',
     isLoyaltyEnabled: 'isLoyaltyEnabled',
@@ -30682,11 +34848,44 @@ export namespace Prisma {
     tableNumber: 'tableNumber',
     orderNumber: 'orderNumber',
     message: 'message',
+    imageUrl: 'imageUrl',
     isRead: 'isRead',
     createdAt: 'createdAt'
   };
 
   export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
+
+
+  export const FactoryOrderScalarFieldEnum: {
+    id: 'id',
+    outletId: 'outletId',
+    targetDate: 'targetDate',
+    status: 'status',
+    createdBy: 'createdBy',
+    notes: 'notes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type FactoryOrderScalarFieldEnum = (typeof FactoryOrderScalarFieldEnum)[keyof typeof FactoryOrderScalarFieldEnum]
+
+
+  export const FactoryOrderItemScalarFieldEnum: {
+    id: 'id',
+    factoryOrderId: 'factoryOrderId',
+    menuItemId: 'menuItemId',
+    menuItemName: 'menuItemName',
+    unitType: 'unitType',
+    currentStock: 'currentStock',
+    minStockLevel: 'minStockLevel',
+    shortageQty: 'shortageQty',
+    preOrderQty: 'preOrderQty',
+    suggestedQty: 'suggestedQty',
+    approvedQty: 'approvedQty',
+    notes: 'notes'
+  };
+
+  export type FactoryOrderItemScalarFieldEnum = (typeof FactoryOrderItemScalarFieldEnum)[keyof typeof FactoryOrderItemScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -30810,6 +35009,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditListRelationFilter
     pastryAudits?: PastryAuditListRelationFilter
     dailyCloses?: DailyCloseListRelationFilter
+    deliveryDrivers?: DeliveryDriverListRelationFilter
+    factoryOrders?: FactoryOrderListRelationFilter
   }
 
   export type OutletOrderByWithRelationInput = {
@@ -30835,6 +35036,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditOrderByRelationAggregateInput
     pastryAudits?: PastryAuditOrderByRelationAggregateInput
     dailyCloses?: DailyCloseOrderByRelationAggregateInput
+    deliveryDrivers?: DeliveryDriverOrderByRelationAggregateInput
+    factoryOrders?: FactoryOrderOrderByRelationAggregateInput
   }
 
   export type OutletWhereUniqueInput = Prisma.AtLeast<{
@@ -30863,6 +35066,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditListRelationFilter
     pastryAudits?: PastryAuditListRelationFilter
     dailyCloses?: DailyCloseListRelationFilter
+    deliveryDrivers?: DeliveryDriverListRelationFilter
+    factoryOrders?: FactoryOrderListRelationFilter
   }, "id" | "code">
 
   export type OutletOrderByWithAggregationInput = {
@@ -31079,8 +35284,8 @@ export namespace Prisma {
     itemType?: StringFilter<"MenuItem"> | string
     unitType?: StringFilter<"MenuItem"> | string
     openingStock?: FloatFilter<"MenuItem"> | number
-    stockQty?: IntFilter<"MenuItem"> | number
-    minStockAlert?: IntFilter<"MenuItem"> | number
+    stockQty?: FloatFilter<"MenuItem"> | number
+    minStockAlert?: FloatFilter<"MenuItem"> | number
     isAvailable?: BoolFilter<"MenuItem"> | boolean
     sortOrder?: IntFilter<"MenuItem"> | number
     loyaltyPointsEarned?: IntFilter<"MenuItem"> | number
@@ -31134,8 +35339,8 @@ export namespace Prisma {
     itemType?: StringFilter<"MenuItem"> | string
     unitType?: StringFilter<"MenuItem"> | string
     openingStock?: FloatFilter<"MenuItem"> | number
-    stockQty?: IntFilter<"MenuItem"> | number
-    minStockAlert?: IntFilter<"MenuItem"> | number
+    stockQty?: FloatFilter<"MenuItem"> | number
+    minStockAlert?: FloatFilter<"MenuItem"> | number
     isAvailable?: BoolFilter<"MenuItem"> | boolean
     sortOrder?: IntFilter<"MenuItem"> | number
     loyaltyPointsEarned?: IntFilter<"MenuItem"> | number
@@ -31191,8 +35396,8 @@ export namespace Prisma {
     itemType?: StringWithAggregatesFilter<"MenuItem"> | string
     unitType?: StringWithAggregatesFilter<"MenuItem"> | string
     openingStock?: FloatWithAggregatesFilter<"MenuItem"> | number
-    stockQty?: IntWithAggregatesFilter<"MenuItem"> | number
-    minStockAlert?: IntWithAggregatesFilter<"MenuItem"> | number
+    stockQty?: FloatWithAggregatesFilter<"MenuItem"> | number
+    minStockAlert?: FloatWithAggregatesFilter<"MenuItem"> | number
     isAvailable?: BoolWithAggregatesFilter<"MenuItem"> | boolean
     sortOrder?: IntWithAggregatesFilter<"MenuItem"> | number
     loyaltyPointsEarned?: IntWithAggregatesFilter<"MenuItem"> | number
@@ -32047,6 +36252,79 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"DeliveryZone"> | Date | string
   }
 
+  export type DeliveryDriverWhereInput = {
+    AND?: DeliveryDriverWhereInput | DeliveryDriverWhereInput[]
+    OR?: DeliveryDriverWhereInput[]
+    NOT?: DeliveryDriverWhereInput | DeliveryDriverWhereInput[]
+    id?: StringFilter<"DeliveryDriver"> | string
+    outletId?: StringNullableFilter<"DeliveryDriver"> | string | null
+    name?: StringFilter<"DeliveryDriver"> | string
+    phone?: StringFilter<"DeliveryDriver"> | string
+    vehicleInfo?: StringNullableFilter<"DeliveryDriver"> | string | null
+    notes?: StringNullableFilter<"DeliveryDriver"> | string | null
+    isActive?: BoolFilter<"DeliveryDriver"> | boolean
+    createdAt?: DateTimeFilter<"DeliveryDriver"> | Date | string
+    outlet?: XOR<OutletNullableScalarRelationFilter, OutletWhereInput> | null
+    orders?: OrderListRelationFilter
+  }
+
+  export type DeliveryDriverOrderByWithRelationInput = {
+    id?: SortOrder
+    outletId?: SortOrderInput | SortOrder
+    name?: SortOrder
+    phone?: SortOrder
+    vehicleInfo?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    outlet?: OutletOrderByWithRelationInput
+    orders?: OrderOrderByRelationAggregateInput
+  }
+
+  export type DeliveryDriverWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: DeliveryDriverWhereInput | DeliveryDriverWhereInput[]
+    OR?: DeliveryDriverWhereInput[]
+    NOT?: DeliveryDriverWhereInput | DeliveryDriverWhereInput[]
+    outletId?: StringNullableFilter<"DeliveryDriver"> | string | null
+    name?: StringFilter<"DeliveryDriver"> | string
+    phone?: StringFilter<"DeliveryDriver"> | string
+    vehicleInfo?: StringNullableFilter<"DeliveryDriver"> | string | null
+    notes?: StringNullableFilter<"DeliveryDriver"> | string | null
+    isActive?: BoolFilter<"DeliveryDriver"> | boolean
+    createdAt?: DateTimeFilter<"DeliveryDriver"> | Date | string
+    outlet?: XOR<OutletNullableScalarRelationFilter, OutletWhereInput> | null
+    orders?: OrderListRelationFilter
+  }, "id">
+
+  export type DeliveryDriverOrderByWithAggregationInput = {
+    id?: SortOrder
+    outletId?: SortOrderInput | SortOrder
+    name?: SortOrder
+    phone?: SortOrder
+    vehicleInfo?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    _count?: DeliveryDriverCountOrderByAggregateInput
+    _max?: DeliveryDriverMaxOrderByAggregateInput
+    _min?: DeliveryDriverMinOrderByAggregateInput
+  }
+
+  export type DeliveryDriverScalarWhereWithAggregatesInput = {
+    AND?: DeliveryDriverScalarWhereWithAggregatesInput | DeliveryDriverScalarWhereWithAggregatesInput[]
+    OR?: DeliveryDriverScalarWhereWithAggregatesInput[]
+    NOT?: DeliveryDriverScalarWhereWithAggregatesInput | DeliveryDriverScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"DeliveryDriver"> | string
+    outletId?: StringNullableWithAggregatesFilter<"DeliveryDriver"> | string | null
+    name?: StringWithAggregatesFilter<"DeliveryDriver"> | string
+    phone?: StringWithAggregatesFilter<"DeliveryDriver"> | string
+    vehicleInfo?: StringNullableWithAggregatesFilter<"DeliveryDriver"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"DeliveryDriver"> | string | null
+    isActive?: BoolWithAggregatesFilter<"DeliveryDriver"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"DeliveryDriver"> | Date | string
+  }
+
   export type OrderWhereInput = {
     AND?: OrderWhereInput | OrderWhereInput[]
     OR?: OrderWhereInput[]
@@ -32062,8 +36340,18 @@ export namespace Prisma {
     deliveryAddress?: StringNullableFilter<"Order"> | string | null
     deliveryPhone?: StringNullableFilter<"Order"> | string | null
     deliveryNotes?: StringNullableFilter<"Order"> | string | null
+    driverId?: StringNullableFilter<"Order"> | string | null
     driverName?: StringNullableFilter<"Order"> | string | null
+    driverPhone?: StringNullableFilter<"Order"> | string | null
     dispatchedAt?: DateTimeNullableFilter<"Order"> | Date | string | null
+    isScheduled?: BoolFilter<"Order"> | boolean
+    scheduledFor?: DateTimeNullableFilter<"Order"> | Date | string | null
+    depositRequired?: FloatFilter<"Order"> | number
+    depositPaid?: FloatFilter<"Order"> | number
+    depositStatus?: StringFilter<"Order"> | string
+    depositReceiptUrl?: StringNullableFilter<"Order"> | string | null
+    alertSent48h?: BoolFilter<"Order"> | boolean
+    alertSent24h?: BoolFilter<"Order"> | boolean
     status?: StringFilter<"Order"> | string
     paymentStatus?: StringFilter<"Order"> | string
     paymentMethod?: StringFilter<"Order"> | string
@@ -32088,6 +36376,7 @@ export namespace Prisma {
     outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
     table?: XOR<DiningTableNullableScalarRelationFilter, DiningTableWhereInput> | null
     deliveryZone?: XOR<DeliveryZoneNullableScalarRelationFilter, DeliveryZoneWhereInput> | null
+    driver?: XOR<DeliveryDriverNullableScalarRelationFilter, DeliveryDriverWhereInput> | null
     customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
     kdsTickets?: KdsTicketListRelationFilter
   }
@@ -32104,8 +36393,18 @@ export namespace Prisma {
     deliveryAddress?: SortOrderInput | SortOrder
     deliveryPhone?: SortOrderInput | SortOrder
     deliveryNotes?: SortOrderInput | SortOrder
+    driverId?: SortOrderInput | SortOrder
     driverName?: SortOrderInput | SortOrder
+    driverPhone?: SortOrderInput | SortOrder
     dispatchedAt?: SortOrderInput | SortOrder
+    isScheduled?: SortOrder
+    scheduledFor?: SortOrderInput | SortOrder
+    depositRequired?: SortOrder
+    depositPaid?: SortOrder
+    depositStatus?: SortOrder
+    depositReceiptUrl?: SortOrderInput | SortOrder
+    alertSent48h?: SortOrder
+    alertSent24h?: SortOrder
     status?: SortOrder
     paymentStatus?: SortOrder
     paymentMethod?: SortOrder
@@ -32130,6 +36429,7 @@ export namespace Prisma {
     outlet?: OutletOrderByWithRelationInput
     table?: DiningTableOrderByWithRelationInput
     deliveryZone?: DeliveryZoneOrderByWithRelationInput
+    driver?: DeliveryDriverOrderByWithRelationInput
     customer?: CustomerOrderByWithRelationInput
     kdsTickets?: KdsTicketOrderByRelationAggregateInput
   }
@@ -32149,8 +36449,18 @@ export namespace Prisma {
     deliveryAddress?: StringNullableFilter<"Order"> | string | null
     deliveryPhone?: StringNullableFilter<"Order"> | string | null
     deliveryNotes?: StringNullableFilter<"Order"> | string | null
+    driverId?: StringNullableFilter<"Order"> | string | null
     driverName?: StringNullableFilter<"Order"> | string | null
+    driverPhone?: StringNullableFilter<"Order"> | string | null
     dispatchedAt?: DateTimeNullableFilter<"Order"> | Date | string | null
+    isScheduled?: BoolFilter<"Order"> | boolean
+    scheduledFor?: DateTimeNullableFilter<"Order"> | Date | string | null
+    depositRequired?: FloatFilter<"Order"> | number
+    depositPaid?: FloatFilter<"Order"> | number
+    depositStatus?: StringFilter<"Order"> | string
+    depositReceiptUrl?: StringNullableFilter<"Order"> | string | null
+    alertSent48h?: BoolFilter<"Order"> | boolean
+    alertSent24h?: BoolFilter<"Order"> | boolean
     status?: StringFilter<"Order"> | string
     paymentStatus?: StringFilter<"Order"> | string
     paymentMethod?: StringFilter<"Order"> | string
@@ -32175,6 +36485,7 @@ export namespace Prisma {
     outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
     table?: XOR<DiningTableNullableScalarRelationFilter, DiningTableWhereInput> | null
     deliveryZone?: XOR<DeliveryZoneNullableScalarRelationFilter, DeliveryZoneWhereInput> | null
+    driver?: XOR<DeliveryDriverNullableScalarRelationFilter, DeliveryDriverWhereInput> | null
     customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
     kdsTickets?: KdsTicketListRelationFilter
   }, "id" | "orderNumber">
@@ -32191,8 +36502,18 @@ export namespace Prisma {
     deliveryAddress?: SortOrderInput | SortOrder
     deliveryPhone?: SortOrderInput | SortOrder
     deliveryNotes?: SortOrderInput | SortOrder
+    driverId?: SortOrderInput | SortOrder
     driverName?: SortOrderInput | SortOrder
+    driverPhone?: SortOrderInput | SortOrder
     dispatchedAt?: SortOrderInput | SortOrder
+    isScheduled?: SortOrder
+    scheduledFor?: SortOrderInput | SortOrder
+    depositRequired?: SortOrder
+    depositPaid?: SortOrder
+    depositStatus?: SortOrder
+    depositReceiptUrl?: SortOrderInput | SortOrder
+    alertSent48h?: SortOrder
+    alertSent24h?: SortOrder
     status?: SortOrder
     paymentStatus?: SortOrder
     paymentMethod?: SortOrder
@@ -32236,8 +36557,18 @@ export namespace Prisma {
     deliveryAddress?: StringNullableWithAggregatesFilter<"Order"> | string | null
     deliveryPhone?: StringNullableWithAggregatesFilter<"Order"> | string | null
     deliveryNotes?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    driverId?: StringNullableWithAggregatesFilter<"Order"> | string | null
     driverName?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    driverPhone?: StringNullableWithAggregatesFilter<"Order"> | string | null
     dispatchedAt?: DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
+    isScheduled?: BoolWithAggregatesFilter<"Order"> | boolean
+    scheduledFor?: DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
+    depositRequired?: FloatWithAggregatesFilter<"Order"> | number
+    depositPaid?: FloatWithAggregatesFilter<"Order"> | number
+    depositStatus?: StringWithAggregatesFilter<"Order"> | string
+    depositReceiptUrl?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    alertSent48h?: BoolWithAggregatesFilter<"Order"> | boolean
+    alertSent24h?: BoolWithAggregatesFilter<"Order"> | boolean
     status?: StringWithAggregatesFilter<"Order"> | string
     paymentStatus?: StringWithAggregatesFilter<"Order"> | string
     paymentMethod?: StringWithAggregatesFilter<"Order"> | string
@@ -32343,6 +36674,7 @@ export namespace Prisma {
     visaCollected?: FloatFilter<"Shift"> | number
     instapayCollected?: FloatFilter<"Shift"> | number
     vodafoneCollected?: FloatFilter<"Shift"> | number
+    deliveryFeesTotal?: FloatFilter<"Shift"> | number
     totalRevenue?: FloatFilter<"Shift"> | number
     expensesTotal?: FloatFilter<"Shift"> | number
     ticketsCount?: IntFilter<"Shift"> | number
@@ -32368,6 +36700,7 @@ export namespace Prisma {
     visaCollected?: SortOrder
     instapayCollected?: SortOrder
     vodafoneCollected?: SortOrder
+    deliveryFeesTotal?: SortOrder
     totalRevenue?: SortOrder
     expensesTotal?: SortOrder
     ticketsCount?: SortOrder
@@ -32396,6 +36729,7 @@ export namespace Prisma {
     visaCollected?: FloatFilter<"Shift"> | number
     instapayCollected?: FloatFilter<"Shift"> | number
     vodafoneCollected?: FloatFilter<"Shift"> | number
+    deliveryFeesTotal?: FloatFilter<"Shift"> | number
     totalRevenue?: FloatFilter<"Shift"> | number
     expensesTotal?: FloatFilter<"Shift"> | number
     ticketsCount?: IntFilter<"Shift"> | number
@@ -32421,6 +36755,7 @@ export namespace Prisma {
     visaCollected?: SortOrder
     instapayCollected?: SortOrder
     vodafoneCollected?: SortOrder
+    deliveryFeesTotal?: SortOrder
     totalRevenue?: SortOrder
     expensesTotal?: SortOrder
     ticketsCount?: SortOrder
@@ -32453,6 +36788,7 @@ export namespace Prisma {
     visaCollected?: FloatWithAggregatesFilter<"Shift"> | number
     instapayCollected?: FloatWithAggregatesFilter<"Shift"> | number
     vodafoneCollected?: FloatWithAggregatesFilter<"Shift"> | number
+    deliveryFeesTotal?: FloatWithAggregatesFilter<"Shift"> | number
     totalRevenue?: FloatWithAggregatesFilter<"Shift"> | number
     expensesTotal?: FloatWithAggregatesFilter<"Shift"> | number
     ticketsCount?: IntWithAggregatesFilter<"Shift"> | number
@@ -32663,6 +36999,9 @@ export namespace Prisma {
     serviceChargePercent?: FloatFilter<"SystemSettings"> | number
     taxPercent?: FloatFilter<"SystemSettings"> | number
     deliveryFee?: FloatFilter<"SystemSettings"> | number
+    preOrderDepositPercent?: FloatFilter<"SystemSettings"> | number
+    instapayAccount?: StringNullableFilter<"SystemSettings"> | string | null
+    vodafoneCashNumber?: StringNullableFilter<"SystemSettings"> | string | null
     isServiceChargeEnabled?: BoolFilter<"SystemSettings"> | boolean
     isTaxEnabled?: BoolFilter<"SystemSettings"> | boolean
     isLoyaltyEnabled?: BoolFilter<"SystemSettings"> | boolean
@@ -32687,6 +37026,9 @@ export namespace Prisma {
     serviceChargePercent?: SortOrder
     taxPercent?: SortOrder
     deliveryFee?: SortOrder
+    preOrderDepositPercent?: SortOrder
+    instapayAccount?: SortOrderInput | SortOrder
+    vodafoneCashNumber?: SortOrderInput | SortOrder
     isServiceChargeEnabled?: SortOrder
     isTaxEnabled?: SortOrder
     isLoyaltyEnabled?: SortOrder
@@ -32714,6 +37056,9 @@ export namespace Prisma {
     serviceChargePercent?: FloatFilter<"SystemSettings"> | number
     taxPercent?: FloatFilter<"SystemSettings"> | number
     deliveryFee?: FloatFilter<"SystemSettings"> | number
+    preOrderDepositPercent?: FloatFilter<"SystemSettings"> | number
+    instapayAccount?: StringNullableFilter<"SystemSettings"> | string | null
+    vodafoneCashNumber?: StringNullableFilter<"SystemSettings"> | string | null
     isServiceChargeEnabled?: BoolFilter<"SystemSettings"> | boolean
     isTaxEnabled?: BoolFilter<"SystemSettings"> | boolean
     isLoyaltyEnabled?: BoolFilter<"SystemSettings"> | boolean
@@ -32738,6 +37083,9 @@ export namespace Prisma {
     serviceChargePercent?: SortOrder
     taxPercent?: SortOrder
     deliveryFee?: SortOrder
+    preOrderDepositPercent?: SortOrder
+    instapayAccount?: SortOrderInput | SortOrder
+    vodafoneCashNumber?: SortOrderInput | SortOrder
     isServiceChargeEnabled?: SortOrder
     isTaxEnabled?: SortOrder
     isLoyaltyEnabled?: SortOrder
@@ -32770,6 +37118,9 @@ export namespace Prisma {
     serviceChargePercent?: FloatWithAggregatesFilter<"SystemSettings"> | number
     taxPercent?: FloatWithAggregatesFilter<"SystemSettings"> | number
     deliveryFee?: FloatWithAggregatesFilter<"SystemSettings"> | number
+    preOrderDepositPercent?: FloatWithAggregatesFilter<"SystemSettings"> | number
+    instapayAccount?: StringNullableWithAggregatesFilter<"SystemSettings"> | string | null
+    vodafoneCashNumber?: StringNullableWithAggregatesFilter<"SystemSettings"> | string | null
     isServiceChargeEnabled?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
     isTaxEnabled?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
     isLoyaltyEnabled?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
@@ -32890,6 +37241,7 @@ export namespace Prisma {
     tableNumber?: StringNullableFilter<"ChatMessage"> | string | null
     orderNumber?: StringNullableFilter<"ChatMessage"> | string | null
     message?: StringFilter<"ChatMessage"> | string
+    imageUrl?: StringNullableFilter<"ChatMessage"> | string | null
     isRead?: BoolFilter<"ChatMessage"> | boolean
     createdAt?: DateTimeFilter<"ChatMessage"> | Date | string
     outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
@@ -32904,6 +37256,7 @@ export namespace Prisma {
     tableNumber?: SortOrderInput | SortOrder
     orderNumber?: SortOrderInput | SortOrder
     message?: SortOrder
+    imageUrl?: SortOrderInput | SortOrder
     isRead?: SortOrder
     createdAt?: SortOrder
     outlet?: OutletOrderByWithRelationInput
@@ -32921,6 +37274,7 @@ export namespace Prisma {
     tableNumber?: StringNullableFilter<"ChatMessage"> | string | null
     orderNumber?: StringNullableFilter<"ChatMessage"> | string | null
     message?: StringFilter<"ChatMessage"> | string
+    imageUrl?: StringNullableFilter<"ChatMessage"> | string | null
     isRead?: BoolFilter<"ChatMessage"> | boolean
     createdAt?: DateTimeFilter<"ChatMessage"> | Date | string
     outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
@@ -32935,6 +37289,7 @@ export namespace Prisma {
     tableNumber?: SortOrderInput | SortOrder
     orderNumber?: SortOrderInput | SortOrder
     message?: SortOrder
+    imageUrl?: SortOrderInput | SortOrder
     isRead?: SortOrder
     createdAt?: SortOrder
     _count?: ChatMessageCountOrderByAggregateInput
@@ -32954,8 +37309,174 @@ export namespace Prisma {
     tableNumber?: StringNullableWithAggregatesFilter<"ChatMessage"> | string | null
     orderNumber?: StringNullableWithAggregatesFilter<"ChatMessage"> | string | null
     message?: StringWithAggregatesFilter<"ChatMessage"> | string
+    imageUrl?: StringNullableWithAggregatesFilter<"ChatMessage"> | string | null
     isRead?: BoolWithAggregatesFilter<"ChatMessage"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"ChatMessage"> | Date | string
+  }
+
+  export type FactoryOrderWhereInput = {
+    AND?: FactoryOrderWhereInput | FactoryOrderWhereInput[]
+    OR?: FactoryOrderWhereInput[]
+    NOT?: FactoryOrderWhereInput | FactoryOrderWhereInput[]
+    id?: StringFilter<"FactoryOrder"> | string
+    outletId?: StringFilter<"FactoryOrder"> | string
+    targetDate?: DateTimeFilter<"FactoryOrder"> | Date | string
+    status?: StringFilter<"FactoryOrder"> | string
+    createdBy?: StringFilter<"FactoryOrder"> | string
+    notes?: StringNullableFilter<"FactoryOrder"> | string | null
+    createdAt?: DateTimeFilter<"FactoryOrder"> | Date | string
+    updatedAt?: DateTimeFilter<"FactoryOrder"> | Date | string
+    outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
+    items?: FactoryOrderItemListRelationFilter
+  }
+
+  export type FactoryOrderOrderByWithRelationInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    targetDate?: SortOrder
+    status?: SortOrder
+    createdBy?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    outlet?: OutletOrderByWithRelationInput
+    items?: FactoryOrderItemOrderByRelationAggregateInput
+  }
+
+  export type FactoryOrderWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: FactoryOrderWhereInput | FactoryOrderWhereInput[]
+    OR?: FactoryOrderWhereInput[]
+    NOT?: FactoryOrderWhereInput | FactoryOrderWhereInput[]
+    outletId?: StringFilter<"FactoryOrder"> | string
+    targetDate?: DateTimeFilter<"FactoryOrder"> | Date | string
+    status?: StringFilter<"FactoryOrder"> | string
+    createdBy?: StringFilter<"FactoryOrder"> | string
+    notes?: StringNullableFilter<"FactoryOrder"> | string | null
+    createdAt?: DateTimeFilter<"FactoryOrder"> | Date | string
+    updatedAt?: DateTimeFilter<"FactoryOrder"> | Date | string
+    outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
+    items?: FactoryOrderItemListRelationFilter
+  }, "id">
+
+  export type FactoryOrderOrderByWithAggregationInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    targetDate?: SortOrder
+    status?: SortOrder
+    createdBy?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: FactoryOrderCountOrderByAggregateInput
+    _max?: FactoryOrderMaxOrderByAggregateInput
+    _min?: FactoryOrderMinOrderByAggregateInput
+  }
+
+  export type FactoryOrderScalarWhereWithAggregatesInput = {
+    AND?: FactoryOrderScalarWhereWithAggregatesInput | FactoryOrderScalarWhereWithAggregatesInput[]
+    OR?: FactoryOrderScalarWhereWithAggregatesInput[]
+    NOT?: FactoryOrderScalarWhereWithAggregatesInput | FactoryOrderScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FactoryOrder"> | string
+    outletId?: StringWithAggregatesFilter<"FactoryOrder"> | string
+    targetDate?: DateTimeWithAggregatesFilter<"FactoryOrder"> | Date | string
+    status?: StringWithAggregatesFilter<"FactoryOrder"> | string
+    createdBy?: StringWithAggregatesFilter<"FactoryOrder"> | string
+    notes?: StringNullableWithAggregatesFilter<"FactoryOrder"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"FactoryOrder"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"FactoryOrder"> | Date | string
+  }
+
+  export type FactoryOrderItemWhereInput = {
+    AND?: FactoryOrderItemWhereInput | FactoryOrderItemWhereInput[]
+    OR?: FactoryOrderItemWhereInput[]
+    NOT?: FactoryOrderItemWhereInput | FactoryOrderItemWhereInput[]
+    id?: StringFilter<"FactoryOrderItem"> | string
+    factoryOrderId?: StringFilter<"FactoryOrderItem"> | string
+    menuItemId?: StringFilter<"FactoryOrderItem"> | string
+    menuItemName?: StringFilter<"FactoryOrderItem"> | string
+    unitType?: StringFilter<"FactoryOrderItem"> | string
+    currentStock?: FloatFilter<"FactoryOrderItem"> | number
+    minStockLevel?: FloatFilter<"FactoryOrderItem"> | number
+    shortageQty?: FloatFilter<"FactoryOrderItem"> | number
+    preOrderQty?: FloatFilter<"FactoryOrderItem"> | number
+    suggestedQty?: FloatFilter<"FactoryOrderItem"> | number
+    approvedQty?: FloatFilter<"FactoryOrderItem"> | number
+    notes?: StringNullableFilter<"FactoryOrderItem"> | string | null
+    factoryOrder?: XOR<FactoryOrderScalarRelationFilter, FactoryOrderWhereInput>
+  }
+
+  export type FactoryOrderItemOrderByWithRelationInput = {
+    id?: SortOrder
+    factoryOrderId?: SortOrder
+    menuItemId?: SortOrder
+    menuItemName?: SortOrder
+    unitType?: SortOrder
+    currentStock?: SortOrder
+    minStockLevel?: SortOrder
+    shortageQty?: SortOrder
+    preOrderQty?: SortOrder
+    suggestedQty?: SortOrder
+    approvedQty?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    factoryOrder?: FactoryOrderOrderByWithRelationInput
+  }
+
+  export type FactoryOrderItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: FactoryOrderItemWhereInput | FactoryOrderItemWhereInput[]
+    OR?: FactoryOrderItemWhereInput[]
+    NOT?: FactoryOrderItemWhereInput | FactoryOrderItemWhereInput[]
+    factoryOrderId?: StringFilter<"FactoryOrderItem"> | string
+    menuItemId?: StringFilter<"FactoryOrderItem"> | string
+    menuItemName?: StringFilter<"FactoryOrderItem"> | string
+    unitType?: StringFilter<"FactoryOrderItem"> | string
+    currentStock?: FloatFilter<"FactoryOrderItem"> | number
+    minStockLevel?: FloatFilter<"FactoryOrderItem"> | number
+    shortageQty?: FloatFilter<"FactoryOrderItem"> | number
+    preOrderQty?: FloatFilter<"FactoryOrderItem"> | number
+    suggestedQty?: FloatFilter<"FactoryOrderItem"> | number
+    approvedQty?: FloatFilter<"FactoryOrderItem"> | number
+    notes?: StringNullableFilter<"FactoryOrderItem"> | string | null
+    factoryOrder?: XOR<FactoryOrderScalarRelationFilter, FactoryOrderWhereInput>
+  }, "id">
+
+  export type FactoryOrderItemOrderByWithAggregationInput = {
+    id?: SortOrder
+    factoryOrderId?: SortOrder
+    menuItemId?: SortOrder
+    menuItemName?: SortOrder
+    unitType?: SortOrder
+    currentStock?: SortOrder
+    minStockLevel?: SortOrder
+    shortageQty?: SortOrder
+    preOrderQty?: SortOrder
+    suggestedQty?: SortOrder
+    approvedQty?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    _count?: FactoryOrderItemCountOrderByAggregateInput
+    _avg?: FactoryOrderItemAvgOrderByAggregateInput
+    _max?: FactoryOrderItemMaxOrderByAggregateInput
+    _min?: FactoryOrderItemMinOrderByAggregateInput
+    _sum?: FactoryOrderItemSumOrderByAggregateInput
+  }
+
+  export type FactoryOrderItemScalarWhereWithAggregatesInput = {
+    AND?: FactoryOrderItemScalarWhereWithAggregatesInput | FactoryOrderItemScalarWhereWithAggregatesInput[]
+    OR?: FactoryOrderItemScalarWhereWithAggregatesInput[]
+    NOT?: FactoryOrderItemScalarWhereWithAggregatesInput | FactoryOrderItemScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FactoryOrderItem"> | string
+    factoryOrderId?: StringWithAggregatesFilter<"FactoryOrderItem"> | string
+    menuItemId?: StringWithAggregatesFilter<"FactoryOrderItem"> | string
+    menuItemName?: StringWithAggregatesFilter<"FactoryOrderItem"> | string
+    unitType?: StringWithAggregatesFilter<"FactoryOrderItem"> | string
+    currentStock?: FloatWithAggregatesFilter<"FactoryOrderItem"> | number
+    minStockLevel?: FloatWithAggregatesFilter<"FactoryOrderItem"> | number
+    shortageQty?: FloatWithAggregatesFilter<"FactoryOrderItem"> | number
+    preOrderQty?: FloatWithAggregatesFilter<"FactoryOrderItem"> | number
+    suggestedQty?: FloatWithAggregatesFilter<"FactoryOrderItem"> | number
+    approvedQty?: FloatWithAggregatesFilter<"FactoryOrderItem"> | number
+    notes?: StringNullableWithAggregatesFilter<"FactoryOrderItem"> | string | null
   }
 
   export type OutletCreateInput = {
@@ -32981,6 +37502,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateInput = {
@@ -33006,6 +37529,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverUncheckedCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUpdateInput = {
@@ -33031,6 +37556,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateInput = {
@@ -33056,6 +37583,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUncheckedUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateManyInput = {
@@ -33344,8 +37873,8 @@ export namespace Prisma {
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
     openingStock?: FloatFieldUpdateOperationsInput | number
-    stockQty?: IntFieldUpdateOperationsInput | number
-    minStockAlert?: IntFieldUpdateOperationsInput | number
+    stockQty?: FloatFieldUpdateOperationsInput | number
+    minStockAlert?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     loyaltyPointsEarned?: IntFieldUpdateOperationsInput | number
@@ -33370,8 +37899,8 @@ export namespace Prisma {
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
     openingStock?: FloatFieldUpdateOperationsInput | number
-    stockQty?: IntFieldUpdateOperationsInput | number
-    minStockAlert?: IntFieldUpdateOperationsInput | number
+    stockQty?: FloatFieldUpdateOperationsInput | number
+    minStockAlert?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     loyaltyPointsEarned?: IntFieldUpdateOperationsInput | number
@@ -33417,8 +37946,8 @@ export namespace Prisma {
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
     openingStock?: FloatFieldUpdateOperationsInput | number
-    stockQty?: IntFieldUpdateOperationsInput | number
-    minStockAlert?: IntFieldUpdateOperationsInput | number
+    stockQty?: FloatFieldUpdateOperationsInput | number
+    minStockAlert?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     loyaltyPointsEarned?: IntFieldUpdateOperationsInput | number
@@ -33440,8 +37969,8 @@ export namespace Prisma {
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
     openingStock?: FloatFieldUpdateOperationsInput | number
-    stockQty?: IntFieldUpdateOperationsInput | number
-    minStockAlert?: IntFieldUpdateOperationsInput | number
+    stockQty?: FloatFieldUpdateOperationsInput | number
+    minStockAlert?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     loyaltyPointsEarned?: IntFieldUpdateOperationsInput | number
@@ -34395,6 +38924,86 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type DeliveryDriverCreateInput = {
+    id?: string
+    name: string
+    phone: string
+    vehicleInfo?: string | null
+    notes?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    outlet?: OutletCreateNestedOneWithoutDeliveryDriversInput
+    orders?: OrderCreateNestedManyWithoutDriverInput
+  }
+
+  export type DeliveryDriverUncheckedCreateInput = {
+    id?: string
+    outletId?: string | null
+    name: string
+    phone: string
+    vehicleInfo?: string | null
+    notes?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    orders?: OrderUncheckedCreateNestedManyWithoutDriverInput
+  }
+
+  export type DeliveryDriverUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    vehicleInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outlet?: OutletUpdateOneWithoutDeliveryDriversNestedInput
+    orders?: OrderUpdateManyWithoutDriverNestedInput
+  }
+
+  export type DeliveryDriverUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    vehicleInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orders?: OrderUncheckedUpdateManyWithoutDriverNestedInput
+  }
+
+  export type DeliveryDriverCreateManyInput = {
+    id?: string
+    outletId?: string | null
+    name: string
+    phone: string
+    vehicleInfo?: string | null
+    notes?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+  }
+
+  export type DeliveryDriverUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    vehicleInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeliveryDriverUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    vehicleInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type OrderCreateInput = {
     id?: string
     orderNumber: string
@@ -34405,7 +39014,16 @@ export namespace Prisma {
     deliveryPhone?: string | null
     deliveryNotes?: string | null
     driverName?: string | null
+    driverPhone?: string | null
     dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -34429,6 +39047,7 @@ export namespace Prisma {
     outlet: OutletCreateNestedOneWithoutOrdersInput
     table?: DiningTableCreateNestedOneWithoutOrdersInput
     deliveryZone?: DeliveryZoneCreateNestedOneWithoutOrdersInput
+    driver?: DeliveryDriverCreateNestedOneWithoutOrdersInput
     customer?: CustomerCreateNestedOneWithoutOrdersInput
     kdsTickets?: KdsTicketCreateNestedManyWithoutOrderInput
   }
@@ -34445,8 +39064,18 @@ export namespace Prisma {
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverId?: string | null
     driverName?: string | null
+    driverPhone?: string | null
     dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -34481,7 +39110,16 @@ export namespace Prisma {
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -34505,6 +39143,7 @@ export namespace Prisma {
     outlet?: OutletUpdateOneRequiredWithoutOrdersNestedInput
     table?: DiningTableUpdateOneWithoutOrdersNestedInput
     deliveryZone?: DeliveryZoneUpdateOneWithoutOrdersNestedInput
+    driver?: DeliveryDriverUpdateOneWithoutOrdersNestedInput
     customer?: CustomerUpdateOneWithoutOrdersNestedInput
     kdsTickets?: KdsTicketUpdateManyWithoutOrderNestedInput
   }
@@ -34521,8 +39160,18 @@ export namespace Prisma {
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
     driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -34559,8 +39208,18 @@ export namespace Prisma {
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverId?: string | null
     driverName?: string | null
+    driverPhone?: string | null
     dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -34594,7 +39253,16 @@ export namespace Prisma {
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -34629,8 +39297,18 @@ export namespace Prisma {
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
     driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -34736,6 +39414,7 @@ export namespace Prisma {
     visaCollected?: number
     instapayCollected?: number
     vodafoneCollected?: number
+    deliveryFeesTotal?: number
     totalRevenue?: number
     expensesTotal?: number
     ticketsCount?: number
@@ -34761,6 +39440,7 @@ export namespace Prisma {
     visaCollected?: number
     instapayCollected?: number
     vodafoneCollected?: number
+    deliveryFeesTotal?: number
     totalRevenue?: number
     expensesTotal?: number
     ticketsCount?: number
@@ -34784,6 +39464,7 @@ export namespace Prisma {
     visaCollected?: FloatFieldUpdateOperationsInput | number
     instapayCollected?: FloatFieldUpdateOperationsInput | number
     vodafoneCollected?: FloatFieldUpdateOperationsInput | number
+    deliveryFeesTotal?: FloatFieldUpdateOperationsInput | number
     totalRevenue?: FloatFieldUpdateOperationsInput | number
     expensesTotal?: FloatFieldUpdateOperationsInput | number
     ticketsCount?: IntFieldUpdateOperationsInput | number
@@ -34809,6 +39490,7 @@ export namespace Prisma {
     visaCollected?: FloatFieldUpdateOperationsInput | number
     instapayCollected?: FloatFieldUpdateOperationsInput | number
     vodafoneCollected?: FloatFieldUpdateOperationsInput | number
+    deliveryFeesTotal?: FloatFieldUpdateOperationsInput | number
     totalRevenue?: FloatFieldUpdateOperationsInput | number
     expensesTotal?: FloatFieldUpdateOperationsInput | number
     ticketsCount?: IntFieldUpdateOperationsInput | number
@@ -34833,6 +39515,7 @@ export namespace Prisma {
     visaCollected?: number
     instapayCollected?: number
     vodafoneCollected?: number
+    deliveryFeesTotal?: number
     totalRevenue?: number
     expensesTotal?: number
     ticketsCount?: number
@@ -34856,6 +39539,7 @@ export namespace Prisma {
     visaCollected?: FloatFieldUpdateOperationsInput | number
     instapayCollected?: FloatFieldUpdateOperationsInput | number
     vodafoneCollected?: FloatFieldUpdateOperationsInput | number
+    deliveryFeesTotal?: FloatFieldUpdateOperationsInput | number
     totalRevenue?: FloatFieldUpdateOperationsInput | number
     expensesTotal?: FloatFieldUpdateOperationsInput | number
     ticketsCount?: IntFieldUpdateOperationsInput | number
@@ -34880,6 +39564,7 @@ export namespace Prisma {
     visaCollected?: FloatFieldUpdateOperationsInput | number
     instapayCollected?: FloatFieldUpdateOperationsInput | number
     vodafoneCollected?: FloatFieldUpdateOperationsInput | number
+    deliveryFeesTotal?: FloatFieldUpdateOperationsInput | number
     totalRevenue?: FloatFieldUpdateOperationsInput | number
     expensesTotal?: FloatFieldUpdateOperationsInput | number
     ticketsCount?: IntFieldUpdateOperationsInput | number
@@ -35111,6 +39796,9 @@ export namespace Prisma {
     serviceChargePercent?: number
     taxPercent?: number
     deliveryFee?: number
+    preOrderDepositPercent?: number
+    instapayAccount?: string | null
+    vodafoneCashNumber?: string | null
     isServiceChargeEnabled?: boolean
     isTaxEnabled?: boolean
     isLoyaltyEnabled?: boolean
@@ -35135,6 +39823,9 @@ export namespace Prisma {
     serviceChargePercent?: number
     taxPercent?: number
     deliveryFee?: number
+    preOrderDepositPercent?: number
+    instapayAccount?: string | null
+    vodafoneCashNumber?: string | null
     isServiceChargeEnabled?: boolean
     isTaxEnabled?: boolean
     isLoyaltyEnabled?: boolean
@@ -35159,6 +39850,9 @@ export namespace Prisma {
     serviceChargePercent?: FloatFieldUpdateOperationsInput | number
     taxPercent?: FloatFieldUpdateOperationsInput | number
     deliveryFee?: FloatFieldUpdateOperationsInput | number
+    preOrderDepositPercent?: FloatFieldUpdateOperationsInput | number
+    instapayAccount?: NullableStringFieldUpdateOperationsInput | string | null
+    vodafoneCashNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isServiceChargeEnabled?: BoolFieldUpdateOperationsInput | boolean
     isTaxEnabled?: BoolFieldUpdateOperationsInput | boolean
     isLoyaltyEnabled?: BoolFieldUpdateOperationsInput | boolean
@@ -35183,6 +39877,9 @@ export namespace Prisma {
     serviceChargePercent?: FloatFieldUpdateOperationsInput | number
     taxPercent?: FloatFieldUpdateOperationsInput | number
     deliveryFee?: FloatFieldUpdateOperationsInput | number
+    preOrderDepositPercent?: FloatFieldUpdateOperationsInput | number
+    instapayAccount?: NullableStringFieldUpdateOperationsInput | string | null
+    vodafoneCashNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isServiceChargeEnabled?: BoolFieldUpdateOperationsInput | boolean
     isTaxEnabled?: BoolFieldUpdateOperationsInput | boolean
     isLoyaltyEnabled?: BoolFieldUpdateOperationsInput | boolean
@@ -35207,6 +39904,9 @@ export namespace Prisma {
     serviceChargePercent?: number
     taxPercent?: number
     deliveryFee?: number
+    preOrderDepositPercent?: number
+    instapayAccount?: string | null
+    vodafoneCashNumber?: string | null
     isServiceChargeEnabled?: boolean
     isTaxEnabled?: boolean
     isLoyaltyEnabled?: boolean
@@ -35231,6 +39931,9 @@ export namespace Prisma {
     serviceChargePercent?: FloatFieldUpdateOperationsInput | number
     taxPercent?: FloatFieldUpdateOperationsInput | number
     deliveryFee?: FloatFieldUpdateOperationsInput | number
+    preOrderDepositPercent?: FloatFieldUpdateOperationsInput | number
+    instapayAccount?: NullableStringFieldUpdateOperationsInput | string | null
+    vodafoneCashNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isServiceChargeEnabled?: BoolFieldUpdateOperationsInput | boolean
     isTaxEnabled?: BoolFieldUpdateOperationsInput | boolean
     isLoyaltyEnabled?: BoolFieldUpdateOperationsInput | boolean
@@ -35255,6 +39958,9 @@ export namespace Prisma {
     serviceChargePercent?: FloatFieldUpdateOperationsInput | number
     taxPercent?: FloatFieldUpdateOperationsInput | number
     deliveryFee?: FloatFieldUpdateOperationsInput | number
+    preOrderDepositPercent?: FloatFieldUpdateOperationsInput | number
+    instapayAccount?: NullableStringFieldUpdateOperationsInput | string | null
+    vodafoneCashNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isServiceChargeEnabled?: BoolFieldUpdateOperationsInput | boolean
     isTaxEnabled?: BoolFieldUpdateOperationsInput | boolean
     isLoyaltyEnabled?: BoolFieldUpdateOperationsInput | boolean
@@ -35385,6 +40091,7 @@ export namespace Prisma {
     tableNumber?: string | null
     orderNumber?: string | null
     message: string
+    imageUrl?: string | null
     isRead?: boolean
     createdAt?: Date | string
     outlet: OutletCreateNestedOneWithoutChatMessagesInput
@@ -35399,6 +40106,7 @@ export namespace Prisma {
     tableNumber?: string | null
     orderNumber?: string | null
     message: string
+    imageUrl?: string | null
     isRead?: boolean
     createdAt?: Date | string
   }
@@ -35411,6 +40119,7 @@ export namespace Prisma {
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
     orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
     message?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outlet?: OutletUpdateOneRequiredWithoutChatMessagesNestedInput
@@ -35425,6 +40134,7 @@ export namespace Prisma {
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
     orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
     message?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -35438,6 +40148,7 @@ export namespace Prisma {
     tableNumber?: string | null
     orderNumber?: string | null
     message: string
+    imageUrl?: string | null
     isRead?: boolean
     createdAt?: Date | string
   }
@@ -35450,6 +40161,7 @@ export namespace Prisma {
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
     orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
     message?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -35463,8 +40175,193 @@ export namespace Prisma {
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
     orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
     message?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FactoryOrderCreateInput = {
+    id?: string
+    targetDate: Date | string
+    status?: string
+    createdBy?: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    outlet: OutletCreateNestedOneWithoutFactoryOrdersInput
+    items?: FactoryOrderItemCreateNestedManyWithoutFactoryOrderInput
+  }
+
+  export type FactoryOrderUncheckedCreateInput = {
+    id?: string
+    outletId: string
+    targetDate: Date | string
+    status?: string
+    createdBy?: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    items?: FactoryOrderItemUncheckedCreateNestedManyWithoutFactoryOrderInput
+  }
+
+  export type FactoryOrderUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdBy?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outlet?: OutletUpdateOneRequiredWithoutFactoryOrdersNestedInput
+    items?: FactoryOrderItemUpdateManyWithoutFactoryOrderNestedInput
+  }
+
+  export type FactoryOrderUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdBy?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: FactoryOrderItemUncheckedUpdateManyWithoutFactoryOrderNestedInput
+  }
+
+  export type FactoryOrderCreateManyInput = {
+    id?: string
+    outletId: string
+    targetDate: Date | string
+    status?: string
+    createdBy?: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FactoryOrderUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdBy?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FactoryOrderUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdBy?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FactoryOrderItemCreateInput = {
+    id?: string
+    menuItemId: string
+    menuItemName: string
+    unitType: string
+    currentStock?: number
+    minStockLevel?: number
+    shortageQty?: number
+    preOrderQty?: number
+    suggestedQty?: number
+    approvedQty?: number
+    notes?: string | null
+    factoryOrder: FactoryOrderCreateNestedOneWithoutItemsInput
+  }
+
+  export type FactoryOrderItemUncheckedCreateInput = {
+    id?: string
+    factoryOrderId: string
+    menuItemId: string
+    menuItemName: string
+    unitType: string
+    currentStock?: number
+    minStockLevel?: number
+    shortageQty?: number
+    preOrderQty?: number
+    suggestedQty?: number
+    approvedQty?: number
+    notes?: string | null
+  }
+
+  export type FactoryOrderItemUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    menuItemId?: StringFieldUpdateOperationsInput | string
+    menuItemName?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    currentStock?: FloatFieldUpdateOperationsInput | number
+    minStockLevel?: FloatFieldUpdateOperationsInput | number
+    shortageQty?: FloatFieldUpdateOperationsInput | number
+    preOrderQty?: FloatFieldUpdateOperationsInput | number
+    suggestedQty?: FloatFieldUpdateOperationsInput | number
+    approvedQty?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    factoryOrder?: FactoryOrderUpdateOneRequiredWithoutItemsNestedInput
+  }
+
+  export type FactoryOrderItemUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    factoryOrderId?: StringFieldUpdateOperationsInput | string
+    menuItemId?: StringFieldUpdateOperationsInput | string
+    menuItemName?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    currentStock?: FloatFieldUpdateOperationsInput | number
+    minStockLevel?: FloatFieldUpdateOperationsInput | number
+    shortageQty?: FloatFieldUpdateOperationsInput | number
+    preOrderQty?: FloatFieldUpdateOperationsInput | number
+    suggestedQty?: FloatFieldUpdateOperationsInput | number
+    approvedQty?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type FactoryOrderItemCreateManyInput = {
+    id?: string
+    factoryOrderId: string
+    menuItemId: string
+    menuItemName: string
+    unitType: string
+    currentStock?: number
+    minStockLevel?: number
+    shortageQty?: number
+    preOrderQty?: number
+    suggestedQty?: number
+    approvedQty?: number
+    notes?: string | null
+  }
+
+  export type FactoryOrderItemUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    menuItemId?: StringFieldUpdateOperationsInput | string
+    menuItemName?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    currentStock?: FloatFieldUpdateOperationsInput | number
+    minStockLevel?: FloatFieldUpdateOperationsInput | number
+    shortageQty?: FloatFieldUpdateOperationsInput | number
+    preOrderQty?: FloatFieldUpdateOperationsInput | number
+    suggestedQty?: FloatFieldUpdateOperationsInput | number
+    approvedQty?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type FactoryOrderItemUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    factoryOrderId?: StringFieldUpdateOperationsInput | string
+    menuItemId?: StringFieldUpdateOperationsInput | string
+    menuItemName?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    currentStock?: FloatFieldUpdateOperationsInput | number
+    minStockLevel?: FloatFieldUpdateOperationsInput | number
+    shortageQty?: FloatFieldUpdateOperationsInput | number
+    preOrderQty?: FloatFieldUpdateOperationsInput | number
+    suggestedQty?: FloatFieldUpdateOperationsInput | number
+    approvedQty?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -35585,6 +40482,18 @@ export namespace Prisma {
     none?: DailyCloseWhereInput
   }
 
+  export type DeliveryDriverListRelationFilter = {
+    every?: DeliveryDriverWhereInput
+    some?: DeliveryDriverWhereInput
+    none?: DeliveryDriverWhereInput
+  }
+
+  export type FactoryOrderListRelationFilter = {
+    every?: FactoryOrderWhereInput
+    some?: FactoryOrderWhereInput
+    none?: FactoryOrderWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -35635,6 +40544,14 @@ export namespace Prisma {
   }
 
   export type DailyCloseOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type DeliveryDriverOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FactoryOrderOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -36593,6 +41510,39 @@ export namespace Prisma {
     sortOrder?: SortOrder
   }
 
+  export type DeliveryDriverCountOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    name?: SortOrder
+    phone?: SortOrder
+    vehicleInfo?: SortOrder
+    notes?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DeliveryDriverMaxOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    name?: SortOrder
+    phone?: SortOrder
+    vehicleInfo?: SortOrder
+    notes?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DeliveryDriverMinOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    name?: SortOrder
+    phone?: SortOrder
+    vehicleInfo?: SortOrder
+    notes?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type DateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -36612,6 +41562,11 @@ export namespace Prisma {
   export type DeliveryZoneNullableScalarRelationFilter = {
     is?: DeliveryZoneWhereInput | null
     isNot?: DeliveryZoneWhereInput | null
+  }
+
+  export type DeliveryDriverNullableScalarRelationFilter = {
+    is?: DeliveryDriverWhereInput | null
+    isNot?: DeliveryDriverWhereInput | null
   }
 
   export type CustomerNullableScalarRelationFilter = {
@@ -36641,8 +41596,18 @@ export namespace Prisma {
     deliveryAddress?: SortOrder
     deliveryPhone?: SortOrder
     deliveryNotes?: SortOrder
+    driverId?: SortOrder
     driverName?: SortOrder
+    driverPhone?: SortOrder
     dispatchedAt?: SortOrder
+    isScheduled?: SortOrder
+    scheduledFor?: SortOrder
+    depositRequired?: SortOrder
+    depositPaid?: SortOrder
+    depositStatus?: SortOrder
+    depositReceiptUrl?: SortOrder
+    alertSent48h?: SortOrder
+    alertSent24h?: SortOrder
     status?: SortOrder
     paymentStatus?: SortOrder
     paymentMethod?: SortOrder
@@ -36667,6 +41632,8 @@ export namespace Prisma {
   }
 
   export type OrderAvgOrderByAggregateInput = {
+    depositRequired?: SortOrder
+    depositPaid?: SortOrder
     subtotal?: SortOrder
     serviceCharge?: SortOrder
     taxAmount?: SortOrder
@@ -36690,8 +41657,18 @@ export namespace Prisma {
     deliveryAddress?: SortOrder
     deliveryPhone?: SortOrder
     deliveryNotes?: SortOrder
+    driverId?: SortOrder
     driverName?: SortOrder
+    driverPhone?: SortOrder
     dispatchedAt?: SortOrder
+    isScheduled?: SortOrder
+    scheduledFor?: SortOrder
+    depositRequired?: SortOrder
+    depositPaid?: SortOrder
+    depositStatus?: SortOrder
+    depositReceiptUrl?: SortOrder
+    alertSent48h?: SortOrder
+    alertSent24h?: SortOrder
     status?: SortOrder
     paymentStatus?: SortOrder
     paymentMethod?: SortOrder
@@ -36727,8 +41704,18 @@ export namespace Prisma {
     deliveryAddress?: SortOrder
     deliveryPhone?: SortOrder
     deliveryNotes?: SortOrder
+    driverId?: SortOrder
     driverName?: SortOrder
+    driverPhone?: SortOrder
     dispatchedAt?: SortOrder
+    isScheduled?: SortOrder
+    scheduledFor?: SortOrder
+    depositRequired?: SortOrder
+    depositPaid?: SortOrder
+    depositStatus?: SortOrder
+    depositReceiptUrl?: SortOrder
+    alertSent48h?: SortOrder
+    alertSent24h?: SortOrder
     status?: SortOrder
     paymentStatus?: SortOrder
     paymentMethod?: SortOrder
@@ -36753,6 +41740,8 @@ export namespace Prisma {
   }
 
   export type OrderSumOrderByAggregateInput = {
+    depositRequired?: SortOrder
+    depositPaid?: SortOrder
     subtotal?: SortOrder
     serviceCharge?: SortOrder
     taxAmount?: SortOrder
@@ -36827,6 +41816,7 @@ export namespace Prisma {
     visaCollected?: SortOrder
     instapayCollected?: SortOrder
     vodafoneCollected?: SortOrder
+    deliveryFeesTotal?: SortOrder
     totalRevenue?: SortOrder
     expensesTotal?: SortOrder
     ticketsCount?: SortOrder
@@ -36847,6 +41837,7 @@ export namespace Prisma {
     visaCollected?: SortOrder
     instapayCollected?: SortOrder
     vodafoneCollected?: SortOrder
+    deliveryFeesTotal?: SortOrder
     totalRevenue?: SortOrder
     expensesTotal?: SortOrder
     ticketsCount?: SortOrder
@@ -36866,6 +41857,7 @@ export namespace Prisma {
     visaCollected?: SortOrder
     instapayCollected?: SortOrder
     vodafoneCollected?: SortOrder
+    deliveryFeesTotal?: SortOrder
     totalRevenue?: SortOrder
     expensesTotal?: SortOrder
     ticketsCount?: SortOrder
@@ -36890,6 +41882,7 @@ export namespace Prisma {
     visaCollected?: SortOrder
     instapayCollected?: SortOrder
     vodafoneCollected?: SortOrder
+    deliveryFeesTotal?: SortOrder
     totalRevenue?: SortOrder
     expensesTotal?: SortOrder
     ticketsCount?: SortOrder
@@ -36910,6 +41903,7 @@ export namespace Prisma {
     visaCollected?: SortOrder
     instapayCollected?: SortOrder
     vodafoneCollected?: SortOrder
+    deliveryFeesTotal?: SortOrder
     totalRevenue?: SortOrder
     expensesTotal?: SortOrder
     ticketsCount?: SortOrder
@@ -37050,6 +42044,9 @@ export namespace Prisma {
     serviceChargePercent?: SortOrder
     taxPercent?: SortOrder
     deliveryFee?: SortOrder
+    preOrderDepositPercent?: SortOrder
+    instapayAccount?: SortOrder
+    vodafoneCashNumber?: SortOrder
     isServiceChargeEnabled?: SortOrder
     isTaxEnabled?: SortOrder
     isLoyaltyEnabled?: SortOrder
@@ -37065,6 +42062,7 @@ export namespace Prisma {
     serviceChargePercent?: SortOrder
     taxPercent?: SortOrder
     deliveryFee?: SortOrder
+    preOrderDepositPercent?: SortOrder
     pointsPerPoundSpent?: SortOrder
     poundValuePerPoint?: SortOrder
   }
@@ -37082,6 +42080,9 @@ export namespace Prisma {
     serviceChargePercent?: SortOrder
     taxPercent?: SortOrder
     deliveryFee?: SortOrder
+    preOrderDepositPercent?: SortOrder
+    instapayAccount?: SortOrder
+    vodafoneCashNumber?: SortOrder
     isServiceChargeEnabled?: SortOrder
     isTaxEnabled?: SortOrder
     isLoyaltyEnabled?: SortOrder
@@ -37106,6 +42107,9 @@ export namespace Prisma {
     serviceChargePercent?: SortOrder
     taxPercent?: SortOrder
     deliveryFee?: SortOrder
+    preOrderDepositPercent?: SortOrder
+    instapayAccount?: SortOrder
+    vodafoneCashNumber?: SortOrder
     isServiceChargeEnabled?: SortOrder
     isTaxEnabled?: SortOrder
     isLoyaltyEnabled?: SortOrder
@@ -37121,6 +42125,7 @@ export namespace Prisma {
     serviceChargePercent?: SortOrder
     taxPercent?: SortOrder
     deliveryFee?: SortOrder
+    preOrderDepositPercent?: SortOrder
     pointsPerPoundSpent?: SortOrder
     poundValuePerPoint?: SortOrder
   }
@@ -37190,6 +42195,7 @@ export namespace Prisma {
     tableNumber?: SortOrder
     orderNumber?: SortOrder
     message?: SortOrder
+    imageUrl?: SortOrder
     isRead?: SortOrder
     createdAt?: SortOrder
   }
@@ -37203,6 +42209,7 @@ export namespace Prisma {
     tableNumber?: SortOrder
     orderNumber?: SortOrder
     message?: SortOrder
+    imageUrl?: SortOrder
     isRead?: SortOrder
     createdAt?: SortOrder
   }
@@ -37216,8 +42223,120 @@ export namespace Prisma {
     tableNumber?: SortOrder
     orderNumber?: SortOrder
     message?: SortOrder
+    imageUrl?: SortOrder
     isRead?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type FactoryOrderItemListRelationFilter = {
+    every?: FactoryOrderItemWhereInput
+    some?: FactoryOrderItemWhereInput
+    none?: FactoryOrderItemWhereInput
+  }
+
+  export type FactoryOrderItemOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FactoryOrderCountOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    targetDate?: SortOrder
+    status?: SortOrder
+    createdBy?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FactoryOrderMaxOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    targetDate?: SortOrder
+    status?: SortOrder
+    createdBy?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FactoryOrderMinOrderByAggregateInput = {
+    id?: SortOrder
+    outletId?: SortOrder
+    targetDate?: SortOrder
+    status?: SortOrder
+    createdBy?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FactoryOrderScalarRelationFilter = {
+    is?: FactoryOrderWhereInput
+    isNot?: FactoryOrderWhereInput
+  }
+
+  export type FactoryOrderItemCountOrderByAggregateInput = {
+    id?: SortOrder
+    factoryOrderId?: SortOrder
+    menuItemId?: SortOrder
+    menuItemName?: SortOrder
+    unitType?: SortOrder
+    currentStock?: SortOrder
+    minStockLevel?: SortOrder
+    shortageQty?: SortOrder
+    preOrderQty?: SortOrder
+    suggestedQty?: SortOrder
+    approvedQty?: SortOrder
+    notes?: SortOrder
+  }
+
+  export type FactoryOrderItemAvgOrderByAggregateInput = {
+    currentStock?: SortOrder
+    minStockLevel?: SortOrder
+    shortageQty?: SortOrder
+    preOrderQty?: SortOrder
+    suggestedQty?: SortOrder
+    approvedQty?: SortOrder
+  }
+
+  export type FactoryOrderItemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    factoryOrderId?: SortOrder
+    menuItemId?: SortOrder
+    menuItemName?: SortOrder
+    unitType?: SortOrder
+    currentStock?: SortOrder
+    minStockLevel?: SortOrder
+    shortageQty?: SortOrder
+    preOrderQty?: SortOrder
+    suggestedQty?: SortOrder
+    approvedQty?: SortOrder
+    notes?: SortOrder
+  }
+
+  export type FactoryOrderItemMinOrderByAggregateInput = {
+    id?: SortOrder
+    factoryOrderId?: SortOrder
+    menuItemId?: SortOrder
+    menuItemName?: SortOrder
+    unitType?: SortOrder
+    currentStock?: SortOrder
+    minStockLevel?: SortOrder
+    shortageQty?: SortOrder
+    preOrderQty?: SortOrder
+    suggestedQty?: SortOrder
+    approvedQty?: SortOrder
+    notes?: SortOrder
+  }
+
+  export type FactoryOrderItemSumOrderByAggregateInput = {
+    currentStock?: SortOrder
+    minStockLevel?: SortOrder
+    shortageQty?: SortOrder
+    preOrderQty?: SortOrder
+    suggestedQty?: SortOrder
+    approvedQty?: SortOrder
   }
 
   export type UserCreateNestedManyWithoutOutletInput = {
@@ -37304,6 +42423,20 @@ export namespace Prisma {
     connect?: DailyCloseWhereUniqueInput | DailyCloseWhereUniqueInput[]
   }
 
+  export type DeliveryDriverCreateNestedManyWithoutOutletInput = {
+    create?: XOR<DeliveryDriverCreateWithoutOutletInput, DeliveryDriverUncheckedCreateWithoutOutletInput> | DeliveryDriverCreateWithoutOutletInput[] | DeliveryDriverUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: DeliveryDriverCreateOrConnectWithoutOutletInput | DeliveryDriverCreateOrConnectWithoutOutletInput[]
+    createMany?: DeliveryDriverCreateManyOutletInputEnvelope
+    connect?: DeliveryDriverWhereUniqueInput | DeliveryDriverWhereUniqueInput[]
+  }
+
+  export type FactoryOrderCreateNestedManyWithoutOutletInput = {
+    create?: XOR<FactoryOrderCreateWithoutOutletInput, FactoryOrderUncheckedCreateWithoutOutletInput> | FactoryOrderCreateWithoutOutletInput[] | FactoryOrderUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: FactoryOrderCreateOrConnectWithoutOutletInput | FactoryOrderCreateOrConnectWithoutOutletInput[]
+    createMany?: FactoryOrderCreateManyOutletInputEnvelope
+    connect?: FactoryOrderWhereUniqueInput | FactoryOrderWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutOutletInput = {
     create?: XOR<UserCreateWithoutOutletInput, UserUncheckedCreateWithoutOutletInput> | UserCreateWithoutOutletInput[] | UserUncheckedCreateWithoutOutletInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOutletInput | UserCreateOrConnectWithoutOutletInput[]
@@ -37386,6 +42519,20 @@ export namespace Prisma {
     connectOrCreate?: DailyCloseCreateOrConnectWithoutOutletInput | DailyCloseCreateOrConnectWithoutOutletInput[]
     createMany?: DailyCloseCreateManyOutletInputEnvelope
     connect?: DailyCloseWhereUniqueInput | DailyCloseWhereUniqueInput[]
+  }
+
+  export type DeliveryDriverUncheckedCreateNestedManyWithoutOutletInput = {
+    create?: XOR<DeliveryDriverCreateWithoutOutletInput, DeliveryDriverUncheckedCreateWithoutOutletInput> | DeliveryDriverCreateWithoutOutletInput[] | DeliveryDriverUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: DeliveryDriverCreateOrConnectWithoutOutletInput | DeliveryDriverCreateOrConnectWithoutOutletInput[]
+    createMany?: DeliveryDriverCreateManyOutletInputEnvelope
+    connect?: DeliveryDriverWhereUniqueInput | DeliveryDriverWhereUniqueInput[]
+  }
+
+  export type FactoryOrderUncheckedCreateNestedManyWithoutOutletInput = {
+    create?: XOR<FactoryOrderCreateWithoutOutletInput, FactoryOrderUncheckedCreateWithoutOutletInput> | FactoryOrderCreateWithoutOutletInput[] | FactoryOrderUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: FactoryOrderCreateOrConnectWithoutOutletInput | FactoryOrderCreateOrConnectWithoutOutletInput[]
+    createMany?: FactoryOrderCreateManyOutletInputEnvelope
+    connect?: FactoryOrderWhereUniqueInput | FactoryOrderWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -37572,6 +42719,34 @@ export namespace Prisma {
     deleteMany?: DailyCloseScalarWhereInput | DailyCloseScalarWhereInput[]
   }
 
+  export type DeliveryDriverUpdateManyWithoutOutletNestedInput = {
+    create?: XOR<DeliveryDriverCreateWithoutOutletInput, DeliveryDriverUncheckedCreateWithoutOutletInput> | DeliveryDriverCreateWithoutOutletInput[] | DeliveryDriverUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: DeliveryDriverCreateOrConnectWithoutOutletInput | DeliveryDriverCreateOrConnectWithoutOutletInput[]
+    upsert?: DeliveryDriverUpsertWithWhereUniqueWithoutOutletInput | DeliveryDriverUpsertWithWhereUniqueWithoutOutletInput[]
+    createMany?: DeliveryDriverCreateManyOutletInputEnvelope
+    set?: DeliveryDriverWhereUniqueInput | DeliveryDriverWhereUniqueInput[]
+    disconnect?: DeliveryDriverWhereUniqueInput | DeliveryDriverWhereUniqueInput[]
+    delete?: DeliveryDriverWhereUniqueInput | DeliveryDriverWhereUniqueInput[]
+    connect?: DeliveryDriverWhereUniqueInput | DeliveryDriverWhereUniqueInput[]
+    update?: DeliveryDriverUpdateWithWhereUniqueWithoutOutletInput | DeliveryDriverUpdateWithWhereUniqueWithoutOutletInput[]
+    updateMany?: DeliveryDriverUpdateManyWithWhereWithoutOutletInput | DeliveryDriverUpdateManyWithWhereWithoutOutletInput[]
+    deleteMany?: DeliveryDriverScalarWhereInput | DeliveryDriverScalarWhereInput[]
+  }
+
+  export type FactoryOrderUpdateManyWithoutOutletNestedInput = {
+    create?: XOR<FactoryOrderCreateWithoutOutletInput, FactoryOrderUncheckedCreateWithoutOutletInput> | FactoryOrderCreateWithoutOutletInput[] | FactoryOrderUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: FactoryOrderCreateOrConnectWithoutOutletInput | FactoryOrderCreateOrConnectWithoutOutletInput[]
+    upsert?: FactoryOrderUpsertWithWhereUniqueWithoutOutletInput | FactoryOrderUpsertWithWhereUniqueWithoutOutletInput[]
+    createMany?: FactoryOrderCreateManyOutletInputEnvelope
+    set?: FactoryOrderWhereUniqueInput | FactoryOrderWhereUniqueInput[]
+    disconnect?: FactoryOrderWhereUniqueInput | FactoryOrderWhereUniqueInput[]
+    delete?: FactoryOrderWhereUniqueInput | FactoryOrderWhereUniqueInput[]
+    connect?: FactoryOrderWhereUniqueInput | FactoryOrderWhereUniqueInput[]
+    update?: FactoryOrderUpdateWithWhereUniqueWithoutOutletInput | FactoryOrderUpdateWithWhereUniqueWithoutOutletInput[]
+    updateMany?: FactoryOrderUpdateManyWithWhereWithoutOutletInput | FactoryOrderUpdateManyWithWhereWithoutOutletInput[]
+    deleteMany?: FactoryOrderScalarWhereInput | FactoryOrderScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutOutletNestedInput = {
     create?: XOR<UserCreateWithoutOutletInput, UserUncheckedCreateWithoutOutletInput> | UserCreateWithoutOutletInput[] | UserUncheckedCreateWithoutOutletInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOutletInput | UserCreateOrConnectWithoutOutletInput[]
@@ -37738,6 +42913,34 @@ export namespace Prisma {
     update?: DailyCloseUpdateWithWhereUniqueWithoutOutletInput | DailyCloseUpdateWithWhereUniqueWithoutOutletInput[]
     updateMany?: DailyCloseUpdateManyWithWhereWithoutOutletInput | DailyCloseUpdateManyWithWhereWithoutOutletInput[]
     deleteMany?: DailyCloseScalarWhereInput | DailyCloseScalarWhereInput[]
+  }
+
+  export type DeliveryDriverUncheckedUpdateManyWithoutOutletNestedInput = {
+    create?: XOR<DeliveryDriverCreateWithoutOutletInput, DeliveryDriverUncheckedCreateWithoutOutletInput> | DeliveryDriverCreateWithoutOutletInput[] | DeliveryDriverUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: DeliveryDriverCreateOrConnectWithoutOutletInput | DeliveryDriverCreateOrConnectWithoutOutletInput[]
+    upsert?: DeliveryDriverUpsertWithWhereUniqueWithoutOutletInput | DeliveryDriverUpsertWithWhereUniqueWithoutOutletInput[]
+    createMany?: DeliveryDriverCreateManyOutletInputEnvelope
+    set?: DeliveryDriverWhereUniqueInput | DeliveryDriverWhereUniqueInput[]
+    disconnect?: DeliveryDriverWhereUniqueInput | DeliveryDriverWhereUniqueInput[]
+    delete?: DeliveryDriverWhereUniqueInput | DeliveryDriverWhereUniqueInput[]
+    connect?: DeliveryDriverWhereUniqueInput | DeliveryDriverWhereUniqueInput[]
+    update?: DeliveryDriverUpdateWithWhereUniqueWithoutOutletInput | DeliveryDriverUpdateWithWhereUniqueWithoutOutletInput[]
+    updateMany?: DeliveryDriverUpdateManyWithWhereWithoutOutletInput | DeliveryDriverUpdateManyWithWhereWithoutOutletInput[]
+    deleteMany?: DeliveryDriverScalarWhereInput | DeliveryDriverScalarWhereInput[]
+  }
+
+  export type FactoryOrderUncheckedUpdateManyWithoutOutletNestedInput = {
+    create?: XOR<FactoryOrderCreateWithoutOutletInput, FactoryOrderUncheckedCreateWithoutOutletInput> | FactoryOrderCreateWithoutOutletInput[] | FactoryOrderUncheckedCreateWithoutOutletInput[]
+    connectOrCreate?: FactoryOrderCreateOrConnectWithoutOutletInput | FactoryOrderCreateOrConnectWithoutOutletInput[]
+    upsert?: FactoryOrderUpsertWithWhereUniqueWithoutOutletInput | FactoryOrderUpsertWithWhereUniqueWithoutOutletInput[]
+    createMany?: FactoryOrderCreateManyOutletInputEnvelope
+    set?: FactoryOrderWhereUniqueInput | FactoryOrderWhereUniqueInput[]
+    disconnect?: FactoryOrderWhereUniqueInput | FactoryOrderWhereUniqueInput[]
+    delete?: FactoryOrderWhereUniqueInput | FactoryOrderWhereUniqueInput[]
+    connect?: FactoryOrderWhereUniqueInput | FactoryOrderWhereUniqueInput[]
+    update?: FactoryOrderUpdateWithWhereUniqueWithoutOutletInput | FactoryOrderUpdateWithWhereUniqueWithoutOutletInput[]
+    updateMany?: FactoryOrderUpdateManyWithWhereWithoutOutletInput | FactoryOrderUpdateManyWithWhereWithoutOutletInput[]
+    deleteMany?: FactoryOrderScalarWhereInput | FactoryOrderScalarWhereInput[]
   }
 
   export type OutletCreateNestedOneWithoutUsersInput = {
@@ -38312,6 +43515,64 @@ export namespace Prisma {
     deleteMany?: OrderScalarWhereInput | OrderScalarWhereInput[]
   }
 
+  export type OutletCreateNestedOneWithoutDeliveryDriversInput = {
+    create?: XOR<OutletCreateWithoutDeliveryDriversInput, OutletUncheckedCreateWithoutDeliveryDriversInput>
+    connectOrCreate?: OutletCreateOrConnectWithoutDeliveryDriversInput
+    connect?: OutletWhereUniqueInput
+  }
+
+  export type OrderCreateNestedManyWithoutDriverInput = {
+    create?: XOR<OrderCreateWithoutDriverInput, OrderUncheckedCreateWithoutDriverInput> | OrderCreateWithoutDriverInput[] | OrderUncheckedCreateWithoutDriverInput[]
+    connectOrCreate?: OrderCreateOrConnectWithoutDriverInput | OrderCreateOrConnectWithoutDriverInput[]
+    createMany?: OrderCreateManyDriverInputEnvelope
+    connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+  }
+
+  export type OrderUncheckedCreateNestedManyWithoutDriverInput = {
+    create?: XOR<OrderCreateWithoutDriverInput, OrderUncheckedCreateWithoutDriverInput> | OrderCreateWithoutDriverInput[] | OrderUncheckedCreateWithoutDriverInput[]
+    connectOrCreate?: OrderCreateOrConnectWithoutDriverInput | OrderCreateOrConnectWithoutDriverInput[]
+    createMany?: OrderCreateManyDriverInputEnvelope
+    connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+  }
+
+  export type OutletUpdateOneWithoutDeliveryDriversNestedInput = {
+    create?: XOR<OutletCreateWithoutDeliveryDriversInput, OutletUncheckedCreateWithoutDeliveryDriversInput>
+    connectOrCreate?: OutletCreateOrConnectWithoutDeliveryDriversInput
+    upsert?: OutletUpsertWithoutDeliveryDriversInput
+    disconnect?: OutletWhereInput | boolean
+    delete?: OutletWhereInput | boolean
+    connect?: OutletWhereUniqueInput
+    update?: XOR<XOR<OutletUpdateToOneWithWhereWithoutDeliveryDriversInput, OutletUpdateWithoutDeliveryDriversInput>, OutletUncheckedUpdateWithoutDeliveryDriversInput>
+  }
+
+  export type OrderUpdateManyWithoutDriverNestedInput = {
+    create?: XOR<OrderCreateWithoutDriverInput, OrderUncheckedCreateWithoutDriverInput> | OrderCreateWithoutDriverInput[] | OrderUncheckedCreateWithoutDriverInput[]
+    connectOrCreate?: OrderCreateOrConnectWithoutDriverInput | OrderCreateOrConnectWithoutDriverInput[]
+    upsert?: OrderUpsertWithWhereUniqueWithoutDriverInput | OrderUpsertWithWhereUniqueWithoutDriverInput[]
+    createMany?: OrderCreateManyDriverInputEnvelope
+    set?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    disconnect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    delete?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    update?: OrderUpdateWithWhereUniqueWithoutDriverInput | OrderUpdateWithWhereUniqueWithoutDriverInput[]
+    updateMany?: OrderUpdateManyWithWhereWithoutDriverInput | OrderUpdateManyWithWhereWithoutDriverInput[]
+    deleteMany?: OrderScalarWhereInput | OrderScalarWhereInput[]
+  }
+
+  export type OrderUncheckedUpdateManyWithoutDriverNestedInput = {
+    create?: XOR<OrderCreateWithoutDriverInput, OrderUncheckedCreateWithoutDriverInput> | OrderCreateWithoutDriverInput[] | OrderUncheckedCreateWithoutDriverInput[]
+    connectOrCreate?: OrderCreateOrConnectWithoutDriverInput | OrderCreateOrConnectWithoutDriverInput[]
+    upsert?: OrderUpsertWithWhereUniqueWithoutDriverInput | OrderUpsertWithWhereUniqueWithoutDriverInput[]
+    createMany?: OrderCreateManyDriverInputEnvelope
+    set?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    disconnect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    delete?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    update?: OrderUpdateWithWhereUniqueWithoutDriverInput | OrderUpdateWithWhereUniqueWithoutDriverInput[]
+    updateMany?: OrderUpdateManyWithWhereWithoutDriverInput | OrderUpdateManyWithWhereWithoutDriverInput[]
+    deleteMany?: OrderScalarWhereInput | OrderScalarWhereInput[]
+  }
+
   export type OutletCreateNestedOneWithoutOrdersInput = {
     create?: XOR<OutletCreateWithoutOrdersInput, OutletUncheckedCreateWithoutOrdersInput>
     connectOrCreate?: OutletCreateOrConnectWithoutOrdersInput
@@ -38328,6 +43589,12 @@ export namespace Prisma {
     create?: XOR<DeliveryZoneCreateWithoutOrdersInput, DeliveryZoneUncheckedCreateWithoutOrdersInput>
     connectOrCreate?: DeliveryZoneCreateOrConnectWithoutOrdersInput
     connect?: DeliveryZoneWhereUniqueInput
+  }
+
+  export type DeliveryDriverCreateNestedOneWithoutOrdersInput = {
+    create?: XOR<DeliveryDriverCreateWithoutOrdersInput, DeliveryDriverUncheckedCreateWithoutOrdersInput>
+    connectOrCreate?: DeliveryDriverCreateOrConnectWithoutOrdersInput
+    connect?: DeliveryDriverWhereUniqueInput
   }
 
   export type CustomerCreateNestedOneWithoutOrdersInput = {
@@ -38380,6 +43647,16 @@ export namespace Prisma {
     delete?: DeliveryZoneWhereInput | boolean
     connect?: DeliveryZoneWhereUniqueInput
     update?: XOR<XOR<DeliveryZoneUpdateToOneWithWhereWithoutOrdersInput, DeliveryZoneUpdateWithoutOrdersInput>, DeliveryZoneUncheckedUpdateWithoutOrdersInput>
+  }
+
+  export type DeliveryDriverUpdateOneWithoutOrdersNestedInput = {
+    create?: XOR<DeliveryDriverCreateWithoutOrdersInput, DeliveryDriverUncheckedCreateWithoutOrdersInput>
+    connectOrCreate?: DeliveryDriverCreateOrConnectWithoutOrdersInput
+    upsert?: DeliveryDriverUpsertWithoutOrdersInput
+    disconnect?: DeliveryDriverWhereInput | boolean
+    delete?: DeliveryDriverWhereInput | boolean
+    connect?: DeliveryDriverWhereUniqueInput
+    update?: XOR<XOR<DeliveryDriverUpdateToOneWithWhereWithoutOrdersInput, DeliveryDriverUpdateWithoutOrdersInput>, DeliveryDriverUncheckedUpdateWithoutOrdersInput>
   }
 
   export type CustomerUpdateOneWithoutOrdersNestedInput = {
@@ -38502,6 +43779,76 @@ export namespace Prisma {
     upsert?: OutletUpsertWithoutChatMessagesInput
     connect?: OutletWhereUniqueInput
     update?: XOR<XOR<OutletUpdateToOneWithWhereWithoutChatMessagesInput, OutletUpdateWithoutChatMessagesInput>, OutletUncheckedUpdateWithoutChatMessagesInput>
+  }
+
+  export type OutletCreateNestedOneWithoutFactoryOrdersInput = {
+    create?: XOR<OutletCreateWithoutFactoryOrdersInput, OutletUncheckedCreateWithoutFactoryOrdersInput>
+    connectOrCreate?: OutletCreateOrConnectWithoutFactoryOrdersInput
+    connect?: OutletWhereUniqueInput
+  }
+
+  export type FactoryOrderItemCreateNestedManyWithoutFactoryOrderInput = {
+    create?: XOR<FactoryOrderItemCreateWithoutFactoryOrderInput, FactoryOrderItemUncheckedCreateWithoutFactoryOrderInput> | FactoryOrderItemCreateWithoutFactoryOrderInput[] | FactoryOrderItemUncheckedCreateWithoutFactoryOrderInput[]
+    connectOrCreate?: FactoryOrderItemCreateOrConnectWithoutFactoryOrderInput | FactoryOrderItemCreateOrConnectWithoutFactoryOrderInput[]
+    createMany?: FactoryOrderItemCreateManyFactoryOrderInputEnvelope
+    connect?: FactoryOrderItemWhereUniqueInput | FactoryOrderItemWhereUniqueInput[]
+  }
+
+  export type FactoryOrderItemUncheckedCreateNestedManyWithoutFactoryOrderInput = {
+    create?: XOR<FactoryOrderItemCreateWithoutFactoryOrderInput, FactoryOrderItemUncheckedCreateWithoutFactoryOrderInput> | FactoryOrderItemCreateWithoutFactoryOrderInput[] | FactoryOrderItemUncheckedCreateWithoutFactoryOrderInput[]
+    connectOrCreate?: FactoryOrderItemCreateOrConnectWithoutFactoryOrderInput | FactoryOrderItemCreateOrConnectWithoutFactoryOrderInput[]
+    createMany?: FactoryOrderItemCreateManyFactoryOrderInputEnvelope
+    connect?: FactoryOrderItemWhereUniqueInput | FactoryOrderItemWhereUniqueInput[]
+  }
+
+  export type OutletUpdateOneRequiredWithoutFactoryOrdersNestedInput = {
+    create?: XOR<OutletCreateWithoutFactoryOrdersInput, OutletUncheckedCreateWithoutFactoryOrdersInput>
+    connectOrCreate?: OutletCreateOrConnectWithoutFactoryOrdersInput
+    upsert?: OutletUpsertWithoutFactoryOrdersInput
+    connect?: OutletWhereUniqueInput
+    update?: XOR<XOR<OutletUpdateToOneWithWhereWithoutFactoryOrdersInput, OutletUpdateWithoutFactoryOrdersInput>, OutletUncheckedUpdateWithoutFactoryOrdersInput>
+  }
+
+  export type FactoryOrderItemUpdateManyWithoutFactoryOrderNestedInput = {
+    create?: XOR<FactoryOrderItemCreateWithoutFactoryOrderInput, FactoryOrderItemUncheckedCreateWithoutFactoryOrderInput> | FactoryOrderItemCreateWithoutFactoryOrderInput[] | FactoryOrderItemUncheckedCreateWithoutFactoryOrderInput[]
+    connectOrCreate?: FactoryOrderItemCreateOrConnectWithoutFactoryOrderInput | FactoryOrderItemCreateOrConnectWithoutFactoryOrderInput[]
+    upsert?: FactoryOrderItemUpsertWithWhereUniqueWithoutFactoryOrderInput | FactoryOrderItemUpsertWithWhereUniqueWithoutFactoryOrderInput[]
+    createMany?: FactoryOrderItemCreateManyFactoryOrderInputEnvelope
+    set?: FactoryOrderItemWhereUniqueInput | FactoryOrderItemWhereUniqueInput[]
+    disconnect?: FactoryOrderItemWhereUniqueInput | FactoryOrderItemWhereUniqueInput[]
+    delete?: FactoryOrderItemWhereUniqueInput | FactoryOrderItemWhereUniqueInput[]
+    connect?: FactoryOrderItemWhereUniqueInput | FactoryOrderItemWhereUniqueInput[]
+    update?: FactoryOrderItemUpdateWithWhereUniqueWithoutFactoryOrderInput | FactoryOrderItemUpdateWithWhereUniqueWithoutFactoryOrderInput[]
+    updateMany?: FactoryOrderItemUpdateManyWithWhereWithoutFactoryOrderInput | FactoryOrderItemUpdateManyWithWhereWithoutFactoryOrderInput[]
+    deleteMany?: FactoryOrderItemScalarWhereInput | FactoryOrderItemScalarWhereInput[]
+  }
+
+  export type FactoryOrderItemUncheckedUpdateManyWithoutFactoryOrderNestedInput = {
+    create?: XOR<FactoryOrderItemCreateWithoutFactoryOrderInput, FactoryOrderItemUncheckedCreateWithoutFactoryOrderInput> | FactoryOrderItemCreateWithoutFactoryOrderInput[] | FactoryOrderItemUncheckedCreateWithoutFactoryOrderInput[]
+    connectOrCreate?: FactoryOrderItemCreateOrConnectWithoutFactoryOrderInput | FactoryOrderItemCreateOrConnectWithoutFactoryOrderInput[]
+    upsert?: FactoryOrderItemUpsertWithWhereUniqueWithoutFactoryOrderInput | FactoryOrderItemUpsertWithWhereUniqueWithoutFactoryOrderInput[]
+    createMany?: FactoryOrderItemCreateManyFactoryOrderInputEnvelope
+    set?: FactoryOrderItemWhereUniqueInput | FactoryOrderItemWhereUniqueInput[]
+    disconnect?: FactoryOrderItemWhereUniqueInput | FactoryOrderItemWhereUniqueInput[]
+    delete?: FactoryOrderItemWhereUniqueInput | FactoryOrderItemWhereUniqueInput[]
+    connect?: FactoryOrderItemWhereUniqueInput | FactoryOrderItemWhereUniqueInput[]
+    update?: FactoryOrderItemUpdateWithWhereUniqueWithoutFactoryOrderInput | FactoryOrderItemUpdateWithWhereUniqueWithoutFactoryOrderInput[]
+    updateMany?: FactoryOrderItemUpdateManyWithWhereWithoutFactoryOrderInput | FactoryOrderItemUpdateManyWithWhereWithoutFactoryOrderInput[]
+    deleteMany?: FactoryOrderItemScalarWhereInput | FactoryOrderItemScalarWhereInput[]
+  }
+
+  export type FactoryOrderCreateNestedOneWithoutItemsInput = {
+    create?: XOR<FactoryOrderCreateWithoutItemsInput, FactoryOrderUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: FactoryOrderCreateOrConnectWithoutItemsInput
+    connect?: FactoryOrderWhereUniqueInput
+  }
+
+  export type FactoryOrderUpdateOneRequiredWithoutItemsNestedInput = {
+    create?: XOR<FactoryOrderCreateWithoutItemsInput, FactoryOrderUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: FactoryOrderCreateOrConnectWithoutItemsInput
+    upsert?: FactoryOrderUpsertWithoutItemsInput
+    connect?: FactoryOrderWhereUniqueInput
+    update?: XOR<XOR<FactoryOrderUpdateToOneWithWhereWithoutItemsInput, FactoryOrderUpdateWithoutItemsInput>, FactoryOrderUncheckedUpdateWithoutItemsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -38899,7 +44246,16 @@ export namespace Prisma {
     deliveryPhone?: string | null
     deliveryNotes?: string | null
     driverName?: string | null
+    driverPhone?: string | null
     dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -38922,6 +44278,7 @@ export namespace Prisma {
     settledAt?: Date | string | null
     table?: DiningTableCreateNestedOneWithoutOrdersInput
     deliveryZone?: DeliveryZoneCreateNestedOneWithoutOrdersInput
+    driver?: DeliveryDriverCreateNestedOneWithoutOrdersInput
     customer?: CustomerCreateNestedOneWithoutOrdersInput
     kdsTickets?: KdsTicketCreateNestedManyWithoutOrderInput
   }
@@ -38937,8 +44294,18 @@ export namespace Prisma {
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverId?: string | null
     driverName?: string | null
+    driverPhone?: string | null
     dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -38986,6 +44353,7 @@ export namespace Prisma {
     visaCollected?: number
     instapayCollected?: number
     vodafoneCollected?: number
+    deliveryFeesTotal?: number
     totalRevenue?: number
     expensesTotal?: number
     ticketsCount?: number
@@ -39009,6 +44377,7 @@ export namespace Prisma {
     visaCollected?: number
     instapayCollected?: number
     vodafoneCollected?: number
+    deliveryFeesTotal?: number
     totalRevenue?: number
     expensesTotal?: number
     ticketsCount?: number
@@ -39107,6 +44476,7 @@ export namespace Prisma {
     tableNumber?: string | null
     orderNumber?: string | null
     message: string
+    imageUrl?: string | null
     isRead?: boolean
     createdAt?: Date | string
   }
@@ -39119,6 +44489,7 @@ export namespace Prisma {
     tableNumber?: string | null
     orderNumber?: string | null
     message: string
+    imageUrl?: string | null
     isRead?: boolean
     createdAt?: Date | string
   }
@@ -39231,6 +44602,70 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type DeliveryDriverCreateWithoutOutletInput = {
+    id?: string
+    name: string
+    phone: string
+    vehicleInfo?: string | null
+    notes?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    orders?: OrderCreateNestedManyWithoutDriverInput
+  }
+
+  export type DeliveryDriverUncheckedCreateWithoutOutletInput = {
+    id?: string
+    name: string
+    phone: string
+    vehicleInfo?: string | null
+    notes?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    orders?: OrderUncheckedCreateNestedManyWithoutDriverInput
+  }
+
+  export type DeliveryDriverCreateOrConnectWithoutOutletInput = {
+    where: DeliveryDriverWhereUniqueInput
+    create: XOR<DeliveryDriverCreateWithoutOutletInput, DeliveryDriverUncheckedCreateWithoutOutletInput>
+  }
+
+  export type DeliveryDriverCreateManyOutletInputEnvelope = {
+    data: DeliveryDriverCreateManyOutletInput | DeliveryDriverCreateManyOutletInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FactoryOrderCreateWithoutOutletInput = {
+    id?: string
+    targetDate: Date | string
+    status?: string
+    createdBy?: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    items?: FactoryOrderItemCreateNestedManyWithoutFactoryOrderInput
+  }
+
+  export type FactoryOrderUncheckedCreateWithoutOutletInput = {
+    id?: string
+    targetDate: Date | string
+    status?: string
+    createdBy?: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    items?: FactoryOrderItemUncheckedCreateNestedManyWithoutFactoryOrderInput
+  }
+
+  export type FactoryOrderCreateOrConnectWithoutOutletInput = {
+    where: FactoryOrderWhereUniqueInput
+    create: XOR<FactoryOrderCreateWithoutOutletInput, FactoryOrderUncheckedCreateWithoutOutletInput>
+  }
+
+  export type FactoryOrderCreateManyOutletInputEnvelope = {
+    data: FactoryOrderCreateManyOutletInput | FactoryOrderCreateManyOutletInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithWhereUniqueWithoutOutletInput = {
     where: UserWhereUniqueInput
     update: XOR<UserUpdateWithoutOutletInput, UserUncheckedUpdateWithoutOutletInput>
@@ -39328,8 +44763,8 @@ export namespace Prisma {
     itemType?: StringFilter<"MenuItem"> | string
     unitType?: StringFilter<"MenuItem"> | string
     openingStock?: FloatFilter<"MenuItem"> | number
-    stockQty?: IntFilter<"MenuItem"> | number
-    minStockAlert?: IntFilter<"MenuItem"> | number
+    stockQty?: FloatFilter<"MenuItem"> | number
+    minStockAlert?: FloatFilter<"MenuItem"> | number
     isAvailable?: BoolFilter<"MenuItem"> | boolean
     sortOrder?: IntFilter<"MenuItem"> | number
     loyaltyPointsEarned?: IntFilter<"MenuItem"> | number
@@ -39401,8 +44836,18 @@ export namespace Prisma {
     deliveryAddress?: StringNullableFilter<"Order"> | string | null
     deliveryPhone?: StringNullableFilter<"Order"> | string | null
     deliveryNotes?: StringNullableFilter<"Order"> | string | null
+    driverId?: StringNullableFilter<"Order"> | string | null
     driverName?: StringNullableFilter<"Order"> | string | null
+    driverPhone?: StringNullableFilter<"Order"> | string | null
     dispatchedAt?: DateTimeNullableFilter<"Order"> | Date | string | null
+    isScheduled?: BoolFilter<"Order"> | boolean
+    scheduledFor?: DateTimeNullableFilter<"Order"> | Date | string | null
+    depositRequired?: FloatFilter<"Order"> | number
+    depositPaid?: FloatFilter<"Order"> | number
+    depositStatus?: StringFilter<"Order"> | string
+    depositReceiptUrl?: StringNullableFilter<"Order"> | string | null
+    alertSent48h?: BoolFilter<"Order"> | boolean
+    alertSent24h?: BoolFilter<"Order"> | boolean
     status?: StringFilter<"Order"> | string
     paymentStatus?: StringFilter<"Order"> | string
     paymentMethod?: StringFilter<"Order"> | string
@@ -39459,6 +44904,7 @@ export namespace Prisma {
     visaCollected?: FloatFilter<"Shift"> | number
     instapayCollected?: FloatFilter<"Shift"> | number
     vodafoneCollected?: FloatFilter<"Shift"> | number
+    deliveryFeesTotal?: FloatFilter<"Shift"> | number
     totalRevenue?: FloatFilter<"Shift"> | number
     expensesTotal?: FloatFilter<"Shift"> | number
     ticketsCount?: IntFilter<"Shift"> | number
@@ -39562,6 +45008,7 @@ export namespace Prisma {
     tableNumber?: StringNullableFilter<"ChatMessage"> | string | null
     orderNumber?: StringNullableFilter<"ChatMessage"> | string | null
     message?: StringFilter<"ChatMessage"> | string
+    imageUrl?: StringNullableFilter<"ChatMessage"> | string | null
     isRead?: BoolFilter<"ChatMessage"> | boolean
     createdAt?: DateTimeFilter<"ChatMessage"> | Date | string
   }
@@ -39658,6 +45105,66 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"DailyClose"> | Date | string
   }
 
+  export type DeliveryDriverUpsertWithWhereUniqueWithoutOutletInput = {
+    where: DeliveryDriverWhereUniqueInput
+    update: XOR<DeliveryDriverUpdateWithoutOutletInput, DeliveryDriverUncheckedUpdateWithoutOutletInput>
+    create: XOR<DeliveryDriverCreateWithoutOutletInput, DeliveryDriverUncheckedCreateWithoutOutletInput>
+  }
+
+  export type DeliveryDriverUpdateWithWhereUniqueWithoutOutletInput = {
+    where: DeliveryDriverWhereUniqueInput
+    data: XOR<DeliveryDriverUpdateWithoutOutletInput, DeliveryDriverUncheckedUpdateWithoutOutletInput>
+  }
+
+  export type DeliveryDriverUpdateManyWithWhereWithoutOutletInput = {
+    where: DeliveryDriverScalarWhereInput
+    data: XOR<DeliveryDriverUpdateManyMutationInput, DeliveryDriverUncheckedUpdateManyWithoutOutletInput>
+  }
+
+  export type DeliveryDriverScalarWhereInput = {
+    AND?: DeliveryDriverScalarWhereInput | DeliveryDriverScalarWhereInput[]
+    OR?: DeliveryDriverScalarWhereInput[]
+    NOT?: DeliveryDriverScalarWhereInput | DeliveryDriverScalarWhereInput[]
+    id?: StringFilter<"DeliveryDriver"> | string
+    outletId?: StringNullableFilter<"DeliveryDriver"> | string | null
+    name?: StringFilter<"DeliveryDriver"> | string
+    phone?: StringFilter<"DeliveryDriver"> | string
+    vehicleInfo?: StringNullableFilter<"DeliveryDriver"> | string | null
+    notes?: StringNullableFilter<"DeliveryDriver"> | string | null
+    isActive?: BoolFilter<"DeliveryDriver"> | boolean
+    createdAt?: DateTimeFilter<"DeliveryDriver"> | Date | string
+  }
+
+  export type FactoryOrderUpsertWithWhereUniqueWithoutOutletInput = {
+    where: FactoryOrderWhereUniqueInput
+    update: XOR<FactoryOrderUpdateWithoutOutletInput, FactoryOrderUncheckedUpdateWithoutOutletInput>
+    create: XOR<FactoryOrderCreateWithoutOutletInput, FactoryOrderUncheckedCreateWithoutOutletInput>
+  }
+
+  export type FactoryOrderUpdateWithWhereUniqueWithoutOutletInput = {
+    where: FactoryOrderWhereUniqueInput
+    data: XOR<FactoryOrderUpdateWithoutOutletInput, FactoryOrderUncheckedUpdateWithoutOutletInput>
+  }
+
+  export type FactoryOrderUpdateManyWithWhereWithoutOutletInput = {
+    where: FactoryOrderScalarWhereInput
+    data: XOR<FactoryOrderUpdateManyMutationInput, FactoryOrderUncheckedUpdateManyWithoutOutletInput>
+  }
+
+  export type FactoryOrderScalarWhereInput = {
+    AND?: FactoryOrderScalarWhereInput | FactoryOrderScalarWhereInput[]
+    OR?: FactoryOrderScalarWhereInput[]
+    NOT?: FactoryOrderScalarWhereInput | FactoryOrderScalarWhereInput[]
+    id?: StringFilter<"FactoryOrder"> | string
+    outletId?: StringFilter<"FactoryOrder"> | string
+    targetDate?: DateTimeFilter<"FactoryOrder"> | Date | string
+    status?: StringFilter<"FactoryOrder"> | string
+    createdBy?: StringFilter<"FactoryOrder"> | string
+    notes?: StringNullableFilter<"FactoryOrder"> | string | null
+    createdAt?: DateTimeFilter<"FactoryOrder"> | Date | string
+    updatedAt?: DateTimeFilter<"FactoryOrder"> | Date | string
+  }
+
   export type OutletCreateWithoutUsersInput = {
     id?: string
     name: string
@@ -39680,6 +45187,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutUsersInput = {
@@ -39704,6 +45213,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverUncheckedCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutUsersInput = {
@@ -39744,6 +45255,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutUsersInput = {
@@ -39768,6 +45281,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUncheckedUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateWithoutTablesInput = {
@@ -39792,6 +45307,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutTablesInput = {
@@ -39816,6 +45333,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverUncheckedCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutTablesInput = {
@@ -39833,7 +45352,16 @@ export namespace Prisma {
     deliveryPhone?: string | null
     deliveryNotes?: string | null
     driverName?: string | null
+    driverPhone?: string | null
     dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -39856,6 +45384,7 @@ export namespace Prisma {
     settledAt?: Date | string | null
     outlet: OutletCreateNestedOneWithoutOrdersInput
     deliveryZone?: DeliveryZoneCreateNestedOneWithoutOrdersInput
+    driver?: DeliveryDriverCreateNestedOneWithoutOrdersInput
     customer?: CustomerCreateNestedOneWithoutOrdersInput
     kdsTickets?: KdsTicketCreateNestedManyWithoutOrderInput
   }
@@ -39871,8 +45400,18 @@ export namespace Prisma {
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverId?: string | null
     driverName?: string | null
+    driverPhone?: string | null
     dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -39940,6 +45479,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutTablesInput = {
@@ -39964,6 +45505,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUncheckedUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OrderUpsertWithWhereUniqueWithoutTableInput = {
@@ -40004,6 +45547,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutMenuItemsInput = {
@@ -40028,6 +45573,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverUncheckedCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutMenuItemsInput = {
@@ -40130,6 +45677,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutMenuItemsInput = {
@@ -40154,6 +45703,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUncheckedUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type RecipeItemUpsertWithWhereUniqueWithoutMenuItemInput = {
@@ -40294,8 +45845,8 @@ export namespace Prisma {
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
     openingStock?: FloatFieldUpdateOperationsInput | number
-    stockQty?: IntFieldUpdateOperationsInput | number
-    minStockAlert?: IntFieldUpdateOperationsInput | number
+    stockQty?: FloatFieldUpdateOperationsInput | number
+    minStockAlert?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     loyaltyPointsEarned?: IntFieldUpdateOperationsInput | number
@@ -40319,8 +45870,8 @@ export namespace Prisma {
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
     openingStock?: FloatFieldUpdateOperationsInput | number
-    stockQty?: IntFieldUpdateOperationsInput | number
-    minStockAlert?: IntFieldUpdateOperationsInput | number
+    stockQty?: FloatFieldUpdateOperationsInput | number
+    minStockAlert?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     loyaltyPointsEarned?: IntFieldUpdateOperationsInput | number
@@ -40351,6 +45902,8 @@ export namespace Prisma {
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutPastryAuditsInput = {
@@ -40375,6 +45928,8 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverUncheckedCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutPastryAuditsInput = {
@@ -40461,6 +46016,8 @@ export namespace Prisma {
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutPastryAuditsInput = {
@@ -40485,6 +46042,8 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUncheckedUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type PastryAuditItemUpsertWithWhereUniqueWithoutAuditInput = {
@@ -40595,6 +46154,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutRawMaterialsInput = {
@@ -40619,6 +46180,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverUncheckedCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutRawMaterialsInput = {
@@ -40721,6 +46284,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutRawMaterialsInput = {
@@ -40745,6 +46310,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUncheckedUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type RecipeItemUpsertWithWhereUniqueWithoutRawMaterialInput = {
@@ -40895,6 +46462,8 @@ export namespace Prisma {
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutInventoryAuditsInput = {
@@ -40919,6 +46488,8 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverUncheckedCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutInventoryAuditsInput = {
@@ -41003,6 +46574,8 @@ export namespace Prisma {
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutInventoryAuditsInput = {
@@ -41027,6 +46600,8 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUncheckedUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type InventoryAuditItemUpsertWithWhereUniqueWithoutAuditInput = {
@@ -41226,8 +46801,8 @@ export namespace Prisma {
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
     openingStock?: FloatFieldUpdateOperationsInput | number
-    stockQty?: IntFieldUpdateOperationsInput | number
-    minStockAlert?: IntFieldUpdateOperationsInput | number
+    stockQty?: FloatFieldUpdateOperationsInput | number
+    minStockAlert?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     loyaltyPointsEarned?: IntFieldUpdateOperationsInput | number
@@ -41251,8 +46826,8 @@ export namespace Prisma {
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
     openingStock?: FloatFieldUpdateOperationsInput | number
-    stockQty?: IntFieldUpdateOperationsInput | number
-    minStockAlert?: IntFieldUpdateOperationsInput | number
+    stockQty?: FloatFieldUpdateOperationsInput | number
+    minStockAlert?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     loyaltyPointsEarned?: IntFieldUpdateOperationsInput | number
@@ -41312,7 +46887,16 @@ export namespace Prisma {
     deliveryPhone?: string | null
     deliveryNotes?: string | null
     driverName?: string | null
+    driverPhone?: string | null
     dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -41336,6 +46920,7 @@ export namespace Prisma {
     outlet: OutletCreateNestedOneWithoutOrdersInput
     table?: DiningTableCreateNestedOneWithoutOrdersInput
     deliveryZone?: DeliveryZoneCreateNestedOneWithoutOrdersInput
+    driver?: DeliveryDriverCreateNestedOneWithoutOrdersInput
     kdsTickets?: KdsTicketCreateNestedManyWithoutOrderInput
   }
 
@@ -41351,8 +46936,18 @@ export namespace Prisma {
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverId?: string | null
     driverName?: string | null
+    driverPhone?: string | null
     dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -41412,7 +47007,16 @@ export namespace Prisma {
     deliveryPhone?: string | null
     deliveryNotes?: string | null
     driverName?: string | null
+    driverPhone?: string | null
     dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -41435,6 +47039,7 @@ export namespace Prisma {
     settledAt?: Date | string | null
     outlet: OutletCreateNestedOneWithoutOrdersInput
     table?: DiningTableCreateNestedOneWithoutOrdersInput
+    driver?: DeliveryDriverCreateNestedOneWithoutOrdersInput
     customer?: CustomerCreateNestedOneWithoutOrdersInput
     kdsTickets?: KdsTicketCreateNestedManyWithoutOrderInput
   }
@@ -41450,8 +47055,18 @@ export namespace Prisma {
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverId?: string | null
     driverName?: string | null
+    driverPhone?: string | null
     dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -41502,6 +47117,246 @@ export namespace Prisma {
     data: XOR<OrderUpdateManyMutationInput, OrderUncheckedUpdateManyWithoutDeliveryZoneInput>
   }
 
+  export type OutletCreateWithoutDeliveryDriversInput = {
+    id?: string
+    name: string
+    code: string
+    type?: string
+    address: string
+    phone: string
+    whatsapp?: string | null
+    logoUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    users?: UserCreateNestedManyWithoutOutletInput
+    tables?: DiningTableCreateNestedManyWithoutOutletInput
+    menuItems?: MenuItemCreateNestedManyWithoutOutletInput
+    rawMaterials?: RawMaterialCreateNestedManyWithoutOutletInput
+    orders?: OrderCreateNestedManyWithoutOutletInput
+    shifts?: ShiftCreateNestedManyWithoutOutletInput
+    expenses?: ExpenseCreateNestedManyWithoutOutletInput
+    reservations?: ReservationCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderCreateNestedManyWithoutOutletInput
+  }
+
+  export type OutletUncheckedCreateWithoutDeliveryDriversInput = {
+    id?: string
+    name: string
+    code: string
+    type?: string
+    address: string
+    phone: string
+    whatsapp?: string | null
+    logoUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutOutletInput
+    tables?: DiningTableUncheckedCreateNestedManyWithoutOutletInput
+    menuItems?: MenuItemUncheckedCreateNestedManyWithoutOutletInput
+    rawMaterials?: RawMaterialUncheckedCreateNestedManyWithoutOutletInput
+    orders?: OrderUncheckedCreateNestedManyWithoutOutletInput
+    shifts?: ShiftUncheckedCreateNestedManyWithoutOutletInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
+    reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderUncheckedCreateNestedManyWithoutOutletInput
+  }
+
+  export type OutletCreateOrConnectWithoutDeliveryDriversInput = {
+    where: OutletWhereUniqueInput
+    create: XOR<OutletCreateWithoutDeliveryDriversInput, OutletUncheckedCreateWithoutDeliveryDriversInput>
+  }
+
+  export type OrderCreateWithoutDriverInput = {
+    id?: string
+    orderNumber: string
+    orderType?: string
+    tableNumber?: string | null
+    deliveryZoneName?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
+    driverName?: string | null
+    driverPhone?: string | null
+    dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
+    status?: string
+    paymentStatus?: string
+    paymentMethod?: string
+    subtotal?: number
+    serviceCharge?: number
+    taxAmount?: number
+    deliveryFee?: number
+    discountAmount?: number
+    tipAmount?: number
+    finalAmount?: number
+    cashierName?: string | null
+    waiterName?: string | null
+    customerName?: string | null
+    customerPhone?: string | null
+    pointsEarned?: number
+    pointsRedeemed?: number
+    notes?: string | null
+    items: string
+    createdAt?: Date | string
+    settledAt?: Date | string | null
+    outlet: OutletCreateNestedOneWithoutOrdersInput
+    table?: DiningTableCreateNestedOneWithoutOrdersInput
+    deliveryZone?: DeliveryZoneCreateNestedOneWithoutOrdersInput
+    customer?: CustomerCreateNestedOneWithoutOrdersInput
+    kdsTickets?: KdsTicketCreateNestedManyWithoutOrderInput
+  }
+
+  export type OrderUncheckedCreateWithoutDriverInput = {
+    id?: string
+    outletId: string
+    orderNumber: string
+    orderType?: string
+    tableId?: string | null
+    tableNumber?: string | null
+    deliveryZoneId?: string | null
+    deliveryZoneName?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
+    driverName?: string | null
+    driverPhone?: string | null
+    dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
+    status?: string
+    paymentStatus?: string
+    paymentMethod?: string
+    subtotal?: number
+    serviceCharge?: number
+    taxAmount?: number
+    deliveryFee?: number
+    discountAmount?: number
+    tipAmount?: number
+    finalAmount?: number
+    cashierName?: string | null
+    waiterName?: string | null
+    customerName?: string | null
+    customerPhone?: string | null
+    customerId?: string | null
+    pointsEarned?: number
+    pointsRedeemed?: number
+    notes?: string | null
+    items: string
+    createdAt?: Date | string
+    settledAt?: Date | string | null
+    kdsTickets?: KdsTicketUncheckedCreateNestedManyWithoutOrderInput
+  }
+
+  export type OrderCreateOrConnectWithoutDriverInput = {
+    where: OrderWhereUniqueInput
+    create: XOR<OrderCreateWithoutDriverInput, OrderUncheckedCreateWithoutDriverInput>
+  }
+
+  export type OrderCreateManyDriverInputEnvelope = {
+    data: OrderCreateManyDriverInput | OrderCreateManyDriverInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OutletUpsertWithoutDeliveryDriversInput = {
+    update: XOR<OutletUpdateWithoutDeliveryDriversInput, OutletUncheckedUpdateWithoutDeliveryDriversInput>
+    create: XOR<OutletCreateWithoutDeliveryDriversInput, OutletUncheckedCreateWithoutDeliveryDriversInput>
+    where?: OutletWhereInput
+  }
+
+  export type OutletUpdateToOneWithWhereWithoutDeliveryDriversInput = {
+    where?: OutletWhereInput
+    data: XOR<OutletUpdateWithoutDeliveryDriversInput, OutletUncheckedUpdateWithoutDeliveryDriversInput>
+  }
+
+  export type OutletUpdateWithoutDeliveryDriversInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutOutletNestedInput
+    tables?: DiningTableUpdateManyWithoutOutletNestedInput
+    menuItems?: MenuItemUpdateManyWithoutOutletNestedInput
+    rawMaterials?: RawMaterialUpdateManyWithoutOutletNestedInput
+    orders?: OrderUpdateManyWithoutOutletNestedInput
+    shifts?: ShiftUpdateManyWithoutOutletNestedInput
+    expenses?: ExpenseUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUpdateManyWithoutOutletNestedInput
+  }
+
+  export type OutletUncheckedUpdateWithoutDeliveryDriversInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutOutletNestedInput
+    tables?: DiningTableUncheckedUpdateManyWithoutOutletNestedInput
+    menuItems?: MenuItemUncheckedUpdateManyWithoutOutletNestedInput
+    rawMaterials?: RawMaterialUncheckedUpdateManyWithoutOutletNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutOutletNestedInput
+    shifts?: ShiftUncheckedUpdateManyWithoutOutletNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUncheckedUpdateManyWithoutOutletNestedInput
+  }
+
+  export type OrderUpsertWithWhereUniqueWithoutDriverInput = {
+    where: OrderWhereUniqueInput
+    update: XOR<OrderUpdateWithoutDriverInput, OrderUncheckedUpdateWithoutDriverInput>
+    create: XOR<OrderCreateWithoutDriverInput, OrderUncheckedCreateWithoutDriverInput>
+  }
+
+  export type OrderUpdateWithWhereUniqueWithoutDriverInput = {
+    where: OrderWhereUniqueInput
+    data: XOR<OrderUpdateWithoutDriverInput, OrderUncheckedUpdateWithoutDriverInput>
+  }
+
+  export type OrderUpdateManyWithWhereWithoutDriverInput = {
+    where: OrderScalarWhereInput
+    data: XOR<OrderUpdateManyMutationInput, OrderUncheckedUpdateManyWithoutDriverInput>
+  }
+
   export type OutletCreateWithoutOrdersInput = {
     id?: string
     name: string
@@ -41524,6 +47379,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutOrdersInput = {
@@ -41548,6 +47405,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverUncheckedCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutOrdersInput = {
@@ -41611,6 +47470,33 @@ export namespace Prisma {
   export type DeliveryZoneCreateOrConnectWithoutOrdersInput = {
     where: DeliveryZoneWhereUniqueInput
     create: XOR<DeliveryZoneCreateWithoutOrdersInput, DeliveryZoneUncheckedCreateWithoutOrdersInput>
+  }
+
+  export type DeliveryDriverCreateWithoutOrdersInput = {
+    id?: string
+    name: string
+    phone: string
+    vehicleInfo?: string | null
+    notes?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    outlet?: OutletCreateNestedOneWithoutDeliveryDriversInput
+  }
+
+  export type DeliveryDriverUncheckedCreateWithoutOrdersInput = {
+    id?: string
+    outletId?: string | null
+    name: string
+    phone: string
+    vehicleInfo?: string | null
+    notes?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+  }
+
+  export type DeliveryDriverCreateOrConnectWithoutOrdersInput = {
+    where: DeliveryDriverWhereUniqueInput
+    create: XOR<DeliveryDriverCreateWithoutOrdersInput, DeliveryDriverUncheckedCreateWithoutOrdersInput>
   }
 
   export type CustomerCreateWithoutOrdersInput = {
@@ -41713,6 +47599,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutOrdersInput = {
@@ -41737,6 +47625,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUncheckedUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type DiningTableUpsertWithoutOrdersInput = {
@@ -41806,6 +47696,39 @@ export namespace Prisma {
     estimatedTime?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeliveryDriverUpsertWithoutOrdersInput = {
+    update: XOR<DeliveryDriverUpdateWithoutOrdersInput, DeliveryDriverUncheckedUpdateWithoutOrdersInput>
+    create: XOR<DeliveryDriverCreateWithoutOrdersInput, DeliveryDriverUncheckedCreateWithoutOrdersInput>
+    where?: DeliveryDriverWhereInput
+  }
+
+  export type DeliveryDriverUpdateToOneWithWhereWithoutOrdersInput = {
+    where?: DeliveryDriverWhereInput
+    data: XOR<DeliveryDriverUpdateWithoutOrdersInput, DeliveryDriverUncheckedUpdateWithoutOrdersInput>
+  }
+
+  export type DeliveryDriverUpdateWithoutOrdersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    vehicleInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outlet?: OutletUpdateOneWithoutDeliveryDriversNestedInput
+  }
+
+  export type DeliveryDriverUncheckedUpdateWithoutOrdersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    vehicleInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -41893,7 +47816,16 @@ export namespace Prisma {
     deliveryPhone?: string | null
     deliveryNotes?: string | null
     driverName?: string | null
+    driverPhone?: string | null
     dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -41917,6 +47849,7 @@ export namespace Prisma {
     outlet: OutletCreateNestedOneWithoutOrdersInput
     table?: DiningTableCreateNestedOneWithoutOrdersInput
     deliveryZone?: DeliveryZoneCreateNestedOneWithoutOrdersInput
+    driver?: DeliveryDriverCreateNestedOneWithoutOrdersInput
     customer?: CustomerCreateNestedOneWithoutOrdersInput
   }
 
@@ -41932,8 +47865,18 @@ export namespace Prisma {
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverId?: string | null
     driverName?: string | null
+    driverPhone?: string | null
     dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -41983,7 +47926,16 @@ export namespace Prisma {
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -42007,6 +47959,7 @@ export namespace Prisma {
     outlet?: OutletUpdateOneRequiredWithoutOrdersNestedInput
     table?: DiningTableUpdateOneWithoutOrdersNestedInput
     deliveryZone?: DeliveryZoneUpdateOneWithoutOrdersNestedInput
+    driver?: DeliveryDriverUpdateOneWithoutOrdersNestedInput
     customer?: CustomerUpdateOneWithoutOrdersNestedInput
   }
 
@@ -42022,8 +47975,18 @@ export namespace Prisma {
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
     driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -42069,6 +48032,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutShiftsInput = {
@@ -42093,6 +48058,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverUncheckedCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutShiftsInput = {
@@ -42133,6 +48100,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutShiftsInput = {
@@ -42157,6 +48126,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUncheckedUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateWithoutDailyClosesInput = {
@@ -42181,6 +48152,8 @@ export namespace Prisma {
     chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutDailyClosesInput = {
@@ -42205,6 +48178,8 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverUncheckedCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutDailyClosesInput = {
@@ -42245,6 +48220,8 @@ export namespace Prisma {
     chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutDailyClosesInput = {
@@ -42269,6 +48246,8 @@ export namespace Prisma {
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUncheckedUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateWithoutExpensesInput = {
@@ -42293,6 +48272,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutExpensesInput = {
@@ -42317,6 +48298,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverUncheckedCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutExpensesInput = {
@@ -42357,6 +48340,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutExpensesInput = {
@@ -42381,6 +48366,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUncheckedUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateWithoutReservationsInput = {
@@ -42405,6 +48392,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutReservationsInput = {
@@ -42429,6 +48418,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverUncheckedCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutReservationsInput = {
@@ -42469,6 +48460,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutReservationsInput = {
@@ -42493,6 +48486,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUncheckedUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUncheckedUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletCreateWithoutChatMessagesInput = {
@@ -42517,6 +48512,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderCreateNestedManyWithoutOutletInput
   }
 
   export type OutletUncheckedCreateWithoutChatMessagesInput = {
@@ -42541,6 +48538,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
     pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
     dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverUncheckedCreateNestedManyWithoutOutletInput
+    factoryOrders?: FactoryOrderUncheckedCreateNestedManyWithoutOutletInput
   }
 
   export type OutletCreateOrConnectWithoutChatMessagesInput = {
@@ -42581,6 +48580,8 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUpdateManyWithoutOutletNestedInput
   }
 
   export type OutletUncheckedUpdateWithoutChatMessagesInput = {
@@ -42605,6 +48606,260 @@ export namespace Prisma {
     inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
     pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
     dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUncheckedUpdateManyWithoutOutletNestedInput
+    factoryOrders?: FactoryOrderUncheckedUpdateManyWithoutOutletNestedInput
+  }
+
+  export type OutletCreateWithoutFactoryOrdersInput = {
+    id?: string
+    name: string
+    code: string
+    type?: string
+    address: string
+    phone: string
+    whatsapp?: string | null
+    logoUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    users?: UserCreateNestedManyWithoutOutletInput
+    tables?: DiningTableCreateNestedManyWithoutOutletInput
+    menuItems?: MenuItemCreateNestedManyWithoutOutletInput
+    rawMaterials?: RawMaterialCreateNestedManyWithoutOutletInput
+    orders?: OrderCreateNestedManyWithoutOutletInput
+    shifts?: ShiftCreateNestedManyWithoutOutletInput
+    expenses?: ExpenseCreateNestedManyWithoutOutletInput
+    reservations?: ReservationCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverCreateNestedManyWithoutOutletInput
+  }
+
+  export type OutletUncheckedCreateWithoutFactoryOrdersInput = {
+    id?: string
+    name: string
+    code: string
+    type?: string
+    address: string
+    phone: string
+    whatsapp?: string | null
+    logoUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutOutletInput
+    tables?: DiningTableUncheckedCreateNestedManyWithoutOutletInput
+    menuItems?: MenuItemUncheckedCreateNestedManyWithoutOutletInput
+    rawMaterials?: RawMaterialUncheckedCreateNestedManyWithoutOutletInput
+    orders?: OrderUncheckedCreateNestedManyWithoutOutletInput
+    shifts?: ShiftUncheckedCreateNestedManyWithoutOutletInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutOutletInput
+    reservations?: ReservationUncheckedCreateNestedManyWithoutOutletInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutOutletInput
+    inventoryAudits?: InventoryAuditUncheckedCreateNestedManyWithoutOutletInput
+    pastryAudits?: PastryAuditUncheckedCreateNestedManyWithoutOutletInput
+    dailyCloses?: DailyCloseUncheckedCreateNestedManyWithoutOutletInput
+    deliveryDrivers?: DeliveryDriverUncheckedCreateNestedManyWithoutOutletInput
+  }
+
+  export type OutletCreateOrConnectWithoutFactoryOrdersInput = {
+    where: OutletWhereUniqueInput
+    create: XOR<OutletCreateWithoutFactoryOrdersInput, OutletUncheckedCreateWithoutFactoryOrdersInput>
+  }
+
+  export type FactoryOrderItemCreateWithoutFactoryOrderInput = {
+    id?: string
+    menuItemId: string
+    menuItemName: string
+    unitType: string
+    currentStock?: number
+    minStockLevel?: number
+    shortageQty?: number
+    preOrderQty?: number
+    suggestedQty?: number
+    approvedQty?: number
+    notes?: string | null
+  }
+
+  export type FactoryOrderItemUncheckedCreateWithoutFactoryOrderInput = {
+    id?: string
+    menuItemId: string
+    menuItemName: string
+    unitType: string
+    currentStock?: number
+    minStockLevel?: number
+    shortageQty?: number
+    preOrderQty?: number
+    suggestedQty?: number
+    approvedQty?: number
+    notes?: string | null
+  }
+
+  export type FactoryOrderItemCreateOrConnectWithoutFactoryOrderInput = {
+    where: FactoryOrderItemWhereUniqueInput
+    create: XOR<FactoryOrderItemCreateWithoutFactoryOrderInput, FactoryOrderItemUncheckedCreateWithoutFactoryOrderInput>
+  }
+
+  export type FactoryOrderItemCreateManyFactoryOrderInputEnvelope = {
+    data: FactoryOrderItemCreateManyFactoryOrderInput | FactoryOrderItemCreateManyFactoryOrderInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OutletUpsertWithoutFactoryOrdersInput = {
+    update: XOR<OutletUpdateWithoutFactoryOrdersInput, OutletUncheckedUpdateWithoutFactoryOrdersInput>
+    create: XOR<OutletCreateWithoutFactoryOrdersInput, OutletUncheckedCreateWithoutFactoryOrdersInput>
+    where?: OutletWhereInput
+  }
+
+  export type OutletUpdateToOneWithWhereWithoutFactoryOrdersInput = {
+    where?: OutletWhereInput
+    data: XOR<OutletUpdateWithoutFactoryOrdersInput, OutletUncheckedUpdateWithoutFactoryOrdersInput>
+  }
+
+  export type OutletUpdateWithoutFactoryOrdersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutOutletNestedInput
+    tables?: DiningTableUpdateManyWithoutOutletNestedInput
+    menuItems?: MenuItemUpdateManyWithoutOutletNestedInput
+    rawMaterials?: RawMaterialUpdateManyWithoutOutletNestedInput
+    orders?: OrderUpdateManyWithoutOutletNestedInput
+    shifts?: ShiftUpdateManyWithoutOutletNestedInput
+    expenses?: ExpenseUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUpdateManyWithoutOutletNestedInput
+  }
+
+  export type OutletUncheckedUpdateWithoutFactoryOrdersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutOutletNestedInput
+    tables?: DiningTableUncheckedUpdateManyWithoutOutletNestedInput
+    menuItems?: MenuItemUncheckedUpdateManyWithoutOutletNestedInput
+    rawMaterials?: RawMaterialUncheckedUpdateManyWithoutOutletNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutOutletNestedInput
+    shifts?: ShiftUncheckedUpdateManyWithoutOutletNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutOutletNestedInput
+    reservations?: ReservationUncheckedUpdateManyWithoutOutletNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutOutletNestedInput
+    inventoryAudits?: InventoryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    pastryAudits?: PastryAuditUncheckedUpdateManyWithoutOutletNestedInput
+    dailyCloses?: DailyCloseUncheckedUpdateManyWithoutOutletNestedInput
+    deliveryDrivers?: DeliveryDriverUncheckedUpdateManyWithoutOutletNestedInput
+  }
+
+  export type FactoryOrderItemUpsertWithWhereUniqueWithoutFactoryOrderInput = {
+    where: FactoryOrderItemWhereUniqueInput
+    update: XOR<FactoryOrderItemUpdateWithoutFactoryOrderInput, FactoryOrderItemUncheckedUpdateWithoutFactoryOrderInput>
+    create: XOR<FactoryOrderItemCreateWithoutFactoryOrderInput, FactoryOrderItemUncheckedCreateWithoutFactoryOrderInput>
+  }
+
+  export type FactoryOrderItemUpdateWithWhereUniqueWithoutFactoryOrderInput = {
+    where: FactoryOrderItemWhereUniqueInput
+    data: XOR<FactoryOrderItemUpdateWithoutFactoryOrderInput, FactoryOrderItemUncheckedUpdateWithoutFactoryOrderInput>
+  }
+
+  export type FactoryOrderItemUpdateManyWithWhereWithoutFactoryOrderInput = {
+    where: FactoryOrderItemScalarWhereInput
+    data: XOR<FactoryOrderItemUpdateManyMutationInput, FactoryOrderItemUncheckedUpdateManyWithoutFactoryOrderInput>
+  }
+
+  export type FactoryOrderItemScalarWhereInput = {
+    AND?: FactoryOrderItemScalarWhereInput | FactoryOrderItemScalarWhereInput[]
+    OR?: FactoryOrderItemScalarWhereInput[]
+    NOT?: FactoryOrderItemScalarWhereInput | FactoryOrderItemScalarWhereInput[]
+    id?: StringFilter<"FactoryOrderItem"> | string
+    factoryOrderId?: StringFilter<"FactoryOrderItem"> | string
+    menuItemId?: StringFilter<"FactoryOrderItem"> | string
+    menuItemName?: StringFilter<"FactoryOrderItem"> | string
+    unitType?: StringFilter<"FactoryOrderItem"> | string
+    currentStock?: FloatFilter<"FactoryOrderItem"> | number
+    minStockLevel?: FloatFilter<"FactoryOrderItem"> | number
+    shortageQty?: FloatFilter<"FactoryOrderItem"> | number
+    preOrderQty?: FloatFilter<"FactoryOrderItem"> | number
+    suggestedQty?: FloatFilter<"FactoryOrderItem"> | number
+    approvedQty?: FloatFilter<"FactoryOrderItem"> | number
+    notes?: StringNullableFilter<"FactoryOrderItem"> | string | null
+  }
+
+  export type FactoryOrderCreateWithoutItemsInput = {
+    id?: string
+    targetDate: Date | string
+    status?: string
+    createdBy?: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    outlet: OutletCreateNestedOneWithoutFactoryOrdersInput
+  }
+
+  export type FactoryOrderUncheckedCreateWithoutItemsInput = {
+    id?: string
+    outletId: string
+    targetDate: Date | string
+    status?: string
+    createdBy?: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FactoryOrderCreateOrConnectWithoutItemsInput = {
+    where: FactoryOrderWhereUniqueInput
+    create: XOR<FactoryOrderCreateWithoutItemsInput, FactoryOrderUncheckedCreateWithoutItemsInput>
+  }
+
+  export type FactoryOrderUpsertWithoutItemsInput = {
+    update: XOR<FactoryOrderUpdateWithoutItemsInput, FactoryOrderUncheckedUpdateWithoutItemsInput>
+    create: XOR<FactoryOrderCreateWithoutItemsInput, FactoryOrderUncheckedCreateWithoutItemsInput>
+    where?: FactoryOrderWhereInput
+  }
+
+  export type FactoryOrderUpdateToOneWithWhereWithoutItemsInput = {
+    where?: FactoryOrderWhereInput
+    data: XOR<FactoryOrderUpdateWithoutItemsInput, FactoryOrderUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type FactoryOrderUpdateWithoutItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdBy?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outlet?: OutletUpdateOneRequiredWithoutFactoryOrdersNestedInput
+  }
+
+  export type FactoryOrderUncheckedUpdateWithoutItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdBy?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserCreateManyOutletInput = {
@@ -42677,8 +48932,18 @@ export namespace Prisma {
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverId?: string | null
     driverName?: string | null
+    driverPhone?: string | null
     dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -42715,6 +48980,7 @@ export namespace Prisma {
     visaCollected?: number
     instapayCollected?: number
     vodafoneCollected?: number
+    deliveryFeesTotal?: number
     totalRevenue?: number
     expensesTotal?: number
     ticketsCount?: number
@@ -42758,6 +49024,7 @@ export namespace Prisma {
     tableNumber?: string | null
     orderNumber?: string | null
     message: string
+    imageUrl?: string | null
     isRead?: boolean
     createdAt?: Date | string
   }
@@ -42792,6 +49059,26 @@ export namespace Prisma {
     closedBy: string
     notes?: string | null
     createdAt?: Date | string
+  }
+
+  export type DeliveryDriverCreateManyOutletInput = {
+    id?: string
+    name: string
+    phone: string
+    vehicleInfo?: string | null
+    notes?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+  }
+
+  export type FactoryOrderCreateManyOutletInput = {
+    id?: string
+    targetDate: Date | string
+    status?: string
+    createdBy?: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type UserUpdateWithoutOutletInput = {
@@ -42881,8 +49168,8 @@ export namespace Prisma {
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
     openingStock?: FloatFieldUpdateOperationsInput | number
-    stockQty?: IntFieldUpdateOperationsInput | number
-    minStockAlert?: IntFieldUpdateOperationsInput | number
+    stockQty?: FloatFieldUpdateOperationsInput | number
+    minStockAlert?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     loyaltyPointsEarned?: IntFieldUpdateOperationsInput | number
@@ -42905,8 +49192,8 @@ export namespace Prisma {
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
     openingStock?: FloatFieldUpdateOperationsInput | number
-    stockQty?: IntFieldUpdateOperationsInput | number
-    minStockAlert?: IntFieldUpdateOperationsInput | number
+    stockQty?: FloatFieldUpdateOperationsInput | number
+    minStockAlert?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     loyaltyPointsEarned?: IntFieldUpdateOperationsInput | number
@@ -42929,8 +49216,8 @@ export namespace Prisma {
     itemType?: StringFieldUpdateOperationsInput | string
     unitType?: StringFieldUpdateOperationsInput | string
     openingStock?: FloatFieldUpdateOperationsInput | number
-    stockQty?: IntFieldUpdateOperationsInput | number
-    minStockAlert?: IntFieldUpdateOperationsInput | number
+    stockQty?: FloatFieldUpdateOperationsInput | number
+    minStockAlert?: FloatFieldUpdateOperationsInput | number
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     loyaltyPointsEarned?: IntFieldUpdateOperationsInput | number
@@ -42991,7 +49278,16 @@ export namespace Prisma {
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -43014,6 +49310,7 @@ export namespace Prisma {
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     table?: DiningTableUpdateOneWithoutOrdersNestedInput
     deliveryZone?: DeliveryZoneUpdateOneWithoutOrdersNestedInput
+    driver?: DeliveryDriverUpdateOneWithoutOrdersNestedInput
     customer?: CustomerUpdateOneWithoutOrdersNestedInput
     kdsTickets?: KdsTicketUpdateManyWithoutOrderNestedInput
   }
@@ -43029,8 +49326,18 @@ export namespace Prisma {
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
     driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -43066,8 +49373,18 @@ export namespace Prisma {
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
     driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -43104,6 +49421,7 @@ export namespace Prisma {
     visaCollected?: FloatFieldUpdateOperationsInput | number
     instapayCollected?: FloatFieldUpdateOperationsInput | number
     vodafoneCollected?: FloatFieldUpdateOperationsInput | number
+    deliveryFeesTotal?: FloatFieldUpdateOperationsInput | number
     totalRevenue?: FloatFieldUpdateOperationsInput | number
     expensesTotal?: FloatFieldUpdateOperationsInput | number
     ticketsCount?: IntFieldUpdateOperationsInput | number
@@ -43127,6 +49445,7 @@ export namespace Prisma {
     visaCollected?: FloatFieldUpdateOperationsInput | number
     instapayCollected?: FloatFieldUpdateOperationsInput | number
     vodafoneCollected?: FloatFieldUpdateOperationsInput | number
+    deliveryFeesTotal?: FloatFieldUpdateOperationsInput | number
     totalRevenue?: FloatFieldUpdateOperationsInput | number
     expensesTotal?: FloatFieldUpdateOperationsInput | number
     ticketsCount?: IntFieldUpdateOperationsInput | number
@@ -43150,6 +49469,7 @@ export namespace Prisma {
     visaCollected?: FloatFieldUpdateOperationsInput | number
     instapayCollected?: FloatFieldUpdateOperationsInput | number
     vodafoneCollected?: FloatFieldUpdateOperationsInput | number
+    deliveryFeesTotal?: FloatFieldUpdateOperationsInput | number
     totalRevenue?: FloatFieldUpdateOperationsInput | number
     expensesTotal?: FloatFieldUpdateOperationsInput | number
     ticketsCount?: IntFieldUpdateOperationsInput | number
@@ -43243,6 +49563,7 @@ export namespace Prisma {
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
     orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
     message?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -43255,6 +49576,7 @@ export namespace Prisma {
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
     orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
     message?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -43267,6 +49589,7 @@ export namespace Prisma {
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
     orderNumber?: NullableStringFieldUpdateOperationsInput | string | null
     message?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -43371,6 +49694,70 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type DeliveryDriverUpdateWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    vehicleInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orders?: OrderUpdateManyWithoutDriverNestedInput
+  }
+
+  export type DeliveryDriverUncheckedUpdateWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    vehicleInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orders?: OrderUncheckedUpdateManyWithoutDriverNestedInput
+  }
+
+  export type DeliveryDriverUncheckedUpdateManyWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    vehicleInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FactoryOrderUpdateWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdBy?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: FactoryOrderItemUpdateManyWithoutFactoryOrderNestedInput
+  }
+
+  export type FactoryOrderUncheckedUpdateWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdBy?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: FactoryOrderItemUncheckedUpdateManyWithoutFactoryOrderNestedInput
+  }
+
+  export type FactoryOrderUncheckedUpdateManyWithoutOutletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdBy?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type OrderCreateManyTableInput = {
     id?: string
     outletId: string
@@ -43382,8 +49769,18 @@ export namespace Prisma {
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverId?: string | null
     driverName?: string | null
+    driverPhone?: string | null
     dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -43417,7 +49814,16 @@ export namespace Prisma {
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -43440,6 +49846,7 @@ export namespace Prisma {
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     outlet?: OutletUpdateOneRequiredWithoutOrdersNestedInput
     deliveryZone?: DeliveryZoneUpdateOneWithoutOrdersNestedInput
+    driver?: DeliveryDriverUpdateOneWithoutOrdersNestedInput
     customer?: CustomerUpdateOneWithoutOrdersNestedInput
     kdsTickets?: KdsTicketUpdateManyWithoutOrderNestedInput
   }
@@ -43455,8 +49862,18 @@ export namespace Prisma {
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
     driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -43492,8 +49909,18 @@ export namespace Prisma {
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
     driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -43837,8 +50264,18 @@ export namespace Prisma {
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverId?: string | null
     driverName?: string | null
+    driverPhone?: string | null
     dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -43871,7 +50308,16 @@ export namespace Prisma {
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -43895,6 +50341,7 @@ export namespace Prisma {
     outlet?: OutletUpdateOneRequiredWithoutOrdersNestedInput
     table?: DiningTableUpdateOneWithoutOrdersNestedInput
     deliveryZone?: DeliveryZoneUpdateOneWithoutOrdersNestedInput
+    driver?: DeliveryDriverUpdateOneWithoutOrdersNestedInput
     kdsTickets?: KdsTicketUpdateManyWithoutOrderNestedInput
   }
 
@@ -43910,8 +50357,18 @@ export namespace Prisma {
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
     driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -43947,8 +50404,18 @@ export namespace Prisma {
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
     driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -43982,8 +50449,18 @@ export namespace Prisma {
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverId?: string | null
     driverName?: string | null
+    driverPhone?: string | null
     dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -44017,7 +50494,16 @@ export namespace Prisma {
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -44040,6 +50526,7 @@ export namespace Prisma {
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     outlet?: OutletUpdateOneRequiredWithoutOrdersNestedInput
     table?: DiningTableUpdateOneWithoutOrdersNestedInput
+    driver?: DeliveryDriverUpdateOneWithoutOrdersNestedInput
     customer?: CustomerUpdateOneWithoutOrdersNestedInput
     kdsTickets?: KdsTicketUpdateManyWithoutOrderNestedInput
   }
@@ -44055,8 +50542,18 @@ export namespace Prisma {
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
     driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -44092,8 +50589,204 @@ export namespace Prisma {
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
     driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    serviceCharge?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
+    discountAmount?: FloatFieldUpdateOperationsInput | number
+    tipAmount?: FloatFieldUpdateOperationsInput | number
+    finalAmount?: FloatFieldUpdateOperationsInput | number
+    cashierName?: NullableStringFieldUpdateOperationsInput | string | null
+    waiterName?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    pointsEarned?: IntFieldUpdateOperationsInput | number
+    pointsRedeemed?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type OrderCreateManyDriverInput = {
+    id?: string
+    outletId: string
+    orderNumber: string
+    orderType?: string
+    tableId?: string | null
+    tableNumber?: string | null
+    deliveryZoneId?: string | null
+    deliveryZoneName?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
+    driverName?: string | null
+    driverPhone?: string | null
+    dispatchedAt?: Date | string | null
+    isScheduled?: boolean
+    scheduledFor?: Date | string | null
+    depositRequired?: number
+    depositPaid?: number
+    depositStatus?: string
+    depositReceiptUrl?: string | null
+    alertSent48h?: boolean
+    alertSent24h?: boolean
+    status?: string
+    paymentStatus?: string
+    paymentMethod?: string
+    subtotal?: number
+    serviceCharge?: number
+    taxAmount?: number
+    deliveryFee?: number
+    discountAmount?: number
+    tipAmount?: number
+    finalAmount?: number
+    cashierName?: string | null
+    waiterName?: string | null
+    customerName?: string | null
+    customerPhone?: string | null
+    customerId?: string | null
+    pointsEarned?: number
+    pointsRedeemed?: number
+    notes?: string | null
+    items: string
+    createdAt?: Date | string
+    settledAt?: Date | string | null
+  }
+
+  export type OrderUpdateWithoutDriverInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    orderType?: StringFieldUpdateOperationsInput | string
+    tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    serviceCharge?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
+    discountAmount?: FloatFieldUpdateOperationsInput | number
+    tipAmount?: FloatFieldUpdateOperationsInput | number
+    finalAmount?: FloatFieldUpdateOperationsInput | number
+    cashierName?: NullableStringFieldUpdateOperationsInput | string | null
+    waiterName?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    pointsEarned?: IntFieldUpdateOperationsInput | number
+    pointsRedeemed?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    outlet?: OutletUpdateOneRequiredWithoutOrdersNestedInput
+    table?: DiningTableUpdateOneWithoutOrdersNestedInput
+    deliveryZone?: DeliveryZoneUpdateOneWithoutOrdersNestedInput
+    customer?: CustomerUpdateOneWithoutOrdersNestedInput
+    kdsTickets?: KdsTicketUpdateManyWithoutOrderNestedInput
+  }
+
+  export type OrderUncheckedUpdateWithoutDriverInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    orderType?: StringFieldUpdateOperationsInput | string
+    tableId?: NullableStringFieldUpdateOperationsInput | string | null
+    tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    serviceCharge?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
+    discountAmount?: FloatFieldUpdateOperationsInput | number
+    tipAmount?: FloatFieldUpdateOperationsInput | number
+    finalAmount?: FloatFieldUpdateOperationsInput | number
+    cashierName?: NullableStringFieldUpdateOperationsInput | string | null
+    waiterName?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    pointsEarned?: IntFieldUpdateOperationsInput | number
+    pointsRedeemed?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    kdsTickets?: KdsTicketUncheckedUpdateManyWithoutOrderNestedInput
+  }
+
+  export type OrderUncheckedUpdateManyWithoutDriverInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    orderType?: StringFieldUpdateOperationsInput | string
+    tableId?: NullableStringFieldUpdateOperationsInput | string | null
+    tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    driverPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isScheduled?: BoolFieldUpdateOperationsInput | boolean
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    depositRequired?: FloatFieldUpdateOperationsInput | number
+    depositPaid?: FloatFieldUpdateOperationsInput | number
+    depositStatus?: StringFieldUpdateOperationsInput | string
+    depositReceiptUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    alertSent48h?: BoolFieldUpdateOperationsInput | boolean
+    alertSent24h?: BoolFieldUpdateOperationsInput | boolean
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -44151,6 +50844,62 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type FactoryOrderItemCreateManyFactoryOrderInput = {
+    id?: string
+    menuItemId: string
+    menuItemName: string
+    unitType: string
+    currentStock?: number
+    minStockLevel?: number
+    shortageQty?: number
+    preOrderQty?: number
+    suggestedQty?: number
+    approvedQty?: number
+    notes?: string | null
+  }
+
+  export type FactoryOrderItemUpdateWithoutFactoryOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    menuItemId?: StringFieldUpdateOperationsInput | string
+    menuItemName?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    currentStock?: FloatFieldUpdateOperationsInput | number
+    minStockLevel?: FloatFieldUpdateOperationsInput | number
+    shortageQty?: FloatFieldUpdateOperationsInput | number
+    preOrderQty?: FloatFieldUpdateOperationsInput | number
+    suggestedQty?: FloatFieldUpdateOperationsInput | number
+    approvedQty?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type FactoryOrderItemUncheckedUpdateWithoutFactoryOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    menuItemId?: StringFieldUpdateOperationsInput | string
+    menuItemName?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    currentStock?: FloatFieldUpdateOperationsInput | number
+    minStockLevel?: FloatFieldUpdateOperationsInput | number
+    shortageQty?: FloatFieldUpdateOperationsInput | number
+    preOrderQty?: FloatFieldUpdateOperationsInput | number
+    suggestedQty?: FloatFieldUpdateOperationsInput | number
+    approvedQty?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type FactoryOrderItemUncheckedUpdateManyWithoutFactoryOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    menuItemId?: StringFieldUpdateOperationsInput | string
+    menuItemName?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    currentStock?: FloatFieldUpdateOperationsInput | number
+    minStockLevel?: FloatFieldUpdateOperationsInput | number
+    shortageQty?: FloatFieldUpdateOperationsInput | number
+    preOrderQty?: FloatFieldUpdateOperationsInput | number
+    suggestedQty?: FloatFieldUpdateOperationsInput | number
+    approvedQty?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 

@@ -16,29 +16,45 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const base64Image = buffer.toString("base64");
+    const mimeType = file.type || "image/jpeg";
+    const dataUrl = `data:${mimeType};base64,${base64Image}`;
 
-    const imgbbForm = new FormData();
-    imgbbForm.append("image", base64Image);
+    try {
+      const imgbbForm = new FormData();
+      imgbbForm.append("image", base64Image);
 
-    const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
-      method: "POST",
-      body: imgbbForm,
-    });
+      const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+        method: "POST",
+        body: imgbbForm,
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.success) {
+      if (data.success) {
+        return NextResponse.json({
+          success: true,
+          url: data.data.url,
+          thumb: data.data.thumb?.url || data.data.url,
+        });
+      }
+    } catch {
+      // Fallback safely below if external ImgBB endpoint fails
+    }
+
+    // Fallback to safe embedded Data URI (client compresses images before upload)
+    if (buffer.length <= 2_500_000) {
       return NextResponse.json({
         success: true,
-        url: data.data.url,
-        thumb: data.data.thumb?.url || data.data.url,
+        url: dataUrl,
+        thumb: dataUrl,
+        embedded: true,
       });
-    } else {
-      return NextResponse.json(
-        { success: false, error: data.error?.message || "فشل رفع الصورة إلى ImgBB" },
-        { status: 500 }
-      );
     }
+
+    return NextResponse.json(
+      { success: false, error: "حجم الصورة كبير جداً وتعذر رفعها" },
+      { status: 413 }
+    );
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }

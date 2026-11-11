@@ -41,6 +41,13 @@ import {
   Store,
   LogOut,
   Search,
+  Calendar,
+  Upload,
+  Image as ImageIcon,
+  BellRing,
+  AlertTriangle,
+  CreditCard,
+  Scale,
 } from "lucide-react";
 
 function TableOrderContent() {
@@ -142,8 +149,106 @@ function TableOrderContent() {
   const [showChatModal, setShowChatModal] = useState(false);
   const [chatMessages, setChatMessages] = useState<any[]>([]);
   const [newChatMessage, setNewChatMessage] = useState("");
+  const [chatImageFile, setChatImageFile] = useState<string>("");
+  const [uploadingChatImage, setUploadingChatImage] = useState(false);
+  const [unreadStaffCount, setUnreadStaffCount] = useState(0);
   const [sendingChat, setSendingChat] = useState(false);
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
   const chatScrollRef = useRef<HTMLDivElement>(null);
+
+  // Fractional KG Weight Picker Modal + Flexible Payment & Advance Pre-Order States
+  const [weightPickerItem, setWeightPickerItem] = useState<any>(null);
+  const [customGramsInput, setCustomGramsInput] = useState<number>(500);
+  const [paymentMethod, setPaymentMethod] = useState<"CASH" | "INSTAPAY" | "VODAFONE_CASH" | "CARD">("CASH");
+  const [isScheduled, setIsScheduled] = useState<boolean>(false);
+  const [scheduledDate, setScheduledDate] = useState<string>(() => {
+    const d = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    return d.toISOString().slice(0, 10);
+  });
+  const [scheduledTime, setScheduledTime] = useState<string>("14:00");
+  const [depositReceiptUrl, setDepositReceiptUrl] = useState<string>("");
+  const [uploadingDepositReceipt, setUploadingDepositReceipt] = useState(false);
+  const [customerScheduledOrders, setCustomerScheduledOrders] = useState<any[]>([]);
+
+  // Client-side image compression + upload helper (never exceeds upload limits)
+  const compressAndUploadImage = async (file: File): Promise<string | null> => {
+    try {
+      const compressedBlob: Blob = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement("canvas");
+            const maxDim = 900;
+            let w = img.width;
+            let h = img.height;
+            if (w > maxDim || h > maxDim) {
+              if (w > h) {
+                h = Math.round((h * maxDim) / w);
+                w = maxDim;
+              } else {
+                w = Math.round((w * maxDim) / h);
+                h = maxDim;
+              }
+            }
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            if (ctx) {
+              ctx.drawImage(img, 0, 0, w, h);
+              canvas.toBlob(
+                (blob) => resolve(blob || file),
+                "image/jpeg",
+                0.78
+              );
+            } else {
+              resolve(file);
+            }
+          };
+          img.onerror = () => resolve(file);
+          img.src = ev.target?.result as string;
+        };
+        reader.onerror = () => resolve(file);
+        reader.readAsDataURL(file);
+      });
+
+      const fd = new FormData();
+      fd.append("image", new File([compressedBlob], file.name || "receipt.jpg", { type: "image/jpeg" }));
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (data.success && data.url) {
+        return data.url;
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
+  // Format KG vs Unit Qty nicely
+  const formatItemQty = (qty: number, unitType?: string) => {
+    const q = Number(qty || 0);
+    if (unitType === "KG") {
+      if (q < 1) {
+        return `${Math.round(q * 1000)} جم (${q} كجم)`;
+      }
+      return `${Number(q.toFixed(2))} كجم`;
+    }
+    return `×${q}`;
+  };
+
+  const getPaymentMethodLabel = (m?: string) => {
+    switch (m) {
+      case "INSTAPAY":
+        return "إنستاباي ⚡";
+      case "VODAFONE_CASH":
+        return "فودافون كاش 📱";
+      case "CARD":
+        return "فيزا / بطاقة 💳";
+      default:
+        return "كاش عند الاستلام 💵";
+    }
+  };
 
   // Toast State
   const [toast, setToast] = useState<{ type: "success" | "error" | "info"; message: string } | null>(null);
@@ -215,6 +320,11 @@ function TableOrderContent() {
       localStorage.setItem("abuadel_guest_chat_id", gId);
     }
     setGuestChatId(gId);
+
+    if (!savedCust) {
+      const savedPhoneHint = localStorage.getItem("abuadel_customer_phone_hint");
+      if (savedPhoneHint) setCustomerPhone(savedPhoneHint);
+    }
 
     const savedOrderId = localStorage.getItem("abuadel_active_tracked_order_id");
     if (savedOrderId) {
@@ -356,24 +466,51 @@ function TableOrderContent() {
 
   const activeThreadPhone = loggedInCustomer?.phone || customerPhone.trim() || guestChatId;
 
-  // Poll Direct Chat Messages scoped specifically to active Brand & this customer's thread/table
+  // Poll Direct Chat Messages continuously (so customer sees STAFF replies + unread badge immediately!)
   useEffect(() => {
-    if (!showChatModal || !activeOutletObj?.id) return;
+    if (!activeOutletObj?.id) return;
 
     const fetchChat = async () => {
       try {
         const params = new URLSearchParams({ outletId: activeOutletObj.id });
         if (activeBrandTab === "SOULMATE" && orderMode === "DINE_IN" && tableNumber) {
           params.set("tableNumber", tableNumber);
-        } else if (activeThreadPhone) {
-          params.set("customerPhone", activeThreadPhone);
+        } else {
+          if (loggedInCustomer?.phone || customerPhone.trim()) {
+            params.set("customerPhone", loggedInCustomer?.phone || customerPhone.trim());
+          }
+          if (guestChatId) {
+            params.set("guestId", guestChatId);
+          }
         }
 
         const res = await fetch(`/api/chat?${params.toString()}`);
         const data = await res.json();
-        if (data.success) {
+        if (data.success && Array.isArray(data.messages)) {
           setChatMessages(data.messages);
-          if (chatScrollRef.current) {
+          const unreadStaff = data.messages.filter(
+            (m: any) => m.senderType === "STAFF" && !m.isRead
+          ).length;
+          setUnreadStaffCount(showChatModal ? 0 : unreadStaff);
+
+          if (showChatModal && unreadStaff > 0) {
+            fetch("/api/chat", {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                outletId: activeOutletObj.id,
+                targetRole: "STAFF",
+                customerPhone: loggedInCustomer?.phone || customerPhone.trim() || undefined,
+                guestId: guestChatId || undefined,
+                tableNumber:
+                  activeBrandTab === "SOULMATE" && orderMode === "DINE_IN" && tableNumber
+                    ? tableNumber
+                    : undefined,
+              }),
+            }).catch(() => {});
+          }
+
+          if (showChatModal && chatScrollRef.current) {
             chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
           }
         }
@@ -383,9 +520,39 @@ function TableOrderContent() {
     };
 
     fetchChat();
-    const interval = setInterval(fetchChat, 3500);
+    const interval = setInterval(fetchChat, showChatModal ? 3000 : 6000);
     return () => clearInterval(interval);
-  }, [showChatModal, activeOutletObj?.id, activeBrandTab, orderMode, tableNumber, activeThreadPhone]);
+  }, [showChatModal, activeOutletObj?.id, activeBrandTab, orderMode, tableNumber, loggedInCustomer?.phone, customerPhone, guestChatId]);
+
+  // Poll Customer's Scheduled Pre-Orders (to power 48h & 24h upcoming reservation alerts + deposit status)
+  useEffect(() => {
+    const targetPhone = loggedInCustomer?.phone || customerPhone.trim();
+    if (!targetPhone) {
+      setCustomerScheduledOrders([]);
+      return;
+    }
+
+    const fetchScheduled = async () => {
+      try {
+        const res = await fetch(
+          `/api/orders?customerPhone=${encodeURIComponent(targetPhone)}&isScheduled=true&limit=20`
+        );
+        const data = await res.json();
+        if (data.success && Array.isArray(data.orders)) {
+          const active = data.orders.filter(
+            (o: any) => o.status !== "COMPLETED" && o.status !== "CANCELLED"
+          );
+          setCustomerScheduledOrders(active);
+        }
+      } catch {
+        // silent
+      }
+    };
+
+    fetchScheduled();
+    const interval = setInterval(fetchScheduled, 15000);
+    return () => clearInterval(interval);
+  }, [loggedInCustomer?.phone, customerPhone]);
 
   // Request Bill Handler (Soulmate Dine-in)
   const handleRequestBill = async () => {
@@ -414,8 +581,45 @@ function TableOrderContent() {
     }
   };
 
-  // Cart Functions
+  // Cart Functions (Supports fractional weights in KG as well as whole Units)
+  const addWeightToCart = (item: any, weightKg: number) => {
+    const cleanQty = Number(Math.max(0.1, weightKg).toFixed(3));
+    setCart((prev) => {
+      const idx = prev.findIndex((i) => i.menuItemId === item.id);
+      if (idx > -1) {
+        const updated = [...prev];
+        updated[idx] = {
+          ...updated[idx],
+          qty: Number((updated[idx].qty + cleanQty).toFixed(3)),
+        };
+        return updated;
+      }
+      return [
+        ...prev,
+        {
+          menuItemId: item.id,
+          nameAr: item.nameAr,
+          price: item.price,
+          qty: cleanQty,
+          unitType: item.unitType || "KG",
+          notes: "",
+          itemType: item.itemType,
+          category: item.category,
+          image: item.image,
+          outletCode: item.outlet?.code,
+        },
+      ];
+    });
+    setWeightPickerItem(null);
+    showToast("success", `تمت إضافة ${formatItemQty(cleanQty, "KG")} من ${item.nameAr} للسلة ⚖️🛒`);
+  };
+
   const addToCart = (item: any) => {
+    if (item.unitType === "KG") {
+      setCustomGramsInput(500);
+      setWeightPickerItem(item);
+      return;
+    }
     setCart((prev) => {
       const idx = prev.findIndex((i) => i.menuItemId === item.id);
       if (idx > -1) {
@@ -430,6 +634,7 @@ function TableOrderContent() {
           nameAr: item.nameAr,
           price: item.price,
           qty: 1,
+          unitType: item.unitType || "PIECE",
           notes: "",
           itemType: item.itemType,
           category: item.category,
@@ -446,8 +651,9 @@ function TableOrderContent() {
       prev
         .map((item) => {
           if (item.menuItemId === menuItemId) {
-            const newQty = item.qty + delta;
-            return newQty > 0 ? { ...item, qty: newQty } : null;
+            const stepDelta = item.unitType === "KG" ? delta * 0.25 : delta;
+            const newQty = Number((item.qty + stepDelta).toFixed(3));
+            return newQty >= 0.05 ? { ...item, qty: newQty } : null;
           }
           return item;
         })
@@ -532,6 +738,17 @@ function TableOrderContent() {
             )
           : null;
 
+      if (customerPhone.trim()) {
+        localStorage.setItem("abuadel_customer_phone_hint", customerPhone.trim());
+      }
+
+      const scheduledForISO =
+        isScheduled && scheduledDate
+          ? new Date(`${scheduledDate}T${scheduledTime || "14:00"}:00+02:00`).toISOString()
+          : null;
+      const depositPercent = settings?.preOrderDepositPercent || 30;
+      const computedDeposit = isScheduled ? Math.round((subtotal * depositPercent) / 100) : 0;
+
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -550,6 +767,17 @@ function TableOrderContent() {
           customerPhone: customerPhone.trim() || null,
           deliveryAddress: actualOrderType === "DELIVERY" ? deliveryAddress.trim() : null,
           deliveryPhone: actualOrderType === "DELIVERY" ? customerPhone.trim() : null,
+          paymentMethod,
+          isScheduled,
+          scheduledFor: scheduledForISO,
+          depositRequired: computedDeposit,
+          depositPaid: 0,
+          depositStatus: isScheduled
+            ? depositReceiptUrl
+              ? "PENDING_VERIFICATION"
+              : "NONE"
+            : "NONE",
+          depositReceiptUrl: isScheduled && depositReceiptUrl ? depositReceiptUrl : null,
           notes: orderNotes.trim() || null,
         }),
       });
@@ -557,6 +785,8 @@ function TableOrderContent() {
       const data = await res.json();
       if (data.success && data.order) {
         setCart([]);
+        setIsScheduled(false);
+        setDepositReceiptUrl("");
         setShowCheckoutModal(false);
         // Save customer address locally too
         if (loggedInCustomer) {
@@ -575,11 +805,16 @@ function TableOrderContent() {
           setActiveTableOrder(data.order);
         } else {
           setTrackedOrder(data.order);
+          if (data.order.isScheduled) {
+            setCustomerScheduledOrders((prev) => [data.order, ...prev.filter((p) => p.id !== data.order.id)]);
+          }
           localStorage.setItem("abuadel_active_tracked_order_id", data.order.id);
           setShowTrackerModal(true);
           showToast(
             "success",
-            isAbuAdel
+            data.order.isScheduled
+              ? "تم تسجيل حجزك المسبق بنجاح! سيصلك تنبيه قبل الموعد بـ 48 و 24 ساعة 📅✅"
+              : isAbuAdel
               ? "تم استلام طلبك بنجاح في حلواني أبو عادل وجاري تجهيزه! 🍰🛵"
               : "تم استلام طلبك بنجاح في سول ميت كافيه! ☕🛵"
           );
@@ -594,14 +829,19 @@ function TableOrderContent() {
     }
   };
 
-  // Send Direct Chat Message to Active Outlet (Soulmate OR Abu Adel)
-  const handleSendChatMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newChatMessage.trim()) return;
+  // Send Direct Chat Message (Text and/or Image) to Active Outlet
+  const handleSendChatMessage = async (e?: React.FormEvent, overrideImageUrl?: string) => {
+    if (e) e.preventDefault();
+    const finalImage = overrideImageUrl || chatImageFile;
+    if (!newChatMessage.trim() && !finalImage) return;
 
     try {
       setSendingChat(true);
       const targetOutlet = activeOutletObj?.id || outlets[0]?.id;
+      const cleanPhone = loggedInCustomer?.phone || customerPhone.trim();
+      if (cleanPhone) {
+        localStorage.setItem("abuadel_customer_phone_hint", cleanPhone);
+      }
 
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -617,11 +857,13 @@ function TableOrderContent() {
               : orderMode === "DELIVERY"
               ? "عميل دليفري"
               : "عميل تيك أواي"),
-          senderPhone: activeThreadPhone || null,
+          senderPhone: cleanPhone || guestChatId || null,
+          guestId: guestChatId || null,
           tableNumber:
             activeBrandTab === "SOULMATE" && orderMode === "DINE_IN" ? tableNumber : null,
           orderNumber: trackedOrder?.orderNumber || activeTableOrder?.orderNumber || null,
-          message: newChatMessage.trim(),
+          message: newChatMessage.trim() || "📎 صورة مرفقة",
+          imageUrl: finalImage || null,
         }),
       });
 
@@ -629,6 +871,7 @@ function TableOrderContent() {
       if (data.success) {
         setChatMessages((prev) => [...prev, data.message]);
         setNewChatMessage("");
+        setChatImageFile("");
         if (chatScrollRef.current) {
           chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
         }
@@ -637,6 +880,53 @@ function TableOrderContent() {
       showToast("error", "فشل إرسال الرسالة، يرجى المحاولة مجدداً");
     } finally {
       setSendingChat(false);
+    }
+  };
+
+  const handleUploadChatImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingChatImage(true);
+    const url = await compressAndUploadImage(file);
+    setUploadingChatImage(false);
+    if (url) {
+      setChatImageFile(url);
+      showToast("success", "تم إرفاق الصورة، اضغط إرسال الآن 📎");
+    } else {
+      showToast("error", "تعذر تحميل الصورة، حاول مرة أخرى");
+    }
+    e.target.value = "";
+  };
+
+  const handleUploadScheduledDepositReceipt = async (orderId: string, file: File) => {
+    setUploadingDepositReceipt(true);
+    const url = await compressAndUploadImage(file);
+    setUploadingDepositReceipt(false);
+    if (!url) {
+      showToast("error", "تعذر رفع صورة الإيصال");
+      return;
+    }
+    try {
+      const res = await fetch("/api/orders", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId,
+          action: "UPDATE_PAYMENT",
+          depositReceiptUrl: url,
+          depositStatus: "PENDING_VERIFICATION",
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCustomerScheduledOrders((prev) =>
+          prev.map((o) => (o.id === orderId ? data.order : o))
+        );
+        if (trackedOrder?.id === orderId) setTrackedOrder(data.order);
+        showToast("success", "تم رفع صورة إيصال العربون وبانتظار مراجعة وتأكيد الإدارة ✅");
+      }
+    } catch {
+      showToast("error", "تعذر إرسال الإيصال");
     }
   };
 
@@ -963,7 +1253,7 @@ function TableOrderContent() {
                 <span>☕ سول ميت كافيه</span>
                 {cartsByBrand.SOULMATE.length > 0 && (
                   <span className="bg-black text-amber-400 px-1.5 rounded-full text-[10px]">
-                    {cartsByBrand.SOULMATE.reduce((s, i) => s + i.qty, 0)}
+                    {cartsByBrand.SOULMATE.length}
                   </span>
                 )}
               </button>
@@ -980,7 +1270,7 @@ function TableOrderContent() {
                 <span>🍰 حلواني أبو عادل</span>
                 {cartsByBrand.ABU_ADEL.length > 0 && (
                   <span className="bg-white text-emerald-700 px-1.5 rounded-full text-[10px]">
-                    {cartsByBrand.ABU_ADEL.reduce((s, i) => s + i.qty, 0)}
+                    {cartsByBrand.ABU_ADEL.length}
                   </span>
                 )}
               </button>
@@ -998,10 +1288,13 @@ function TableOrderContent() {
                 </button>
               )}
 
-              {/* Direct Live Chat Trigger for BOTH Shops */}
+              {/* Direct Live Chat Trigger for BOTH Shops (with live unread badge!) */}
               <button
-                onClick={() => setShowChatModal(true)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer ${
+                onClick={() => {
+                  setUnreadStaffCount(0);
+                  setShowChatModal(true);
+                }}
+                className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer ${
                   activeBrandTab === "SOULMATE"
                     ? "bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border-amber-500/30"
                     : "bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border-emerald-500/30"
@@ -1013,6 +1306,11 @@ function TableOrderContent() {
                     ? "شات الباريستا والكافيه 💬"
                     : "شات حلواني أبو عادل 💬"}
                 </span>
+                {unreadStaffCount > 0 && (
+                  <span className="absolute -top-1.5 -left-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-600 text-white text-[10px] font-black flex items-center justify-center animate-bounce shadow">
+                    {unreadStaffCount}
+                  </span>
+                )}
               </button>
             </div>
           </div>
@@ -1021,6 +1319,107 @@ function TableOrderContent() {
 
       {/* 2. MAIN BODY */}
       <main className="max-w-5xl mx-auto px-3 sm:px-4 py-4 w-full space-y-4">
+        {/* UPCOMING SCHEDULED PRE-ORDERS & 48H / 24H REMINDER BANNER */}
+        {customerScheduledOrders.length > 0 && (
+          <div className="space-y-2">
+            {customerScheduledOrders.map((sch) => {
+              const schedDate = sch.scheduledFor ? new Date(sch.scheduledFor) : null;
+              const hoursLeft = schedDate
+                ? Math.round((schedDate.getTime() - Date.now()) / (1000 * 60 * 60))
+                : 999;
+              const isWithin24h = hoursLeft <= 24 && hoursLeft >= -12;
+              const isWithin48h = hoursLeft <= 48 && hoursLeft > 24;
+              const needsDeposit = sch.depositStatus !== "CONFIRMED" && Number(sch.depositRequired || 0) > 0;
+
+              return (
+                <div
+                  key={sch.id}
+                  className={`rounded-2xl p-3.5 border shadow-lg flex items-center justify-between gap-3 flex-wrap ${
+                    isWithin24h && needsDeposit
+                      ? "bg-rose-950/60 border-rose-500/60"
+                      : isWithin48h || needsDeposit
+                      ? "bg-amber-950/50 border-amber-500/50"
+                      : "bg-emerald-950/40 border-emerald-500/40"
+                  }`}
+                >
+                  <div className="flex items-start gap-2.5">
+                    <div className="w-10 h-10 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center shrink-0">
+                      <BellRing
+                        className={`w-5 h-5 ${
+                          isWithin24h && needsDeposit
+                            ? "text-rose-400 animate-bounce"
+                            : "text-amber-400 animate-pulse"
+                        }`}
+                      />
+                    </div>
+                    <div className="space-y-0.5 text-xs">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-black text-white">
+                          📅 حجزك المسبق #{sch.orderNumber}
+                        </span>
+                        {schedDate && (
+                          <span className="text-[11px] font-mono bg-black/50 px-2 py-0.5 rounded-lg text-amber-300">
+                            {schedDate.toLocaleDateString("ar-EG")} •{" "}
+                            {schedDate.toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" })}
+                          </span>
+                        )}
+                        {hoursLeft <= 48 && hoursLeft > 0 && (
+                          <span
+                            className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                              isWithin24h
+                                ? "bg-rose-600 text-white"
+                                : "bg-amber-500 text-black"
+                            }`}
+                          >
+                            {isWithin24h
+                              ? `⏰ تنبيه عاجل: متبقي ${hoursLeft} ساعة!`
+                              : `🔔 تذكير قبل 48 ساعة (متبقي ${hoursLeft} ساعة)`}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-slate-300">
+                        {sch.depositStatus === "CONFIRMED"
+                          ? `✅ تم تأكيد العربون (${sch.depositPaid} ج.م) وجاري تجهيز طلبيتك في الموعد من المصنع.`
+                          : sch.depositStatus === "PENDING_VERIFICATION"
+                          ? `⏳ تم إرسال صورة إيصال العربون (${sch.depositRequired} ج.م) وبانتظار مراجعة الإدارة.`
+                          : `⚠️ يرجى تأكيد حجزك بسداد العربون (${sch.depositRequired} ج.م) وإرسال صورة الإيصال ليتم إدراج كميتك في طلبية المصنع.`}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    {sch.depositStatus !== "CONFIRMED" && (
+                      <label className="cursor-pointer px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-[11px] flex items-center gap-1.5 shadow">
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>{uploadingDepositReceipt ? "جاري الرفع..." : "رفع إيصال العربون"}</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          disabled={uploadingDepositReceipt}
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) handleUploadScheduledDepositReceipt(sch.id, f);
+                            e.target.value = "";
+                          }}
+                        />
+                      </label>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setShowChatModal(true)}
+                      className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-emerald-500/30 font-bold text-[11px] flex items-center gap-1 cursor-pointer"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" />
+                      <span>تواصل بالشات</span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         {/* WELCOME BANNER */}
         {showWaiterGreeting && (
           <div
@@ -1347,22 +1746,44 @@ function TableOrderContent() {
 
                 <div className="flex-shrink-0">
                   {inCart ? (
-                    <div className="flex items-center gap-2 bg-slate-950 p-1.5 rounded-xl border border-amber-500/30">
-                      <button
-                        onClick={() => updateCartQty(item.id, -1)}
-                        className="w-7 h-7 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-rose-900/50 transition cursor-pointer"
-                      >
-                        <Minus className="w-3.5 h-3.5" />
-                      </button>
-                      <span className="font-bold text-xs text-amber-400 font-mono w-5 text-center">
-                        {inCart.qty}
-                      </span>
-                      <button
-                        onClick={() => updateCartQty(item.id, 1)}
-                        className="w-7 h-7 rounded-lg bg-amber-500 text-black flex items-center justify-center font-bold hover:bg-amber-400 transition cursor-pointer"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                      </button>
+                    <div className="flex flex-col items-end gap-1">
+                      <div className="flex items-center gap-1.5 bg-slate-950 p-1.5 rounded-xl border border-amber-500/30">
+                        <button
+                          onClick={() => updateCartQty(item.id, -1)}
+                          className="w-7 h-7 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-rose-900/50 transition cursor-pointer"
+                          title={item.unitType === "KG" ? "إنقاص ربع كيلو (250 جم)" : "إنقاص"}
+                        >
+                          <Minus className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => item.unitType === "KG" && setWeightPickerItem(item)}
+                          className="font-bold text-[11px] text-amber-400 font-mono min-w-[3.2rem] text-center cursor-pointer"
+                          title={item.unitType === "KG" ? "اضغط لاختيار وزن محدد" : undefined}
+                        >
+                          {item.unitType === "KG" ? formatItemQty(inCart.qty, "KG") : inCart.qty}
+                        </button>
+                        <button
+                          onClick={() => updateCartQty(item.id, 1)}
+                          className="w-7 h-7 rounded-lg bg-amber-500 text-black flex items-center justify-center font-bold hover:bg-amber-400 transition cursor-pointer"
+                          title={item.unitType === "KG" ? "زيادة ربع كيلو (250 جم)" : "زيادة"}
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                      {item.unitType === "KG" && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCustomGramsInput(Math.round(inCart.qty * 1000));
+                            setWeightPickerItem(item);
+                          }}
+                          className="text-[10px] text-emerald-300 hover:underline flex items-center gap-1 cursor-pointer"
+                        >
+                          <Scale className="w-3 h-3" />
+                          <span>تعديل الوزن</span>
+                        </button>
+                      )}
                     </div>
                   ) : (
                     <button
@@ -1373,8 +1794,8 @@ function TableOrderContent() {
                           : "bg-emerald-600 hover:bg-emerald-500 text-white font-black"
                       }`}
                     >
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>إضافة</span>
+                      {item.unitType === "KG" ? <Scale className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+                      <span>{item.unitType === "KG" ? "اختر الوزن" : "إضافة"}</span>
                     </button>
                   )}
                 </div>
@@ -1403,7 +1824,7 @@ function TableOrderContent() {
             <div>
               <div className="text-[11px] text-slate-400 flex items-center gap-2 flex-wrap">
                 <span className="font-bold text-white">
-                  {cart.reduce((s, i) => s + i.qty, 0)} أصناف
+                  {cart.length} {cart.length === 1 ? "صنف" : "أصناف"}
                 </span>
                 {activeBrandTab === "SOULMATE" && orderMode === "DINE_IN" ? (
                   <span className="text-amber-400 font-bold">ترابيزة {tableNumber || "-"}</span>
@@ -1729,6 +2150,158 @@ function TableOrderContent() {
                   </>
                 )}
 
+                {/* Scheduled Pre-Order Option (Booking for future date with Deposit & 48h/24h alerts) */}
+                <div className="bg-slate-900/90 border border-amber-500/30 rounded-2xl p-3 space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] font-black text-amber-300 flex items-center gap-1.5">
+                      <Calendar className="w-4 h-4" />
+                      <span>موعد تنفيذ الطلب / الحجز:</span>
+                    </span>
+                    <div className="flex bg-black p-0.5 rounded-xl border border-white/10 text-[11px]">
+                      <button
+                        type="button"
+                        onClick={() => setIsScheduled(false)}
+                        className={`px-2.5 py-1 rounded-lg font-bold cursor-pointer transition ${
+                          !isScheduled ? "bg-emerald-600 text-white" : "text-slate-400"
+                        }`}
+                      >
+                        🚀 طلب فوري الآن
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setIsScheduled(true)}
+                        className={`px-2.5 py-1 rounded-lg font-bold cursor-pointer transition ${
+                          isScheduled ? "bg-amber-500 text-black font-black" : "text-slate-400"
+                        }`}
+                      >
+                        📅 حجز مسبق لموعد
+                      </button>
+                    </div>
+                  </div>
+
+                  {isScheduled && (
+                    <div className="space-y-2.5 border-t border-white/10 pt-2.5">
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] text-slate-400 block mb-1">
+                            تاريخ التسليم / الاستلام المطلوب *
+                          </label>
+                          <input
+                            type="date"
+                            value={scheduledDate}
+                            min={new Date().toISOString().slice(0, 10)}
+                            onChange={(e) => setScheduledDate(e.target.value)}
+                            className="w-full bg-black border border-slate-700 rounded-xl px-2.5 py-2 text-white font-mono text-xs focus:outline-none focus:border-amber-400"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] text-slate-400 block mb-1">
+                            الساعة المطلوبة *
+                          </label>
+                          <input
+                            type="time"
+                            value={scheduledTime}
+                            onChange={(e) => setScheduledTime(e.target.value)}
+                            className="w-full bg-black border border-slate-700 rounded-xl px-2.5 py-2 text-white font-mono text-xs focus:outline-none focus:border-amber-400"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2.5 space-y-1.5 text-[11px]">
+                        <div className="flex items-center justify-between font-black text-amber-300">
+                          <span>💰 العربون المطلوب لتأكيد الحجز ({settings?.preOrderDepositPercent || 30}%):</span>
+                          <span className="font-mono text-sm">
+                            {Math.round((subtotal * (settings?.preOrderDepositPercent || 30)) / 100)} ج.م
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-slate-300 leading-relaxed">
+                          سيتم تنبيهك وتنبيه الإدارة قبل الموعد بـ 48 ساعة و 24 ساعة لإدراج طلبيتك في كشف المصنع المخصص طازجاً لك.
+                        </p>
+                        {(settings?.instapayAccount || settings?.vodafoneCashNumber) && (
+                          <div className="bg-black/50 rounded-lg px-2.5 py-1.5 text-[10px] text-emerald-300 space-y-0.5 font-mono">
+                            {settings?.instapayAccount && (
+                              <div>⚡ إنستاباي: {settings.instapayAccount}</div>
+                            )}
+                            {settings?.vodafoneCashNumber && (
+                              <div>📱 فودافون كاش: {settings.vodafoneCashNumber}</div>
+                            )}
+                          </div>
+                        )}
+                        <div className="flex items-center justify-between gap-2 pt-1">
+                          <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-black text-[11px] transition">
+                            <Upload className="w-3.5 h-3.5" />
+                            <span>
+                              {uploadingDepositReceipt
+                                ? "جاري رفع الإيصال..."
+                                : depositReceiptUrl
+                                ? "✅ تم إرفاق إيصال العربون (تغيير)"
+                                : "📎 رفع صورة إيصال العربون (اختياري الآن)"}
+                            </span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              disabled={uploadingDepositReceipt}
+                              onChange={async (e) => {
+                                const f = e.target.files?.[0];
+                                if (!f) return;
+                                setUploadingDepositReceipt(true);
+                                const url = await compressAndUploadImage(f);
+                                setUploadingDepositReceipt(false);
+                                if (url) {
+                                  setDepositReceiptUrl(url);
+                                  showToast("success", "تم إرفاق صورة إيصال العربون ✅");
+                                } else {
+                                  showToast("error", "تعذر رفع صورة الإيصال");
+                                }
+                                e.target.value = "";
+                              }}
+                            />
+                          </label>
+                          {depositReceiptUrl && (
+                            <button
+                              type="button"
+                              onClick={() => setPreviewImageUrl(depositReceiptUrl)}
+                              className="text-[10px] text-sky-300 underline cursor-pointer"
+                            >
+                              معاينة الصورة
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Flexible Payment Method Selector */}
+                <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 space-y-2">
+                  <label className="text-[11px] font-black text-white flex items-center gap-1.5">
+                    <CreditCard className="w-4 h-4 text-emerald-400" />
+                    <span>اختر طريقة الدفع المناسبة لك:</span>
+                  </label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[11px] font-bold">
+                    {[
+                      { id: "CASH", label: "💵 كاش" },
+                      { id: "INSTAPAY", label: "⚡ إنستاباي" },
+                      { id: "VODAFONE_CASH", label: "📱 فودافون كاش" },
+                      { id: "CARD", label: "💳 بطاقة / فيزا" },
+                    ].map((pm) => (
+                      <button
+                        key={pm.id}
+                        type="button"
+                        onClick={() => setPaymentMethod(pm.id as any)}
+                        className={`py-2 px-2 rounded-xl border transition cursor-pointer ${
+                          paymentMethod === pm.id
+                            ? "bg-emerald-600 text-white border-emerald-400 font-black shadow"
+                            : "bg-black/60 text-slate-300 border-slate-700 hover:border-slate-500"
+                        }`}
+                      >
+                        {pm.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <div>
                   <label className="text-[11px] text-slate-400 block mb-1 font-bold">
                     ملاحظات إضافية (اختياري):
@@ -1744,14 +2317,18 @@ function TableOrderContent() {
 
                 {/* Live Receipt Preview */}
                 <div className="bg-black/60 border border-white/10 rounded-2xl p-3 space-y-2">
-                  <div className="text-[11px] font-black text-amber-300 border-b border-white/10 pb-1">
-                    ملخص الفاتورة ({cart.reduce((s, i) => s + i.qty, 0)} أصناف):
+                  <div className="text-[11px] font-black text-amber-300 border-b border-white/10 pb-1 flex justify-between">
+                    <span>ملخص الفاتورة ({cart.length} أصناف):</span>
+                    <span className="text-emerald-300">{getPaymentMethodLabel(paymentMethod)}</span>
                   </div>
                   <div className="max-h-28 overflow-y-auto space-y-1 text-[11px]">
                     {cart.map((c) => (
                       <div key={c.menuItemId} className="flex justify-between text-slate-300">
                         <span>
-                          {c.nameAr} ×{c.qty}
+                          {c.nameAr}{" "}
+                          <span className="text-amber-300 font-mono">
+                            ({formatItemQty(c.qty, c.unitType)})
+                          </span>
                         </span>
                         <span className="font-mono font-bold text-white">
                           {(c.price * c.qty).toFixed(2)} ج
@@ -1863,8 +2440,37 @@ function TableOrderContent() {
                     ))}
                   </div>
                   {trackedOrder.driverName && (
-                    <div className="text-center text-[11px] text-purple-300 font-bold bg-purple-500/10 border border-purple-500/30 rounded-xl py-1.5">
-                      🛵 الطيار المكلف: {trackedOrder.driverName}
+                    <div className="text-center text-[11px] text-purple-200 font-bold bg-purple-500/15 border border-purple-500/30 rounded-xl py-2 px-3 flex items-center justify-center gap-2 flex-wrap">
+                      <span>🛵 الطيار: {trackedOrder.driverName}</span>
+                      {(trackedOrder.driverPhone || trackedOrder.driver?.phone) && (
+                        <a
+                          href={`tel:${trackedOrder.driverPhone || trackedOrder.driver?.phone}`}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-600/30 border border-emerald-400/40 text-emerald-200 font-mono hover:bg-emerald-600/50"
+                        >
+                          <Phone className="w-3 h-3" />
+                          <span>{trackedOrder.driverPhone || trackedOrder.driver?.phone}</span>
+                        </a>
+                      )}
+                    </div>
+                  )}
+
+                  {trackedOrder.isScheduled && trackedOrder.scheduledFor && (
+                    <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2.5 text-[11px] text-amber-200 space-y-1 text-center">
+                      <div className="font-black">
+                        📅 حجز مسبق لموعد:{" "}
+                        {new Date(trackedOrder.scheduledFor).toLocaleString("ar-EG", {
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        })}
+                      </div>
+                      <div className="text-[10px]">
+                        حالة العربون ({trackedOrder.depositRequired} ج.م):{" "}
+                        {trackedOrder.depositStatus === "CONFIRMED"
+                          ? "✅ مؤكد"
+                          : trackedOrder.depositStatus === "PENDING_VERIFICATION"
+                          ? "⏳ قيد مراجعة الإيصال"
+                          : "⚠️ لم يتم التأكيد بعد — يمكنك إرسال الإيصال في الشات"}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -1873,6 +2479,12 @@ function TableOrderContent() {
 
             {/* Customer Receipt Details */}
             <div className="bg-black/60 border border-white/10 rounded-2xl p-4 space-y-2 text-xs">
+              <div className="flex justify-between text-slate-300 text-[11px]">
+                <span>طريقة الدفع المختارة:</span>
+                <span className="font-bold text-amber-300">
+                  {getPaymentMethodLabel(trackedOrder.paymentMethod)}
+                </span>
+              </div>
               {trackedOrder.deliveryZoneName && (
                 <div className="flex justify-between text-emerald-300 font-bold">
                   <span>منطقة التوصيل:</span>
@@ -1899,9 +2511,11 @@ function TableOrderContent() {
                   return parsed.map((it: any, idx: number) => (
                     <div key={idx} className="flex justify-between text-slate-300">
                       <span>
-                        {it.nameAr} ×{it.qty || 1}
+                        {it.nameAr} ({formatItemQty(it.qty || 1, it.unitType)})
                       </span>
-                      <span className="font-mono">{Number(it.price) * Number(it.qty || 1)} ج</span>
+                      <span className="font-mono">
+                        {(Number(it.price) * Number(it.qty || 1)).toFixed(2)} ج
+                      </span>
                     </div>
                   ));
                 })()}
@@ -2020,6 +2634,20 @@ function TableOrderContent() {
                         : `${msg.senderName} (أبو عادل) 🍰`}
                     </div>
                     <div>{msg.message}</div>
+                    {msg.imageUrl && (
+                      <button
+                        type="button"
+                        onClick={() => setPreviewImageUrl(msg.imageUrl)}
+                        className="mt-2 block rounded-xl overflow-hidden border border-white/20 cursor-pointer"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={msg.imageUrl}
+                          alt="مرفق الشات"
+                          className="max-w-[200px] max-h-[180px] object-cover"
+                        />
+                      </button>
+                    )}
                   </div>
                   <span className="text-[9px] text-slate-500 mt-0.5 px-1">
                     {new Date(msg.createdAt).toLocaleTimeString("ar-EG", {
@@ -2031,16 +2659,52 @@ function TableOrderContent() {
               ))}
             </div>
 
+            {chatImageFile && (
+              <div className="px-3 py-2 bg-slate-950 border-t border-slate-800 flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={chatImageFile}
+                    alt="معاينة الصورة المرفقة"
+                    className="w-10 h-10 rounded-lg object-cover border border-amber-500/40"
+                  />
+                  <span className="text-[11px] text-emerald-300 font-bold">صورة جاهزة للإرسال (إيصال / طلب)</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setChatImageFile("")}
+                  className="text-rose-400 hover:text-rose-300 text-xs font-bold cursor-pointer"
+                >
+                  حذف ✕
+                </button>
+              </div>
+            )}
+
             <form
-              onSubmit={handleSendChatMessage}
-              className="p-3 bg-slate-950 border-t border-slate-800 flex gap-2"
+              onSubmit={(e) => handleSendChatMessage(e)}
+              className="p-3 bg-slate-950 border-t border-slate-800 flex items-center gap-2"
             >
+              <label
+                className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 cursor-pointer shrink-0 flex items-center justify-center"
+                title="إرفاق صورة (إيصال إنستاباي / فودافون كاش / صورة تورتة)"
+              >
+                <ImageIcon className="w-4 h-4" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  disabled={uploadingChatImage}
+                  onChange={handleUploadChatImage}
+                />
+              </label>
               <input
                 type="text"
                 placeholder={
-                  activeBrandTab === "SOULMATE"
+                  uploadingChatImage
+                    ? "جاري رفع الصورة..."
+                    : activeBrandTab === "SOULMATE"
                     ? "اكتب رسالتك للباريستا والكافيه..."
-                    : "اكتب رسالتك لحلواني أبو عادل..."
+                    : "اكتب رسالتك لحلواني أبو عادل أو أرفق صورة الإيصال..."
                 }
                 value={newChatMessage}
                 onChange={(e) => setNewChatMessage(e.target.value)}
@@ -2048,12 +2712,117 @@ function TableOrderContent() {
               />
               <button
                 type="submit"
-                disabled={sendingChat || !newChatMessage.trim()}
+                disabled={sendingChat || uploadingChatImage || (!newChatMessage.trim() && !chatImageFile)}
                 className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs rounded-xl transition disabled:opacity-50 cursor-pointer"
               >
                 إرسال
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 4.5: FRACTIONAL KG WEIGHT PICKER MODAL (للأصناف المباعة بالوزن / الكيلو) */}
+      {weightPickerItem && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#120d14] border-2 border-emerald-500/40 rounded-3xl w-full max-w-md p-5 shadow-2xl relative space-y-4">
+            <button
+              onClick={() => setWeightPickerItem(null)}
+              className="absolute left-4 top-4 text-slate-400 hover:text-white cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3 border-b border-white/10 pb-3">
+              <div className="w-11 h-11 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center">
+                <Scale className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-sm sm:text-base font-black text-white">
+                  تحديد الوزن المطلوب — {weightPickerItem.nameAr}
+                </h3>
+                <p className="text-xs text-amber-400 font-mono font-bold">
+                  سعر الكيلو: {weightPickerItem.price} ج.م / كجم
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 text-xs">
+              {[
+                { label: "ربع كيلو", sub: "250 جم", kg: 0.25 },
+                { label: "نصف كيلو", sub: "500 جم", kg: 0.5 },
+                { label: "كيلو إلا ربع", sub: "750 جم", kg: 0.75 },
+                { label: "1 كيلو", sub: "1000 جم", kg: 1 },
+                { label: "1.5 كيلو", sub: "1500 جم", kg: 1.5 },
+                { label: "2 كيلو", sub: "2000 جم", kg: 2 },
+              ].map((opt) => (
+                <button
+                  key={opt.kg}
+                  type="button"
+                  onClick={() => addWeightToCart(weightPickerItem, opt.kg)}
+                  className="p-2.5 rounded-2xl bg-slate-900 hover:bg-emerald-600/20 border border-slate-700 hover:border-emerald-400 text-center space-y-0.5 transition cursor-pointer"
+                >
+                  <div className="font-black text-white">{opt.label}</div>
+                  <div className="text-[10px] text-slate-400 font-mono">{opt.sub}</div>
+                  <div className="text-[11px] font-black text-emerald-400 font-mono">
+                    {Math.round(weightPickerItem.price * opt.kg)} ج.م
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <div className="bg-black/60 border border-white/10 rounded-2xl p-3 space-y-2 text-xs">
+              <label className="text-[11px] text-slate-300 font-bold block">
+                أو أدخل وزناً مخصصاً بالجرام (مثال: 350 جم أو 1250 جم):
+              </label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  min={100}
+                  step={50}
+                  value={customGramsInput || ""}
+                  onChange={(e) => setCustomGramsInput(Number(e.target.value))}
+                  className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-mono font-bold focus:outline-none focus:border-emerald-400"
+                />
+                <span className="text-slate-400 font-bold">جم</span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    addWeightToCart(
+                      weightPickerItem,
+                      Math.max(0.1, (Number(customGramsInput) || 250) / 1000)
+                    )
+                  }
+                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black cursor-pointer"
+                >
+                  إضافة ({Math.round(((Number(customGramsInput) || 250) / 1000) * weightPickerItem.price)} ج.م)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 4.6: IMAGE LIGHTBOX PREVIEW */}
+      {previewImageUrl && (
+        <div
+          onClick={() => setPreviewImageUrl(null)}
+          className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 cursor-pointer"
+        >
+          <div className="relative max-w-2xl max-h-[85vh]">
+            <button
+              type="button"
+              onClick={() => setPreviewImageUrl(null)}
+              className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-rose-600 text-white flex items-center justify-center font-black shadow-lg cursor-pointer"
+            >
+              ✕
+            </button>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={previewImageUrl}
+              alt="عرض الصورة"
+              className="max-w-full max-h-[82vh] rounded-2xl border border-white/20 shadow-2xl object-contain"
+            />
           </div>
         </div>
       )}

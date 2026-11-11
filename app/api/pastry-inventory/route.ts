@@ -121,7 +121,7 @@ export async function POST(req: Request) {
         where: { id: menuItemId },
         data: {
           openingStock: initialVal,
-          stockQty: Math.round(initialVal),
+          stockQty: Number(initialVal.toFixed(3)),
         },
       });
 
@@ -178,7 +178,7 @@ export async function POST(req: Request) {
       const updated = await prisma.menuItem.update({
         where: { id: existing.id },
         data: {
-          stockQty: { increment: Math.round(inboundQty) },
+          stockQty: { increment: Number(inboundQty.toFixed(3)) },
           ...(unitCost ? { costPrice: effectiveCost } : {}),
         },
       });
@@ -249,7 +249,7 @@ export async function POST(req: Request) {
         await prisma.menuItem.update({
           where: { id: product.id },
           data: {
-            stockQty: Math.round(actual),
+            stockQty: Number(actual.toFixed(3)),
             ...(setAsOpeningStock ? { openingStock: actual } : {}),
           },
         });

@@ -34,6 +34,8 @@ model Outlet {
   inventoryAudits InventoryAudit[]
   pastryAudits    PastryAudit[]
   dailyCloses     DailyClose[]
+  deliveryDrivers DeliveryDriver[]
+  factoryOrders   FactoryOrder[]
 }
 
 // ----------------------------------------------------
@@ -90,8 +92,8 @@ model MenuItem {
   itemType              String   @default("PREPARED_BEVERAGE") // "PREPARED_BEVERAGE" (uses recipe) | "READY_PASTRY" (finished unit) | "RETAIL"
   unitType              String   @default("PIECE") // "PIECE", "PORTION", "KG", "BOX"
   openingStock          Float    @default(0) // رصيد بداية المدة الافتتاحي للحلويات
-  stockQty              Int      @default(0) // الرصيد الفعلي الحالي بالمحل
-  minStockAlert         Int      @default(10)
+  stockQty              Float    @default(0) // الرصيد الفعلي الحالي بالمحل (يدعم الكسور للكيلو)
+  minStockAlert         Float    @default(10)
   isAvailable           Boolean  @default(true)
   sortOrder             Int      @default(0)
   loyaltyPointsEarned   Int      @default(5)
@@ -280,28 +282,56 @@ model DeliveryZone {
 }
 
 // ----------------------------------------------------
+// 7.6 DELIVERY DRIVERS (عمال التوصيل / الطيارين)
+// ----------------------------------------------------
+model DeliveryDriver {
+  id          String   @id @default(cuid())
+  outletId    String?
+  outlet      Outlet?  @relation(fields: [outletId], references: [id], onDelete: SetNull)
+  name        String
+  phone       String
+  vehicleInfo String?
+  notes       String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  orders Order[]
+}
+
+// ----------------------------------------------------
 // 8. ORDERS & TICKETS (الطلبات والشيكات والفواتير)
 // ----------------------------------------------------
 model Order {
-  id               String        @id @default(cuid())
-  outletId         String
-  outlet           Outlet        @relation(fields: [outletId], references: [id], onDelete: Cascade)
-  orderNumber      String        @unique // "SOUL-1001" or "ADEL-1001"
-  orderType        String        @default("DINE_IN") // "DINE_IN", "TAKEAWAY", "DELIVERY"
-  tableId          String?
-  table            DiningTable?  @relation(fields: [tableId], references: [id], onDelete: SetNull)
-  tableNumber      String?
-  deliveryZoneId   String?
-  deliveryZone     DeliveryZone? @relation(fields: [deliveryZoneId], references: [id], onDelete: SetNull)
-  deliveryZoneName String? // Snapshot of area/zone name
-  deliveryAddress  String?
-  deliveryPhone    String?
-  deliveryNotes    String?
-  driverName       String? // اسم الطيار المخصص للتوصيل
-  dispatchedAt     DateTime? // وقت خروج الأوردر مع الطيار
-  status           String        @default("NEW_PENDING") // "NEW_PENDING", "PREPARING", "READY_TO_SERVE", "OUT_FOR_DELIVERY", "COMPLETED", "CANCELLED"
-  paymentStatus    String        @default("PENDING") // "PENDING", "PAID"
-  paymentMethod    String        @default("CASH") // "CASH", "CARD", "INSTAPAY", "VODAFONE_CASH", "SPLIT"
+  id                String          @id @default(cuid())
+  outletId          String
+  outlet            Outlet          @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  orderNumber       String          @unique // "SOUL-1001" or "ADEL-1001"
+  orderType         String          @default("DINE_IN") // "DINE_IN", "TAKEAWAY", "DELIVERY"
+  tableId           String?
+  table             DiningTable?    @relation(fields: [tableId], references: [id], onDelete: SetNull)
+  tableNumber       String?
+  deliveryZoneId    String?
+  deliveryZone      DeliveryZone?   @relation(fields: [deliveryZoneId], references: [id], onDelete: SetNull)
+  deliveryZoneName  String? // Snapshot of area/zone name
+  deliveryAddress   String?
+  deliveryPhone     String?
+  deliveryNotes     String?
+  driverId          String?
+  driver            DeliveryDriver? @relation(fields: [driverId], references: [id], onDelete: SetNull)
+  driverName        String? // اسم الطيار المخصص للتوصيل
+  driverPhone       String? // رقم تليفون الطيار
+  dispatchedAt      DateTime? // وقت خروج الأوردر مع الطيار
+  isScheduled       Boolean         @default(false) // طلب مسبق / حجز لموعد محدد
+  scheduledFor      DateTime? // تاريخ ووقت التسليم المطلوب
+  depositRequired   Float           @default(0)
+  depositPaid       Float           @default(0)
+  depositStatus     String          @default("NONE") // "NONE", "PENDING_VERIFICATION", "CONFIRMED"
+  depositReceiptUrl String?
+  alertSent48h      Boolean         @default(false)
+  alertSent24h      Boolean         @default(false)
+  status            String          @default("NEW_PENDING") // "NEW_PENDING", "PREPARING", "READY_TO_SERVE", "OUT_FOR_DELIVERY", "COMPLETED", "CANCELLED"
+  paymentStatus     String          @default("PENDING") // "PENDING", "PAID"
+  paymentMethod     String          @default("CASH") // "CASH", "CARD", "INSTAPAY", "VODAFONE_CASH", "SPLIT"
 
   subtotal       Float @default(0)
   serviceCharge  Float @default(0)
@@ -353,7 +383,7 @@ model Shift {
   shiftNumber      Int     @default(1)
   openedBy         String // Cashier name
   closedBy         String?
-  openingCashFloat Float   @default(500) // فكة الدرج الافتتاحية
+  openingCashFloat Float   @default(0) // فكة الدرج الافتتاحية
   expectedCash     Float   @default(0)
   actualCash       Float   @default(0)
   difference       Float   @default(0) // Actual - Expected
@@ -362,7 +392,8 @@ model Shift {
   visaCollected     Float @default(0)
   instapayCollected Float @default(0)
   vodafoneCollected Float @default(0)
-  totalRevenue      Float @default(0)
+  deliveryFeesTotal Float @default(0) // رسوم الدليفري المنفصلة (مستحقات الطيارين)
+  totalRevenue      Float @default(0) // صافي إيراد المحل بدون رسوم التوصيل
   expensesTotal     Float @default(0)
   ticketsCount      Int   @default(0)
 
@@ -428,6 +459,9 @@ model SystemSettings {
   serviceChargePercent   Float   @default(12.0)
   taxPercent             Float   @default(14.0)
   deliveryFee            Float   @default(20.0) // مصاريف الدليفري الثابتة
+  preOrderDepositPercent Float   @default(30.0) // نسبة العربون الافتراضية للحجوزات المسبقة %
+  instapayAccount        String? // حساب إنستاباي للتحويلات والعربون
+  vodafoneCashNumber     String? // رقم فودافون كاش للتحويلات والعربون
   isServiceChargeEnabled Boolean @default(false)
   isTaxEnabled           Boolean @default(false)
 
@@ -475,6 +509,39 @@ model ChatMessage {
   tableNumber String?
   orderNumber String?
   message     String
+  imageUrl    String?
   isRead      Boolean  @default(false)
   createdAt   DateTime @default(now())
+}
+
+// ----------------------------------------------------
+// 15. DAILY FACTORY PROCUREMENT ORDERS (طلبيات المصنع اليومية لأبو عادل)
+// ----------------------------------------------------
+model FactoryOrder {
+  id         String             @id @default(cuid())
+  outletId   String
+  outlet     Outlet             @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  targetDate DateTime
+  status     String             @default("DRAFT") // "DRAFT", "SENT_TO_FACTORY", "RECEIVED"
+  createdBy  String             @default("المايسترو")
+  notes      String?
+  items      FactoryOrderItem[]
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @default(now()) @updatedAt
+}
+
+model FactoryOrderItem {
+  id             String       @id @default(cuid())
+  factoryOrderId String
+  factoryOrder   FactoryOrder @relation(fields: [factoryOrderId], references: [id], onDelete: Cascade)
+  menuItemId     String
+  menuItemName   String
+  unitType       String
+  currentStock   Float        @default(0)
+  minStockLevel  Float        @default(0)
+  shortageQty    Float        @default(0)
+  preOrderQty    Float        @default(0)
+  suggestedQty   Float        @default(0)
+  approvedQty    Float        @default(0)
+  notes          String?
 }

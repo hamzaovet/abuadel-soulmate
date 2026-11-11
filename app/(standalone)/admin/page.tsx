@@ -67,12 +67,54 @@ import {
   Edit2,
   Phone,
   Send,
+  Bell,
 } from "lucide-react";
 
 interface Toast {
   id: string;
   type: "success" | "error" | "info";
   message: string;
+}
+
+const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  CASH: "نقدي (كاش)",
+  CARD: "فيزا / بطاقة",
+  INSTAPAY: "إنستاباي",
+  VODAFONE_CASH: "فودافون كاش",
+};
+
+function getStoreNet(o: any): number {
+  return Math.max(0, (Number(o?.finalAmount) || 0) - (Number(o?.deliveryFee) || 0));
+}
+
+function formatAdminQty(qty: any, unitType?: string): string {
+  const n = Math.round((Number(qty) || 0) * 1000) / 1000;
+  if (unitType === "KG") {
+    if (n === 0.25) return "ربع كيلو";
+    if (n === 0.5) return "نص كيلو";
+    if (n === 0.75) return "¾ كيلو";
+    return `${n} كجم`;
+  }
+  if (unitType === "BOX") return `${n} علبة`;
+  if (unitType === "PORTION") return `${n} طبق`;
+  return `${n} قطعة`;
+}
+
+function getTomorrowCairoISO(): string {
+  try {
+    return new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Cairo" }).format(
+      new Date(Date.now() + 86400000)
+    );
+  } catch {
+    return new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+  }
+}
+
+function getHoursUntil(dateStr?: string | null): number | null {
+  if (!dateStr) return null;
+  const ms = new Date(dateStr).getTime() - Date.now();
+  if (Number.isNaN(ms)) return null;
+  return ms / 3600000;
 }
 
 // Fast Session Cache Reader (Zero Lag on Navigations between POS & Admin)
@@ -191,6 +233,12 @@ export default function AdminDashboardPage() {
   const [reservations, setReservations] = useState<any[]>(initialCache?.reservations || []);
   const [chatMessages, setChatMessages] = useState<any[]>(initialCache?.chatMessages || []);
   const [deliveryZones, setDeliveryZones] = useState<any[]>(initialCache?.deliveryZones || []);
+  const [drivers, setDrivers] = useState<any[]>(initialCache?.drivers || []);
+
+  // Inline Opening Cash Float Edit (Treasury Drawer)
+  const [editingAdminFloat, setEditingAdminFloat] = useState(false);
+  const [adminFloatInput, setAdminFloatInput] = useState("");
+  const [savingAdminFloat, setSavingAdminFloat] = useState(false);
 
   // Modals & Sliders
   const [showQRModal, setShowQRModal] = useState(false);
@@ -213,9 +261,17 @@ export default function AdminDashboardPage() {
   const [showPastryOpeningModal, setShowPastryOpeningModal] = useState(false);
   const [pastryOpeningValue, setPastryOpeningValue] = useState("");
 
-  // Abu Adel Pastry ERP States
+  // Abu Adel Pastry ERP & Daily Factory Sheet States
   const [pastryInventory, setPastryInventory] = useState<any[]>(initialCache?.pastryInventory || []);
-  const [pastrySubTab, setPastrySubTab] = useState<"cards" | "audit">("cards");
+  const [pastrySubTab, setPastrySubTab] = useState<"cards" | "audit" | "factory">("cards");
+  const [factoryDate, setFactoryDate] = useState<string>(() => getTomorrowCairoISO());
+  const [factoryData, setFactoryData] = useState<any>(null);
+  const [factoryLoading, setFactoryLoading] = useState(false);
+  const [factorySaving, setFactorySaving] = useState(false);
+  const [factoryApprovedEdits, setFactoryApprovedEdits] = useState<Record<string, string>>({});
+  const [factoryNotesInput, setFactoryNotesInput] = useState("");
+  const [factorySearchQuery, setFactorySearchQuery] = useState("");
+  const [editingMinStockMap, setEditingMinStockMap] = useState<Record<string, string>>({});
   const [pastryAuditCounts, setPastryAuditCounts] = useState<Record<string, string>>({});
   const [isSubmittingPastryAudit, setIsSubmittingPastryAudit] = useState(false);
   const [pastrySearchQuery, setPastrySearchQuery] = useState("");
@@ -298,13 +354,16 @@ export default function AdminDashboardPage() {
     { rawMaterialId: string; qtyRequired: number }[]
   >([]);
 
-  // Live Chat Reply Form
+  // Live Chat Reply Form & Image Support
   const [chatReplyText, setChatReplyText] = useState("");
   const [selectedChatTable, setSelectedChatTable] = useState<string>("ALL");
   const [selectedChatThread, setSelectedChatThread] = useState<string>("ALL");
   const [chatOutletFilter, setChatOutletFilter] = useState<string>("ALL");
+  const [adminChatImage, setAdminChatImage] = useState("");
+  const [uploadingAdminChatImage, setUploadingAdminChatImage] = useState(false);
+  const [previewAdminImage, setPreviewAdminImage] = useState<string | null>(null);
 
-  // Delivery Zones Management & Orders Filtering
+  // Delivery Zones & Dynamic Delivery Drivers Management + Orders Filtering
   const [showZonesManager, setShowZonesManager] = useState(false);
   const [editingZoneId, setEditingZoneId] = useState<string | null>(null);
   const [savingZone, setSavingZone] = useState(false);
@@ -315,10 +374,21 @@ export default function AdminDashboardPage() {
     estimatedTime: "45 - 60 دقيقة",
     sortOrder: "0",
   });
+  const [showDriversManager, setShowDriversManager] = useState(false);
+  const [editingDriverId, setEditingDriverId] = useState<string | null>(null);
+  const [savingDriver, setSavingDriver] = useState(false);
+  const [driverForm, setDriverForm] = useState({
+    name: "",
+    phone: "",
+    vehicleInfo: "موتوسيكل دليفري",
+    notes: "",
+  });
   const [orderZoneFilter, setOrderZoneFilter] = useState<string>("ALL");
   const [orderTypeFilter, setOrderTypeFilter] = useState<string>("ALL");
   const [orderStatusFilter, setOrderStatusFilter] = useState<string>("ALL");
+  const [orderScheduledFilter, setOrderScheduledFilter] = useState<"ALL" | "SCHEDULED" | "IMMEDIATE">("ALL");
   const [dispatchDriverNames, setDispatchDriverNames] = useState<Record<string, string>>({});
+  const [dispatchDriverIds, setDispatchDriverIds] = useState<Record<string, string>>({});
 
   // Reprint / View Order Receipt Modal
   const [selectedOrderForPrint, setSelectedOrderForPrint] = useState<any>(null);
@@ -423,6 +493,7 @@ export default function AdminDashboardPage() {
         chatRes,
         usersRes,
         zonesRes,
+        driversRes,
       ] = await Promise.all([
         fetch(currentUser?.role === "owner" ? "/api/recipes" : `/api/recipes${outletParam}`),
         fetch(currentUser?.role === "owner" ? "/api/menu" : `/api/menu${outletParam}`),
@@ -432,6 +503,7 @@ export default function AdminDashboardPage() {
         fetch(`/api/chat${outletParam}`),
         fetch("/api/users"),
         fetch("/api/delivery-zones?all=true"),
+        fetch("/api/drivers?includeStats=true"),
       ]);
 
       const [
@@ -443,6 +515,7 @@ export default function AdminDashboardPage() {
         chatData,
         usersData,
         zonesData,
+        driversData,
       ] = await Promise.all([
         recipesRes.json(),
         menuRes.json(),
@@ -452,6 +525,7 @@ export default function AdminDashboardPage() {
         chatRes.json(),
         usersRes.json(),
         zonesRes.json(),
+        driversRes.json(),
       ]);
 
       if (recipesData.success) setRawMaterials(recipesData.rawMaterials);
@@ -462,6 +536,7 @@ export default function AdminDashboardPage() {
       if (chatData.success) setChatMessages(chatData.messages);
       if (usersData?.success) setUsersList(usersData.users);
       if (zonesData?.success) setDeliveryZones(zonesData.zones);
+      if (driversData?.success) setDrivers(driversData.drivers || []);
 
       // Save complete snapshot to sessionStorage for instant 0ms restoration next time
       try {
@@ -482,6 +557,7 @@ export default function AdminDashboardPage() {
             chatMessages: chatData.success ? chatData.messages : [],
             usersList: usersData?.success ? usersData.users : [],
             deliveryZones: zonesData?.success ? zonesData.zones : [],
+            drivers: driversData?.success ? driversData.drivers : [],
           })
         );
       } catch {}
@@ -494,11 +570,41 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const fetchFactorySheet = async (targetDateVal = factoryDate) => {
+    try {
+      setFactoryLoading(true);
+      const res = await fetch(`/api/factory-orders?targetDate=${encodeURIComponent(targetDateVal)}`);
+      const data = await res.json();
+      if (data.success) {
+        setFactoryData(data);
+        setFactoryNotesInput(data.savedFactoryOrder?.notes || "");
+        const nextApproved: Record<string, string> = {};
+        (data.rows || []).forEach((r: any) => {
+          nextApproved[r.menuItemId] = String(r.approvedQty ?? r.suggestedQty ?? 0);
+        });
+        setFactoryApprovedEdits(nextApproved);
+        setEditingMinStockMap({});
+      } else {
+        addToast("error", data.error || "تعذر تحميل كشف طلبية المصنع");
+      }
+    } catch {
+      addToast("error", "تعذر الاتصال بخادم طلبية المصنع");
+    } finally {
+      setFactoryLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (currentUser) {
       fetchDashboardData();
     }
   }, [currentUser, selectedOutletId]);
+
+  useEffect(() => {
+    if (currentUser && activeTab === "pastry" && pastrySubTab === "factory") {
+      fetchFactorySheet(factoryDate);
+    }
+  }, [currentUser, activeTab, pastrySubTab, factoryDate]);
 
   // Active Outlet Info & Branch Isolation Helpers
   const activeOutlet = outlets.find((o) => o.id === selectedOutletId);
@@ -520,18 +626,18 @@ export default function AdminDashboardPage() {
   const isViewingAbuAdel = isUserAbuAdel || (isOwner && isAbuAdel);
   const isViewingAll = isOwner && (selectedOutletId === "ALL" || !selectedOutletId);
 
-  // KPIs Calculations
-  const totalSales = orders
-    .filter((o) => o.paymentStatus === "PAID")
-    .reduce((sum, o) => sum + (o.finalAmount || 0), 0);
+  // KPIs Calculations (Strictly Net Store Revenue: excludes Driver Delivery Fees & unpaid future scheduled bookings)
+  const paidOrders = orders.filter((o) => o.paymentStatus === "PAID" && o.status !== "CANCELLED");
 
-  const soulmateSales = orders
-    .filter((o) => o.paymentStatus === "PAID" && o.outlet?.code === "SOULMATE_CAFE")
-    .reduce((sum, o) => sum + (o.finalAmount || 0), 0);
+  const totalSales = paidOrders.reduce((sum, o) => sum + getStoreNet(o), 0);
 
-  const abuAdelSales = orders
-    .filter((o) => o.paymentStatus === "PAID" && o.outlet?.code === "ABU_ADEL_PATISSERIE")
-    .reduce((sum, o) => sum + (o.finalAmount || 0), 0);
+  const soulmateSales = paidOrders
+    .filter((o) => o.outlet?.code === "SOULMATE_CAFE")
+    .reduce((sum, o) => sum + getStoreNet(o), 0);
+
+  const abuAdelSales = paidOrders
+    .filter((o) => o.outlet?.code === "ABU_ADEL_PATISSERIE")
+    .reduce((sum, o) => sum + getStoreNet(o), 0);
 
   const totalExpenses = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
 
@@ -548,8 +654,8 @@ export default function AdminDashboardPage() {
     const sevenDaysAgo = startOfToday - 6 * 24 * 60 * 60 * 1000;
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
 
-    // 1. Filter Orders by Timeframe & Outlet
-    const filteredOrders = orders.filter((o) => {
+    // 1. Filter Orders by Timeframe & Outlet (separate unpaid future pre-orders)
+    const timeAndOutletOrders = orders.filter((o) => {
       if (o.status === "CANCELLED") return false;
       const orderTime = new Date(o.createdAt).getTime();
 
@@ -560,6 +666,21 @@ export default function AdminDashboardPage() {
       if (reportOutletFilter !== "ALL" && o.outletId !== reportOutletFilter) return false;
       return true;
     });
+
+    const filteredOrders = timeAndOutletOrders.filter(
+      (o) => !(o.isScheduled && o.paymentStatus !== "PAID")
+    );
+    const upcomingScheduledOrders = timeAndOutletOrders.filter(
+      (o) => o.isScheduled && o.paymentStatus !== "PAID"
+    );
+    const confirmedDepositsCollected = upcomingScheduledOrders.reduce(
+      (sum, o) => sum + (o.depositStatus === "CONFIRMED" ? Number(o.depositPaid) || 0 : 0),
+      0
+    );
+    const upcomingPreOrdersValue = upcomingScheduledOrders.reduce(
+      (sum, o) => sum + getStoreNet(o),
+      0
+    );
 
     // 2. Filter Expenses by Timeframe & Outlet
     const filteredExpenses = expenses.filter((e) => {
@@ -572,9 +693,9 @@ export default function AdminDashboardPage() {
       return true;
     });
 
-    // 3. Core Totals
-    const totalRevenue = filteredOrders.reduce((sum, o) => sum + (Number(o.finalAmount) || 0), 0);
-    const totalSubtotal = filteredOrders.reduce((sum, o) => sum + (Number(o.subtotal || o.finalAmount) || 0), 0);
+    // 3. Core Totals (Store Revenue separated cleanly from Driver Delivery Fees)
+    const totalRevenue = filteredOrders.reduce((sum, o) => sum + getStoreNet(o), 0);
+    const totalSubtotal = filteredOrders.reduce((sum, o) => sum + (Number(o.subtotal || getStoreNet(o)) || 0), 0);
     const totalDiscount = filteredOrders.reduce((sum, o) => sum + (Number(o.discountAmount) || 0), 0);
     const totalTips = filteredOrders.reduce((sum, o) => sum + (Number(o.tipAmount) || 0), 0);
     const totalDeliveryFees = filteredOrders.reduce((sum, o) => sum + (Number(o.deliveryFee) || 0), 0);
@@ -649,16 +770,17 @@ export default function AdminDashboardPage() {
 
     filteredOrders.forEach((o) => {
       const pm = (o.paymentMethod || "CASH").toUpperCase();
+      const netStore = getStoreNet(o);
       if (paymentMethods[pm]) {
-        paymentMethods[pm].amount += Number(o.finalAmount) || 0;
+        paymentMethods[pm].amount += netStore;
         paymentMethods[pm].count += 1;
       } else {
-        paymentMethods.CASH.amount += Number(o.finalAmount) || 0;
+        paymentMethods.CASH.amount += netStore;
         paymentMethods.CASH.count += 1;
       }
     });
 
-    // 6. Order Types Breakdown
+    // 6. Order Types Breakdown (Net Store Revenue)
     const orderTypes: Record<string, { label: string; amount: number; count: number }> = {
       DINE_IN: { label: "صالة الكافيه 🪑", amount: 0, count: 0 },
       TAKEAWAY: { label: "تيك أواي / بيع مباشر 🛍️", amount: 0, count: 0 },
@@ -668,12 +790,12 @@ export default function AdminDashboardPage() {
     filteredOrders.forEach((o) => {
       const ot = (o.orderType || "DINE_IN").toUpperCase();
       if (orderTypes[ot]) {
-        orderTypes[ot].amount += Number(o.finalAmount) || 0;
+        orderTypes[ot].amount += getStoreNet(o);
         orderTypes[ot].count += 1;
       }
     });
 
-    // 7. Branch Comparison
+    // 7. Branch Comparison (Net Store Revenue)
     const soulmateOrders = filteredOrders.filter(
       (o) => o.outlet?.code === "SOULMATE_CAFE" || o.outletId === outlets.find((x) => x.code === "SOULMATE_CAFE")?.id
     );
@@ -681,8 +803,8 @@ export default function AdminDashboardPage() {
       (o) => o.outlet?.code === "ABU_ADEL_PATISSERIE" || o.outletId === outlets.find((x) => x.code === "ABU_ADEL_PATISSERIE")?.id
     );
 
-    const soulmateRevenue = soulmateOrders.reduce((s, o) => s + (Number(o.finalAmount) || 0), 0);
-    const abuAdelRevenue = abuAdelOrders.reduce((s, o) => s + (Number(o.finalAmount) || 0), 0);
+    const soulmateRevenue = soulmateOrders.reduce((s, o) => s + getStoreNet(o), 0);
+    const abuAdelRevenue = abuAdelOrders.reduce((s, o) => s + getStoreNet(o), 0);
 
     const soulmateExpenses = filteredExpenses
       .filter((e) => e.outlet?.code === "SOULMATE_CAFE" || e.outletId === outlets.find((x) => x.code === "SOULMATE_CAFE")?.id)
@@ -724,6 +846,9 @@ export default function AdminDashboardPage() {
       soulmateExpenses,
       abuAdelExpenses,
       ordersCount: filteredOrders.length,
+      upcomingScheduledCount: upcomingScheduledOrders.length,
+      confirmedDepositsCollected,
+      upcomingPreOrdersValue,
     };
   }, [orders, expenses, menuItems, outlets, reportTimeframe, reportOutletFilter]);
 
@@ -735,8 +860,12 @@ export default function AdminDashboardPage() {
     csvContent += `الفرع,${reportOutletFilter === "ALL" ? "كافة الفروع" : outlets.find((o) => o.id === reportOutletFilter)?.name || ""}\n`;
     csvContent += `تاريخ التصدير,${new Date().toLocaleString("ar-EG")}\n\n`;
 
-    csvContent += "=== ملخص قائمة الدخل والأرباح ===\n";
-    csvContent += `إجمالي المبيعات,${data.totalRevenue.toFixed(2)} ج.م\n`;
+    csvContent += "=== ملخص قائمة الدخل والأرباح (صافي إيراد المحل بعد فصل رسوم الدليفري) ===\n";
+    csvContent += `صافي إيرادات المحل,${data.totalRevenue.toFixed(2)} ج.م\n`;
+    csvContent += `رسوم التوصيل المستحقة للطيارين (خارج الإيراد),${data.totalDeliveryFees.toFixed(2)} ج.م\n`;
+    if (data.upcomingScheduledCount > 0) {
+      csvContent += `عربون مؤكد لحجوزات قادمة (${data.upcomingScheduledCount} حجز),${data.confirmedDepositsCollected.toFixed(2)} ج.م\n`;
+    }
     csvContent += `تكلفة الخامات والمبيعات (COGS),${data.totalCOGS.toFixed(2)} ج.م\n`;
     csvContent += `مجمل الربح,${data.grossProfit.toFixed(2)} ج.م (${data.grossProfitMargin.toFixed(1)}%)\n`;
     csvContent += `المصروفات والنثريات,${data.totalExpensesAmount.toFixed(2)} ج.م\n`;
@@ -1425,8 +1554,8 @@ export default function AdminDashboardPage() {
           costPrice: parseFloat(pastryForm.costPrice) || 0,
           itemType: "READY_PASTRY",
           unitType: pastryForm.unitType,
-          stockQty: parseInt(pastryForm.stockQty) || 50,
-          minStockAlert: parseInt(pastryForm.minStockAlert) || 10,
+          stockQty: pastryForm.stockQty !== "" ? parseFloat(pastryForm.stockQty) : 0,
+          minStockAlert: pastryForm.minStockAlert !== "" ? parseFloat(pastryForm.minStockAlert) : 10,
           description: pastryForm.description,
           image: pastryForm.image,
         }),
@@ -1598,34 +1727,185 @@ export default function AdminDashboardPage() {
     }
   };
 
-  // Send Staff Reply to Customer / Table Chat
+  // Update Shift Opening Cash Float inline
+  const handleUpdateAdminOpeningFloat = async (shiftId: string) => {
+    const val = parseFloat(adminFloatInput);
+    if (isNaN(val) || val < 0) {
+      addToast("error", "برجاء إدخال مبلغ عهدة صحيح");
+      return;
+    }
+    try {
+      setSavingAdminFloat(true);
+      const res = await fetch("/api/shifts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "UPDATE_OPENING_FLOAT",
+          shiftId,
+          openingCashFloat: val,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast("success", `تم تحديث عهدة بداية الوردية إلى ${val} ج.م بنجاح ✅`);
+        setEditingAdminFloat(false);
+        fetchDashboardData();
+      } else {
+        addToast("error", data.error || "تعذر تحديث العهدة");
+      }
+    } catch {
+      addToast("error", "فشل الاتصال بالخادم");
+    } finally {
+      setSavingAdminFloat(false);
+    }
+  };
+
+  // Dynamic Delivery Drivers CRUD
+  const handleSaveDriver = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!driverForm.name.trim() || !driverForm.phone.trim()) {
+      addToast("error", "اسم الطيار ورقم الموبايل مطلوبان");
+      return;
+    }
+    try {
+      setSavingDriver(true);
+      const abuAdelOutletId =
+        outlets.find((o) => o.code === "ABU_ADEL_PATISSERIE")?.id ||
+        (selectedOutletId !== "ALL" ? selectedOutletId : outlets[0]?.id);
+      const res = await fetch("/api/drivers", {
+        method: editingDriverId ? "PATCH" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...(editingDriverId ? { id: editingDriverId } : {}),
+          name: driverForm.name.trim(),
+          phone: driverForm.phone.trim(),
+          vehicleInfo: driverForm.vehicleInfo.trim() || "موتوسيكل دليفري",
+          notes: driverForm.notes.trim() || null,
+          outletId: abuAdelOutletId,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast("success", editingDriverId ? "تم تحديث بيانات الطيار ✓" : "تمت إضافة الطيار بنجاح 🛵");
+        setEditingDriverId(null);
+        setDriverForm({ name: "", phone: "", vehicleInfo: "موتوسيكل دليفري", notes: "" });
+        fetchDashboardData();
+      } else {
+        addToast("error", data.error || "تعذر حفظ بيانات الطيار");
+      }
+    } catch {
+      addToast("error", "فشل حفظ بيانات الطيار");
+    } finally {
+      setSavingDriver(false);
+    }
+  };
+
+  const handleToggleDriverActive = async (driver: any) => {
+    try {
+      const res = await fetch("/api/drivers", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: driver.id, isActive: !driver.isActive }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast("success", `تم ${!driver.isActive ? "تفعيل" : "إيقاف"} الطيار ${driver.name}`);
+        fetchDashboardData();
+      }
+    } catch {
+      addToast("error", "فشل تحديث حالة الطيار");
+    }
+  };
+
+  const handleDeleteDriver = async (driver: any) => {
+    if (!window.confirm(`حذف الطيار "${driver.name}" من القائمة؟`)) return;
+    try {
+      const res = await fetch(`/api/drivers?id=${encodeURIComponent(driver.id)}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast("success", "تم حذف الطيار بنجاح");
+        fetchDashboardData();
+      } else {
+        addToast("error", data.error || "تعذر حذف الطيار");
+      }
+    } catch {
+      addToast("error", "فشل حذف الطيار");
+    }
+  };
+
+  // Admin Chat Image Upload
+  const handleUploadAdminChatImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setUploadingAdminChatImage(true);
+      const fd = new FormData();
+      fd.append("image", file);
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (data.success && data.url) {
+        setAdminChatImage(data.url);
+        addToast("success", "تم تجهيز الصورة للإرسال في الشات 📸");
+      } else {
+        addToast("error", data.error || "فشل رفع الصورة");
+      }
+    } catch {
+      addToast("error", "حدث خطأ أثناء رفع صورة الشات");
+    } finally {
+      setUploadingAdminChatImage(false);
+      e.target.value = "";
+    }
+  };
+
+  // Send Staff Reply to Customer / Table Chat (2-way sync fix + image support)
   const handleSendStaffChatReply = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!chatReplyText.trim()) return;
+    if (!chatReplyText.trim() && !adminChatImage) return;
 
     try {
-      const threadMsgs = chatMessages.filter((m) => {
+      const scopedMsgs = chatMessages.filter((m) => {
+        if (isUserSoulmate && m.outlet?.code !== "SOULMATE_CAFE") return false;
+        if (isUserAbuAdel && m.outlet?.code !== "ABU_ADEL_PATISSERIE") return false;
+        if (!isViewingAll && selectedOutletId !== "ALL" && m.outletId !== selectedOutletId) return false;
+        if (chatOutletFilter !== "ALL" && m.outletId !== chatOutletFilter) return false;
+        return true;
+      });
+
+      const threadMsgs = scopedMsgs.filter((m) => {
         if (selectedChatThread === "ALL") return false;
         if (selectedChatThread.startsWith("PHONE:")) return m.senderPhone === selectedChatThread.slice(6);
+        if (selectedChatThread.startsWith("GUEST:")) return m.guestId === selectedChatThread.slice(6);
         if (selectedChatThread.startsWith("TABLE:")) return m.tableNumber === selectedChatThread.slice(6);
         return false;
       });
-      const lastThreadMsg = threadMsgs[threadMsgs.length - 1];
+
+      // If Admin is on "ALL", automatically target the latest active customer conversation so the reply reaches the customer!
+      const latestCustomerMsg = [...scopedMsgs]
+        .reverse()
+        .find((m) => m.senderType === "CUSTOMER" && (m.senderPhone || m.guestId || m.tableNumber));
+
+      const targetMsg = threadMsgs[threadMsgs.length - 1] || latestCustomerMsg;
 
       const targetOutlet =
-        lastThreadMsg?.outletId ||
+        targetMsg?.outletId ||
         (chatOutletFilter !== "ALL" ? chatOutletFilter : null) ||
         (selectedOutletId !== "ALL" ? selectedOutletId : outlets[0]?.id);
 
       const senderPhone = selectedChatThread.startsWith("PHONE:")
         ? selectedChatThread.slice(6)
-        : lastThreadMsg?.senderPhone || null;
+        : targetMsg?.senderPhone || null;
+
+      const guestId = selectedChatThread.startsWith("GUEST:")
+        ? selectedChatThread.slice(6)
+        : targetMsg?.guestId || null;
 
       const tableNumber = selectedChatThread.startsWith("TABLE:")
         ? selectedChatThread.slice(6)
         : selectedChatTable !== "ALL"
         ? selectedChatTable
-        : null;
+        : targetMsg?.tableNumber || null;
 
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -1635,20 +1915,238 @@ export default function AdminDashboardPage() {
           senderType: "STAFF",
           senderName: currentUser?.name || "إدارة المحل / خدمة العملاء",
           senderPhone,
+          guestId,
           tableNumber,
-          message: chatReplyText.trim(),
+          message: chatReplyText.trim() || "📎 مرفق صورة",
+          imageUrl: adminChatImage || null,
         }),
       });
 
       const data = await res.json();
       if (data.success) {
         setChatReplyText("");
-        addToast("success", "تم إرسال الرد المباشر للعميل بنجاح 👍");
+        setAdminChatImage("");
+        if (selectedChatThread === "ALL" && targetMsg) {
+          if (targetMsg.senderPhone) setSelectedChatThread(`PHONE:${targetMsg.senderPhone}`);
+          else if (targetMsg.guestId) setSelectedChatThread(`GUEST:${targetMsg.guestId}`);
+          else if (targetMsg.tableNumber) setSelectedChatThread(`TABLE:${targetMsg.tableNumber}`);
+        }
+        addToast(
+          "success",
+          senderPhone
+            ? `تم إرسال الرد المباشر للعميل (${senderPhone}) بنجاح 💬✅`
+            : "تم إرسال الرد المباشر بنجاح 👍"
+        );
         fetchDashboardData();
       }
     } catch {
       addToast("error", "فشل إرسال الرد");
     }
+  };
+
+  // Send 48h/24h Pre-Order Alert to Customer via Chat + Mark Flag
+  const handleSendPreOrderAlertChat = async (order: any, hoursLeft: number) => {
+    const phone = order.deliveryPhone || order.customerPhone;
+    const whenText = order.scheduledFor
+      ? new Date(order.scheduledFor).toLocaleString("ar-EG", {
+          weekday: "long",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : "الموعد المحدد";
+    const remainingWindow = hoursLeft <= 24 ? "أقل من 24 ساعة" : "أقل من 48 ساعة";
+    const depositPart =
+      order.depositStatus === "CONFIRMED"
+        ? `تم تأكيد عربون الحجز (${order.depositPaid || order.depositRequired} ج.م).`
+        : Number(order.depositRequired) > 0
+        ? `يرجى تأكيد الحجز بسداد العربون (${order.depositRequired} ج.م) عبر إنستاباي (${settings?.instapayAccount || "غير محدد"}) أو فودافون كاش (${settings?.vodafoneCashNumber || "غير محدد"}) وإرسال صورة الإيصال هنا حتى نبدأ التجهيز من المصنع.`
+        : "طلبك مجدول للتجهيز في المعمل.";
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          outletId: order.outletId,
+          senderType: "STAFF",
+          senderName: currentUser?.name || "إدارة حجوزات أبو عادل",
+          senderPhone: phone || null,
+          message: `🔔 تذكير حجز رقم ${order.orderNumber}: متبقي ${remainingWindow} على موعدك (${whenText}). ${depositPart}`,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        await fetch("/api/orders", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "MARK_ALERT_SENT",
+            orderId: order.id,
+            ...(hoursLeft <= 24 ? { alertSent24h: true } : { alertSent48h: true }),
+          }),
+        });
+        addToast("success", `تم إرسال تنبيه الشات للعميل للحجز ${order.orderNumber} 🔔✅`);
+        fetchDashboardData();
+      } else {
+        addToast("error", data.error || "تعذر إرسال التنبيه");
+      }
+    } catch {
+      addToast("error", "حدث خطأ أثناء إرسال التنبيه");
+    }
+  };
+
+  // Factory Procurement Order Handlers
+  const handleSaveFactorySheet = async (status: "DRAFT" | "SENT_TO_FACTORY") => {
+    if (!factoryData?.rows) return;
+    try {
+      setFactorySaving(true);
+      const rows = factoryData.rows.map((r: any) => ({
+        menuItemId: r.menuItemId,
+        currentStock: r.currentStock,
+        minStockLevel: r.minStockLevel,
+        shortageQty: r.shortageQty,
+        preOrderQty: r.confirmedPreOrderQty,
+        suggestedQty: r.suggestedQty,
+        approvedQty: Math.max(
+          0,
+          parseFloat(factoryApprovedEdits[r.menuItemId] ?? String(r.approvedQty ?? r.suggestedQty ?? 0)) || 0
+        ),
+        notes: r.notes || "",
+      }));
+      const res = await fetch("/api/factory-orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "SAVE_SHEET",
+          outletId: factoryData.outletId,
+          targetDate: factoryDate,
+          status,
+          createdBy: currentUser?.name || "المدير العام",
+          notes: factoryNotesInput,
+          rows,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast(
+          "success",
+          status === "SENT_TO_FACTORY"
+            ? `تم اعتماد وإرسال طلبية المصنع ليوم ${factoryDate} بنجاح 📤🏭`
+            : `تم حفظ مسودة طلبية المصنع ليوم ${factoryDate} 💾`
+        );
+        await fetchFactorySheet(factoryDate);
+      } else {
+        addToast("error", data.error || "تعذر حفظ طلبية المصنع");
+      }
+    } catch {
+      addToast("error", "فشل حفظ طلبية المصنع");
+    } finally {
+      setFactorySaving(false);
+    }
+  };
+
+  const handleUpdateMinStock = async (menuItemId: string) => {
+    const raw = editingMinStockMap[menuItemId];
+    if (raw === undefined) return;
+    const minVal = parseFloat(raw);
+    if (isNaN(minVal) || minVal < 0) {
+      addToast("error", "أدخل حد أمان صحيح (0 أو أكثر)");
+      return;
+    }
+    try {
+      const res = await fetch("/api/factory-orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "UPDATE_MIN_STOCK",
+          menuItemId,
+          minStockAlert: minVal,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast("success", "تم تحديث حد الأمان وإعادة حساب النواقص ✅");
+        await Promise.all([fetchFactorySheet(factoryDate), fetchDashboardData()]);
+      } else {
+        addToast("error", data.error || "فشل التحديث");
+      }
+    } catch {
+      addToast("error", "فشل الاتصال بالخادم");
+    }
+  };
+
+  const handleReceiveFromFactory = async () => {
+    if (!factoryData?.savedFactoryOrder?.id) {
+      addToast("error", "احفظ أو اعتمد الطلبية أولاً قبل استلامها للمخزن");
+      return;
+    }
+    if (
+      !window.confirm(
+        `هل استلمت بضاعة طلبية المصنع ليوم ${factoryDate} بالفعل؟ سيتم إضافة الكميات المعتمدة (${factoryData.savedFactoryOrder.items?.filter((i: any) => i.approvedQty > 0).length || 0} صنف) لرصيد المخزن الآن.`
+      )
+    ) {
+      return;
+    }
+    try {
+      setFactorySaving(true);
+      const res = await fetch("/api/factory-orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "RECEIVE_FROM_FACTORY",
+          factoryOrderId: factoryData.savedFactoryOrder.id,
+          createdBy: currentUser?.name || "أمين المخزن",
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast("success", "تم استلام بضاعة المصنع وإضافتها لأرصدة المخزن بنجاح 📦🎉");
+        await Promise.all([fetchFactorySheet(factoryDate), fetchDashboardData()]);
+      } else {
+        addToast("error", data.error || "تعذر استلام الطلبية");
+      }
+    } catch {
+      addToast("error", "فشل استلام الطلبية");
+    } finally {
+      setFactorySaving(false);
+    }
+  };
+
+  const handlePrintFactorySheet = () => {
+    if (!factoryData?.rows) return;
+    const rowsToPrint = factoryData.rows.filter((r: any) => {
+      const qty = parseFloat(factoryApprovedEdits[r.menuItemId] ?? String(r.approvedQty ?? 0)) || 0;
+      return qty > 0 || r.shortageQty > 0 || r.confirmedPreOrderQty > 0;
+    });
+    const printWin = window.open("", "_blank", "width=850,height=900");
+    if (!printWin) return;
+    const tableRows = rowsToPrint
+      .map((r: any, i: number) => {
+        const qty = parseFloat(factoryApprovedEdits[r.menuItemId] ?? String(r.approvedQty ?? 0)) || 0;
+        return `<tr>
+          <td>${i + 1}</td>
+          <td><strong>${r.nameAr}</strong></td>
+          <td>${r.unitType === "KG" ? "كجم" : r.unitType === "BOX" ? "علبة" : "قطعة"}</td>
+          <td>${r.currentStock}</td>
+          <td>${r.minStockLevel}</td>
+          <td>${r.shortageQty}</td>
+          <td>${r.confirmedPreOrderQty}</td>
+          <td style="font-weight:bold;background:#fef3c7;">${qty}</td>
+        </tr>`;
+      })
+      .join("");
+    printWin.document.write(`<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>طلبية مصنع أبو عادل - ${factoryDate}</title>
+      <style>body{font-family:Tahoma,Arial,sans-serif;padding:24px;color:#111}h2{margin:0 0 6px}table{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px}th,td{border:1px solid #ccc;padding:6px 8px;text-align:right}th{background:#f3f4f6}</style>
+      </head><body>
+      <h2>كشف طلبية المعمل والمصنع — حلواني أبو عادل</h2>
+      <div>التاريخ المستهدف للتسليم: <strong>${factoryDate}</strong> • مسؤول الإدارة: ${currentUser?.name || "الإدارة"}</div>
+      ${factoryNotesInput ? `<p><strong>ملاحظات:</strong> ${factoryNotesInput}</p>` : ""}
+      <table><thead><tr><th>#</th><th>الصنف</th><th>الوحدة</th><th>الرصيد الحالي</th><th>حد الأمان</th><th>العجز</th><th>حجوزات مؤكدة</th><th>المطلوب المعتمد</th></tr></thead>
+      <tbody>${tableRows || '<tr><td colspan="8">لا توجد أصناف مطلوبة</td></tr>'}</tbody></table>
+      <script>window.onload=()=>{window.print();}</script></body></html>`);
+    printWin.document.close();
   };
 
   // Update Settings
@@ -2009,16 +2507,16 @@ export default function AdminDashboardPage() {
                   ).toLocaleString()}{" "}
                   <span className="text-xs text-slate-400 font-normal">ج.م</span>
                 </div>
-                <div className="text-[11px] text-slate-400 mt-2 flex items-center gap-1">
+                <div className="text-[11px] text-slate-400 mt-2 flex items-center gap-1 flex-wrap">
                   <span className="text-emerald-400 font-bold">
                     {(isViewingSoulmate && !isViewingAll
-                      ? orders.filter((o) => o.outlet?.code === "SOULMATE_CAFE" || o.outletId === outlets.find((x) => x.code === "SOULMATE_CAFE")?.id)
+                      ? paidOrders.filter((o) => o.outlet?.code === "SOULMATE_CAFE" || o.outletId === outlets.find((x) => x.code === "SOULMATE_CAFE")?.id)
                       : isViewingAbuAdel && !isViewingAll
-                      ? orders.filter((o) => o.outlet?.code === "ABU_ADEL_PATISSERIE" || o.outletId === outlets.find((x) => x.code === "ABU_ADEL_PATISSERIE")?.id)
-                      : orders
-                    ).length} طلب
+                      ? paidOrders.filter((o) => o.outlet?.code === "ABU_ADEL_PATISSERIE" || o.outletId === outlets.find((x) => x.code === "ABU_ADEL_PATISSERIE")?.id)
+                      : paidOrders
+                    ).length} طلب مسدد
                   </span>
-                  <span>مسجل ومسدد</span>
+                  <span>(صافي المحل بعد فصل الدليفري)</span>
                 </div>
               </div>
 
@@ -2489,9 +2987,50 @@ export default function AdminDashboardPage() {
                       <div className="text-3xl font-black text-amber-400 font-mono">
                         {(shiftData?.liveStats?.expectedCash ?? shiftData?.expectedCash ?? 0).toLocaleString()} <span className="text-sm font-normal text-slate-400">ج.م</span>
                       </div>
-                      <div className="text-[10px] text-slate-400 mt-1">
-                        (فكة افتتاحية {shiftData?.openShift?.openingCashFloat || shiftData?.shift?.openingCashFloat || 500} ج.م + كاش مبيعات - نثريات)
+                      <div className="text-[10px] text-slate-400 mt-1 flex items-center justify-center gap-1.5 flex-wrap">
+                        <span>
+                          (عهدة فكة بداية الوردية: <strong className="text-white font-mono">{shiftData?.openShift?.openingCashFloat ?? shiftData?.shift?.openingCashFloat ?? 0}</strong> ج.م + كاش مبيعات - نثريات)
+                        </span>
+                        {(shiftData?.openShift?.id || shiftData?.shift?.id) && !editingAdminFloat && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setAdminFloatInput(String(shiftData?.openShift?.openingCashFloat ?? shiftData?.shift?.openingCashFloat ?? 0));
+                              setEditingAdminFloat(true);
+                            }}
+                            className="text-amber-400 hover:text-amber-300 underline font-bold"
+                          >
+                            ✏️ تعديل العهدة
+                          </button>
+                        )}
                       </div>
+                      {editingAdminFloat && (shiftData?.openShift?.id || shiftData?.shift?.id) && (
+                        <div className="mt-2 flex items-center justify-center gap-1.5">
+                          <input
+                            type="number"
+                            min="0"
+                            step="any"
+                            value={adminFloatInput}
+                            onChange={(e) => setAdminFloatInput(e.target.value)}
+                            className="w-24 bg-slate-900 border border-amber-500/50 rounded-lg px-2 py-1 text-xs text-white font-mono text-center"
+                          />
+                          <button
+                            type="button"
+                            disabled={savingAdminFloat}
+                            onClick={() => handleUpdateAdminOpeningFloat(shiftData?.openShift?.id || shiftData?.shift?.id)}
+                            className="px-2.5 py-1 rounded-lg bg-amber-500 text-black text-[10px] font-black"
+                          >
+                            {savingAdminFloat ? "..." : "حفظ"}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setEditingAdminFloat(false)}
+                            className="px-2 py-1 rounded-lg bg-slate-800 text-slate-300 text-[10px]"
+                          >
+                            إلغاء
+                          </button>
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -2505,33 +3044,48 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-slate-800">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-6 pt-6 border-t border-slate-800">
                     <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-                      <div className="text-[11px] text-slate-400">مقبوضات كاش (نقدي)</div>
+                      <div className="text-[11px] text-slate-400">مقبوضات كاش (المحل)</div>
                       <div className="text-lg font-bold text-emerald-400 font-mono mt-1">
                         {(shiftData?.liveStats?.cashCollected ?? shiftData?.cashCollected ?? 0).toLocaleString()} ج.م
                       </div>
                     </div>
 
                     <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-                      <div className="text-[11px] text-slate-400">مقبوضات فيزا / كروت</div>
+                      <div className="text-[11px] text-slate-400">فيزا / كروت (المحل)</div>
                       <div className="text-lg font-bold text-blue-400 font-mono mt-1">
                         {(shiftData?.liveStats?.visaCollected ?? shiftData?.visaCollected ?? 0).toLocaleString()} ج.م
                       </div>
                     </div>
 
                     <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-                      <div className="text-[11px] text-slate-400">إنستاباي (InstaPay)</div>
+                      <div className="text-[11px] text-slate-400">إنستاباي (المحل)</div>
                       <div className="text-lg font-bold text-purple-400 font-mono mt-1">
                         {(shiftData?.liveStats?.instapayCollected ?? shiftData?.instapayCollected ?? 0).toLocaleString()} ج.م
                       </div>
                     </div>
 
                     <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-                      <div className="text-[11px] text-slate-400">إجمالي المصروفات والنثريات</div>
+                      <div className="text-[11px] text-slate-400">فودافون كاش (المحل)</div>
+                      <div className="text-lg font-bold text-pink-400 font-mono mt-1">
+                        {(shiftData?.liveStats?.vodafoneCollected ?? shiftData?.vodafoneCollected ?? 0).toLocaleString()} ج.م
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                      <div className="text-[11px] text-slate-400">المصروفات والنثريات</div>
                       <div className="text-lg font-bold text-rose-400 font-mono mt-1">
                         {(shiftData?.liveStats?.expensesTotal ?? shiftData?.expensesTotal ?? 0).toLocaleString()} ج.م
                       </div>
+                    </div>
+
+                    <div className="bg-sky-950/30 p-3 rounded-xl border border-sky-500/30">
+                      <div className="text-[11px] text-sky-300 font-bold">🛵 رسوم الدليفري (للطيارين)</div>
+                      <div className="text-lg font-black text-sky-400 font-mono mt-1">
+                        {(shiftData?.liveStats?.deliveryFeesTotal ?? shiftData?.deliveryFeesTotal ?? 0).toLocaleString()} ج.م
+                      </div>
+                      <div className="text-[9px] text-slate-400 mt-0.5">مفصولة عن إيراد المحل</div>
                     </div>
                   </div>
                 </div>
@@ -2723,21 +3277,10 @@ export default function AdminDashboardPage() {
                         </div>
                       </div>
 
-                      {/* Delivery Fees */}
-                      <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
-                        <div className="flex items-center gap-2 text-slate-300">
-                          <span className="text-slate-500 font-mono">3.</span>
-                          <span>(+) رسوم وخدمات التوصيل الدليفري</span>
-                        </div>
-                        <div className="font-mono font-bold text-slate-300">
-                          + {filteredReportData.totalDeliveryFees.toFixed(2)} ج.م
-                        </div>
-                      </div>
-
                       {/* Tips */}
                       <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
                         <div className="flex items-center gap-2 text-slate-300">
-                          <span className="text-slate-500 font-mono">4.</span>
+                          <span className="text-slate-500 font-mono">3.</span>
                           <span>(+) إكراميات وتيبس الباريستا</span>
                         </div>
                         <div className="font-mono font-bold text-slate-300">
@@ -2745,15 +3288,43 @@ export default function AdminDashboardPage() {
                         </div>
                       </div>
 
-                      {/* Net Revenue */}
+                      {/* Net Revenue (Store Only) */}
                       <div className="flex items-center justify-between py-3 px-4 rounded-xl bg-emerald-950/40 border border-emerald-500/40">
-                        <div className="flex items-center gap-2 font-black text-emerald-400 text-sm">
-                          <span>(=) صافي إيرادات المبيعات المحصلة (Net Revenue)</span>
+                        <div>
+                          <div className="flex items-center gap-2 font-black text-emerald-400 text-sm">
+                            <span>(=) صافي إيرادات مبيعات المحل الفعلية (Net Store Revenue)</span>
+                          </div>
+                          <div className="text-[10px] text-emerald-300/80 mt-0.5">
+                            تم فصل رسوم الدليفري بالكامل لأنها مستحق مالي خاص بعمال التوصيل فقط
+                          </div>
                         </div>
                         <div className="font-mono font-black text-emerald-400 text-base">
                           {filteredReportData.totalRevenue.toFixed(2)} ج.م
                         </div>
                       </div>
+
+                      {/* Separated Driver Delivery Fees Info Row */}
+                      <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-sky-950/30 border border-sky-500/30">
+                        <div className="flex items-center gap-2 text-sky-300">
+                          <Truck className="w-3.5 h-3.5 text-sky-400" />
+                          <span>مذكرة: إجمالي رسوم التوصيل المحصلة لصالح الطيارين (خارج إيراد المحل)</span>
+                        </div>
+                        <div className="font-mono font-bold text-sky-300">
+                          {filteredReportData.totalDeliveryFees.toFixed(2)} ج.م
+                        </div>
+                      </div>
+
+                      {filteredReportData.upcomingScheduledCount > 0 && (
+                        <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-amber-950/30 border border-amber-500/30">
+                          <div className="flex items-center gap-2 text-amber-300">
+                            <Calendar className="w-3.5 h-3.5 text-amber-400" />
+                            <span>حجوزات قادمة ({filteredReportData.upcomingScheduledCount} حجز بقيمة {filteredReportData.upcomingPreOrdersValue.toFixed(0)} ج) — عربون مؤكد:</span>
+                          </div>
+                          <div className="font-mono font-bold text-amber-300">
+                            {filteredReportData.confirmedDepositsCollected.toFixed(2)} ج.م
+                          </div>
+                        </div>
+                      )}
 
                       {/* COGS */}
                       <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
@@ -3190,14 +3761,74 @@ export default function AdminDashboardPage() {
                           {filteredReportData.totalTips.toFixed(1)} ج.م
                         </span>
                       </div>
-                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
-                        <span className="text-slate-400">رسوم التوصيل المحصلة:</span>
-                        <span className="font-mono font-bold text-sky-400">
+                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-sky-950/30 border border-sky-500/30">
+                        <span className="text-sky-300 font-bold">🛵 رسوم التوصيل (مستحق الطيارين — خارج الإيراد):</span>
+                        <span className="font-mono font-black text-sky-400">
                           {filteredReportData.totalDeliveryFees.toFixed(1)} ج.م
                         </span>
                       </div>
                     </div>
                   </div>
+                </div>
+
+                {/* Delivery Drivers Dues & Reconciliation Table */}
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
+                  <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
+                    <div>
+                      <h3 className="text-sm font-black text-white flex items-center gap-2">
+                        <Truck className="w-4 h-4 text-sky-400" />
+                        <span>حسابات ومستحقات عمال التوصيل / الطيارين (مفصولة عن إيراد المحل)</span>
+                      </h3>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        يوضح مستحقات كل طيار من رسوم التوصيل مقابل صافي الكاش المطلوب توريده لخزينة المحل
+                      </p>
+                    </div>
+                  </div>
+                  {drivers.length === 0 ? (
+                    <div className="text-xs text-slate-500 py-6 text-center bg-slate-950/40 rounded-xl border border-slate-800">
+                      لم تتم إضافة طيارين بعد — أضف بيانات الطيارين (الاسم والموبايل) من تبويب سجل الطلبات والدليفري
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-right text-xs">
+                        <thead className="bg-slate-950/70 text-slate-400 border-b border-slate-800">
+                          <tr>
+                            <th className="py-2.5 px-3">اسم الطيار</th>
+                            <th className="py-2.5 px-3">رقم الموبايل</th>
+                            <th className="py-2.5 px-3">الرحلات (الكل / نشط)</th>
+                            <th className="py-2.5 px-3 text-sky-400">مستحق التوصيل للطيار 🛵</th>
+                            <th className="py-2.5 px-3 text-emerald-400">صافي المبيعات المطلوب للمحل 💰</th>
+                            <th className="py-2.5 px-3">إجمالي التحصيل من العملاء</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-800 font-mono">
+                          {drivers.map((drv) => (
+                            <tr key={drv.id} className="hover:bg-slate-800/40">
+                              <td className="py-2.5 px-3 font-sans font-bold text-white">{drv.name}</td>
+                              <td className="py-2.5 px-3 text-amber-300">{drv.phone}</td>
+                              <td className="py-2.5 px-3 text-slate-300">
+                                {drv.stats?.totalTrips ?? 0} طلب
+                                {Number(drv.stats?.activeOrdersCount) > 0 && (
+                                  <span className="mr-1.5 text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-sans">
+                                    {drv.stats.activeOrdersCount} بالطريق
+                                  </span>
+                                )}
+                              </td>
+                              <td className="py-2.5 px-3 font-black text-sky-400">
+                                {(drv.stats?.totalDeliveryFeesDue ?? 0).toLocaleString()} ج.م
+                              </td>
+                              <td className="py-2.5 px-3 font-black text-emerald-400">
+                                {(drv.stats?.storeNetFromDriver ?? 0).toLocaleString()} ج.م
+                              </td>
+                              <td className="py-2.5 px-3 text-slate-300">
+                                {(drv.stats?.totalCashToCollectFromCustomer ?? 0).toLocaleString()} ج.م
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -4120,9 +4751,22 @@ export default function AdminDashboardPage() {
                   <Scale className="w-4 h-4" />
                   <span>الجرد المقارن الفوري لحلويات أبو عادل</span>
                 </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPastrySubTab("factory")}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                    pastrySubTab === "factory"
+                      ? "bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 font-black"
+                      : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                  }`}
+                >
+                  <ClipboardCheck className="w-4 h-4" />
+                  <span>طلبية المصنع اليومية (النواقص + الحجوزات) 🏭</span>
+                </button>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 {pastrySubTab === "cards" && (
                   <button
                     onClick={() => setShowPastryModal(true)}
@@ -4153,6 +4797,54 @@ export default function AdminDashboardPage() {
                       <ClipboardCheck className="w-4 h-4" />
                       <span>{isSubmittingPastryAudit ? "جاري التسوية..." : "اعتماد وتسوية محضر الجرد 📋✅"}</span>
                     </button>
+                  </>
+                )}
+
+                {pastrySubTab === "factory" && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => fetchFactorySheet(factoryDate)}
+                      disabled={factoryLoading}
+                      className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3 py-2 rounded-xl text-xs border border-slate-700 transition"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${factoryLoading ? "animate-spin" : ""}`} />
+                      <span>تحديث الحسبة</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handlePrintFactorySheet}
+                      className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold px-3 py-2 rounded-xl text-xs border border-slate-700 transition"
+                    >
+                      <Printer className="w-3.5 h-3.5" />
+                      <span>طباعة الكشف 🖨️</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSaveFactorySheet("DRAFT")}
+                      disabled={factorySaving || factoryData?.savedFactoryOrder?.status === "RECEIVED"}
+                      className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white font-bold px-3.5 py-2 rounded-xl text-xs transition"
+                    >
+                      <span>💾 حفظ مسودة</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSaveFactorySheet("SENT_TO_FACTORY")}
+                      disabled={factorySaving || factoryData?.savedFactoryOrder?.status === "RECEIVED"}
+                      className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-lg transition"
+                    >
+                      <span>{factorySaving ? "جاري الحفظ..." : "اعتماد وإرسال للمصنع 📤🏭"}</span>
+                    </button>
+                    {factoryData?.savedFactoryOrder && factoryData.savedFactoryOrder.status !== "RECEIVED" && (
+                      <button
+                        type="button"
+                        onClick={handleReceiveFromFactory}
+                        disabled={factorySaving}
+                        className="flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-lg transition"
+                      >
+                        <span>📦 استلام وإضافة للمخزن</span>
+                      </button>
+                    )}
                   </>
                 )}
               </div>
@@ -4545,6 +5237,333 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
             )}
+
+            {/* SUB-TAB 3: DYNAMIC DAILY FACTORY PROCUREMENT SHEET (SHORTAGES + SCHEDULED PRE-ORDERS) */}
+            {pastrySubTab === "factory" && (
+              <div className="space-y-5">
+                {/* Summary Banner & Controls */}
+                <div className="bg-amber-950/20 border border-amber-500/30 rounded-2xl p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                  <div className="text-xs space-y-1">
+                    <h4 className="font-black text-amber-300 text-sm flex items-center gap-2">
+                      <span>🏭 كشف طلبية المصنع اليومية الديناميكي (النواقص + حجوزات العملاء المؤكدة)</span>
+                      {factoryData?.savedFactoryOrder?.status && (
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                            factoryData.savedFactoryOrder.status === "RECEIVED"
+                              ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                              : factoryData.savedFactoryOrder.status === "SENT_TO_FACTORY"
+                              ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                              : "bg-blue-500/20 text-blue-300 border-blue-500/40"
+                          }`}
+                        >
+                          {factoryData.savedFactoryOrder.status === "RECEIVED"
+                            ? "✔️ تم الاستلام والتوريد للمخزن"
+                            : factoryData.savedFactoryOrder.status === "SENT_TO_FACTORY"
+                            ? "📤 مرسلة ومعتمدة للمصنع"
+                            : "💾 مسودة محفوظة"}
+                        </span>
+                      )}
+                    </h4>
+                    <p className="text-slate-300 leading-relaxed">
+                      يحسب تلقائياً: <strong>نواقص المخزن</strong> (`حد الأمان - الرصيد الحالي`) + <strong>كميات الحجوزات المؤكدة بعربون</strong> ليوم التسليم المحدد. يمكن للمدير تعديل أي كمية أو تعديل حد الأمان قبل الإرسال للمصنع.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-3 flex-wrap text-xs">
+                    <div>
+                      <label className="block text-[10px] text-slate-400 mb-1">تاريخ التسليم المطلوب من المصنع</label>
+                      <input
+                        type="date"
+                        value={factoryDate}
+                        onChange={(e) => setFactoryDate(e.target.value)}
+                        className="bg-slate-950 border border-amber-500/40 rounded-xl px-3 py-2 text-xs text-amber-300 font-mono font-bold focus:outline-none"
+                      />
+                    </div>
+                    <div className="min-w-[200px]">
+                      <label className="block text-[10px] text-slate-400 mb-1">بحث في أصناف الكشف</label>
+                      <input
+                        type="text"
+                        placeholder="ابحث باسم الصنف..."
+                        value={factorySearchQuery}
+                        onChange={(e) => setFactorySearchQuery(e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Manager Notes & Totals Strip */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 bg-slate-900 border border-slate-800 rounded-2xl p-4 text-xs">
+                  <div className="lg:col-span-6">
+                    <label className="block text-[11px] text-slate-400 font-bold mb-1">ملاحظات الإدارة للمصنع / المعمل</label>
+                    <input
+                      type="text"
+                      placeholder="مثال: يراعى تجهيز التورت قبل الساعة 11 صباحاً..."
+                      value={factoryNotesInput}
+                      onChange={(e) => setFactoryNotesInput(e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500"
+                    />
+                  </div>
+                  <div className="lg:col-span-2 bg-slate-950/70 border border-slate-800 rounded-xl p-2.5 text-center">
+                    <div className="text-[10px] text-slate-400">أصناف بها عجز</div>
+                    <div className="text-lg font-black font-mono text-rose-400 mt-0.5">
+                      {(factoryData?.rows || []).filter((r: any) => r.shortageQty > 0).length}
+                    </div>
+                  </div>
+                  <div className="lg:col-span-2 bg-slate-950/70 border border-slate-800 rounded-xl p-2.5 text-center">
+                    <div className="text-[10px] text-slate-400">حجوزات اليوم المحدد</div>
+                    <div className="text-lg font-black font-mono text-amber-400 mt-0.5">
+                      {(factoryData?.scheduledOrders || []).length}
+                    </div>
+                  </div>
+                  <div className="lg:col-span-2 bg-slate-950/70 border border-emerald-500/30 rounded-xl p-2.5 text-center">
+                    <div className="text-[10px] text-slate-400">أصناف مطلوبة بالكشف</div>
+                    <div className="text-lg font-black font-mono text-emerald-400 mt-0.5">
+                      {(factoryData?.rows || []).filter((r: any) => (parseFloat(factoryApprovedEdits[r.menuItemId] ?? String(r.approvedQty ?? 0)) || 0) > 0).length}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Editable Procurement Table */}
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-xs">
+                      <thead className="bg-slate-950 text-slate-300 border-b border-slate-800">
+                        <tr>
+                          <th className="py-3 px-3">الصنف والوحدة</th>
+                          <th className="py-3 px-2">الرصيد الحالي</th>
+                          <th className="py-3 px-2">حد الأمان (تعديل)</th>
+                          <th className="py-3 px-2 text-rose-400">العجز عن الحد</th>
+                          <th className="py-3 px-2 text-amber-400">حجوزات مؤكدة 📅</th>
+                          <th className="py-3 px-2 text-sky-400">المقترح الكلي</th>
+                          <th className="py-3 px-3 bg-amber-500/10 text-amber-300 font-black">الكمية المعتمدة للمصنع ✏️</th>
+                          <th className="py-3 px-2">تكلفة تقديرية</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800 font-mono">
+                        {factoryLoading ? (
+                          <tr>
+                            <td colSpan={8} className="py-10 text-center text-slate-400 font-sans">
+                              جاري حساب النواقص والحجوزات ليوم {factoryDate}...
+                            </td>
+                          </tr>
+                        ) : (
+                          (factoryData?.rows || [])
+                            .filter((r: any) => {
+                              const q = factorySearchQuery.trim().toLowerCase();
+                              if (!q) return true;
+                              return r.nameAr?.toLowerCase().includes(q) || getCategoryLabel(r.category).toLowerCase().includes(q);
+                            })
+                            .map((r: any) => {
+                              const currentMinEdit = editingMinStockMap[r.menuItemId];
+                              const approvedVal = factoryApprovedEdits[r.menuItemId] ?? String(r.approvedQty ?? r.suggestedQty ?? 0);
+                              const approvedNum = parseFloat(approvedVal) || 0;
+                              const estCost = approvedNum * (Number(r.costPrice) || 0);
+                              const hasNeed = r.suggestedQty > 0 || approvedNum > 0 || r.pendingPreOrderQty > 0;
+
+                              return (
+                                <tr
+                                  key={r.menuItemId}
+                                  className={`hover:bg-slate-800/40 ${hasNeed ? "bg-slate-900" : "opacity-65"}`}
+                                >
+                                  <td className="py-2.5 px-3 font-sans">
+                                    <div className="font-bold text-white flex items-center gap-1.5">
+                                      <span>{r.nameAr}</span>
+                                    </div>
+                                    <div className="text-[10px] text-slate-400">
+                                      {getCategoryLabel(r.category)} • {r.unitType === "KG" ? "بالكيلو (KG)" : r.unitType === "BOX" ? "علبة" : "قطعة"}
+                                    </div>
+                                  </td>
+                                  <td className="py-2.5 px-2 text-slate-200 font-bold">
+                                    {formatAdminQty(r.currentStock, r.unitType)}
+                                  </td>
+                                  <td className="py-2 px-2">
+                                    <div className="flex items-center gap-1">
+                                      <input
+                                        type="number"
+                                        step="any"
+                                        min="0"
+                                        value={currentMinEdit !== undefined ? currentMinEdit : String(r.minStockLevel ?? 0)}
+                                        onChange={(e) =>
+                                          setEditingMinStockMap((prev) => ({
+                                            ...prev,
+                                            [r.menuItemId]: e.target.value,
+                                          }))
+                                        }
+                                        className="w-16 bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-center text-white text-xs"
+                                      />
+                                      {currentMinEdit !== undefined && (
+                                        <button
+                                          type="button"
+                                          onClick={() => handleUpdateMinStock(r.menuItemId)}
+                                          className="px-2 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-sans text-[10px] font-bold"
+                                          title="حفظ حد الأمان الجديد"
+                                        >
+                                          ✓
+                                        </button>
+                                      )}
+                                    </div>
+                                  </td>
+                                  <td className="py-2.5 px-2 font-bold text-rose-400">
+                                    {r.shortageQty > 0 ? `+${r.shortageQty}` : "0"}
+                                  </td>
+                                  <td className="py-2.5 px-2">
+                                    <div className="font-bold text-amber-400">
+                                      {r.confirmedPreOrderQty > 0 ? `+${r.confirmedPreOrderQty}` : "0"}
+                                    </div>
+                                    {r.pendingPreOrderQty > 0 && (
+                                      <div className="text-[10px] font-sans text-rose-300">
+                                        ({r.pendingPreOrderQty} بانتظار عربون)
+                                      </div>
+                                    )}
+                                  </td>
+                                  <td className="py-2.5 px-2 font-bold text-sky-400">
+                                    {r.suggestedQty}
+                                  </td>
+                                  <td className="py-2 px-3 bg-amber-500/5">
+                                    <div className="flex items-center gap-1.5">
+                                      <input
+                                        type="number"
+                                        step="any"
+                                        min="0"
+                                        disabled={factoryData?.savedFactoryOrder?.status === "RECEIVED"}
+                                        value={approvedVal}
+                                        onChange={(e) =>
+                                          setFactoryApprovedEdits((prev) => ({
+                                            ...prev,
+                                            [r.menuItemId]: e.target.value,
+                                          }))
+                                        }
+                                        className="w-24 bg-black/80 border border-amber-500/50 rounded-lg px-2.5 py-1 text-center font-black text-amber-300 focus:outline-none focus:border-amber-400"
+                                      />
+                                      {Number(approvedVal) !== Number(r.suggestedQty) &&
+                                        factoryData?.savedFactoryOrder?.status !== "RECEIVED" && (
+                                          <button
+                                            type="button"
+                                            onClick={() =>
+                                              setFactoryApprovedEdits((prev) => ({
+                                                ...prev,
+                                                [r.menuItemId]: String(r.suggestedQty ?? 0),
+                                              }))
+                                            }
+                                            className="px-1.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-sans text-slate-300"
+                                            title="إرجاع للمقترح المحسوب"
+                                          >
+                                            ↺
+                                          </button>
+                                        )}
+                                    </div>
+                                  </td>
+                                  <td className="py-2.5 px-2 text-slate-300">
+                                    {estCost > 0 ? `${estCost.toFixed(0)} ج.م` : "—"}
+                                  </td>
+                                </tr>
+                              );
+                            })
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Linked Scheduled Pre-Orders for Selected Factory Target Date */}
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-3">
+                  <h4 className="text-xs font-black text-white flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-amber-400" />
+                    <span>الحجوزات المجدولة ليوم {factoryDate} ({(factoryData?.scheduledOrders || []).length} حجز)</span>
+                  </h4>
+                  {(factoryData?.scheduledOrders || []).length === 0 ? (
+                    <div className="text-xs text-slate-500 py-4 text-center bg-slate-950/40 rounded-xl border border-slate-800">
+                      لا توجد حجوزات عملاء مجدولة لتاريخ {factoryDate} حتى الآن
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {(factoryData?.scheduledOrders || []).map((so: any) => {
+                        let parsedItems: any[] = [];
+                        try {
+                          parsedItems = typeof so.items === "string" ? JSON.parse(so.items) : so.items || [];
+                        } catch {
+                          parsedItems = [];
+                        }
+                        const depositConfirmed = so.depositStatus === "CONFIRMED";
+                        return (
+                          <div
+                            key={so.id}
+                            className={`p-3.5 rounded-xl border text-xs space-y-2 ${
+                              depositConfirmed
+                                ? "bg-emerald-950/15 border-emerald-500/30"
+                                : "bg-amber-950/15 border-amber-500/30"
+                            }`}
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="font-mono font-black text-amber-400">{so.orderNumber}</span>
+                              <span
+                                className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                  depositConfirmed
+                                    ? "bg-emerald-500/20 text-emerald-300"
+                                    : "bg-amber-500/20 text-amber-300"
+                                }`}
+                              >
+                                {depositConfirmed
+                                  ? `عربون مؤكد (${so.depositPaid} ج.م) — مضاف للكشف ✅`
+                                  : `بانتظار العربون (${so.depositRequired} ج.م) ⏳`}
+                              </span>
+                            </div>
+                            <div className="text-slate-200 font-bold flex items-center justify-between">
+                              <span>{so.customerName || "عميل"} • {so.deliveryPhone || so.customerPhone || "بدون رقم"}</span>
+                              <span className="font-mono text-[11px] text-slate-400">
+                                {so.scheduledFor ? new Date(so.scheduledFor).toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" }) : ""}
+                              </span>
+                            </div>
+                            <div className="bg-slate-950/60 p-2 rounded-lg text-[11px] text-slate-300 space-y-0.5">
+                              {parsedItems.map((it: any, i: number) => (
+                                <div key={i} className="flex justify-between">
+                                  <span>{it.nameAr}</span>
+                                  <span className="font-mono text-amber-300">{formatAdminQty(it.qty, it.unitType)}</span>
+                                </div>
+                              ))}
+                            </div>
+                            {!depositConfirmed && (
+                              <div className="flex items-center justify-between pt-1">
+                                {so.depositReceiptUrl ? (
+                                  <button
+                                    type="button"
+                                    onClick={() => setPreviewAdminImage(so.depositReceiptUrl)}
+                                    className="text-[11px] text-sky-400 underline font-bold"
+                                  >
+                                    🖼️ عرض إيصال التحويل
+                                  </button>
+                                ) : (
+                                  <span className="text-[10px] text-slate-500">لم يرفع إيصال بعد</span>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={async () => {
+                                    await handleUpdateOrderDispatch(
+                                      so.id,
+                                      {
+                                        action: "CONFIRM_DEPOSIT",
+                                        depositPaid: so.depositRequired || 0,
+                                        depositStatus: "CONFIRMED",
+                                      },
+                                      `تم تأكيد عربون الحجز ${so.orderNumber} وإضافته لطلبية المصنع ✅`
+                                    );
+                                    fetchFactorySheet(factoryDate);
+                                  }}
+                                  className="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px]"
+                                >
+                                  ✅ تأكيد العربون الآن
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -4713,15 +5732,314 @@ export default function AdminDashboardPage() {
               )}
             </div>
 
+            {/* Collapsible Dynamic Delivery Drivers Manager */}
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
+                    <Truck className="w-4 h-4 text-sky-400" />
+                    <span>إدارة عمال التوصيل والطيارين ({drivers.filter((d) => d.isActive).length} نشط)</span>
+                  </h3>
+                  <p className="text-[11px] text-slate-400 mt-0.5">
+                    أضف أسماء وأرقام تليفونات الطيارين ليظهروا فوراً في قائمة إسناد الطلبات بالكاشير والإدارة وفواتير التوصيل
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowDriversManager((prev) => !prev)}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition border ${
+                    showDriversManager
+                      ? "bg-sky-500/20 text-sky-300 border-sky-500/40"
+                      : "bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700"
+                  }`}
+                >
+                  <Phone className="w-4 h-4" />
+                  <span>{showDriversManager ? "إخفاء إدارة الطيارين ▲" : "إدارة الطيارين وأرقامهم ▾"}</span>
+                </button>
+              </div>
+
+              {showDriversManager && (
+                <div className="space-y-4 pt-3 border-t border-slate-800">
+                  <form onSubmit={handleSaveDriver} className="grid grid-cols-1 md:grid-cols-5 gap-3 bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs">
+                    <div>
+                      <label className="block text-slate-400 mb-1">اسم الطيار *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="مثال: أحمد محمود"
+                        value={driverForm.name}
+                        onChange={(e) => setDriverForm({ ...driverForm, name: e.target.value })}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 mb-1">رقم الموبايل *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="01012345678"
+                        value={driverForm.phone}
+                        onChange={(e) => setDriverForm({ ...driverForm, phone: e.target.value })}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-amber-300 font-mono focus:outline-none focus:border-sky-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 mb-1">المركبة / الوسيلة</label>
+                      <input
+                        type="text"
+                        placeholder="موتوسيكل دليفري"
+                        value={driverForm.vehicleInfo}
+                        onChange={(e) => setDriverForm({ ...driverForm, vehicleInfo: e.target.value })}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 mb-1">ملاحظات</label>
+                      <input
+                        type="text"
+                        placeholder="اختياري..."
+                        value={driverForm.notes}
+                        onChange={(e) => setDriverForm({ ...driverForm, notes: e.target.value })}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500"
+                      />
+                    </div>
+                    <div className="flex items-end gap-2">
+                      <button
+                        type="submit"
+                        disabled={savingDriver}
+                        className="flex-1 bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 px-3 rounded-lg transition disabled:opacity-50"
+                      >
+                        {savingDriver ? "جاري الحفظ..." : editingDriverId ? "حفظ التعديل ✓" : "+ إضافة طيار"}
+                      </button>
+                      {editingDriverId && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingDriverId(null);
+                            setDriverForm({ name: "", phone: "", vehicleInfo: "موتوسيكل دليفري", notes: "" });
+                          }}
+                          className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-lg"
+                        >
+                          إلغاء
+                        </button>
+                      )}
+                    </div>
+                  </form>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                    {drivers.map((drv) => (
+                      <div
+                        key={drv.id}
+                        className={`flex items-center justify-between p-3 rounded-xl border text-xs ${
+                          drv.isActive ? "bg-slate-950 border-slate-800" : "bg-slate-950/40 border-slate-800/50 opacity-60"
+                        }`}
+                      >
+                        <div>
+                          <div className="font-bold text-white flex items-center gap-1.5">
+                            <span>🛵 {drv.name}</span>
+                            {drv.vehicleInfo && (
+                              <span className="text-[10px] text-slate-400 font-normal">({drv.vehicleInfo})</span>
+                            )}
+                          </div>
+                          <div className="text-[11px] text-amber-300 font-mono mt-0.5 flex items-center gap-2">
+                            <span>📞 {drv.phone}</span>
+                            {drv.stats && (
+                              <span className="text-sky-400 font-sans">• {drv.stats.totalTrips} رحلة ({drv.stats.totalDeliveryFeesDue} ج توصيل)</span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => handleToggleDriverActive(drv)}
+                            className={`px-2 py-1 rounded text-[10px] font-bold ${
+                              drv.isActive
+                                ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                                : "bg-slate-800 text-slate-400"
+                            }`}
+                          >
+                            {drv.isActive ? "متاح" : "موقف"}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingDriverId(drv.id);
+                              setDriverForm({
+                                name: drv.name,
+                                phone: drv.phone,
+                                vehicleInfo: drv.vehicleInfo || "موتوسيكل دليفري",
+                                notes: drv.notes || "",
+                              });
+                            }}
+                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400"
+                            title="تعديل بيانات الطيار"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteDriver(drv)}
+                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-950 text-rose-400"
+                            title="حذف الطيار"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    {drivers.length === 0 && (
+                      <div className="col-span-full text-center py-4 text-slate-500 text-xs">
+                        لا يوجد طيارون مسجلون حالياً — أضف أول طيار من النموذج أعلاه 🛵
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Upcoming Scheduled Pre-Orders 48h/24h Alert & Deposit Review Strip */}
+            {(() => {
+              const urgentPreOrders = orders.filter((o) => {
+                if (!o.isScheduled || o.status === "COMPLETED" || o.status === "CANCELLED") return false;
+                if (isUserSoulmate && o.outlet?.code !== "SOULMATE_CAFE") return false;
+                if (isUserAbuAdel && o.outlet?.code !== "ABU_ADEL_PATISSERIE") return false;
+                if (selectedOutletId !== "ALL" && o.outletId !== selectedOutletId) return false;
+                const hrs = getHoursUntil(o.scheduledFor);
+                const needsDepositAction = o.depositStatus === "AWAITING_DEPOSIT" || Boolean(o.depositReceiptUrl && o.depositStatus !== "CONFIRMED");
+                return (hrs !== null && hrs <= 48) || needsDepositAction;
+              });
+              if (urgentPreOrders.length === 0) return null;
+
+              return (
+                <div className="bg-amber-950/25 border border-amber-500/40 rounded-2xl p-4 shadow-lg space-y-3">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <h3 className="text-xs font-black text-amber-300 flex items-center gap-2">
+                      <Bell className="w-4 h-4 text-amber-400 animate-pulse" />
+                      <span>تنبيهات الحجوزات المسبقة والعربون (مواعيد خلال 48 / 24 ساعة أو بانتظار المراجعة — {urgentPreOrders.length} حجز)</span>
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => setOrderScheduledFilter("SCHEDULED")}
+                      className="text-[11px] font-bold text-amber-400 hover:text-amber-300 underline"
+                    >
+                      تصفية الحجوزات المسبقة بالجدول ↓
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {urgentPreOrders.slice(0, 6).map((po) => {
+                      const hrs = getHoursUntil(po.scheduledFor);
+                      const is24h = hrs !== null && hrs <= 24;
+                      return (
+                        <div
+                          key={po.id}
+                          className={`p-3 rounded-xl border text-xs space-y-2 ${
+                            is24h ? "bg-rose-950/30 border-rose-500/40" : "bg-slate-950/80 border-amber-500/30"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-mono font-black text-amber-400">{po.orderNumber}</span>
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                is24h
+                                  ? "bg-rose-500/20 text-rose-300 border border-rose-500/40"
+                                  : hrs !== null && hrs <= 48
+                                  ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                                  : "bg-sky-500/20 text-sky-300 border border-sky-500/40"
+                              }`}
+                            >
+                              {hrs !== null
+                                ? hrs <= 0
+                                  ? "حان موعد التسليم 🚨"
+                                  : hrs <= 24
+                                  ? `متبقي ${Math.ceil(hrs)} ساعة 🚨`
+                                  : hrs <= 48
+                                  ? `خلال ${Math.ceil(hrs)} ساعة ⏰`
+                                  : "حجز مجدول"
+                                : "حجز مسبق"}
+                            </span>
+                          </div>
+                          <div className="text-slate-200 font-bold">
+                            {po.customerName || "عميل"} • <span className="font-mono text-amber-300">{po.deliveryPhone || po.customerPhone || "بدون رقم"}</span>
+                          </div>
+                          {po.scheduledFor && (
+                            <div className="text-[11px] text-slate-400">
+                              📅 الموعد: <span className="text-white font-mono">{new Date(po.scheduledFor).toLocaleString("ar-EG")}</span>
+                            </div>
+                          )}
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className={po.depositStatus === "CONFIRMED" ? "text-emerald-400 font-bold" : "text-amber-300 font-bold"}>
+                              {po.depositStatus === "CONFIRMED"
+                                ? `✅ عربون مؤكد (${po.depositPaid} ج)`
+                                : `⏳ عربون مطلوب (${po.depositRequired || 0} ج)`}
+                            </span>
+                            {po.depositReceiptUrl && (
+                              <button
+                                type="button"
+                                onClick={() => setPreviewAdminImage(po.depositReceiptUrl)}
+                                className="text-sky-400 hover:text-sky-300 underline font-bold"
+                              >
+                                🖼️ عرض الإيصال
+                              </button>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1.5 pt-1 flex-wrap">
+                            {po.depositStatus !== "CONFIRMED" && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleUpdateOrderDispatch(
+                                    po.id,
+                                    {
+                                      action: "CONFIRM_DEPOSIT",
+                                      depositPaid: po.depositRequired || 0,
+                                      depositStatus: "CONFIRMED",
+                                      paymentMethod: po.paymentMethod,
+                                    },
+                                    `تم تأكيد عربون الحجز ${po.orderNumber} وإدخاله لطلبية المصنع ✅`
+                                  )
+                                }
+                                className="flex-1 px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px]"
+                              >
+                                ✅ تأكيد العربون
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => handleSendPreOrderAlertChat(po, hrs ?? 24)}
+                              className="flex-1 px-2.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-black text-[10px]"
+                            >
+                              🔔 تنبيه شات {((is24h && po.alertSent24h) || (!is24h && po.alertSent48h)) ? "(مرسل✓)" : ""}
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
+
             {/* Orders Filtering & Dispatch Table */}
             <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
               <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
                 <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
                   <Receipt className="w-4 h-4 text-amber-400" />
-                  <span>سجل الطلبات ومتابعة الدليفري والطيارات حسب المنطقة</span>
+                  <span>سجل الطلبات والحجوزات ومتابعة الدليفري والطيارات حسب المنطقة</span>
                 </h3>
 
                 <div className="flex items-center gap-2 flex-wrap">
+                  <select
+                    value={orderScheduledFilter}
+                    onChange={(e) => setOrderScheduledFilter(e.target.value as any)}
+                    className="bg-slate-950 border border-amber-500/40 text-xs rounded-xl px-3 py-2 text-amber-300 font-bold focus:outline-none"
+                  >
+                    <option value="ALL">📋 كل الطلبات والحجوزات</option>
+                    <option value="SCHEDULED">📅 الحجوزات المسبقة فقط</option>
+                    <option value="IMMEDIATE">⚡ الطلبات الفورية فقط</option>
+                  </select>
+
                   <select
                     value={orderZoneFilter}
                     onChange={(e) => setOrderZoneFilter(e.target.value)}
@@ -4766,7 +6084,7 @@ export default function AdminDashboardPage() {
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="رقم الطلب، الموبايل، العنوان..."
+                      placeholder="رقم الطلب، الموبايل، الطيار، العنوان..."
                       className="bg-slate-950 border border-slate-700 text-xs rounded-xl pr-9 pl-3 py-2 text-white focus:outline-none focus:border-amber-500 w-56"
                     />
                   </div>
@@ -4778,13 +6096,13 @@ export default function AdminDashboardPage() {
                   <thead className="bg-slate-950/60 text-slate-400 border-b border-slate-800">
                     <tr>
                       <th className="py-2.5 px-3">رقم الطلب</th>
-                      <th className="py-2.5 px-3">الفرع</th>
+                      <th className="py-2.5 px-3">الفرع والأصناف</th>
                       <th className="py-2.5 px-3">النوع والمنطقة</th>
                       <th className="py-2.5 px-3">العميل والتوصيل</th>
                       <th className="py-2.5 px-3">الحالة والسداد</th>
-                      <th className="py-2.5 px-3">الإجمالي</th>
+                      <th className="py-2.5 px-3">الإجمالي والفصل</th>
                       <th className="py-2.5 px-3">مراحل التجهيز والطيار</th>
-                      <th className="py-2.5 px-3 text-center">إيصال</th>
+                      <th className="py-2.5 px-3 text-center">فاتورة</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800">
@@ -4793,6 +6111,8 @@ export default function AdminDashboardPage() {
                         if (isUserSoulmate && o.outlet?.code !== "SOULMATE_CAFE" && o.outletId !== outlets.find((x) => x.code === "SOULMATE_CAFE")?.id) return false;
                         if (isUserAbuAdel && o.outlet?.code !== "ABU_ADEL_PATISSERIE" && o.outletId !== outlets.find((x) => x.code === "ABU_ADEL_PATISSERIE")?.id) return false;
                         if (selectedOutletId !== "ALL" && o.outletId !== selectedOutletId) return false;
+                        if (orderScheduledFilter === "SCHEDULED" && !o.isScheduled) return false;
+                        if (orderScheduledFilter === "IMMEDIATE" && o.isScheduled) return false;
                         if (orderZoneFilter === "NO_ZONE" && (o.deliveryZoneId || o.deliveryZoneName)) return false;
                         if (orderZoneFilter !== "ALL" && orderZoneFilter !== "NO_ZONE" && o.deliveryZoneId !== orderZoneFilter) return false;
                         if (orderTypeFilter !== "ALL" && o.orderType !== orderTypeFilter) return false;
@@ -4806,6 +6126,8 @@ export default function AdminDashboardPage() {
                           (o.customerPhone && o.customerPhone.toLowerCase().includes(q)) ||
                           (o.deliveryPhone && o.deliveryPhone.toLowerCase().includes(q)) ||
                           (o.deliveryZoneName && o.deliveryZoneName.toLowerCase().includes(q)) ||
+                          (o.driverName && o.driverName.toLowerCase().includes(q)) ||
+                          (o.driverPhone && o.driverPhone.toLowerCase().includes(q)) ||
                           (o.tableNumber && o.tableNumber.toLowerCase().includes(q)) ||
                           (o.deliveryAddress && o.deliveryAddress.toLowerCase().includes(q))
                         );
@@ -4821,17 +6143,52 @@ export default function AdminDashboardPage() {
                           CANCELLED: { label: "❌ ملغي", cls: "bg-rose-500/20 text-rose-300 border-rose-500/40" },
                         };
                         const st = statusMeta[o.status] || statusMeta.COMPLETED;
+                        let parsedOrderItems: any[] = [];
+                        try {
+                          parsedOrderItems = typeof o.items === "string" ? JSON.parse(o.items) : o.items || [];
+                        } catch {
+                          parsedOrderItems = [];
+                        }
+                        const storeNetAmt = getStoreNet(o);
+                        const deliveryFeeAmt = Number(o.deliveryFee) || 0;
+                        const activeDriversList = drivers.filter((d) => d.isActive);
+                        const selectedDrvId = dispatchDriverIds[o.id] || o.driverId || activeDriversList[0]?.id || "";
+                        const selectedDrvObj = drivers.find((d) => d.id === selectedDrvId);
 
                         return (
                           <tr key={o.id} className="hover:bg-slate-800/40 align-top">
                             <td className="py-3 px-3">
-                              <div className="font-bold text-amber-400 font-mono">{o.orderNumber}</div>
+                              <div className="font-bold text-amber-400 font-mono flex items-center gap-1 flex-wrap">
+                                <span>{o.orderNumber}</span>
+                                {o.isScheduled && (
+                                  <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] font-sans">
+                                    📅 حجز
+                                  </span>
+                                )}
+                              </div>
                               <div className="text-[10px] text-slate-500 font-mono mt-0.5">
                                 {new Date(o.createdAt).toLocaleString("ar-EG")}
                               </div>
+                              {o.isScheduled && o.scheduledFor && (
+                                <div className="text-[10px] text-amber-300 font-bold mt-1">
+                                  ⏰ تسليم: {new Date(o.scheduledFor).toLocaleString("ar-EG", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                                </div>
+                              )}
                             </td>
-                            <td className="py-3 px-3 text-slate-300">
-                              {o.outlet?.name || "الفرع الرئيسي"}
+                            <td className="py-3 px-3 text-slate-300 space-y-1 max-w-[190px]">
+                              <div className="font-bold">{o.outlet?.name || "الفرع الرئيسي"}</div>
+                              {parsedOrderItems.length > 0 && (
+                                <div className="text-[10px] text-slate-400 space-y-0.5">
+                                  {parsedOrderItems.slice(0, 3).map((it: any, idx: number) => (
+                                    <div key={idx} className="truncate">
+                                      • {it.nameAr} <span className="text-amber-300 font-mono">({formatAdminQty(it.qty, it.unitType)})</span>
+                                    </div>
+                                  ))}
+                                  {parsedOrderItems.length > 3 && (
+                                    <div className="text-slate-500">+{parsedOrderItems.length - 3} أصناف أخرى</div>
+                                  )}
+                                </div>
+                              )}
                             </td>
                             <td className="py-3 px-3 space-y-1">
                               <span
@@ -4867,12 +6224,20 @@ export default function AdminDashboardPage() {
                                   {o.deliveryAddress}
                                 </div>
                               )}
+                              {o.driverName && (
+                                <div className="text-[10px] text-sky-300 font-bold mt-1 flex items-center gap-1 flex-wrap">
+                                  <span>🛵 الطيار: {o.driverName}</span>
+                                  {(o.driverPhone || o.driver?.phone) && (
+                                    <span className="font-mono text-sky-400">({o.driverPhone || o.driver?.phone})</span>
+                                  )}
+                                </div>
+                              )}
                             </td>
-                            <td className="py-3 px-3 space-y-1">
+                            <td className="py-3 px-3 space-y-1.5">
                               <div className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold border ${st.cls}`}>
                                 {st.label}
                               </div>
-                              <div className="text-[10px]">
+                              <div className="flex items-center gap-1 flex-wrap text-[10px]">
                                 <span
                                   className={`px-1.5 py-0.5 rounded ${
                                     o.paymentStatus === "PAID"
@@ -4880,20 +6245,91 @@ export default function AdminDashboardPage() {
                                       : "bg-rose-500/15 text-rose-300"
                                   }`}
                                 >
-                                  {o.paymentStatus === "PAID" ? `مدفوع (${o.paymentMethod})` : "عند الاستلام ⏳"}
+                                  {o.paymentStatus === "PAID"
+                                    ? `مدفوع (${PAYMENT_METHOD_LABELS[o.paymentMethod] || o.paymentMethod})`
+                                    : "سداد مرن / عند الاستلام ⏳"}
                                 </span>
                               </div>
+                              <div>
+                                <select
+                                  value={o.paymentMethod || "CASH"}
+                                  onChange={(e) =>
+                                    handleUpdateOrderDispatch(
+                                      o.id,
+                                      { action: "UPDATE_PAYMENT", paymentMethod: e.target.value },
+                                      `تم تعديل طريقة الدفع للطلب ${o.orderNumber} إلى ${PAYMENT_METHOD_LABELS[e.target.value] || e.target.value}`
+                                    )
+                                  }
+                                  className="bg-slate-950 border border-slate-700 rounded-lg px-2 py-0.5 text-[10px] text-slate-200 focus:outline-none focus:border-amber-500"
+                                  title="تغيير طريقة الدفع بحرية"
+                                >
+                                  <option value="CASH">💵 كاش</option>
+                                  <option value="CARD">💳 فيزا / بطاقة</option>
+                                  <option value="INSTAPAY">⚡ إنستاباي</option>
+                                  <option value="VODAFONE_CASH">📱 فودافون كاش</option>
+                                </select>
+                              </div>
+                              {o.isScheduled && (
+                                <div className="space-y-1 pt-0.5">
+                                  <div
+                                    className={`text-[10px] font-bold ${
+                                      o.depositStatus === "CONFIRMED" ? "text-emerald-400" : "text-amber-300"
+                                    }`}
+                                  >
+                                    {o.depositStatus === "CONFIRMED"
+                                      ? `✅ عربون مؤكد (${o.depositPaid || 0} ج)`
+                                      : `⏳ عربون مطلوب (${o.depositRequired || 0} ج)`}
+                                  </div>
+                                  <div className="flex items-center gap-1 flex-wrap">
+                                    {o.depositReceiptUrl && (
+                                      <button
+                                        type="button"
+                                        onClick={() => setPreviewAdminImage(o.depositReceiptUrl)}
+                                        className="px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30 text-[9px] font-bold"
+                                      >
+                                        🖼️ الإيصال
+                                      </button>
+                                    )}
+                                    {o.depositStatus !== "CONFIRMED" && (
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          handleUpdateOrderDispatch(
+                                            o.id,
+                                            {
+                                              action: "CONFIRM_DEPOSIT",
+                                              depositPaid: o.depositRequired || 0,
+                                              depositStatus: "CONFIRMED",
+                                              paymentMethod: o.paymentMethod,
+                                            },
+                                            `تم تأكيد عربون الحجز ${o.orderNumber} ✅`
+                                          )
+                                        }
+                                        className="px-1.5 py-0.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-[9px] font-bold"
+                                      >
+                                        ✅ اعتماد العربون
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
                             </td>
-                            <td className="py-3 px-3 font-bold text-emerald-400 font-mono">
-                              <div>{o.finalAmount} ج.م</div>
-                              {Number(o.deliveryFee) > 0 && (
-                                <div className="text-[10px] text-slate-400 font-normal">
-                                  (توصيل: {o.deliveryFee} ج)
+                            <td className="py-3 px-3 font-mono">
+                              <div className="font-black text-emerald-400">{o.finalAmount} ج.م</div>
+                              {deliveryFeeAmt > 0 && (
+                                <div className="text-[10px] space-y-0.5 mt-0.5 font-sans">
+                                  <div className="text-slate-300">المحل: <span className="font-mono font-bold text-emerald-300">{storeNetAmt} ج</span></div>
+                                  <div className="text-sky-400">للطيار: <span className="font-mono font-bold">{deliveryFeeAmt} ج</span></div>
+                                </div>
+                              )}
+                              {o.isScheduled && Number(o.depositPaid) > 0 && o.paymentStatus !== "PAID" && (
+                                <div className="text-[10px] text-amber-300 font-sans mt-0.5">
+                                  متبقي: {Math.max(0, Number(o.finalAmount) - Number(o.depositPaid))} ج
                                 </div>
                               )}
                             </td>
                             <td className="py-3 px-3">
-                              <div className="flex flex-col gap-1.5 min-w-[160px]">
+                              <div className="flex flex-col gap-1.5 min-w-[180px]">
                                 {o.status === "NEW_PENDING" && (
                                   <button
                                     type="button"
@@ -4925,34 +6361,60 @@ export default function AdminDashboardPage() {
                                   </button>
                                 )}
                                 {o.status === "READY_TO_SERVE" && o.orderType === "DELIVERY" && (
-                                  <div className="flex items-center gap-1">
-                                    <input
-                                      type="text"
-                                      placeholder="اسم الطيار..."
-                                      value={dispatchDriverNames[o.id] || ""}
-                                      onChange={(e) =>
-                                        setDispatchDriverNames((prev) => ({
-                                          ...prev,
-                                          [o.id]: e.target.value,
-                                        }))
-                                      }
-                                      className="w-24 bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-[10px] text-white"
-                                    />
+                                  <div className="flex flex-col gap-1">
+                                    {activeDriversList.length > 0 ? (
+                                      <select
+                                        value={selectedDrvId}
+                                        onChange={(e) =>
+                                          setDispatchDriverIds((prev) => ({
+                                            ...prev,
+                                            [o.id]: e.target.value,
+                                          }))
+                                        }
+                                        className="w-full bg-slate-950 border border-sky-500/40 rounded-lg px-2 py-1 text-[10px] text-sky-300 font-bold"
+                                      >
+                                        {activeDriversList.map((d) => (
+                                          <option key={d.id} value={d.id}>
+                                            🛵 {d.name} ({d.phone})
+                                          </option>
+                                        ))}
+                                      </select>
+                                    ) : (
+                                      <input
+                                        type="text"
+                                        placeholder="اسم الطيار..."
+                                        value={dispatchDriverNames[o.id] || ""}
+                                        onChange={(e) =>
+                                          setDispatchDriverNames((prev) => ({
+                                            ...prev,
+                                            [o.id]: e.target.value,
+                                          }))
+                                        }
+                                        className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-[10px] text-white"
+                                      />
+                                    )}
                                     <button
                                       type="button"
                                       onClick={() =>
                                         handleUpdateOrderDispatch(
                                           o.id,
-                                          {
-                                            action: "DISPATCH_DRIVER",
-                                            driverName: dispatchDriverNames[o.id] || "مندوب التوصيل",
-                                          },
+                                          activeDriversList.length > 0 && selectedDrvObj
+                                            ? {
+                                                action: "DISPATCH_DRIVER",
+                                                driverId: selectedDrvObj.id,
+                                                driverName: selectedDrvObj.name,
+                                                driverPhone: selectedDrvObj.phone,
+                                              }
+                                            : {
+                                                action: "DISPATCH_DRIVER",
+                                                driverName: dispatchDriverNames[o.id] || "مندوب التوصيل",
+                                              },
                                           `خرج الطلب ${o.orderNumber} مع الطيار 🛵`
                                         )
                                       }
                                       className="px-2 py-1 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-[10px] font-bold whitespace-nowrap"
                                     >
-                                      خروج 🛵
+                                      تسليم للطيار وخروج 🛵
                                     </button>
                                   </div>
                                 )}
@@ -4969,12 +6431,12 @@ export default function AdminDashboardPage() {
                                             paymentMethod: o.paymentMethod || "CASH",
                                             cashierName: currentUser?.name || "الإدارة",
                                           },
-                                          `تم تحصيل قيمة الطلب ${o.orderNumber} وإغلاقه 💵`
+                                          `تم تحصيل قيمة الطلب ${o.orderNumber} وإغلاقه (${PAYMENT_METHOD_LABELS[o.paymentMethod] || o.paymentMethod}) 💵`
                                         )
                                       }
                                       className="px-2.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-[11px] font-black transition"
                                     >
-                                      تحصيل للخزنة وإغلاق 💵
+                                      تحصيل ({PAYMENT_METHOD_LABELS[o.paymentMethod] || "كاش"}) وإغلاق 💵
                                     </button>
                                   )}
                                 {(o.status === "OUT_FOR_DELIVERY" ||
@@ -5000,7 +6462,7 @@ export default function AdminDashboardPage() {
                               <button
                                 onClick={() => setSelectedOrderForPrint(o)}
                                 className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-amber-400 transition"
-                                title="طباعة الإيصال 80 مم"
+                                title="طباعة الفاتورة / الإيصال"
                               >
                                 <Printer className="w-4 h-4" />
                               </button>
@@ -5121,7 +6583,7 @@ export default function AdminDashboardPage() {
             return true;
           });
 
-          // Group customer conversations by Phone (online/delivery/takeaway) or Table Number
+          // Group customer conversations by Phone (online/delivery/takeaway), Guest Session ID, or Table Number
           const threadMap: Record<
             string,
             { key: string; label: string; sub: string; outletCode: string; lastMsg: any; count: number }
@@ -5130,6 +6592,8 @@ export default function AdminDashboardPage() {
           branchFilteredChat.forEach((m) => {
             const key = m.senderPhone
               ? `PHONE:${m.senderPhone}`
+              : m.guestId
+              ? `GUEST:${m.guestId}`
               : m.tableNumber
               ? `TABLE:${m.tableNumber}`
               : "GENERAL";
@@ -5140,6 +6604,8 @@ export default function AdminDashboardPage() {
                   ? m.senderType === "CUSTOMER"
                     ? `${m.senderName} (${m.senderPhone})`
                     : m.senderPhone
+                  : m.guestId
+                  ? `${m.senderType === "CUSTOMER" ? m.senderName : "زائر أونلاين"} (ضيف #${String(m.guestId).slice(-4)})`
                   : m.tableNumber
                   ? `ترابيزة ${m.tableNumber}`
                   : "استفسارات عامة",
@@ -5159,8 +6625,9 @@ export default function AdminDashboardPage() {
           const displayedMsgs = branchFilteredChat.filter((m) => {
             if (selectedChatThread === "ALL") return true;
             if (selectedChatThread.startsWith("PHONE:")) return m.senderPhone === selectedChatThread.slice(6);
+            if (selectedChatThread.startsWith("GUEST:")) return m.guestId === selectedChatThread.slice(6);
             if (selectedChatThread.startsWith("TABLE:")) return m.tableNumber === selectedChatThread.slice(6);
-            return !m.senderPhone && !m.tableNumber;
+            return !m.senderPhone && !m.guestId && !m.tableNumber;
           });
 
           return (
@@ -5277,6 +6744,20 @@ export default function AdminDashboardPage() {
                               <span>{msg.outlet?.code === "ABU_ADEL_PATISSERIE" ? "🍰 أبو عادل" : "☕ سول ميت"}</span>
                             </div>
                             <div>{msg.message}</div>
+                            {msg.imageUrl && (
+                              <button
+                                type="button"
+                                onClick={() => setPreviewAdminImage(msg.imageUrl)}
+                                className="mt-2 block rounded-xl overflow-hidden border border-black/20 hover:opacity-90 transition"
+                              >
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={msg.imageUrl}
+                                  alt="مرفق الشات"
+                                  className="max-h-48 max-w-full object-cover"
+                                />
+                              </button>
+                            )}
                           </div>
                           <span className="text-[9px] text-slate-500 mt-0.5 px-1 font-mono">
                             {new Date(msg.createdAt).toLocaleTimeString("ar-EG")}
@@ -5291,13 +6772,39 @@ export default function AdminDashboardPage() {
                       )}
                     </div>
 
-                    <form onSubmit={handleSendStaffChatReply} className="flex gap-2">
+                    {adminChatImage && (
+                      <div className="flex items-center gap-2 bg-slate-950 border border-amber-500/40 rounded-xl p-2 text-xs">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={adminChatImage} alt="preview" className="w-12 h-12 rounded-lg object-cover" />
+                        <span className="text-amber-300 font-bold flex-1">تم إرفاق صورة للرد على العميل 📸</span>
+                        <button
+                          type="button"
+                          onClick={() => setAdminChatImage("")}
+                          className="p-1 rounded-lg bg-rose-500/20 text-rose-300"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
+
+                    <form onSubmit={handleSendStaffChatReply} className="flex gap-2 items-center">
+                      <label className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 text-xs font-bold cursor-pointer flex items-center gap-1 shrink-0">
+                        <ImageIcon className="w-4 h-4" />
+                        <span>{uploadingAdminChatImage ? "..." : "صورة"}</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          disabled={uploadingAdminChatImage}
+                          onChange={handleUploadAdminChatImage}
+                          className="hidden"
+                        />
+                      </label>
                       <input
                         type="text"
                         placeholder={
                           selectedChatThread !== "ALL"
                             ? "اكتب رداً مباشراً للعميل المحدد..."
-                            : "اختر محادثة عميل للرد عليه أو أرسل رداً عاماً للفرع..."
+                            : "اكتب الرد هنا (سيُرسل تلقائياً لآخر عميل تواصل معك أو اختر محادثة)..."
                         }
                         value={chatReplyText}
                         onChange={(e) => setChatReplyText(e.target.value)}
@@ -5305,7 +6812,7 @@ export default function AdminDashboardPage() {
                       />
                       <button
                         type="submit"
-                        disabled={!chatReplyText.trim()}
+                        disabled={!chatReplyText.trim() && !adminChatImage}
                         className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-xs transition disabled:opacity-50"
                       >
                         إرسال الرد 💬
@@ -5674,14 +7181,77 @@ export default function AdminDashboardPage() {
                     />
                   </div>
 
-                  <div className="bg-slate-950/80 border border-amber-500/30 rounded-xl p-3 flex items-start gap-2.5">
+                  <div>
+                    <label className="block text-xs text-slate-400 mb-1.5">
+                      رسوم التوصيل الافتراضية (عند عدم اختيار منطقة) — ج.م
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="1"
+                      value={settings.deliveryFee ?? 20}
+                      onChange={(e) =>
+                        setSettings({ ...settings, deliveryFee: parseFloat(e.target.value) || 0 })
+                      }
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-emerald-400 focus:outline-none focus:border-amber-500 font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-slate-400 mb-1.5">
+                      نسبة عربون تأكيد الحجوزات المسبقة لأبو عادل (%)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="1"
+                      value={settings.preOrderDepositPercent ?? 30}
+                      onChange={(e) =>
+                        setSettings({ ...settings, preOrderDepositPercent: parseFloat(e.target.value) || 0 })
+                      }
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-amber-400 focus:outline-none focus:border-amber-500 font-mono font-bold"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-slate-400 mb-1.5">
+                      حساب / عنوان إنستاباي (InstaPay) لاستقبال العربون
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="abuadel@instapay"
+                      value={settings.instapayAccount || ""}
+                      onChange={(e) =>
+                        setSettings({ ...settings, instapayAccount: e.target.value })
+                      }
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-purple-300 focus:outline-none focus:border-amber-500 font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-slate-400 mb-1.5">
+                      رقم فودافون كاش لاستقبال العربون والمدفوعات
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="010xxxxxxxx"
+                      value={settings.vodafoneCashNumber || ""}
+                      onChange={(e) =>
+                        setSettings({ ...settings, vodafoneCashNumber: e.target.value })
+                      }
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-pink-300 focus:outline-none focus:border-amber-500 font-mono"
+                    />
+                  </div>
+
+                  <div className="bg-slate-950/80 border border-amber-500/30 rounded-xl p-3 flex items-start gap-2.5 md:col-span-2">
                     <span className="text-amber-400 text-base">🍰</span>
                     <div>
                       <div className="text-xs font-bold text-amber-300">
                         حلواني أبو عادل (الفرع والإدارة المعتمدة)
                       </div>
                       <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
-                        إدارة حلواني أبو عادل للحلويات الشرقية والتورت والبيع المباشر والدليفري بكامل الصلاحيات.
+                        إدارة حلواني أبو عادل للحلويات الشرقية والتورت والبيع المباشر بالقطعة والكيلو والدليفري والحجوزات المسبقة بكامل الصلاحيات.
                       </p>
                     </div>
                   </div>
@@ -5970,14 +7540,30 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
                 ) : (
-                  <div>
-                    <label className="block text-slate-400 mb-1">المخزون الفعلي (بضاعة جاهزة)</label>
-                    <input
-                      type="number"
-                      value={menuItemForm.stockQty}
-                      onChange={(e) => setMenuItemForm({ ...menuItemForm, stockQty: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-500"
-                    />
+                  <div className="space-y-2">
+                    <div>
+                      <label className="block text-slate-400 mb-1">وحدة البيع (قطعة / بالكيلو)</label>
+                      <select
+                        value={menuItemForm.unitType || "PIECE"}
+                        onChange={(e) => setMenuItemForm({ ...menuItemForm, unitType: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-amber-500"
+                      >
+                        <option value="PIECE">قطعة / وحدة</option>
+                        <option value="KG">بالكيلو (KG — يقبل أرباع وأنصاص)</option>
+                        <option value="BOX">علبة / بوكس</option>
+                        <option value="PORTION">طبق</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 mb-1">المخزون الفعلي (بضاعة جاهزة)</label>
+                      <input
+                        type="number"
+                        step="any"
+                        value={menuItemForm.stockQty}
+                        onChange={(e) => setMenuItemForm({ ...menuItemForm, stockQty: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-500"
+                      />
+                    </div>
                   </div>
                 )}
               </div>
@@ -6207,7 +7793,7 @@ export default function AdminDashboardPage() {
                   <label className="block text-xs text-slate-400 mb-1">الرصيد المتاح</label>
                   <input
                     type="number"
-                    step="1"
+                    step="any"
                     placeholder="50"
                     value={pastryForm.stockQty}
                     onChange={(e) =>
@@ -7169,7 +8755,7 @@ export default function AdminDashboardPage() {
                 <div className="text-sm font-black">
                   {selectedOrderForPrint.outlet?.name || "سول ميت كافيه & حلواني أبو عادل"}
                 </div>
-                <div className="text-[10px]">فاتورة سداد ضريبية مبسطة</div>
+                <div className="text-[10px]">فاتورة طلب / إيصال استلام</div>
                 <div className="text-[10px]">
                   {selectedOrderForPrint.orderNumber} •{" "}
                   {selectedOrderForPrint.orderType === "DINE_IN"
@@ -7178,6 +8764,11 @@ export default function AdminDashboardPage() {
                     ? "دليفري للمنزل"
                     : "تيك أواي"}
                 </div>
+                {selectedOrderForPrint.isScheduled && selectedOrderForPrint.scheduledFor && (
+                  <div className="text-[10px] font-bold">
+                    📅 موعد الحجز والتسليم: {new Date(selectedOrderForPrint.scheduledFor).toLocaleString("ar-EG")}
+                  </div>
+                )}
                 {selectedOrderForPrint.deliveryZoneName && (
                   <div className="text-[10px] font-bold">
                     منطقة التوصيل: {selectedOrderForPrint.deliveryZoneName}
@@ -7186,6 +8777,8 @@ export default function AdminDashboardPage() {
                 {selectedOrderForPrint.driverName && (
                   <div className="text-[10px]">
                     الطيار / المندوب: {selectedOrderForPrint.driverName}
+                    {(selectedOrderForPrint.driverPhone || selectedOrderForPrint.driver?.phone) &&
+                      ` (${selectedOrderForPrint.driverPhone || selectedOrderForPrint.driver?.phone})`}
                   </div>
                 )}
                 {selectedOrderForPrint.deliveryAddress && (
@@ -7208,8 +8801,8 @@ export default function AdminDashboardPage() {
                   try {
                     const its = JSON.parse(selectedOrderForPrint.items || "[]");
                     return its.map((it: any, idx: number) => (
-                      <div key={idx} className="flex justify-between">
-                        <span>{it.qty} × {it.nameAr}</span>
+                      <div key={idx} className="flex justify-between gap-2">
+                        <span>{formatAdminQty(it.qty, it.unitType)} × {it.nameAr}</span>
                         <span>{Math.round(Number(it.price) * Number(it.qty) * 100) / 100} ج</span>
                       </div>
                     ));
@@ -7220,18 +8813,28 @@ export default function AdminDashboardPage() {
               </div>
 
               <div className="border-t border-black pt-2 mt-2 space-y-1 text-[11px]">
+                <div className="flex justify-between text-[10px]">
+                  <span>قيمة الأصناف (إيراد المحل):</span>
+                  <span>{getStoreNet(selectedOrderForPrint)} ج.م</span>
+                </div>
                 {Number(selectedOrderForPrint.deliveryFee) > 0 && (
                   <div className="flex justify-between text-[10px]">
-                    <span>رسوم التوصيل:</span>
+                    <span>رسوم التوصيل (مستحق الطيار):</span>
                     <span>{selectedOrderForPrint.deliveryFee} ج.م</span>
                   </div>
                 )}
                 <div className="flex justify-between text-sm font-black border-t border-black pt-1">
-                  <span>الإجمالي المدفوع:</span>
+                  <span>{selectedOrderForPrint.paymentStatus === "PAID" ? "الإجمالي المدفوع:" : "الإجمالي المستحق:"}</span>
                   <span>{selectedOrderForPrint.finalAmount} ج.م</span>
                 </div>
+                {selectedOrderForPrint.isScheduled && Number(selectedOrderForPrint.depositPaid) > 0 && (
+                  <div className="flex justify-between text-[10px] font-bold">
+                    <span>عربون مدفوع: {selectedOrderForPrint.depositPaid} ج</span>
+                    <span>المتبقي: {Math.max(0, Number(selectedOrderForPrint.finalAmount) - Number(selectedOrderForPrint.depositPaid))} ج</span>
+                  </div>
+                )}
                 <div className="text-[10px] text-center pt-2">
-                  طريقة السداد: {selectedOrderForPrint.paymentMethod}
+                  طريقة السداد: {PAYMENT_METHOD_LABELS[selectedOrderForPrint.paymentMethod] || selectedOrderForPrint.paymentMethod}
                 </div>
               </div>
             </div>
@@ -7248,9 +8851,33 @@ export default function AdminDashboardPage() {
                 className="flex items-center gap-1.5 px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold"
               >
                 <Printer className="w-4 h-4" />
-                <span>طباعة الإيصال 80 مم</span>
+                <span>طباعة الفاتورة</span>
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ADMIN IMAGE PREVIEW LIGHTBOX (RECEIPTS / CHAT ATTACHMENTS) */}
+      {previewAdminImage && (
+        <div
+          onClick={() => setPreviewAdminImage(null)}
+          className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
+        >
+          <div onClick={(e) => e.stopPropagation()} className="relative max-w-xl w-full bg-slate-900 border border-slate-700 rounded-2xl p-3">
+            <button
+              type="button"
+              onClick={() => setPreviewAdminImage(null)}
+              className="absolute left-4 top-4 bg-slate-800 hover:bg-slate-700 text-white p-1.5 rounded-full"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={previewAdminImage}
+              alt="معاينة الصورة"
+              className="w-full max-h-[80vh] object-contain rounded-xl bg-black"
+            />
           </div>
         </div>
       )}

@@ -158,6 +158,7 @@ export async function GET(req: Request) {
     const tableId = searchParams.get("tableId");
     const tableNumber = searchParams.get("tableNumber");
     const deliveryZoneId = searchParams.get("deliveryZoneId");
+    const isScheduledParam = searchParams.get("isScheduled");
     const orderId = searchParams.get("orderId");
     const orderNumber = searchParams.get("orderNumber");
     const customerPhone = searchParams.get("customerPhone");
@@ -175,6 +176,11 @@ export async function GET(req: Request) {
     }
     if (deliveryZoneId && deliveryZoneId !== "ALL") {
       where.deliveryZoneId = deliveryZoneId;
+    }
+    if (isScheduledParam === "true") {
+      where.isScheduled = true;
+    } else if (isScheduledParam === "false") {
+      where.isScheduled = false;
     }
     if (orderId) {
       where.id = orderId;
@@ -204,6 +210,7 @@ export async function GET(req: Request) {
         outlet: { select: { id: true, name: true, code: true } },
         table: { select: { id: true, tableNumber: true, zone: true } },
         deliveryZone: { select: { id: true, nameAr: true, fee: true, estimatedTime: true } },
+        driver: { select: { id: true, name: true, phone: true } },
         kdsTickets: true,
       },
     });
@@ -231,6 +238,13 @@ export async function POST(req: Request) {
       deliveryAddress,
       deliveryPhone,
       deliveryNotes,
+      paymentMethod,
+      isScheduled,
+      scheduledFor,
+      depositRequired: explicitDepositRequired,
+      depositPaid: explicitDepositPaid,
+      depositStatus: explicitDepositStatus,
+      depositReceiptUrl,
       cashierName,
       waiterName,
       discountAmount,
@@ -408,6 +422,24 @@ export async function POST(req: Request) {
       customerId = cust.id;
     }
 
+    const scheduledFlag = Boolean(isScheduled && scheduledFor);
+    const depositPercent = settings?.preOrderDepositPercent || 30;
+    const goodsNet = Math.max(0, subtotal - discount);
+    const computedDepositRequired = scheduledFlag
+      ? explicitDepositRequired !== undefined
+        ? Number(explicitDepositRequired)
+        : Number(((goodsNet * depositPercent) / 100).toFixed(2))
+      : 0;
+    const computedDepositPaid = scheduledFlag ? Number(explicitDepositPaid) || 0 : 0;
+    const computedDepositStatus = scheduledFlag
+      ? explicitDepositStatus ||
+        (depositReceiptUrl
+          ? "PENDING_VERIFICATION"
+          : computedDepositPaid >= computedDepositRequired && computedDepositRequired > 0
+          ? "CONFIRMED"
+          : "NONE")
+      : "NONE";
+
     // 2. Create the Order
     const order = await prisma.order.create({
       data: {
@@ -421,8 +453,15 @@ export async function POST(req: Request) {
         deliveryAddress: deliveryAddress?.trim() || null,
         deliveryPhone: deliveryPhone?.trim() || null,
         deliveryNotes: deliveryNotes?.trim() || null,
+        isScheduled: scheduledFlag,
+        scheduledFor: scheduledFlag && scheduledFor ? new Date(scheduledFor) : null,
+        depositRequired: computedDepositRequired,
+        depositPaid: computedDepositPaid,
+        depositStatus: computedDepositStatus,
+        depositReceiptUrl: depositReceiptUrl || null,
         status: "NEW_PENDING",
         paymentStatus: "PENDING",
+        paymentMethod: paymentMethod || "CASH",
         subtotal: Number(subtotal.toFixed(2)),
         serviceCharge: Number(serviceCharge.toFixed(2)),
         taxAmount: Number(taxAmount.toFixed(2)),
@@ -442,6 +481,7 @@ export async function POST(req: Request) {
       include: {
         outlet: { select: { id: true, name: true, code: true } },
         deliveryZone: { select: { id: true, nameAr: true, fee: true, estimatedTime: true } },
+        driver: { select: { id: true, name: true, phone: true } },
       },
     });
 
@@ -456,11 +496,13 @@ export async function POST(req: Request) {
       });
     }
 
-    // 4. Automated Inventory & Recipe Depletion
-    await depleteInventory(items, order.orderNumber);
+    // 4. Automated Inventory & Recipe Depletion (deferred for future scheduled pre-orders until preparation/completion)
+    if (!scheduledFlag) {
+      await depleteInventory(items, order.orderNumber);
+    }
 
-    // 5. Create KDS Tickets strictly for Soulmate Cafe (Abu Adel goes directly to Abu Adel POS & Dispatch Queue)
-    if (targetOutletObj?.code === "SOULMATE_CAFE") {
+    // 5. Create KDS Tickets strictly for Soulmate Cafe (immediate non-scheduled or ready orders)
+    if (targetOutletObj?.code === "SOULMATE_CAFE" && !scheduledFlag) {
       await createKdsTickets(items, order.id);
     }
 
@@ -477,10 +519,19 @@ export async function PATCH(req: Request) {
       orderId,
       action,
       paymentMethod,
+      paymentStatus,
       discountAmount,
       tipAmount,
       cashierName,
+      driverId,
       driverName,
+      driverPhone,
+      depositPaid,
+      depositStatus,
+      depositReceiptUrl,
+      scheduledFor,
+      alertSent48h,
+      alertSent24h,
       status,
     } = body;
 
@@ -493,25 +544,131 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ success: false, error: "الطلب غير موجود" }, { status: 404 });
     }
 
-    // Action: DISPATCH_DRIVER (تسليم الطلب للطيار وخروج للتوصيل)
+    // Helper: Ensure deferred inventory depletion runs at most once per orderNumber
+    const ensureDepletedOnce = async () => {
+      const [existingProdMov, existingRawMov] = await Promise.all([
+        prisma.productMovement.findFirst({ where: { orderNumber: order.orderNumber } }),
+        prisma.rawMaterialMovement.findFirst({ where: { orderNumber: order.orderNumber } }),
+      ]);
+      if (!existingProdMov && !existingRawMov) {
+        let parsedItems: any[] = [];
+        try {
+          parsedItems = typeof order.items === "string" ? JSON.parse(order.items) : order.items || [];
+        } catch {
+          parsedItems = [];
+        }
+        if (parsedItems.length > 0) {
+          await depleteInventory(parsedItems, order.orderNumber);
+        }
+      }
+    };
+
+    // Action: DISPATCH_DRIVER (تسليم الطلب للطيار مع اسمه ورقمه وخروج للتوصيل)
     if (action === "DISPATCH_DRIVER") {
+      let resolvedDriverId: string | null = driverId || null;
+      let resolvedDriverName = driverName?.trim() || "";
+      let resolvedDriverPhone = driverPhone?.trim() || "";
+
+      if (resolvedDriverId) {
+        const drv = await prisma.deliveryDriver.findUnique({ where: { id: resolvedDriverId } });
+        if (drv) {
+          resolvedDriverName = resolvedDriverName || drv.name;
+          resolvedDriverPhone = resolvedDriverPhone || drv.phone;
+        }
+      }
+
+      if (order.isScheduled) {
+        await ensureDepletedOnce();
+      }
+
       const updatedOrder = await prisma.order.update({
         where: { id: orderId },
         data: {
           status: "OUT_FOR_DELIVERY",
-          driverName: driverName?.trim() || "طيار التوصيل السريع",
+          driverId: resolvedDriverId,
+          driverName: resolvedDriverName || "طيار التوصيل السريع",
+          driverPhone: resolvedDriverPhone || null,
           dispatchedAt: new Date(),
         },
         include: {
           outlet: { select: { id: true, name: true, code: true } },
           deliveryZone: { select: { id: true, nameAr: true, fee: true } },
+          driver: { select: { id: true, name: true, phone: true } },
         },
       });
       return NextResponse.json({
         success: true,
-        message: `تم تسليم الطلب (${order.orderNumber}) للطيار: ${updatedOrder.driverName} وخرج للتوصيل 🛵`,
+        message: `تم تسليم الطلب (${order.orderNumber}) للطيار: ${updatedOrder.driverName}${updatedOrder.driverPhone ? ` (${updatedOrder.driverPhone})` : ""} وخرج للتوصيل 🛵`,
         order: updatedOrder,
       });
+    }
+
+    // Action: CONFIRM_DEPOSIT (تأكيد أو تسجيل عربون الحجز المسبق)
+    if (action === "CONFIRM_DEPOSIT") {
+      const resolvedPaid =
+        depositPaid !== undefined ? Number(depositPaid) : order.depositRequired || order.depositPaid;
+      const updatedOrder = await prisma.order.update({
+        where: { id: orderId },
+        data: {
+          depositPaid: Number(resolvedPaid.toFixed(2)),
+          depositStatus: depositStatus || "CONFIRMED",
+          ...(paymentMethod ? { paymentMethod } : {}),
+          ...(depositReceiptUrl !== undefined ? { depositReceiptUrl } : {}),
+          ...(resolvedPaid >= order.finalAmount && order.finalAmount > 0
+            ? { paymentStatus: "PAID", settledAt: new Date() }
+            : {}),
+        },
+        include: {
+          outlet: { select: { id: true, name: true, code: true } },
+          deliveryZone: { select: { id: true, nameAr: true, fee: true } },
+          driver: { select: { id: true, name: true, phone: true } },
+        },
+      });
+      return NextResponse.json({
+        success: true,
+        message: `تم تأكيد عربون الحجز (${updatedOrder.orderNumber}) بمبلغ ${updatedOrder.depositPaid} ج.م بنجاح ✅`,
+        order: updatedOrder,
+      });
+    }
+
+    // Action: UPDATE_PAYMENT (تعديل طريقة الدفع أو إرسال إيصال عربون بعد الطلب)
+    if (action === "UPDATE_PAYMENT") {
+      const updatedOrder = await prisma.order.update({
+        where: { id: orderId },
+        data: {
+          ...(paymentMethod !== undefined ? { paymentMethod } : {}),
+          ...(paymentStatus !== undefined ? { paymentStatus } : {}),
+          ...(depositReceiptUrl !== undefined ? { depositReceiptUrl } : {}),
+          ...(depositStatus !== undefined ? { depositStatus } : {}),
+          ...(depositPaid !== undefined ? { depositPaid: Number(depositPaid) } : {}),
+          ...(scheduledFor ? { scheduledFor: new Date(scheduledFor) } : {}),
+          ...(driverId !== undefined ? { driverId } : {}),
+          ...(driverName !== undefined ? { driverName: driverName?.trim() || null } : {}),
+          ...(driverPhone !== undefined ? { driverPhone: driverPhone?.trim() || null } : {}),
+        },
+        include: {
+          outlet: { select: { id: true, name: true, code: true } },
+          deliveryZone: { select: { id: true, nameAr: true, fee: true } },
+          driver: { select: { id: true, name: true, phone: true } },
+        },
+      });
+      return NextResponse.json({
+        success: true,
+        message: `تم تحديث بيانات الدفع/التوصيل للطلب (${updatedOrder.orderNumber}) بنجاح ✅`,
+        order: updatedOrder,
+      });
+    }
+
+    // Action: MARK_ALERT_SENT (تسجيل إرسال تنبيه 48 أو 24 ساعة)
+    if (action === "MARK_ALERT_SENT") {
+      const updatedOrder = await prisma.order.update({
+        where: { id: orderId },
+        data: {
+          ...(alertSent48h !== undefined ? { alertSent48h: Boolean(alertSent48h) } : {}),
+          ...(alertSent24h !== undefined ? { alertSent24h: Boolean(alertSent24h) } : {}),
+        },
+      });
+      return NextResponse.json({ success: true, order: updatedOrder });
     }
 
     // Action: REQUEST_BILL (طلب الحساب / شيك أوت من الزبون)
@@ -528,7 +685,7 @@ export async function PATCH(req: Request) {
       });
     }
 
-    // Action: Settle & Collect Cashier Payment (تقفيل الحساب ودفع الفاتورة)
+    // Action: Settle & Collect Cashier Payment (تقفيل الحساب ودفع الفاتورة مع فصل رسوم التوصيل عن إيراد المحل!)
     if (action === "SETTLE") {
       const discount = discountAmount !== undefined ? Number(discountAmount) : order.discountAmount;
       const tip = tipAmount !== undefined ? Number(tipAmount) : order.tipAmount;
@@ -536,13 +693,18 @@ export async function PATCH(req: Request) {
         0,
         order.subtotal + order.serviceCharge + order.taxAmount + (order.deliveryFee || 0) - discount + tip
       );
+      const effectiveMethod = paymentMethod || order.paymentMethod || "CASH";
+
+      if (order.isScheduled) {
+        await ensureDepletedOnce();
+      }
 
       const updatedOrder = await prisma.order.update({
         where: { id: orderId },
         data: {
           paymentStatus: "PAID",
           status: "COMPLETED",
-          paymentMethod: paymentMethod || "CASH",
+          paymentMethod: effectiveMethod,
           discountAmount: discount,
           tipAmount: tip,
           finalAmount: Number(newFinal.toFixed(2)),
@@ -552,6 +714,8 @@ export async function PATCH(req: Request) {
         include: {
           outlet: true,
           table: true,
+          deliveryZone: true,
+          driver: true,
         },
       });
 
@@ -566,27 +730,28 @@ export async function PATCH(req: Request) {
         });
       }
 
-      // Update active Shift if one exists
+      // Update active Shift if one exists (CRITICAL: Keep deliveryFee OUT of Store Revenue!)
       try {
         const activeShift = await prisma.shift.findFirst({
           where: { outletId: order.outletId, status: "OPEN" },
           orderBy: { openedAt: "desc" },
         });
 
-        if (activeShift) {
-          const method = paymentMethod || "CASH";
-          const amount = Number(newFinal.toFixed(2));
+        if (activeShift && order.paymentStatus !== "PAID") {
+          const deliveryPortion = Number(order.deliveryFee || 0);
+          const storeRevenuePortion = Number(Math.max(0, newFinal - deliveryPortion).toFixed(2));
           await prisma.shift.update({
             where: { id: activeShift.id },
             data: {
-              totalRevenue: { increment: amount },
+              totalRevenue: { increment: storeRevenuePortion },
+              deliveryFeesTotal: { increment: deliveryPortion },
               ticketsCount: { increment: 1 },
-              ...(method === "CASH"
-                ? { cashCollected: { increment: amount }, expectedCash: { increment: amount } }
+              ...(effectiveMethod === "CASH"
+                ? { cashCollected: { increment: storeRevenuePortion }, expectedCash: { increment: storeRevenuePortion } }
                 : {}),
-              ...(method === "CARD" ? { visaCollected: { increment: amount } } : {}),
-              ...(method === "INSTAPAY" ? { instapayCollected: { increment: amount } } : {}),
-              ...(method === "VODAFONE_CASH" ? { vodafoneCollected: { increment: amount } } : {}),
+              ...(effectiveMethod === "CARD" ? { visaCollected: { increment: storeRevenuePortion } } : {}),
+              ...(effectiveMethod === "INSTAPAY" ? { instapayCollected: { increment: storeRevenuePortion } } : {}),
+              ...(effectiveMethod === "VODAFONE_CASH" ? { vodafoneCollected: { increment: storeRevenuePortion } } : {}),
             },
           });
         }
@@ -620,17 +785,25 @@ export async function PATCH(req: Request) {
 
     // Action: Direct Status Update (e.g. from KDS or Waiter or Driver or Prep Station)
     if (status) {
+      if (order.isScheduled && (status === "PREPARING" || status === "READY_TO_SERVE" || status === "COMPLETED")) {
+        await ensureDepletedOnce();
+      }
+
       const updatedOrder = await prisma.order.update({
         where: { id: orderId },
         data: {
           status,
+          ...(driverId !== undefined && { driverId }),
           ...(driverName && { driverName: driverName.trim() }),
+          ...(driverPhone !== undefined && { driverPhone: driverPhone?.trim() || null }),
+          ...(paymentMethod && { paymentMethod }),
           ...(status === "OUT_FOR_DELIVERY" && { dispatchedAt: new Date() }),
           ...(status === "COMPLETED" && { settledAt: new Date() }),
         },
         include: {
           outlet: { select: { id: true, name: true, code: true } },
           deliveryZone: { select: { id: true, nameAr: true, fee: true } },
+          driver: { select: { id: true, name: true, phone: true } },
         },
       });
 

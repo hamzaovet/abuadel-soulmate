@@ -9,22 +9,34 @@ export async function GET(req: Request) {
     const outletId = searchParams.get("outletId");
     const tableNumber = searchParams.get("tableNumber");
     const customerPhone = searchParams.get("customerPhone");
+    const guestId = searchParams.get("guestId");
 
     const where: any = {};
     if (outletId && outletId !== "ALL") {
       where.outletId = outletId;
     }
+
+    const identityFilters: any[] = [];
     if (tableNumber) {
-      where.tableNumber = tableNumber;
+      identityFilters.push({ tableNumber });
     }
     if (customerPhone) {
-      where.senderPhone = customerPhone;
+      identityFilters.push({ senderPhone: customerPhone });
+    }
+    if (guestId && guestId !== customerPhone) {
+      identityFilters.push({ senderPhone: guestId });
+    }
+
+    if (identityFilters.length === 1) {
+      Object.assign(where, identityFilters[0]);
+    } else if (identityFilters.length > 1) {
+      where.OR = identityFilters;
     }
 
     const messages = await prisma.chatMessage.findMany({
       where,
       orderBy: { createdAt: "asc" },
-      take: 150,
+      take: 200,
       include: { outlet: { select: { id: true, name: true, code: true } } },
     });
 
@@ -42,13 +54,15 @@ export async function POST(req: Request) {
       senderType, // "CUSTOMER" | "STAFF"
       senderName,
       senderPhone,
+      guestId,
       tableNumber,
       orderNumber,
       message,
+      imageUrl,
     } = body;
 
-    if (!message?.trim()) {
-      return NextResponse.json({ success: false, error: "نص الرسالة مطلوب" }, { status: 400 });
+    if (!message?.trim() && !imageUrl) {
+      return NextResponse.json({ success: false, error: "نص الرسالة أو الصورة مطلوب" }, { status: 400 });
     }
 
     // Default outlet to Soulmate Cafe if not provided
@@ -60,15 +74,24 @@ export async function POST(req: Request) {
       targetOutletId = soulmate?.id || (await prisma.outlet.findFirst())?.id;
     }
 
+    // If customer now uses a real phone after chatting earlier as guestId, unify prior guest thread
+    if (senderType === "CUSTOMER" && senderPhone && guestId && senderPhone !== guestId) {
+      await prisma.chatMessage.updateMany({
+        where: { senderPhone: guestId },
+        data: { senderPhone },
+      });
+    }
+
     const chatMsg = await prisma.chatMessage.create({
       data: {
         outletId: targetOutletId,
         senderType: senderType || "CUSTOMER",
         senderName: senderName || "عميل",
-        senderPhone: senderPhone || null,
+        senderPhone: senderPhone || guestId || null,
         tableNumber: tableNumber || null,
         orderNumber: orderNumber || null,
-        message: message.trim(),
+        message: message?.trim() || "📎 صورة مرفقة",
+        imageUrl: imageUrl || null,
       },
       include: { outlet: { select: { id: true, name: true, code: true } } },
     });
@@ -82,7 +105,29 @@ export async function POST(req: Request) {
 export async function PATCH(req: Request) {
   try {
     const body = await req.json();
-    const { outletId } = body;
+    const { outletId, targetRole, customerPhone, guestId, tableNumber } = body;
+
+    if (targetRole === "STAFF") {
+      const identityFilters: any[] = [];
+      if (tableNumber) identityFilters.push({ tableNumber });
+      if (customerPhone) identityFilters.push({ senderPhone: customerPhone });
+      if (guestId && guestId !== customerPhone) identityFilters.push({ senderPhone: guestId });
+
+      if (identityFilters.length === 0) {
+        return NextResponse.json({ success: true });
+      }
+      const where: any = { senderType: "STAFF", isRead: false };
+      if (outletId && outletId !== "ALL") where.outletId = outletId;
+      if (identityFilters.length === 1) Object.assign(where, identityFilters[0]);
+      else where.OR = identityFilters;
+
+      await prisma.chatMessage.updateMany({
+        where,
+        data: { isRead: true },
+      });
+      return NextResponse.json({ success: true });
+    }
+
     const where: any = { senderType: "CUSTOMER", isRead: false };
     if (outletId && outletId !== "ALL") {
       where.outletId = outletId;
