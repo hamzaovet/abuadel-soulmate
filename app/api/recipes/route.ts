@@ -43,7 +43,8 @@ export async function GET(req: Request) {
       }),
     ]);
 
-    // Enrich raw materials with ERP ledger summaries
+    // Enrich raw materials with ERP ledger & lead-time reorder metrics
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const rawMaterials = rawMaterialsRaw.map((raw) => {
       const movements = raw.movements || [];
       const totalInbound = movements
@@ -53,6 +54,17 @@ export async function GET(req: Request) {
       const totalConsumed = movements
         .filter((m) => m.type === "CONSUMPTION")
         .reduce((sum, m) => sum + Math.abs(m.quantity), 0);
+
+      const consumed7d = movements
+        .filter((m) => m.type === "CONSUMPTION" && new Date(m.createdAt) >= sevenDaysAgo)
+        .reduce((sum, m) => sum + Math.abs(m.quantity), 0);
+      const estimatedDailyUsage = Math.max(Number(raw.avgDailyUsage || 0), consumed7d / 7);
+      const leadTimeDays = Number(raw.leadTimeDays || 3);
+      const daysRemaining =
+        estimatedDailyUsage > 0 ? Number((raw.currentStock / estimatedDailyUsage).toFixed(1)) : 999;
+      const reorderUrgent =
+        raw.currentStock <= raw.minStockAlert ||
+        (estimatedDailyUsage > 0 && daysRemaining <= leadTimeDays);
 
       const openingStock = raw.openingStock || 0;
       const expectedStock = openingStock + totalInbound - totalConsumed;
@@ -65,6 +77,11 @@ export async function GET(req: Request) {
         expectedStock,
         currentStock: raw.currentStock,
         costPerUnit: raw.costPerUnit,
+        leadTimeDays,
+        avgDailyUsage: Number(raw.avgDailyUsage || 0),
+        estimatedDailyUsage: Number(estimatedDailyUsage.toFixed(2)),
+        daysRemaining,
+        reorderUrgent,
       };
     });
 
@@ -91,7 +108,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const {
+      const {
       action,
       outletId,
       nameAr,
@@ -99,6 +116,8 @@ export async function POST(req: Request) {
       openingStock,
       currentStock,
       minStockAlert,
+      leadTimeDays,
+      avgDailyUsage,
       costPerUnit,
       supplierName,
       invoiceNumber,
@@ -135,6 +154,8 @@ export async function POST(req: Request) {
 
       const initialOpening = Number(openingStock) || Number(currentStock) || 0;
       const unitCost = Number(costPerUnit) || 0.5;
+      const leadDays = Math.max(1, Math.round(Number(leadTimeDays) || 3));
+      const dailyUse = Math.max(0, Number(avgDailyUsage) || 0);
 
       const raw = await prisma.rawMaterial.create({
         data: {
@@ -143,7 +164,9 @@ export async function POST(req: Request) {
           unit: unit || "GRAM",
           openingStock: initialOpening,
           currentStock: initialOpening,
-          minStockAlert: Number(minStockAlert) || 200,
+          minStockAlert: Number(minStockAlert) || (dailyUse > 0 ? Math.ceil(dailyUse * leadDays) : 200),
+          leadTimeDays: leadDays,
+          avgDailyUsage: dailyUse,
           costPerUnit: unitCost,
           supplierName: supplierName?.trim() || null,
           notes: notes?.trim() || null,
@@ -411,7 +434,7 @@ export async function POST(req: Request) {
 export async function PATCH(req: Request) {
   try {
     const body = await req.json();
-    const { action, id, rawMaterialId, addedStock, quantity, newCostPerUnit, costPerUnit, supplierName, invoiceNumber, recordedBy, notes, nameAr, unit, minStockAlert } = body;
+    const { action, id, rawMaterialId, addedStock, quantity, newCostPerUnit, costPerUnit, supplierName, invoiceNumber, recordedBy, notes, nameAr, unit, minStockAlert, leadTimeDays, avgDailyUsage } = body;
     const targetId = id || rawMaterialId;
 
     if (!targetId) {
@@ -466,6 +489,8 @@ export async function PATCH(req: Request) {
         ...(nameAr && { nameAr: nameAr.trim() }),
         ...(unit && { unit }),
         ...(minStockAlert !== undefined && { minStockAlert: Number(minStockAlert) }),
+        ...(leadTimeDays !== undefined && { leadTimeDays: Math.max(1, Math.round(Number(leadTimeDays))) }),
+        ...(avgDailyUsage !== undefined && { avgDailyUsage: Math.max(0, Number(avgDailyUsage)) }),
         ...(newCostPerUnit !== undefined && { costPerUnit: Number(newCostPerUnit) }),
         ...(costPerUnit !== undefined && { costPerUnit: Number(costPerUnit) }),
         ...(notes !== undefined && { notes }),

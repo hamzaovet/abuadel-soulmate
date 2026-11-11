@@ -22,20 +22,22 @@ model Outlet {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 
-  users           User[]
-  tables          DiningTable[]
-  menuItems       MenuItem[]
-  rawMaterials    RawMaterial[]
-  orders          Order[]
-  shifts          Shift[]
-  expenses        Expense[]
-  reservations    Reservation[]
-  chatMessages    ChatMessage[]
-  inventoryAudits InventoryAudit[]
-  pastryAudits    PastryAudit[]
-  dailyCloses     DailyClose[]
-  deliveryDrivers DeliveryDriver[]
-  factoryOrders   FactoryOrder[]
+  users                User[]
+  tables               DiningTable[]
+  menuItems            MenuItem[]
+  rawMaterials         RawMaterial[]
+  orders               Order[]
+  shifts               Shift[]
+  expenses             Expense[]
+  reservations         Reservation[]
+  chatMessages         ChatMessage[]
+  inventoryAudits      InventoryAudit[]
+  pastryAudits         PastryAudit[]
+  dailyCloses          DailyClose[]
+  deliveryDrivers      DeliveryDriver[]
+  factoryOrders        FactoryOrder[]
+  suppliers            Supplier[]
+  supplierTransactions SupplierTransaction[]
 }
 
 // ----------------------------------------------------
@@ -94,6 +96,7 @@ model MenuItem {
   openingStock          Float    @default(0) // رصيد بداية المدة الافتتاحي للحلويات
   stockQty              Float    @default(0) // الرصيد الفعلي الحالي بالمحل (يدعم الكسور للكيلو)
   minStockAlert         Float    @default(10)
+  defaultSupplierId     String?
   isAvailable           Boolean  @default(true)
   sortOrder             Int      @default(0)
   loyaltyPointsEarned   Int      @default(5)
@@ -160,18 +163,21 @@ model PastryAuditItem {
 // 5. RAW MATERIALS INVENTORY (خامات البار ومخزن المشروبات)
 // ----------------------------------------------------
 model RawMaterial {
-  id            String   @id @default(cuid())
-  outletId      String
-  outlet        Outlet   @relation(fields: [outletId], references: [id], onDelete: Cascade)
-  nameAr        String // بن إسبريسو حبوب، حليب كامل الدسم، سيرب فانيليا، صوص لوتس، أكواب ورقية
-  unit          String   @default("GRAM") // "GRAM", "ML", "PIECE", "PUMP", "KG", "LITER"
-  openingStock  Float    @default(0) // رصيد بداية المدة
-  currentStock  Float    @default(1000)
-  minStockAlert Float    @default(200)
-  costPerUnit   Float    @default(0.5) // EGP per Gram or ML
-  supplierName  String?
-  notes         String?
-  updatedAt     DateTime @default(now()) @updatedAt
+  id                String   @id @default(cuid())
+  outletId          String
+  outlet            Outlet   @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  nameAr            String // بن إسبريسو حبوب، حليب كامل الدسم، سيرب فانيليا، صوص لوتس، أكواب ورقية
+  unit              String   @default("GRAM") // "GRAM", "ML", "PIECE", "PUMP", "KG", "LITER"
+  openingStock      Float    @default(0) // رصيد بداية المدة
+  currentStock      Float    @default(1000)
+  minStockAlert     Float    @default(200)
+  leadTimeDays      Int      @default(3) // مهلة تنفيذ المصنع / التوريد بالأيام (مثلاً 21 يوم للأكواب الكرتون)
+  avgDailyUsage     Float    @default(0) // الاستهلاك اليومي التقديري اليدوي (اختياري)
+  costPerUnit       Float    @default(0.5) // EGP per Gram or ML
+  supplierName      String?
+  defaultSupplierId String?
+  notes             String?
+  updatedAt         DateTime @default(now()) @updatedAt
 
   recipeUsage RecipeItem[]
   movements   RawMaterialMovement[]
@@ -481,6 +487,15 @@ model SystemSettings {
   offersEnabled Boolean @default(true)
   specialOffers String?
 
+  // 🔔 التقرير اليومي التلقائي والتنبيه الصوتي + توريد أبو عادل -> سول ميت + Gemini
+  dailyReportAlertEnabled     Boolean @default(true)
+  dailyReportAlertTime        String  @default("20:00") // 8:00 مساءً بتوقيت القاهرة (قابل للتعديل)
+  dailyReportRepeatSeconds    Int     @default(4)
+  dailyReportAlertSound       Boolean @default(true)
+  internalSupplyMarkupEnabled Boolean @default(false) // تفعيل هامش بسيط عند توريد أبو عادل لسول ميت
+  internalSupplyMarkupPercent Float   @default(0.0) // النسبة المئوية للهامش الإضافي (الافتراضي 0% نفس التكلفة)
+  geminiApiKey                String? // اختياري كاحتياطي في السحابة
+
   receiptFooterNotes String   @default("شكراً لزيارتكم حلواني أبو عادل وسول ميت كافيه • حلي يومك واستمتع بقهوتك ☕🍰")
   systemLocked       Boolean  @default(false)
   lockMessage        String   @default("النظام مغلق مؤقتاً لأعمال الجرد والصيانة الدورية.")
@@ -555,4 +570,52 @@ model FactoryOrderItem {
   suggestedQty   Float        @default(0)
   approvedQty    Float        @default(0)
   notes          String?
+}
+
+// ----------------------------------------------------
+// 16. SUPPLIERS & INTER-BRAND LEDGER (المصنع والموردين وحساب أبو عادل <-> سول ميت)
+// ----------------------------------------------------
+model Supplier {
+  id                     String   @id @default(cuid())
+  outletId               String
+  outlet                 Outlet   @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  code                   String? // "MAIN_FACTORY", "ABU_ADEL_INTERNAL", "CUPS_PACKAGING", custom
+  name                   String
+  supplierType           String   @default("FACTORY") // "FACTORY" | "RAW_MATERIALS" | "INTERNAL_ABU_ADEL" | "GENERAL"
+  phone                  String?
+  contactPerson          String?
+  address                String?
+  openingBalance         Float    @default(0) // رصيد أول المدة الدائن للمورد (علينا له)
+  isInternalSupply       Boolean  @default(false) // true لحساب توريد حلواني أبو عادل -> سول ميت كافيه
+  deductFromSourceOutlet Boolean  @default(true) // عند توريد أبو عادل لسول ميت: خصم من مخزن أبو عادل تلقائياً
+  notes                  String?
+  isActive               Boolean  @default(true)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @default(now()) @updatedAt
+
+  transactions SupplierTransaction[]
+}
+
+model SupplierTransaction {
+  id              String   @id @default(cuid())
+  supplierId      String
+  supplier        Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  outletId        String
+  outlet          Outlet   @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  type            String // "INVOICE" | "PAYMENT" | "RETURN" | "ADJUSTMENT"
+  invoiceNumber   String?
+  transactionDate DateTime @default(now())
+  totalAmount     Float    @default(0) // إجمالي قيمة الفاتورة أو مبلغ السداد
+  paidAmount      Float    @default(0) // المدفوع الفوري وقت الفاتورة (إن وجد)
+  remainingAmount Float    @default(0) // الآجل المتبقي من الفاتورة وقت صدورها
+  paymentStatus   String   @default("CREDIT") // "PAID" | "PARTIAL" | "CREDIT"
+  paymentMethod   String? // "CASH" | "INSTAPAY" | "VODAFONE_CASH" | "BANK_TRANSFER" | "CARD" | "CREDIT"
+  paymentSource   String   @default("OWNER_CURRENT_ACCOUNT") // "DRAWER" | "OWNER_CURRENT_ACCOUNT" | "MAIN_SAFE" | "BANK_ACCOUNT"
+  expenseId       String? // رابط مصروف الدرج إذا سُدد نقدياً من درج الكاشير
+  itemsJson       String? // JSON: أصناف الفاتورة المهضومة بالذكاء الاصطناعي أو اليدوية
+  imageUrl        String? // رابط/أرشيف صورة الفاتورة
+  aiConfidence    String? // "HIGH" | "MEDIUM" | "LOW" | "MANUAL"
+  recordedBy      String   @default("المايسترو")
+  notes           String?
+  createdAt       DateTime @default(now())
 }

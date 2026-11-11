@@ -11,7 +11,14 @@ export async function GET() {
         data: { id: "default-settings" },
       });
     }
-    return NextResponse.json({ success: true, settings });
+    const { geminiApiKey: storedKey, ...safeSettings } = settings;
+    return NextResponse.json({
+      success: true,
+      settings: {
+        ...safeSettings,
+        hasGeminiKey: Boolean(process.env.GEMINI_API_KEY || storedKey),
+      },
+    });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
@@ -64,6 +71,27 @@ export async function PATCH(req: Request) {
               ? body.specialOffers
               : JSON.stringify(body.specialOffers),
         }),
+        ...(body.dailyReportAlertEnabled !== undefined && {
+          dailyReportAlertEnabled: Boolean(body.dailyReportAlertEnabled),
+        }),
+        ...(body.dailyReportAlertTime !== undefined && {
+          dailyReportAlertTime: String(body.dailyReportAlertTime || "20:00"),
+        }),
+        ...(body.dailyReportRepeatSeconds !== undefined && {
+          dailyReportRepeatSeconds: Math.max(2, Math.round(Number(body.dailyReportRepeatSeconds) || 4)),
+        }),
+        ...(body.dailyReportAlertSound !== undefined && {
+          dailyReportAlertSound: Boolean(body.dailyReportAlertSound),
+        }),
+        ...(body.internalSupplyMarkupEnabled !== undefined && {
+          internalSupplyMarkupEnabled: Boolean(body.internalSupplyMarkupEnabled),
+        }),
+        ...(body.internalSupplyMarkupPercent !== undefined && {
+          internalSupplyMarkupPercent: Math.max(0, Number(body.internalSupplyMarkupPercent) || 0),
+        }),
+        ...(body.geminiApiKey !== undefined && String(body.geminiApiKey).trim() !== "" && {
+          geminiApiKey: String(body.geminiApiKey).trim(),
+        }),
         ...(body.receiptFooterNotes !== undefined && { receiptFooterNotes: body.receiptFooterNotes }),
         ...(body.systemLocked !== undefined && { systemLocked: Boolean(body.systemLocked) }),
         ...(body.lockMessage !== undefined && { lockMessage: body.lockMessage }),
@@ -74,7 +102,14 @@ export async function PATCH(req: Request) {
       },
     });
 
-    return NextResponse.json({ success: true, settings });
+    const { geminiApiKey: storedKey, ...safeSettings } = settings;
+    return NextResponse.json({
+      success: true,
+      settings: {
+        ...safeSettings,
+        hasGeminiKey: Boolean(process.env.GEMINI_API_KEY || storedKey),
+      },
+    });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }

@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import CardQRModal from "@/components/CardQRModal";
 import AdminLoyaltyCrmOffersPanel from "@/components/AdminLoyaltyCrmOffersPanel";
+import AdminDailyAlertAndBriefModal from "@/components/AdminDailyAlertAndBriefModal";
+import AdminSuppliersAndAiPanel from "@/components/AdminSuppliersAndAiPanel";
 import {
   SOULMATE_CATEGORIES,
   ABU_ADEL_CATEGORIES,
@@ -69,6 +71,7 @@ import {
   Phone,
   Send,
   Bell,
+  Factory,
 } from "lucide-react";
 
 interface Toast {
@@ -177,9 +180,20 @@ export default function AdminDashboardPage() {
     | "reservations"
     | "chat"
     | "loyalty"
+    | "suppliers"
     | "users"
     | "settings"
   >("overview");
+  const [dailyReportSignal, setDailyReportSignal] = useState(0);
+  const [dailyAlertStatus, setDailyAlertStatus] = useState<{
+    hasAlertPending: boolean;
+    isRinging: boolean;
+    urgentRawCount: number;
+    factoryNeedsCount: number;
+  }>({ hasAlertPending: false, isRinging: false, urgentRawCount: 0, factoryNeedsCount: 0 });
+  const [editingRawLeadMap, setEditingRawLeadMap] = useState<
+    Record<string, { leadTimeDays: string; minStockAlert: string; avgDailyUsage: string }>
+  >({});
 
   // Users Management state (Maestro & GM)
   const [usersList, setUsersList] = useState<any[]>(initialCache?.usersList || []);
@@ -324,6 +338,8 @@ export default function AdminDashboardPage() {
     unit: "GRAM",
     openingStock: "1000",
     minStockAlert: "200",
+    leadTimeDays: "3",
+    avgDailyUsage: "0",
     costPerUnit: "0.5",
     supplierName: "",
     notes: "",
@@ -1222,6 +1238,8 @@ export default function AdminDashboardPage() {
           unit: rawForm.unit,
           openingStock: parseFloat(rawForm.openingStock) || 0,
           minStockAlert: parseFloat(rawForm.minStockAlert) || 200,
+          leadTimeDays: Math.max(1, Math.round(parseFloat(rawForm.leadTimeDays) || 3)),
+          avgDailyUsage: Math.max(0, parseFloat(rawForm.avgDailyUsage) || 0),
           costPerUnit: parseFloat(rawForm.costPerUnit) || 0.5,
           supplierName: rawForm.supplierName,
           notes: rawForm.notes,
@@ -1236,6 +1254,8 @@ export default function AdminDashboardPage() {
           unit: "GRAM",
           openingStock: "1000",
           minStockAlert: "200",
+          leadTimeDays: "3",
+          avgDailyUsage: "0",
           costPerUnit: "0.5",
           supplierName: "",
           notes: "",
@@ -1247,6 +1267,37 @@ export default function AdminDashboardPage() {
       }
     } catch {
       addToast("error", "حدث خطأ أثناء حفظ الخامة");
+    }
+  };
+
+  const handleSaveRawLeadSettings = async (rawId: string) => {
+    const draft = editingRawLeadMap[rawId];
+    if (!draft) return;
+    try {
+      const res = await fetch("/api/recipes", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: rawId,
+          leadTimeDays: Math.max(1, Math.round(Number(draft.leadTimeDays) || 3)),
+          minStockAlert: Math.max(0, Number(draft.minStockAlert) || 0),
+          avgDailyUsage: Math.max(0, Number(draft.avgDailyUsage) || 0),
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast("success", "تم تحديث مهلة التوريد وحد الطلب بنجاح ✓");
+        setEditingRawLeadMap((prev) => {
+          const next = { ...prev };
+          delete next[rawId];
+          return next;
+        });
+        fetchDashboardData();
+      } else {
+        addToast("error", data.error || "فشل تحديث مهلة التوريد");
+      }
+    } catch {
+      addToast("error", "حدث خطأ في تحديث الخامة");
     }
   };
 
@@ -2290,6 +2341,29 @@ export default function AdminDashboardPage() {
               </Link>
             )}
 
+            {(isOwner || isBranchManager) && (
+              <button
+                type="button"
+                onClick={() => setDailyReportSignal((n) => n + 1)}
+                className={`flex items-center gap-1.5 font-bold px-3 py-1.5 rounded-xl text-xs border transition ${
+                  dailyAlertStatus.isRinging
+                    ? "bg-rose-600 hover:bg-rose-500 text-white border-rose-400 animate-pulse shadow-lg shadow-rose-500/30"
+                    : dailyAlertStatus.hasAlertPending || dailyAlertStatus.urgentRawCount > 0 || dailyAlertStatus.factoryNeedsCount > 0
+                    ? "bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border-amber-500/50"
+                    : "bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700"
+                }`}
+                title="التقرير اليومي وجرس الإغلاق والتوريد"
+              >
+                <Bell className={`w-4 h-4 ${dailyAlertStatus.isRinging ? "text-white" : "text-amber-400"}`} />
+                <span>التقرير اليومي وجرس الإغلاق</span>
+                {(dailyAlertStatus.urgentRawCount > 0 || dailyAlertStatus.factoryNeedsCount > 0) && (
+                  <span className="px-1.5 py-0.5 rounded-full text-[10px] font-black bg-rose-500 text-white">
+                    {dailyAlertStatus.urgentRawCount + dailyAlertStatus.factoryNeedsCount}
+                  </span>
+                )}
+              </button>
+            )}
+
             <button
               onClick={() => setShowQRModal(true)}
               className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs border border-slate-700 transition"
@@ -2444,6 +2518,25 @@ export default function AdminDashboardPage() {
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               )}
             </button>
+
+            {(isOwner || isBranchManager) && (
+              <button
+                onClick={() => setActiveTab("suppliers")}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+                  activeTab === "suppliers"
+                    ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                }`}
+              >
+                <Factory className="w-4 h-4" />
+                <span>المصنع والموردين والـ AI 🏭🤖</span>
+                {dailyAlertStatus.urgentRawCount > 0 && (
+                  <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-rose-500 text-white font-black">
+                    {dailyAlertStatus.urgentRawCount}
+                  </span>
+                )}
+              </button>
+            )}
 
             {/* Users & Permissions Tab (Maestro Exclusive!) */}
             {isOwner && (
@@ -4323,9 +4416,39 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
 
+                {rawMaterials.some((r) => r.reorderUrgent) && (
+                  <div className="bg-rose-950/40 border-2 border-rose-500/50 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-start gap-3 text-xs">
+                      <AlertTriangle className="w-5 h-5 text-rose-400 flex-shrink-0 mt-0.5 animate-pulse" />
+                      <div>
+                        <h4 className="font-black text-rose-300 mb-1">
+                          تنبيه توريد مبكر لخامات المصنع (مهلة التصنيع والتوريد)!
+                        </h4>
+                        <p className="text-slate-200 leading-relaxed">
+                          الأصناف التالية دخلت منطقة التوريد المسبق (مثل الأكواب الكرتون التي تحتاج 21 يوم / 3 أسابيع قبل نفاد الرصيد):{" "}
+                          <strong className="text-amber-300">
+                            {rawMaterials
+                              .filter((r) => r.reorderUrgent)
+                              .map((r) => `${r.nameAr} (مهلة ${r.leadTimeDays || 3} يوم)`)
+                              .join(" • ")}
+                          </strong>
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab("suppliers")}
+                      className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black whitespace-nowrap"
+                    >
+                      شاشة المصنع والموردين 🏭
+                    </button>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {rawMaterials.map((raw) => {
-                    const isLow = raw.currentStock <= raw.minStockAlert;
+                    const isLow = Boolean(raw.reorderUrgent) || raw.currentStock <= raw.minStockAlert;
+                    const leadDraft = editingRawLeadMap[raw.id];
                     const unitLabel =
                       raw.unit === "GRAM"
                         ? "جرام"
@@ -4354,14 +4477,14 @@ export default function AdminDashboardPage() {
                                 <span>{raw.nameAr}</span>
                               </h4>
                               <span className="text-[10px] text-slate-400 font-mono">
-                                وحدة القياس: {unitLabel}
+                                وحدة: {unitLabel} • مهلة: {raw.leadTimeDays || 3} يوم
                               </span>
                             </div>
                             <div className="flex flex-col items-end gap-1">
                               {isLow ? (
                                 <span className="px-2 py-0.5 rounded-full text-[10px] bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold flex items-center gap-1">
                                   <AlertTriangle className="w-3 h-3" />
-                                  <span>نواقص</span>
+                                  <span>{raw.reorderUrgent ? "اطلب الآن!" : "نواقص"}</span>
                                 </span>
                               ) : (
                                 <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold">
@@ -4395,11 +4518,111 @@ export default function AdminDashboardPage() {
                               </span>
                             </div>
                             <div>
-                              <span className="text-slate-400 block text-[10px]">الرصيد الدفتري المتوقع:</span>
-                              <span className="font-mono font-black text-amber-400">
-                                {(raw.expectedStock ?? raw.currentStock).toLocaleString()} {unitLabel}
+                              <span className="text-slate-400 block text-[10px]">يكفي تقريباً:</span>
+                              <span className={`font-mono font-black ${isLow ? "text-rose-400" : "text-amber-400"}`}>
+                                {raw.daysRemaining !== null && raw.daysRemaining !== undefined
+                                  ? `${raw.daysRemaining} يوم`
+                                  : `حد ${(raw.minStockAlert || 0).toLocaleString()}`}
                               </span>
                             </div>
+                          </div>
+
+                          {/* Inline Lead Time & Min Alert Editor */}
+                          <div className="bg-slate-950/50 border border-slate-800/80 rounded-xl p-2 mb-2 text-[10px] space-y-1.5">
+                            {leadDraft ? (
+                              <div className="space-y-1.5">
+                                <div className="grid grid-cols-3 gap-1">
+                                  <input
+                                    type="number"
+                                    min="1"
+                                    value={leadDraft.leadTimeDays}
+                                    onChange={(e) =>
+                                      setEditingRawLeadMap((prev) => ({
+                                        ...prev,
+                                        [raw.id]: { ...leadDraft, leadTimeDays: e.target.value },
+                                      }))
+                                    }
+                                    placeholder="مهلة (يوم)"
+                                    title="مهلة التوريد (أيام)"
+                                    className="bg-slate-900 border border-slate-700 rounded px-1.5 py-1 text-center text-white font-mono"
+                                  />
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    step="any"
+                                    value={leadDraft.avgDailyUsage}
+                                    onChange={(e) =>
+                                      setEditingRawLeadMap((prev) => ({
+                                        ...prev,
+                                        [raw.id]: { ...leadDraft, avgDailyUsage: e.target.value },
+                                      }))
+                                    }
+                                    placeholder="استهلاك/يوم"
+                                    title="الاستهلاك اليومي التقديري"
+                                    className="bg-slate-900 border border-slate-700 rounded px-1.5 py-1 text-center text-white font-mono"
+                                  />
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    step="any"
+                                    value={leadDraft.minStockAlert}
+                                    onChange={(e) =>
+                                      setEditingRawLeadMap((prev) => ({
+                                        ...prev,
+                                        [raw.id]: { ...leadDraft, minStockAlert: e.target.value },
+                                      }))
+                                    }
+                                    placeholder="حد الأمان"
+                                    title="حد الأمان / إعادة الطلب"
+                                    className="bg-slate-900 border border-slate-700 rounded px-1.5 py-1 text-center text-white font-mono"
+                                  />
+                                </div>
+                                <div className="flex justify-end gap-1">
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setEditingRawLeadMap((prev) => {
+                                        const next = { ...prev };
+                                        delete next[raw.id];
+                                        return next;
+                                      })
+                                    }
+                                    className="px-2 py-0.5 rounded bg-slate-800 text-slate-300"
+                                  >
+                                    إلغاء
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleSaveRawLeadSettings(raw.id)}
+                                    className="px-2 py-0.5 rounded bg-emerald-600 text-white font-bold"
+                                  >
+                                    حفظ المهلة ✓
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="flex items-center justify-between gap-2">
+                                <span className="text-slate-400">
+                                  حد الطلب: <strong className="text-slate-200 font-mono">{(raw.minStockAlert || 0).toLocaleString()}</strong> • مهلة: <strong className="text-amber-300 font-mono">{raw.leadTimeDays || 3} يوم</strong>
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setEditingRawLeadMap((prev) => ({
+                                      ...prev,
+                                      [raw.id]: {
+                                        leadTimeDays: String(raw.leadTimeDays || 3),
+                                        minStockAlert: String(raw.minStockAlert || 0),
+                                        avgDailyUsage: String(raw.avgDailyUsage || 0),
+                                      },
+                                    }))
+                                  }
+                                  className="text-amber-400 hover:underline font-bold"
+                                >
+                                  تعديل المهلة
+                                </button>
+                              </div>
+                            )}
                           </div>
 
                           {/* Main Current Stock Number */}
@@ -5330,8 +5553,9 @@ export default function AdminDashboardPage() {
                       <thead className="bg-slate-950 text-slate-300 border-b border-slate-800">
                         <tr>
                           <th className="py-3 px-3">الصنف والوحدة</th>
+                          <th className="py-3 px-2 text-emerald-400">مباع اليوم</th>
                           <th className="py-3 px-2">الرصيد الحالي</th>
-                          <th className="py-3 px-2">حد الأمان (تعديل)</th>
+                          <th className="py-3 px-2">حد الطلب اليومي (تعديل)</th>
                           <th className="py-3 px-2 text-rose-400">العجز عن الحد</th>
                           <th className="py-3 px-2 text-amber-400">حجوزات مؤكدة 📅</th>
                           <th className="py-3 px-2 text-sky-400">المقترح الكلي</th>
@@ -5342,7 +5566,7 @@ export default function AdminDashboardPage() {
                       <tbody className="divide-y divide-slate-800 font-mono">
                         {factoryLoading ? (
                           <tr>
-                            <td colSpan={8} className="py-10 text-center text-slate-400 font-sans">
+                            <td colSpan={9} className="py-10 text-center text-slate-400 font-sans">
                               جاري حساب النواقص والحجوزات ليوم {factoryDate}...
                             </td>
                           </tr>
@@ -5372,6 +5596,9 @@ export default function AdminDashboardPage() {
                                     <div className="text-[10px] text-slate-400">
                                       {getCategoryLabel(r.category)} • {r.unitType === "KG" ? "بالكيلو (KG)" : r.unitType === "BOX" ? "علبة" : "قطعة"}
                                     </div>
+                                  </td>
+                                  <td className="py-2.5 px-2 text-emerald-400 font-bold">
+                                    {r.soldToday > 0 ? formatAdminQty(r.soldToday, r.unitType) : "0"}
                                   </td>
                                   <td className="py-2.5 px-2 text-slate-200 font-bold">
                                     {formatAdminQty(r.currentStock, r.unitType)}
@@ -6836,6 +7063,19 @@ export default function AdminDashboardPage() {
           />
         )}
 
+        {/* TAB 9: FACTORY, SUPPLIERS LEDGER, INTERNAL TRANSFER & AI OCR */}
+        {activeTab === "suppliers" && (isOwner || isBranchManager) && (
+          <AdminSuppliersAndAiPanel
+            currentUser={currentUser}
+            outlets={outlets}
+            menuItems={menuItems}
+            rawMaterials={rawMaterials}
+            settings={settings}
+            onSettingsUpdated={(newSettings) => setSettings(newSettings)}
+            onDataChanged={fetchDashboardData}
+          />
+        )}
+
         {/* TAB: USERS & ROLES MANAGEMENT (MAESTRO & GM EXCLUSIVE) */}
         {activeTab === "users" && isOwner && (
           <div className="space-y-6">
@@ -7852,6 +8092,33 @@ export default function AdminDashboardPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
+                  <label className="block text-slate-300 font-bold mb-1">مهلة التوريد من المصنع (يوم)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    placeholder="21 للأكواب الكرتون / 3 للعادي"
+                    value={rawForm.leadTimeDays}
+                    onChange={(e) => setRawForm({ ...rawForm, leadTimeDays: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">الاستهلاك اليومي التقديري</label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0"
+                    placeholder="0 (يحسب تلقائياً لو 0)"
+                    value={rawForm.avgDailyUsage}
+                    onChange={(e) => setRawForm({ ...rawForm, avgDailyUsage: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
                   <label className="block text-slate-300 font-bold mb-1">اسم المورد الافتراضي</label>
                   <input
                     type="text"
@@ -8798,6 +9065,18 @@ export default function AdminDashboardPage() {
         onClose={() => setShowQRModal(false)}
         activeTable="T-01"
       />
+
+      {/* DAILY 8PM MANAGER BRIEF & REPEATING ALARM */}
+      {(isOwner || isBranchManager) && (
+        <AdminDailyAlertAndBriefModal
+          currentUser={currentUser}
+          settings={settings}
+          onSettingsUpdated={(newSettings) => setSettings(newSettings)}
+          onRefreshDashboard={fetchDashboardData}
+          externalOpenSignal={dailyReportSignal}
+          onStatusChange={setDailyAlertStatus}
+        />
+      )}
 
       {/* FLOATING TOAST NOTIFICATIONS */}
       <div className="fixed bottom-4 left-4 z-50 flex flex-col gap-2 pointer-events-none">

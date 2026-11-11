@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+function getTodayCairoDateStr() {
+  const now = new Date();
+  const cairoMs = now.getTime() + 2 * 60 * 60 * 1000;
+  const d = new Date(cairoMs);
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(d.getUTCDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 function getTomorrowCairoDateStr() {
   const now = new Date();
   const cairoMs = now.getTime() + 2 * 60 * 60 * 1000 + 24 * 60 * 60 * 1000;
@@ -40,12 +50,28 @@ export async function GET(req: NextRequest) {
     }
 
     const { start, end } = getDayBounds(targetDateStr);
+    const todayBounds = getDayBounds(getTodayCairoDateStr());
 
-    // 1. All Abu Adel menu items
-    const items = await prisma.menuItem.findMany({
-      where: { outletId: outlet.id },
-      orderBy: [{ category: "asc" }, { sortOrder: "asc" }, { nameAr: "asc" }],
-    });
+    // 1. All Abu Adel menu items + today's sales movements
+    const [items, todaySaleMovements] = await Promise.all([
+      prisma.menuItem.findMany({
+        where: { outletId: outlet.id },
+        orderBy: [{ category: "asc" }, { sortOrder: "asc" }, { nameAr: "asc" }],
+      }),
+      prisma.productMovement.findMany({
+        where: {
+          type: "SALE",
+          createdAt: { gte: todayBounds.start, lte: todayBounds.end },
+          menuItem: { outletId: outlet.id },
+        },
+      }),
+    ]);
+
+    const soldTodayMap: Record<string, number> = {};
+    for (const mv of todaySaleMovements) {
+      soldTodayMap[mv.menuItemId] =
+        (soldTodayMap[mv.menuItemId] || 0) + Math.abs(Number(mv.quantity || 0));
+    }
 
     // 2. Scheduled Pre-Orders matching targetDate
     const scheduledOrders = await prisma.order.findMany({
@@ -124,6 +150,7 @@ export async function GET(req: NextRequest) {
         price: it.price,
         costPrice: it.costPrice,
         currentStock,
+        soldToday: Number((soldTodayMap[it.id] || 0).toFixed(3)),
         minStockLevel,
         shortageQty,
         confirmedPreOrderQty,
