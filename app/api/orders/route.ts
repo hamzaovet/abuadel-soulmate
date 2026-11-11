@@ -157,7 +157,11 @@ export async function GET(req: Request) {
     const orderType = searchParams.get("orderType");
     const tableId = searchParams.get("tableId");
     const tableNumber = searchParams.get("tableNumber");
-    const limit = Number(searchParams.get("limit")) || 50;
+    const deliveryZoneId = searchParams.get("deliveryZoneId");
+    const orderId = searchParams.get("orderId");
+    const orderNumber = searchParams.get("orderNumber");
+    const customerPhone = searchParams.get("customerPhone");
+    const limit = Number(searchParams.get("limit")) || 80;
 
     const where: any = {};
     if (outletId && outletId !== "ALL") {
@@ -168,6 +172,18 @@ export async function GET(req: Request) {
     }
     if (orderType && orderType !== "ALL") {
       where.orderType = orderType;
+    }
+    if (deliveryZoneId && deliveryZoneId !== "ALL") {
+      where.deliveryZoneId = deliveryZoneId;
+    }
+    if (orderId) {
+      where.id = orderId;
+    }
+    if (orderNumber) {
+      where.orderNumber = orderNumber;
+    }
+    if (customerPhone) {
+      where.customerPhone = customerPhone;
     }
     if (tableId) {
       where.tableId = tableId;
@@ -187,6 +203,7 @@ export async function GET(req: Request) {
       include: {
         outlet: { select: { id: true, name: true, code: true } },
         table: { select: { id: true, tableNumber: true, zone: true } },
+        deliveryZone: { select: { id: true, nameAr: true, fee: true, estimatedTime: true } },
         kdsTickets: true,
       },
     });
@@ -208,6 +225,9 @@ export async function POST(req: Request) {
       items, // array of { menuItemId, nameAr, price, qty, notes, itemType, category }
       customerName,
       customerPhone,
+      deliveryZoneId,
+      deliveryZoneName,
+      deliveryFee: explicitDeliveryFee,
       deliveryAddress,
       deliveryPhone,
       deliveryNotes,
@@ -222,8 +242,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "بيانات الطلب والأصناف مطلوبة" }, { status: 400 });
     }
 
-    // Load Settings
-    const settings = await prisma.systemSettings.findFirst();
+    // Load Settings & Outlet
+    const [settings, targetOutletObj] = await Promise.all([
+      prisma.systemSettings.findFirst(),
+      prisma.outlet.findUnique({ where: { id: outletId } }),
+    ]);
 
     // 0. Resolve Table if DINE_IN
     let targetTable = null;
@@ -311,6 +334,26 @@ export async function POST(req: Request) {
       }
     }
 
+    // Resolve Dynamic Delivery Zone & Fee
+    let resolvedZoneId: string | null = deliveryZoneId || null;
+    let resolvedZoneName: string | null = deliveryZoneName?.trim() || null;
+    let deliveryFee = 0;
+
+    if (orderType === "DELIVERY") {
+      if (deliveryZoneId) {
+        const zone = await prisma.deliveryZone.findUnique({ where: { id: deliveryZoneId } });
+        if (zone) {
+          resolvedZoneId = zone.id;
+          resolvedZoneName = zone.nameAr;
+          deliveryFee = zone.fee;
+        } else {
+          deliveryFee = explicitDeliveryFee !== undefined ? Number(explicitDeliveryFee) : (settings?.deliveryFee || 20);
+        }
+      } else {
+        deliveryFee = explicitDeliveryFee !== undefined ? Number(explicitDeliveryFee) : (settings?.deliveryFee || 20);
+      }
+    }
+
     // Calculate Financials for New Order
     const subtotal = items.reduce((sum: number, it: any) => sum + Number(it.price) * Number(it.qty || 1), 0);
     const serviceCharge =
@@ -318,12 +361,11 @@ export async function POST(req: Request) {
         ? (subtotal * (settings.serviceChargePercent || 12)) / 100
         : 0;
     const taxAmount = settings?.isTaxEnabled ? (subtotal * (settings.taxPercent || 14)) / 100 : 0;
-    const deliveryFee = orderType === "DELIVERY" ? (settings?.deliveryFee || 20) : 0;
     const discount = Number(discountAmount) || 0;
     const tip = Number(tipAmount) || 0;
     const finalAmount = Math.max(0, subtotal + serviceCharge + taxAmount + deliveryFee - discount + tip);
 
-    // Generate Order Number
+    // Generate Order Number (Brand-aware prefix!)
     const count = await prisma.order.count();
     const prefix = orderType === "DINE_IN" ? "DINE" : orderType === "DELIVERY" ? "DELV" : "TAKE";
     const orderNumber = `${prefix}-${1000 + count + 1}`;
@@ -343,6 +385,8 @@ export async function POST(req: Request) {
           where: { id: cust.id },
           data: {
             name: customerName?.trim() || cust.name,
+            address: deliveryAddress?.trim() || cust.address,
+            city: resolvedZoneName || cust.city,
             totalSpent: cust.totalSpent + finalAmount,
             visitCount: cust.visitCount + 1,
             loyaltyPoints: cust.loyaltyPoints + pointsEarned,
@@ -353,6 +397,8 @@ export async function POST(req: Request) {
           data: {
             phone: cleanPhone,
             name: customerName?.trim() || "عميل VIP",
+            address: deliveryAddress?.trim() || null,
+            city: resolvedZoneName || null,
             totalSpent: finalAmount,
             visitCount: 1,
             loyaltyPoints: pointsEarned,
@@ -370,6 +416,8 @@ export async function POST(req: Request) {
         orderType: orderType || "DINE_IN",
         tableId: targetTable?.id || tableId || null,
         tableNumber: cleanTableNumber,
+        deliveryZoneId: resolvedZoneId,
+        deliveryZoneName: resolvedZoneName,
         deliveryAddress: deliveryAddress?.trim() || null,
         deliveryPhone: deliveryPhone?.trim() || null,
         deliveryNotes: deliveryNotes?.trim() || null,
@@ -391,6 +439,10 @@ export async function POST(req: Request) {
         notes: notes?.trim() || null,
         items: JSON.stringify(items),
       },
+      include: {
+        outlet: { select: { id: true, name: true, code: true } },
+        deliveryZone: { select: { id: true, nameAr: true, fee: true, estimatedTime: true } },
+      },
     });
 
     // 3. Occupy Dining Table if DINE_IN
@@ -407,8 +459,10 @@ export async function POST(req: Request) {
     // 4. Automated Inventory & Recipe Depletion
     await depleteInventory(items, order.orderNumber);
 
-    // 5. Create KDS Tickets
-    await createKdsTickets(items, order.id);
+    // 5. Create KDS Tickets strictly for Soulmate Cafe (Abu Adel goes directly to Abu Adel POS & Dispatch Queue)
+    if (targetOutletObj?.code === "SOULMATE_CAFE") {
+      await createKdsTickets(items, order.id);
+    }
 
     return NextResponse.json({ success: true, order, isAppended: false });
   } catch (error: any) {
@@ -426,6 +480,7 @@ export async function PATCH(req: Request) {
       discountAmount,
       tipAmount,
       cashierName,
+      driverName,
       status,
     } = body;
 
@@ -436,6 +491,27 @@ export async function PATCH(req: Request) {
     const order = await prisma.order.findUnique({ where: { id: orderId } });
     if (!order) {
       return NextResponse.json({ success: false, error: "الطلب غير موجود" }, { status: 404 });
+    }
+
+    // Action: DISPATCH_DRIVER (تسليم الطلب للطيار وخروج للتوصيل)
+    if (action === "DISPATCH_DRIVER") {
+      const updatedOrder = await prisma.order.update({
+        where: { id: orderId },
+        data: {
+          status: "OUT_FOR_DELIVERY",
+          driverName: driverName?.trim() || "طيار التوصيل السريع",
+          dispatchedAt: new Date(),
+        },
+        include: {
+          outlet: { select: { id: true, name: true, code: true } },
+          deliveryZone: { select: { id: true, nameAr: true, fee: true } },
+        },
+      });
+      return NextResponse.json({
+        success: true,
+        message: `تم تسليم الطلب (${order.orderNumber}) للطيار: ${updatedOrder.driverName} وخرج للتوصيل 🛵`,
+        order: updatedOrder,
+      });
     }
 
     // Action: REQUEST_BILL (طلب الحساب / شيك أوت من الزبون)
@@ -542,13 +618,19 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ success: true, order: updatedOrder });
     }
 
-    // Action: Direct Status Update (e.g. from KDS or Waiter or Driver)
+    // Action: Direct Status Update (e.g. from KDS or Waiter or Driver or Prep Station)
     if (status) {
       const updatedOrder = await prisma.order.update({
         where: { id: orderId },
         data: {
           status,
+          ...(driverName && { driverName: driverName.trim() }),
+          ...(status === "OUT_FOR_DELIVERY" && { dispatchedAt: new Date() }),
           ...(status === "COMPLETED" && { settledAt: new Date() }),
+        },
+        include: {
+          outlet: { select: { id: true, name: true, code: true } },
+          deliveryZone: { select: { id: true, nameAr: true, fee: true } },
         },
       });
 

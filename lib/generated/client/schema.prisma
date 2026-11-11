@@ -264,23 +264,44 @@ model Customer {
 }
 
 // ----------------------------------------------------
+// 7.5 DELIVERY ZONES & DYNAMIC SHIPPING FEES (مناطق التوصيل الديناميكية)
+// ----------------------------------------------------
+model DeliveryZone {
+  id            String   @id @default(cuid())
+  nameAr        String // حدائق القبة، مصر الجديدة، مدينة نصر...
+  nameEn        String?
+  fee           Float    @default(20)
+  estimatedTime String   @default("30-45 دقيقة")
+  isActive      Boolean  @default(true)
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  orders Order[]
+}
+
+// ----------------------------------------------------
 // 8. ORDERS & TICKETS (الطلبات والشيكات والفواتير)
 // ----------------------------------------------------
 model Order {
-  id              String       @id @default(cuid())
-  outletId        String
-  outlet          Outlet       @relation(fields: [outletId], references: [id], onDelete: Cascade)
-  orderNumber     String       @unique // "SOUL-1001" or "ADEL-1001"
-  orderType       String       @default("DINE_IN") // "DINE_IN", "TAKEAWAY", "DELIVERY"
-  tableId         String?
-  table           DiningTable? @relation(fields: [tableId], references: [id], onDelete: SetNull)
-  tableNumber     String?
-  deliveryAddress String?
-  deliveryPhone   String?
-  deliveryNotes   String?
-  status          String       @default("NEW_PENDING") // "NEW_PENDING", "PREPARING", "READY_TO_SERVE", "COMPLETED", "CANCELLED"
-  paymentStatus   String       @default("PENDING") // "PENDING", "PAID"
-  paymentMethod   String       @default("CASH") // "CASH", "CARD", "INSTAPAY", "VODAFONE_CASH", "SPLIT"
+  id               String        @id @default(cuid())
+  outletId         String
+  outlet           Outlet        @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  orderNumber      String        @unique // "SOUL-1001" or "ADEL-1001"
+  orderType        String        @default("DINE_IN") // "DINE_IN", "TAKEAWAY", "DELIVERY"
+  tableId          String?
+  table            DiningTable?  @relation(fields: [tableId], references: [id], onDelete: SetNull)
+  tableNumber      String?
+  deliveryZoneId   String?
+  deliveryZone     DeliveryZone? @relation(fields: [deliveryZoneId], references: [id], onDelete: SetNull)
+  deliveryZoneName String? // Snapshot of area/zone name
+  deliveryAddress  String?
+  deliveryPhone    String?
+  deliveryNotes    String?
+  driverName       String? // اسم الطيار المخصص للتوصيل
+  dispatchedAt     DateTime? // وقت خروج الأوردر مع الطيار
+  status           String        @default("NEW_PENDING") // "NEW_PENDING", "PREPARING", "READY_TO_SERVE", "OUT_FOR_DELIVERY", "COMPLETED", "CANCELLED"
+  paymentStatus    String        @default("PENDING") // "PENDING", "PAID"
+  paymentMethod    String        @default("CASH") // "CASH", "CARD", "INSTAPAY", "VODAFONE_CASH", "SPLIT"
 
   subtotal       Float @default(0)
   serviceCharge  Float @default(0)

@@ -41,6 +41,14 @@ import {
   Crown,
   Shield,
   Scale,
+  MapPin,
+  Truck,
+  MessageCircle,
+  Send,
+  Phone,
+  User,
+  ShoppingBag,
+  Package,
 } from "lucide-react";
 
 export default function PosTerminalPage() {
@@ -111,6 +119,18 @@ export default function PosTerminalPage() {
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [deliveryZones, setDeliveryZones] = useState<any[]>([]);
+  const [selectedZoneId, setSelectedZoneId] = useState<string>("");
+  const [posOrders, setPosOrders] = useState<any[]>([]);
+  const [posChatMessages, setPosChatMessages] = useState<any[]>([]);
+  const [showOnlineQueueModal, setShowOnlineQueueModal] = useState<boolean>(false);
+  const [onlineZoneFilter, setOnlineZoneFilter] = useState<string>("ALL");
+  const [onlineStatusFilter, setOnlineStatusFilter] = useState<string>("ACTIVE");
+  const [driverNamesByOrder, setDriverNamesByOrder] = useState<Record<string, string>>({});
+  const [showPosChatModal, setShowPosChatModal] = useState<boolean>(false);
+  const [selectedChatThread, setSelectedChatThread] = useState<string>("ALL");
+  const [posChatReply, setPosChatReply] = useState<string>("");
+  const lastPendingCountRef = useRef<number>(0);
   const [discountAmount, setDiscountAmount] = useState<number>(0);
   const [tipAmount, setTipAmount] = useState<number>(0);
   const [paymentMethod, setPaymentMethod] = useState<"CASH" | "CARD" | "INSTAPAY" | "VODAFONE_CASH">("CASH");
@@ -259,23 +279,70 @@ export default function PosTerminalPage() {
     }
   }, [router]);
 
+  // Subtle Audio Alert for incoming online / delivery orders
+  const playIncomingOrderChime = () => {
+    if (typeof window === "undefined") return;
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const now = ctx.currentTime;
+      [660, 880].forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, now + idx * 0.14);
+        gain.gain.setValueAtTime(0.08, now + idx * 0.14);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.14 + 0.28);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + idx * 0.14);
+        osc.stop(now + idx * 0.14 + 0.3);
+      });
+    } catch {}
+  };
+
   // Load All POS Data
   const loadPosData = async () => {
     try {
-      const [resOutlets, resTables, resMenu, resSettings, resShifts] = await Promise.all([
-        fetch("/api/outlets"),
-        fetch("/api/tables"),
-        fetch("/api/menu"),
-        fetch("/api/settings"),
-        fetch(`/api/shifts?outletId=${activeOutletId || "ALL"}`),
-      ]);
+      const effectiveOutletId = activeOutletId || currentUser?.outletId || "";
+      const ordersQuery = effectiveOutletId
+        ? `/api/orders?outletId=${effectiveOutletId}&limit=80`
+        : "/api/orders?limit=80";
+      const chatQuery = effectiveOutletId
+        ? `/api/chat?outletId=${effectiveOutletId}`
+        : "/api/chat";
 
-      const [dataOutlets, dataTables, dataMenu, dataSettings, dataShifts] = await Promise.all([
+      const [resOutlets, resTables, resMenu, resSettings, resShifts, resZones, resOrders, resChat] =
+        await Promise.all([
+          fetch("/api/outlets"),
+          fetch("/api/tables"),
+          fetch("/api/menu"),
+          fetch("/api/settings"),
+          fetch(`/api/shifts?outletId=${effectiveOutletId || "ALL"}`),
+          fetch("/api/delivery-zones"),
+          fetch(ordersQuery),
+          fetch(chatQuery),
+        ]);
+
+      const [
+        dataOutlets,
+        dataTables,
+        dataMenu,
+        dataSettings,
+        dataShifts,
+        dataZones,
+        dataOrders,
+        dataChat,
+      ] = await Promise.all([
         resOutlets.json(),
         resTables.json(),
         resMenu.json(),
         resSettings.json(),
         resShifts.json(),
+        resZones.json(),
+        resOrders.json(),
+        resChat.json(),
       ]);
 
       if (dataOutlets.success) {
@@ -296,6 +363,23 @@ export default function PosTerminalPage() {
         if (dataShifts.liveStats) {
           setShiftActualCash(dataShifts.liveStats.expectedCash || 0);
         }
+      }
+      if (dataZones?.success && Array.isArray(dataZones.zones)) {
+        setDeliveryZones(dataZones.zones);
+      }
+      if (dataOrders?.success && Array.isArray(dataOrders.orders)) {
+        setPosOrders(dataOrders.orders);
+        const pendingOnline = dataOrders.orders.filter(
+          (o: any) => o.status === "NEW_PENDING" && o.orderType !== "DINE_IN"
+        ).length;
+        if (lastPendingCountRef.current > 0 && pendingOnline > lastPendingCountRef.current) {
+          playIncomingOrderChime();
+          showToast("info", "🔔 وصلك طلب أونلاين / دليفري جديد الآن!");
+        }
+        lastPendingCountRef.current = pendingOnline;
+      }
+      if (dataChat?.success && Array.isArray(dataChat.messages)) {
+        setPosChatMessages(dataChat.messages);
       }
     } catch (e) {
       console.error(e);
@@ -421,18 +505,99 @@ export default function PosTerminalPage() {
   };
 
   // Financial calculations
+  const selectedDeliveryZone = deliveryZones.find((z) => z.id === selectedZoneId);
   const rawSubtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-  const deliveryFee = orderType === "DELIVERY" ? (settings?.deliveryFee || 20) : 0;
+  const deliveryFee =
+    orderType === "DELIVERY"
+      ? selectedDeliveryZone
+        ? Number(selectedDeliveryZone.fee)
+        : Number(settings?.deliveryFee || 20)
+      : 0;
   const servicePercent = settings?.isServiceChargeEnabled ? settings.serviceChargePercent || 12 : 0;
   const taxPercent = settings?.isTaxEnabled ? settings.taxPercent || 14 : 0;
   const calculatedService = (rawSubtotal * servicePercent) / 100;
   const calculatedTax = (rawSubtotal * taxPercent) / 100;
   const calculatedFinal = Math.max(0, rawSubtotal + deliveryFee + calculatedService + calculatedTax - discountAmount + tipAmount);
 
+  // Advance / Dispatch / Settle Online or Delivery Orders
+  const handleAdvanceOnlineOrder = async (
+    orderId: string,
+    payload: Record<string, any>,
+    successMsg: string
+  ) => {
+    try {
+      const res = await fetch("/api/orders", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId, ...payload }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast("success", successMsg);
+        if (payload.action === "SETTLE" && data.order) {
+          setLastPrintedOrder(data.order);
+          setTimeout(() => window.print(), 350);
+        }
+        await loadPosData();
+      } else {
+        showToast("error", data.error || "تعذر تحديث حالة الطلب");
+      }
+    } catch {
+      showToast("error", "فشل الاتصال بالخادم");
+    }
+  };
+
+  // Send Cashier Staff Reply in Direct Customer Chat
+  const handleSendPosChatReply = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!posChatReply.trim()) return;
+
+    const threadMsgs = posChatMessages.filter((m) => {
+      if (selectedChatThread === "ALL") return false;
+      if (selectedChatThread.startsWith("PHONE:")) return m.senderPhone === selectedChatThread.slice(6);
+      if (selectedChatThread.startsWith("TABLE:")) return m.tableNumber === selectedChatThread.slice(6);
+      return false;
+    });
+    const lastMsg = threadMsgs[threadMsgs.length - 1];
+    const senderPhone = selectedChatThread.startsWith("PHONE:")
+      ? selectedChatThread.slice(6)
+      : lastMsg?.senderPhone || null;
+    const tableNumber = selectedChatThread.startsWith("TABLE:")
+      ? selectedChatThread.slice(6)
+      : lastMsg?.tableNumber || null;
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          outletId: currentOutlet?.id,
+          senderType: "STAFF",
+          senderName: currentUser?.name || "كاشير الفرع",
+          senderPhone,
+          tableNumber,
+          message: posChatReply.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setPosChatReply("");
+        showToast("success", "تم إرسال ردك للعميل 💬");
+        await loadPosData();
+      }
+    } catch {
+      showToast("error", "فشل إرسال الرسالة");
+    }
+  };
+
   // Settle and Print Receipt
   const handleSettleAndPrint = async () => {
     if (cart.length === 0) {
       showToast("error", "السلة فارغة! برجاء إضافة أصناف أولاً");
+      return;
+    }
+    if (orderType === "DELIVERY" && !deliveryAddress.trim()) {
+      showToast("error", "برجاء إدخال عنوان التوصيل بالتفصيل");
       return;
     }
 
@@ -466,7 +631,7 @@ export default function PosTerminalPage() {
           showToast("error", data.error || "فشل التحصيل");
         }
       } else {
-        // Direct Walk-In or Quick Takeaway / Retail Order
+        // Direct Walk-In or Quick Takeaway / Delivery / Retail Order
         const res = await fetch("/api/orders", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -480,6 +645,9 @@ export default function PosTerminalPage() {
             customerPhone: customerPhone.trim() || null,
             deliveryAddress: orderType === "DELIVERY" ? deliveryAddress.trim() : null,
             deliveryPhone: orderType === "DELIVERY" ? customerPhone.trim() : null,
+            deliveryZoneId: orderType === "DELIVERY" && selectedDeliveryZone ? selectedDeliveryZone.id : null,
+            deliveryZoneName: orderType === "DELIVERY" && selectedDeliveryZone ? selectedDeliveryZone.nameAr : null,
+            deliveryFee,
             cashierName: currentUser?.name || "كاشير المنظومة",
             discountAmount,
             tipAmount,
@@ -712,6 +880,55 @@ export default function PosTerminalPage() {
               <span>{currentOutlet?.name || "فرعك المعتمد"}</span>
             </div>
           )}
+
+          {/* Online Orders & Delivery Queue Button */}
+          {(() => {
+            const activeOnline = posOrders.filter(
+              (o) =>
+                ["NEW_PENDING", "PREPARING", "READY_TO_SERVE", "OUT_FOR_DELIVERY"].includes(o.status) &&
+                o.orderType !== "DINE_IN"
+            );
+            const hasNew = activeOnline.some((o) => o.status === "NEW_PENDING");
+            return (
+              <button
+                onClick={() => setShowOnlineQueueModal(true)}
+                className={`relative py-1.5 px-3 rounded-xl border text-xs font-black transition flex items-center gap-1.5 cursor-pointer ${
+                  hasNew
+                    ? "bg-purple-600/30 hover:bg-purple-600/40 border-purple-400 text-purple-200 shadow-lg shadow-purple-500/20 animate-pulse"
+                    : "bg-purple-500/15 hover:bg-purple-500/25 border-purple-500/35 text-purple-300"
+                }`}
+                title="إدارة طلبات الأونلاين والدليفري وتجميع الطيارات حسب المنطقة"
+              >
+                <Truck className="w-3.5 h-3.5" />
+                <span className="hidden lg:inline">طلبات الأونلاين</span>
+                {activeOnline.length > 0 && (
+                  <span className="px-1.5 py-0.5 rounded-full bg-purple-500 text-white text-[10px] font-mono">
+                    {activeOnline.length}
+                  </span>
+                )}
+              </button>
+            );
+          })()}
+
+          {/* Customer Live Chat Button (Both Outlets) */}
+          {(() => {
+            const custMsgs = posChatMessages.filter((m) => m.senderType === "CUSTOMER").length;
+            return (
+              <button
+                onClick={() => setShowPosChatModal(true)}
+                className="relative py-1.5 px-3 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/35 text-sky-300 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
+                title="الشات المباشر مع عملاء الفرع"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+                <span className="hidden xl:inline">شات العملاء</span>
+                {custMsgs > 0 && (
+                  <span className="px-1.5 py-0.5 rounded-full bg-sky-500 text-slate-950 text-[10px] font-black font-mono">
+                    {custMsgs}
+                  </span>
+                )}
+              </button>
+            );
+          })()}
 
           {/* Quick Expense */}
           <button
@@ -1047,7 +1264,7 @@ export default function PosTerminalPage() {
                 </span>
               </div>
             ) : (
-              /* DELIVERY MODE: Shows Delivery badge + Customer Address & Phone Inputs */
+              /* DELIVERY MODE: Shows Delivery Zone selector + Customer Address & Phone Inputs */
               <div className="space-y-1.5 pt-0.5">
                 <div className="py-1 px-2.5 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-300 text-xs font-bold flex items-center justify-between">
                   <span className="flex items-center gap-1">
@@ -1055,11 +1272,32 @@ export default function PosTerminalPage() {
                     <span>طلب توصيل دليفري للمنزل</span>
                   </span>
                   <span className="text-[10px] font-black font-mono bg-sky-500/20 px-2 py-0.5 rounded-full text-sky-200">
-                    خدمة توصيل: +{settings?.deliveryFee || 20} ج.م
+                    رسوم التوصيل: +{deliveryFee} ج.م
                   </span>
                 </div>
 
                 <div className="p-2.5 rounded-xl bg-black/60 border border-sky-500/30 space-y-1.5 text-xs">
+                  <div>
+                    <label className="text-[10px] text-purple-300 block mb-0.5 font-bold">
+                      📍 منطقة التوصيل (يتم تحديد رسوم الدليفري تلقائياً):
+                    </label>
+                    <select
+                      value={selectedZoneId}
+                      onChange={(e) => setSelectedZoneId(e.target.value)}
+                      className="w-full py-1.5 px-2 rounded-lg bg-black/80 border border-purple-500/40 text-white text-xs font-bold outline-none focus:border-purple-400"
+                    >
+                      <option value="">
+                        -- منطقة عامة / تلقائي ({settings?.deliveryFee || 20} ج.م) --
+                      </option>
+                      {deliveryZones
+                        .filter((z) => z.isActive)
+                        .map((z) => (
+                          <option key={z.id} value={z.id}>
+                            {z.nameAr} — ({z.fee} ج.م • {z.estimatedTime || "45-60 د"})
+                          </option>
+                        ))}
+                    </select>
+                  </div>
                   <div className="grid grid-cols-2 gap-1.5">
                     <div>
                       <label className="text-[10px] text-slate-400 block mb-0.5 font-bold">اسم العميل:</label>
@@ -1276,10 +1514,16 @@ export default function PosTerminalPage() {
                   <span>+{calculatedTax.toFixed(2)} ج</span>
                 </div>
               )}
+              {orderType === "DELIVERY" && (
+                <div className="flex justify-between text-sky-300 font-mono text-[11px]">
+                  <span>توصيل دليفري {selectedDeliveryZone ? `(${selectedDeliveryZone.nameAr})` : ""}:</span>
+                  <span>+{deliveryFee} ج</span>
+                </div>
+              )}
               <div className="flex justify-between items-center text-sm font-black border-t border-white/10 pt-1">
                 <span className="text-white">المبلغ المطلوب:</span>
                 <span className="font-mono text-amber-400 text-base font-black">
-                  {calculatedFinal + (orderType === "DELIVERY" ? (settings?.deliveryFee || 20) : 0)} ج.م
+                  {calculatedFinal} ج.م
                 </span>
               </div>
 
@@ -1303,7 +1547,7 @@ export default function PosTerminalPage() {
                   ) : (
                     <>
                       <Printer className="w-4 h-4" />
-                      <span>تحصيل {calculatedFinal + (orderType === "DELIVERY" ? (settings?.deliveryFee || 20) : 0)} ج.م وطباعة الإيصال 🖨️</span>
+                      <span>تحصيل {calculatedFinal} ج.م وطباعة الإيصال 🖨️</span>
                     </>
                   )}
                 </button>
@@ -2033,8 +2277,23 @@ export default function PosTerminalPage() {
               {lastPrintedOrder.outlet?.code === "SOULMATE_CAFE" ? "SOULMATE SPECIALTY CAFE" : "ABU ADEL PATISSERIE"}
             </p>
             <p className="text-[10px]">
-              {lastPrintedOrder.tableNumber ? `ترابيزة: ${lastPrintedOrder.tableNumber}` : "طلب تيك أواي / سفري"}
+              {lastPrintedOrder.orderType === "DINE_IN" && lastPrintedOrder.tableNumber
+                ? `ترابيزة: ${lastPrintedOrder.tableNumber}`
+                : lastPrintedOrder.orderType === "DELIVERY"
+                ? `🛵 توصيل دليفري للمنزل${lastPrintedOrder.deliveryZoneName ? ` (${lastPrintedOrder.deliveryZoneName})` : ""}`
+                : "🛍️ طلب تيك أواي / استلام من الفرع"}
             </p>
+            {lastPrintedOrder.deliveryAddress && (
+              <p className="text-[10px]">العنوان: {lastPrintedOrder.deliveryAddress}</p>
+            )}
+            {(lastPrintedOrder.deliveryPhone || lastPrintedOrder.customerPhone) && (
+              <p className="text-[10px] font-mono">
+                هاتف: {lastPrintedOrder.deliveryPhone || lastPrintedOrder.customerPhone}
+              </p>
+            )}
+            {lastPrintedOrder.driverName && (
+              <p className="text-[10px] font-bold">الطيار: {lastPrintedOrder.driverName}</p>
+            )}
             <p className="text-[10px] font-mono">
               تاريخ: {new Date().toLocaleDateString("ar-EG")} • {new Date().toLocaleTimeString("ar-EG")}
             </p>
@@ -2210,6 +2469,457 @@ export default function PosTerminalPage() {
               <p className="font-bold">توقيع المستلم (المالك)</p>
               <p className="border-t border-black pt-1">.........................</p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          9A. MODAL: ONLINE & DELIVERY QUEUE (تجهيز وتجميع الدليفري حسب المنطقة)
+         ───────────────────────────────────────────────────────────── */}
+      {showOnlineQueueModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in no-print">
+          <div className="bg-[#140e16] border-2 border-purple-500/40 rounded-3xl p-5 max-w-5xl w-full space-y-4 shadow-2xl max-h-[92vh] flex flex-col">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3 shrink-0 flex-wrap gap-2">
+              <div>
+                <h3 className="font-black text-base text-white flex items-center gap-2">
+                  <Truck className="w-5 h-5 text-purple-400" />
+                  <span>طلبات الأونلاين والدليفري — {currentOutlet?.name}</span>
+                </h3>
+                <p className="text-[11px] text-slate-400">
+                  فلتر الطلبات حسب المنطقة لتجميع أوردرات الطيارين، وتابع التجهيز والتحصيل بالترتيب
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowOnlineQueueModal(false)}
+                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 font-bold text-xs cursor-pointer"
+              >
+                ✕ إغلاق
+              </button>
+            </div>
+
+            {/* Area / Zone + Status Filters */}
+            <div className="flex flex-wrap items-center gap-2 shrink-0 bg-black/40 p-3 rounded-2xl border border-white/10">
+              <div className="flex items-center gap-1.5">
+                <MapPin className="w-4 h-4 text-purple-400" />
+                <select
+                  value={onlineZoneFilter}
+                  onChange={(e) => setOnlineZoneFilter(e.target.value)}
+                  className="bg-slate-950 border border-purple-500/40 text-purple-200 text-xs font-bold rounded-xl px-3 py-2 outline-none"
+                >
+                  <option value="ALL">🗺️ كل المناطق</option>
+                  {deliveryZones.map((z) => {
+                    const countInZone = posOrders.filter(
+                      (o) =>
+                        o.deliveryZoneId === z.id &&
+                        ["NEW_PENDING", "PREPARING", "READY_TO_SERVE", "OUT_FOR_DELIVERY"].includes(o.status)
+                    ).length;
+                    return (
+                      <option key={z.id} value={z.id}>
+                        📍 {z.nameAr} ({countInZone} نشط • {z.fee} ج.م)
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-1.5">
+                {[
+                  { key: "ACTIVE", label: "🔥 النشط وقيد التوصيل" },
+                  { key: "NEW_PENDING", label: "🆕 جديد" },
+                  { key: "PREPARING", label: "📦 قيد التجهيز" },
+                  { key: "READY_TO_SERVE", label: "✅ جاهز للطيار" },
+                  { key: "OUT_FOR_DELIVERY", label: "🛵 مع الطيار" },
+                  { key: "COMPLETED", label: "✔️ مكتمل" },
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    onClick={() => setOnlineStatusFilter(tab.key)}
+                    className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition cursor-pointer ${
+                      onlineStatusFilter === tab.key
+                        ? "bg-purple-600 text-white shadow"
+                        : "bg-black/60 text-slate-300 border border-white/10 hover:border-purple-400"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Filtered Orders Cards */}
+            <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+              {(() => {
+                const filteredQueue = posOrders.filter((o) => {
+                  if (o.orderType === "DINE_IN" && onlineStatusFilter === "ACTIVE") return false;
+                  if (onlineZoneFilter !== "ALL" && o.deliveryZoneId !== onlineZoneFilter) return false;
+                  if (onlineStatusFilter === "ACTIVE") {
+                    return ["NEW_PENDING", "PREPARING", "READY_TO_SERVE", "OUT_FOR_DELIVERY"].includes(o.status);
+                  }
+                  return o.status === onlineStatusFilter;
+                });
+
+                if (filteredQueue.length === 0) {
+                  return (
+                    <div className="text-center py-12 text-slate-500 text-xs">
+                      لا توجد طلبات في هذا التحديد حالياً
+                    </div>
+                  );
+                }
+
+                return filteredQueue.map((o) => {
+                  let parsedItems: any[] = [];
+                  try {
+                    parsedItems = typeof o.items === "string" ? JSON.parse(o.items) : o.items || [];
+                  } catch {}
+                  const zoneLabel = o.deliveryZone?.nameAr || o.deliveryZoneName;
+
+                  return (
+                    <div
+                      key={o.id}
+                      className="p-4 rounded-2xl bg-black/50 border border-white/10 flex flex-col lg:flex-row lg:items-center justify-between gap-4"
+                    >
+                      <div className="space-y-1.5 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-mono font-black text-amber-400 text-sm">
+                            #{o.orderNumber}
+                          </span>
+                          <span
+                            className={`px-2 py-0.5 rounded-lg text-[10px] font-bold ${
+                              o.orderType === "DELIVERY"
+                                ? "bg-purple-500/20 text-purple-300 border border-purple-500/40"
+                                : "bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                            }`}
+                          >
+                            {o.orderType === "DELIVERY" ? "🛵 دليفري" : "🛍️ تيك أواي"}
+                          </span>
+                          {zoneLabel && (
+                            <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                              📍 {zoneLabel}
+                            </span>
+                          )}
+                          <span className="text-[10px] text-slate-400 font-mono">
+                            {new Date(o.createdAt).toLocaleTimeString("ar-EG")}
+                          </span>
+                        </div>
+
+                        <div className="text-xs text-slate-200 flex flex-wrap items-center gap-3">
+                          <span className="font-bold">👤 {o.customerName || "عميل"}</span>
+                          {(o.deliveryPhone || o.customerPhone) && (
+                            <span className="font-mono text-sky-300">
+                              📞 {o.deliveryPhone || o.customerPhone}
+                            </span>
+                          )}
+                          {o.driverName && (
+                            <span className="text-purple-300 font-bold">
+                              🏍️ الطيار: {o.driverName}
+                            </span>
+                          )}
+                        </div>
+
+                        {o.deliveryAddress && (
+                          <div className="text-[11px] text-amber-300 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20 inline-block">
+                            العنوان: {o.deliveryAddress}
+                          </div>
+                        )}
+
+                        <div className="text-[11px] text-slate-300 flex flex-wrap gap-1.5 pt-1">
+                          {parsedItems.map((it: any, idx: number) => (
+                            <span key={idx} className="bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                              {it.qty}× {it.nameAr}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row lg:flex-col items-stretch sm:items-center lg:items-end gap-2 shrink-0">
+                        <div className="text-left">
+                          <span className="text-sm font-black font-mono text-emerald-400">
+                            {o.finalAmount} ج.م
+                          </span>
+                          {Number(o.deliveryFee) > 0 && (
+                            <span className="text-[10px] text-slate-400 block">
+                              (شامل توصيل {o.deliveryFee} ج)
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          {o.status === "NEW_PENDING" && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleAdvanceOnlineOrder(
+                                  o.id,
+                                  { status: "PREPARING" },
+                                  `بدأ تجهيز الطلب #${o.orderNumber} 📦`
+                                )
+                              }
+                              className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold cursor-pointer"
+                            >
+                              بدء التجهيز 📦
+                            </button>
+                          )}
+
+                          {o.status === "PREPARING" && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleAdvanceOnlineOrder(
+                                  o.id,
+                                  { status: "READY_TO_SERVE" },
+                                  `الطلب #${o.orderNumber} جاهز الآن ✅`
+                                )
+                              }
+                              className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold cursor-pointer"
+                            >
+                              {o.orderType === "DELIVERY" ? "جاهز للطيار ✅" : "جاهز للاستلام ✅"}
+                            </button>
+                          )}
+
+                          {o.status === "READY_TO_SERVE" && o.orderType === "DELIVERY" && (
+                            <div className="flex items-center gap-1">
+                              <input
+                                type="text"
+                                placeholder="اسم الطيار..."
+                                value={driverNamesByOrder[o.id] || ""}
+                                onChange={(e) =>
+                                  setDriverNamesByOrder((prev) => ({
+                                    ...prev,
+                                    [o.id]: e.target.value,
+                                  }))
+                                }
+                                className="w-28 bg-slate-950 border border-white/15 rounded-xl px-2.5 py-1.5 text-xs text-white"
+                              />
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleAdvanceOnlineOrder(
+                                    o.id,
+                                    {
+                                      action: "DISPATCH_DRIVER",
+                                      driverName: driverNamesByOrder[o.id] || "مندوب التوصيل",
+                                    },
+                                    `خرج الطلب #${o.orderNumber} مع الطيار 🛵`
+                                  )
+                                }
+                                className="px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold cursor-pointer"
+                              >
+                                تسليم للطيار 🛵
+                              </button>
+                            </div>
+                          )}
+
+                          {(o.status === "OUT_FOR_DELIVERY" ||
+                            (o.status === "READY_TO_SERVE" && o.orderType !== "DELIVERY")) &&
+                            o.paymentStatus !== "PAID" && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleAdvanceOnlineOrder(
+                                    o.id,
+                                    {
+                                      action: "SETTLE",
+                                      paymentMethod: o.paymentMethod || "CASH",
+                                      cashierName: currentUser?.name || "كاشير الفرع",
+                                    },
+                                    `تم تحصيل الطلب #${o.orderNumber} وإضافته للدرج 💵`
+                                  )
+                                }
+                                className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-xs font-black cursor-pointer"
+                              >
+                                تحصيل للدرج وطباعة 💵
+                              </button>
+                            )}
+
+                          {(o.status === "OUT_FOR_DELIVERY" ||
+                            (o.status === "READY_TO_SERVE" && o.orderType !== "DELIVERY")) &&
+                            o.paymentStatus === "PAID" && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleAdvanceOnlineOrder(
+                                    o.id,
+                                    { status: "COMPLETED" },
+                                    `تم تسليم الطلب #${o.orderNumber} بالكامل ✔️`
+                                  )
+                                }
+                                className="px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold cursor-pointer"
+                              >
+                                تأكيد التسليم النهائي ✔️
+                              </button>
+                            )}
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setLastPrintedOrder(o);
+                              setTimeout(() => window.print(), 250);
+                            }}
+                            className="p-2 rounded-xl bg-white/5 hover:bg-white/15 text-amber-300 border border-white/10 cursor-pointer"
+                            title="طباعة بون الطلب 80 مم"
+                          >
+                            <Printer className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                });
+              })()}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          9B. MODAL: DIRECT CUSTOMER LIVE CHAT (POS STAFF)
+         ───────────────────────────────────────────────────────────── */}
+      {showPosChatModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in no-print">
+          <div className="bg-[#140e16] border-2 border-sky-500/40 rounded-3xl p-5 max-w-4xl w-full space-y-4 shadow-2xl max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3 shrink-0">
+              <div>
+                <h3 className="font-black text-base text-white flex items-center gap-2">
+                  <MessageCircle className="w-5 h-5 text-sky-400" />
+                  <span>شات العملاء المباشر — {currentOutlet?.name}</span>
+                </h3>
+                <p className="text-[11px] text-slate-400">
+                  تواصل مباشر وفوري مع عملاء الدليفري والتيك أواي والصالة
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowPosChatModal(false)}
+                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 font-bold text-xs cursor-pointer"
+              >
+                ✕ إغلاق
+              </button>
+            </div>
+
+            {(() => {
+              const threadMap: Record<string, { key: string; label: string; lastMsg: any }> = {};
+              posChatMessages.forEach((m) => {
+                const key = m.senderPhone
+                  ? `PHONE:${m.senderPhone}`
+                  : m.tableNumber
+                  ? `TABLE:${m.tableNumber}`
+                  : "GENERAL";
+                if (!threadMap[key]) {
+                  threadMap[key] = {
+                    key,
+                    label: m.senderPhone
+                      ? `${m.senderType === "CUSTOMER" ? m.senderName : "عميل"} (${m.senderPhone})`
+                      : m.tableNumber
+                      ? `ترابيزة ${m.tableNumber}`
+                      : "رسائل عامة",
+                    lastMsg: m,
+                  };
+                } else if (m.senderType === "CUSTOMER" && m.senderPhone) {
+                  threadMap[key].label = `${m.senderName} (${m.senderPhone})`;
+                }
+                threadMap[key].lastMsg = m;
+              });
+              const threads = Object.values(threadMap).reverse();
+              const visibleMsgs = posChatMessages.filter((m) => {
+                if (selectedChatThread === "ALL") return true;
+                if (selectedChatThread.startsWith("PHONE:")) return m.senderPhone === selectedChatThread.slice(6);
+                if (selectedChatThread.startsWith("TABLE:")) return m.tableNumber === selectedChatThread.slice(6);
+                return !m.senderPhone && !m.tableNumber;
+              });
+
+              return (
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-3 flex-1 min-h-0">
+                  <div className="md:col-span-4 max-h-80 md:max-h-[420px] overflow-y-auto space-y-2 pr-1">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedChatThread("ALL")}
+                      className={`w-full text-right p-2.5 rounded-xl border text-xs transition ${
+                        selectedChatThread === "ALL"
+                          ? "bg-sky-500/20 border-sky-400 text-sky-200 font-bold"
+                          : "bg-black/40 border-white/10 text-slate-300"
+                      }`}
+                    >
+                      📥 جميع المحادثات ({posChatMessages.length})
+                    </button>
+                    {threads.map((th) => (
+                      <button
+                        key={th.key}
+                        type="button"
+                        onClick={() => setSelectedChatThread(th.key)}
+                        className={`w-full text-right p-2.5 rounded-xl border text-xs transition ${
+                          selectedChatThread === th.key
+                            ? "bg-sky-500/20 border-sky-400 text-white"
+                            : "bg-black/40 border-white/10 text-slate-300"
+                        }`}
+                      >
+                        <div className="font-bold truncate">{th.label}</div>
+                        <div className="text-[10px] text-slate-400 truncate mt-0.5">
+                          {th.lastMsg?.message}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="md:col-span-8 flex flex-col gap-2 min-h-0">
+                    <div className="h-80 overflow-y-auto space-y-2.5 p-3 rounded-2xl bg-black/60 border border-white/10 text-xs">
+                      {visibleMsgs.map((msg) => (
+                        <div
+                          key={msg.id}
+                          className={`flex flex-col ${
+                            msg.senderType === "STAFF" ? "items-start" : "items-end"
+                          }`}
+                        >
+                          <div
+                            className={`max-w-[80%] p-2.5 rounded-2xl ${
+                              msg.senderType === "STAFF"
+                                ? "bg-amber-500 text-black font-bold"
+                                : "bg-slate-800 text-white border border-white/10"
+                            }`}
+                          >
+                            <div className="text-[10px] opacity-75 mb-0.5">
+                              {msg.senderName}{" "}
+                              {msg.senderPhone
+                                ? `(${msg.senderPhone})`
+                                : msg.tableNumber
+                                ? `(ترابيزة ${msg.tableNumber})`
+                                : ""}
+                            </div>
+                            <div>{msg.message}</div>
+                          </div>
+                          <span className="text-[9px] text-slate-500 font-mono mt-0.5">
+                            {new Date(msg.createdAt).toLocaleTimeString("ar-EG")}
+                          </span>
+                        </div>
+                      ))}
+                      {visibleMsgs.length === 0 && (
+                        <div className="text-center py-12 text-slate-500">
+                          لا توجد رسائل مسجلة بعد
+                        </div>
+                      )}
+                    </div>
+
+                    <form onSubmit={handleSendPosChatReply} className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="اكتب رد الكاشير للعميل المحدد..."
+                        value={posChatReply}
+                        onChange={(e) => setPosChatReply(e.target.value)}
+                        className="flex-1 py-2 px-3 rounded-xl bg-black/60 border border-white/15 text-xs text-white outline-none focus:border-sky-400"
+                      />
+                      <button
+                        type="submit"
+                        disabled={!posChatReply.trim()}
+                        className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-xs transition cursor-pointer disabled:opacity-50"
+                      >
+                        إرسال 💬
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}

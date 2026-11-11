@@ -62,6 +62,11 @@ import {
   ArrowDownLeft,
   Scale,
   Home,
+  MapPin,
+  Trash2,
+  Edit2,
+  Phone,
+  Send,
 } from "lucide-react";
 
 interface Toast {
@@ -185,6 +190,7 @@ export default function AdminDashboardPage() {
   const [tables, setTables] = useState<any[]>(initialCache?.tables || []);
   const [reservations, setReservations] = useState<any[]>(initialCache?.reservations || []);
   const [chatMessages, setChatMessages] = useState<any[]>(initialCache?.chatMessages || []);
+  const [deliveryZones, setDeliveryZones] = useState<any[]>(initialCache?.deliveryZones || []);
 
   // Modals & Sliders
   const [showQRModal, setShowQRModal] = useState(false);
@@ -295,6 +301,24 @@ export default function AdminDashboardPage() {
   // Live Chat Reply Form
   const [chatReplyText, setChatReplyText] = useState("");
   const [selectedChatTable, setSelectedChatTable] = useState<string>("ALL");
+  const [selectedChatThread, setSelectedChatThread] = useState<string>("ALL");
+  const [chatOutletFilter, setChatOutletFilter] = useState<string>("ALL");
+
+  // Delivery Zones Management & Orders Filtering
+  const [showZonesManager, setShowZonesManager] = useState(false);
+  const [editingZoneId, setEditingZoneId] = useState<string | null>(null);
+  const [savingZone, setSavingZone] = useState(false);
+  const [zoneForm, setZoneForm] = useState({
+    nameAr: "",
+    nameEn: "",
+    fee: "",
+    estimatedTime: "45 - 60 دقيقة",
+    sortOrder: "0",
+  });
+  const [orderZoneFilter, setOrderZoneFilter] = useState<string>("ALL");
+  const [orderTypeFilter, setOrderTypeFilter] = useState<string>("ALL");
+  const [orderStatusFilter, setOrderStatusFilter] = useState<string>("ALL");
+  const [dispatchDriverNames, setDispatchDriverNames] = useState<Record<string, string>>({});
 
   // Reprint / View Order Receipt Modal
   const [selectedOrderForPrint, setSelectedOrderForPrint] = useState<any>(null);
@@ -398,6 +422,7 @@ export default function AdminDashboardPage() {
         reservationsRes,
         chatRes,
         usersRes,
+        zonesRes,
       ] = await Promise.all([
         fetch(currentUser?.role === "owner" ? "/api/recipes" : `/api/recipes${outletParam}`),
         fetch(currentUser?.role === "owner" ? "/api/menu" : `/api/menu${outletParam}`),
@@ -406,6 +431,7 @@ export default function AdminDashboardPage() {
         fetch(`/api/reservations${outletParam}`),
         fetch(`/api/chat${outletParam}`),
         fetch("/api/users"),
+        fetch("/api/delivery-zones?all=true"),
       ]);
 
       const [
@@ -416,6 +442,7 @@ export default function AdminDashboardPage() {
         resData,
         chatData,
         usersData,
+        zonesData,
       ] = await Promise.all([
         recipesRes.json(),
         menuRes.json(),
@@ -424,6 +451,7 @@ export default function AdminDashboardPage() {
         reservationsRes.json(),
         chatRes.json(),
         usersRes.json(),
+        zonesRes.json(),
       ]);
 
       if (recipesData.success) setRawMaterials(recipesData.rawMaterials);
@@ -433,6 +461,7 @@ export default function AdminDashboardPage() {
       if (resData.success) setReservations(resData.reservations);
       if (chatData.success) setChatMessages(chatData.messages);
       if (usersData?.success) setUsersList(usersData.users);
+      if (zonesData?.success) setDeliveryZones(zonesData.zones);
 
       // Save complete snapshot to sessionStorage for instant 0ms restoration next time
       try {
@@ -452,6 +481,7 @@ export default function AdminDashboardPage() {
             reservations: resData.success ? resData.reservations : [],
             chatMessages: chatData.success ? chatData.messages : [],
             usersList: usersData?.success ? usersData.users : [],
+            deliveryZones: zonesData?.success ? zonesData.zones : [],
           })
         );
       } catch {}
@@ -1475,14 +1505,127 @@ export default function AdminDashboardPage() {
     }
   };
 
+  // Save / Update Delivery Zone
+  const handleSaveDeliveryZone = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!zoneForm.nameAr.trim()) {
+      addToast("error", "برجاء كتابة اسم المنطقة");
+      return;
+    }
+    try {
+      setSavingZone(true);
+      const method = editingZoneId ? "PATCH" : "POST";
+      const payload: any = {
+        nameAr: zoneForm.nameAr.trim(),
+        nameEn: zoneForm.nameEn.trim() || null,
+        fee: Number(zoneForm.fee || 0),
+        estimatedTime: zoneForm.estimatedTime.trim() || "45 - 60 دقيقة",
+        sortOrder: Number(zoneForm.sortOrder || 0),
+      };
+      if (editingZoneId) payload.id = editingZoneId;
+
+      const res = await fetch("/api/delivery-zones", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast("success", editingZoneId ? "تم تحديث بيانات المنطقة بنجاح" : "تمت إضافة المنطقة بنجاح");
+        setEditingZoneId(null);
+        setZoneForm({ nameAr: "", nameEn: "", fee: "", estimatedTime: "45 - 60 دقيقة", sortOrder: "0" });
+        fetchDashboardData();
+      } else {
+        addToast("error", data.error || "فشل حفظ المنطقة");
+      }
+    } catch {
+      addToast("error", "فشل الاتصال بالخادم");
+    } finally {
+      setSavingZone(false);
+    }
+  };
+
+  const handleToggleZoneActive = async (zone: any) => {
+    try {
+      const res = await fetch("/api/delivery-zones", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: zone.id, isActive: !zone.isActive }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast("success", !zone.isActive ? `تم تفعيل توصيل: ${zone.nameAr}` : `تم إيقاف توصيل: ${zone.nameAr}`);
+        fetchDashboardData();
+      }
+    } catch {
+      addToast("error", "فشل تعديل حالة المنطقة");
+    }
+  };
+
+  const handleDeleteDeliveryZone = async (zone: any) => {
+    if (!confirm(`هل أنت متأكد من حذف منطقة "${zone.nameAr}"؟`)) return;
+    try {
+      const res = await fetch(`/api/delivery-zones?id=${zone.id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (data.success) {
+        addToast("success", "تم حذف المنطقة بنجاح");
+        fetchDashboardData();
+      } else {
+        addToast("error", data.error || "تعذر حذف المنطقة");
+      }
+    } catch {
+      addToast("error", "فشل حذف المنطقة");
+    }
+  };
+
+  // Update Order Dispatch / Kitchen Status / Settle
+  const handleUpdateOrderDispatch = async (orderId: string, payload: Record<string, any>, successMsg: string) => {
+    try {
+      const res = await fetch("/api/orders", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId, ...payload }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast("success", successMsg);
+        fetchDashboardData();
+      } else {
+        addToast("error", data.error || "فشل تحديث الطلب");
+      }
+    } catch {
+      addToast("error", "فشل الاتصال بالخادم");
+    }
+  };
+
   // Send Staff Reply to Customer / Table Chat
   const handleSendStaffChatReply = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatReplyText.trim()) return;
 
     try {
+      const threadMsgs = chatMessages.filter((m) => {
+        if (selectedChatThread === "ALL") return false;
+        if (selectedChatThread.startsWith("PHONE:")) return m.senderPhone === selectedChatThread.slice(6);
+        if (selectedChatThread.startsWith("TABLE:")) return m.tableNumber === selectedChatThread.slice(6);
+        return false;
+      });
+      const lastThreadMsg = threadMsgs[threadMsgs.length - 1];
+
       const targetOutlet =
-        selectedOutletId !== "ALL" ? selectedOutletId : outlets[0]?.id;
+        lastThreadMsg?.outletId ||
+        (chatOutletFilter !== "ALL" ? chatOutletFilter : null) ||
+        (selectedOutletId !== "ALL" ? selectedOutletId : outlets[0]?.id);
+
+      const senderPhone = selectedChatThread.startsWith("PHONE:")
+        ? selectedChatThread.slice(6)
+        : lastThreadMsg?.senderPhone || null;
+
+      const tableNumber = selectedChatThread.startsWith("TABLE:")
+        ? selectedChatThread.slice(6)
+        : selectedChatTable !== "ALL"
+        ? selectedChatTable
+        : null;
 
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -1490,8 +1633,9 @@ export default function AdminDashboardPage() {
         body: JSON.stringify({
           outletId: targetOutlet,
           senderType: "STAFF",
-          senderName: currentUser?.name || "كابتن الإدارة / الباريستا",
-          tableNumber: selectedChatTable !== "ALL" ? selectedChatTable : null,
+          senderName: currentUser?.name || "إدارة المحل / خدمة العملاء",
+          senderPhone,
+          tableNumber,
           message: chatReplyText.trim(),
         }),
       });
@@ -1499,7 +1643,7 @@ export default function AdminDashboardPage() {
       const data = await res.json();
       if (data.success) {
         setChatReplyText("");
-        addToast("success", "تم إرسال الرد المباشر للزبون بنجاح 👍");
+        addToast("success", "تم إرسال الرد المباشر للعميل بنجاح 👍");
         fetchDashboardData();
       }
     } catch {
@@ -1637,13 +1781,15 @@ export default function AdminDashboardPage() {
               <span>نقطة البيع (POS)</span>
             </Link>
 
-            <Link
-              href="/kds"
-              className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs border border-slate-700 transition"
-            >
-              <UtensilsCrossed className="w-4 h-4 text-emerald-400" />
-              <span>شاشة الباريستا (KDS)</span>
-            </Link>
+            {(isViewingAll || isViewingSoulmate) && (
+              <Link
+                href="/kds"
+                className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs border border-slate-700 transition"
+              >
+                <UtensilsCrossed className="w-4 h-4 text-emerald-400" />
+                <span>شاشة الباريستا (KDS)</span>
+              </Link>
+            )}
 
             <button
               onClick={() => setShowQRModal(true)}
@@ -1769,20 +1915,20 @@ export default function AdminDashboardPage() {
               </button>
             )}
 
-            {/* Chat Tab (Soulmate only) */}
-            {(isViewingAll || isViewingSoulmate) && (
-              <button
-                onClick={() => setActiveTab("chat")}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                  activeTab === "chat"
-                    ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
-                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
-                }`}
-              >
-                <MessageCircle className="w-4 h-4" />
-                <span>شات الزبائن والباريستا ({chatMessages.length})</span>
-              </button>
-            )}
+            {/* Chat Tab (Available for BOTH Soulmate & Abu Adel!) */}
+            <button
+              onClick={() => setActiveTab("chat")}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+                activeTab === "chat"
+                  ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+              }`}
+            >
+              <MessageCircle className="w-4 h-4" />
+              <span>
+                {isViewingAbuAdel ? "شات عملاء حلواني أبو عادل" : "شات العملاء والمحلات"} ({chatMessages.length})
+              </span>
+            </button>
 
             {/* Loyalty Tab (Soulmate only) */}
             {(isViewingAll || isViewingSoulmate) && (
@@ -4402,25 +4548,228 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        {/* TAB 5: ORDERS & DELIVERY HISTORY */}
+        {/* TAB 5: ORDERS, DELIVERY ZONES & LOGICAL DISPATCH */}
         {activeTab === "orders" && (
           <div className="space-y-6">
+            {/* Collapsible Delivery Zones Manager */}
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-purple-400" />
+                    <span>مناطق التوصيل (الدليفري) والتسعير الديناميكي ({deliveryZones.length} منطقة)</span>
+                  </h3>
+                  <p className="text-[11px] text-slate-400 mt-0.5">
+                    عدّل رسوم كل منطقة أو أضف مناطق جديدة لأبو عادل وسول ميت — تظهر فوراً للعملاء في صفحة الطلب وللكاشير لتجميع الطيارات
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowZonesManager((prev) => !prev)}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition border ${
+                    showZonesManager
+                      ? "bg-purple-500/20 text-purple-300 border-purple-500/40"
+                      : "bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700"
+                  }`}
+                >
+                  <MapPin className="w-4 h-4" />
+                  <span>{showZonesManager ? "إخفاء إعدادات المناطق ▲" : "إدارة مناطق التوصيل وأسعارها ▾"}</span>
+                </button>
+              </div>
+
+              {showZonesManager && (
+                <div className="space-y-4 pt-3 border-t border-slate-800">
+                  <form onSubmit={handleSaveDeliveryZone} className="grid grid-cols-1 md:grid-cols-5 gap-3 bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs">
+                    <div>
+                      <label className="block text-slate-400 mb-1">اسم المنطقة *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="مثال: مدينة نصر، التجمع..."
+                        value={zoneForm.nameAr}
+                        onChange={(e) => setZoneForm({ ...zoneForm, nameAr: e.target.value })}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-purple-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 mb-1">تكلفة التوصيل (ج.م) *</label>
+                      <input
+                        type="number"
+                        required
+                        min="0"
+                        step="1"
+                        placeholder="35"
+                        value={zoneForm.fee}
+                        onChange={(e) => setZoneForm({ ...zoneForm, fee: e.target.value })}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-emerald-400 font-bold font-mono focus:outline-none focus:border-purple-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 mb-1">الوقت المتوقع</label>
+                      <input
+                        type="text"
+                        placeholder="45 - 60 دقيقة"
+                        value={zoneForm.estimatedTime}
+                        onChange={(e) => setZoneForm({ ...zoneForm, estimatedTime: e.target.value })}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-purple-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 mb-1">ترتيب الظهور</label>
+                      <input
+                        type="number"
+                        placeholder="0"
+                        value={zoneForm.sortOrder}
+                        onChange={(e) => setZoneForm({ ...zoneForm, sortOrder: e.target.value })}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono focus:outline-none focus:border-purple-500"
+                      />
+                    </div>
+                    <div className="flex items-end gap-2">
+                      <button
+                        type="submit"
+                        disabled={savingZone}
+                        className="flex-1 bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-3 rounded-lg transition disabled:opacity-50"
+                      >
+                        {savingZone ? "جاري الحفظ..." : editingZoneId ? "حفظ التعديل ✓" : "+ إضافة منطقة"}
+                      </button>
+                      {editingZoneId && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingZoneId(null);
+                            setZoneForm({ nameAr: "", nameEn: "", fee: "", estimatedTime: "45 - 60 دقيقة", sortOrder: "0" });
+                          }}
+                          className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-lg"
+                        >
+                          إلغاء
+                        </button>
+                      )}
+                    </div>
+                  </form>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                    {deliveryZones.map((zone) => (
+                      <div
+                        key={zone.id}
+                        className={`flex items-center justify-between p-3 rounded-xl border text-xs ${
+                          zone.isActive
+                            ? "bg-slate-950 border-slate-800"
+                            : "bg-slate-950/40 border-slate-800/50 opacity-60"
+                        }`}
+                      >
+                        <div>
+                          <div className="font-bold text-white flex items-center gap-1.5">
+                            <span>📍 {zone.nameAr}</span>
+                          </div>
+                          <div className="text-[11px] text-slate-400 mt-0.5 flex items-center gap-2">
+                            <span className="font-mono font-bold text-emerald-400">{zone.fee} ج.م</span>
+                            <span>• {zone.estimatedTime || "45 - 60 دقيقة"}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => handleToggleZoneActive(zone)}
+                            className={`px-2 py-1 rounded text-[10px] font-bold ${
+                              zone.isActive
+                                ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                                : "bg-slate-800 text-slate-400"
+                            }`}
+                          >
+                            {zone.isActive ? "نشط" : "موقف"}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingZoneId(zone.id);
+                              setZoneForm({
+                                nameAr: zone.nameAr,
+                                nameEn: zone.nameEn || "",
+                                fee: String(zone.fee ?? 0),
+                                estimatedTime: zone.estimatedTime || "45 - 60 دقيقة",
+                                sortOrder: String(zone.sortOrder ?? 0),
+                              });
+                            }}
+                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400"
+                            title="تعديل المنطقة والسعر"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteDeliveryZone(zone)}
+                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-950 text-rose-400"
+                            title="حذف المنطقة"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Orders Filtering & Dispatch Table */}
             <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
               <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
                 <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
                   <Receipt className="w-4 h-4 text-amber-400" />
-                  <span>سجل الطلبات والدليفري والفواتير الحرارية الصادرة</span>
+                  <span>سجل الطلبات ومتابعة الدليفري والطيارات حسب المنطقة</span>
                 </h3>
 
-                <div className="relative">
-                  <Search className="w-4 h-4 text-slate-500 absolute right-3 top-2.5" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="بحث برقم الشيك أو العنوان أو الترابيزة..."
-                    className="bg-slate-950 border border-slate-700 text-xs rounded-xl pr-9 pl-3 py-2 text-white focus:outline-none focus:border-amber-500 w-64"
-                  />
+                <div className="flex items-center gap-2 flex-wrap">
+                  <select
+                    value={orderZoneFilter}
+                    onChange={(e) => setOrderZoneFilter(e.target.value)}
+                    className="bg-slate-950 border border-purple-500/40 text-xs rounded-xl px-3 py-2 text-purple-300 font-bold focus:outline-none"
+                  >
+                    <option value="ALL">🗺️ كل المناطق</option>
+                    <option value="NO_ZONE">بدون منطقة محددة</option>
+                    {deliveryZones.map((z) => (
+                      <option key={z.id} value={z.id}>
+                        📍 {z.nameAr} ({z.fee} ج.م)
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={orderTypeFilter}
+                    onChange={(e) => setOrderTypeFilter(e.target.value)}
+                    className="bg-slate-950 border border-slate-700 text-xs rounded-xl px-3 py-2 text-slate-200 focus:outline-none"
+                  >
+                    <option value="ALL">كل أنواع الطلبات</option>
+                    <option value="DELIVERY">🛵 دليفري فقط</option>
+                    <option value="TAKEAWAY">🛍️ تيك أواي / بيع مباشر</option>
+                    <option value="DINE_IN">🪑 صالة الكافيه</option>
+                  </select>
+
+                  <select
+                    value={orderStatusFilter}
+                    onChange={(e) => setOrderStatusFilter(e.target.value)}
+                    className="bg-slate-950 border border-slate-700 text-xs rounded-xl px-3 py-2 text-slate-200 focus:outline-none"
+                  >
+                    <option value="ALL">كل الحالات</option>
+                    <option value="NEW_PENDING">🆕 جديد وارد</option>
+                    <option value="PREPARING">📦 جاري التجهيز</option>
+                    <option value="READY_TO_SERVE">✅ جاهز للطيار / الاستلام</option>
+                    <option value="OUT_FOR_DELIVERY">🛵 خرج مع الطيار</option>
+                    <option value="COMPLETED">✔️ مكتمل / تم التسليم</option>
+                  </select>
+
+                  <div className="relative">
+                    <Search className="w-4 h-4 text-slate-500 absolute right-3 top-2.5" />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="رقم الطلب، الموبايل، العنوان..."
+                      className="bg-slate-950 border border-slate-700 text-xs rounded-xl pr-9 pl-3 py-2 text-white focus:outline-none focus:border-amber-500 w-56"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -4428,14 +4777,14 @@ export default function AdminDashboardPage() {
                 <table className="w-full text-right text-xs">
                   <thead className="bg-slate-950/60 text-slate-400 border-b border-slate-800">
                     <tr>
-                      <th className="py-2.5 px-3">رقم الشيك</th>
+                      <th className="py-2.5 px-3">رقم الطلب</th>
                       <th className="py-2.5 px-3">الفرع</th>
-                      <th className="py-2.5 px-3">النوع / المكان</th>
-                      <th className="py-2.5 px-3">بيانات العميل والتوصيل</th>
-                      <th className="py-2.5 px-3">طريقة الدفع</th>
-                      <th className="py-2.5 px-3">الإجمالي الصافي</th>
-                      <th className="py-2.5 px-3">التاريخ والوقت</th>
-                      <th className="py-2.5 px-3 text-center">طباعة الفاتورة</th>
+                      <th className="py-2.5 px-3">النوع والمنطقة</th>
+                      <th className="py-2.5 px-3">العميل والتوصيل</th>
+                      <th className="py-2.5 px-3">الحالة والسداد</th>
+                      <th className="py-2.5 px-3">الإجمالي</th>
+                      <th className="py-2.5 px-3">مراحل التجهيز والطيار</th>
+                      <th className="py-2.5 px-3 text-center">إيصال</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800">
@@ -4444,67 +4793,214 @@ export default function AdminDashboardPage() {
                         if (isUserSoulmate && o.outlet?.code !== "SOULMATE_CAFE" && o.outletId !== outlets.find((x) => x.code === "SOULMATE_CAFE")?.id) return false;
                         if (isUserAbuAdel && o.outlet?.code !== "ABU_ADEL_PATISSERIE" && o.outletId !== outlets.find((x) => x.code === "ABU_ADEL_PATISSERIE")?.id) return false;
                         if (selectedOutletId !== "ALL" && o.outletId !== selectedOutletId) return false;
+                        if (orderZoneFilter === "NO_ZONE" && (o.deliveryZoneId || o.deliveryZoneName)) return false;
+                        if (orderZoneFilter !== "ALL" && orderZoneFilter !== "NO_ZONE" && o.deliveryZoneId !== orderZoneFilter) return false;
+                        if (orderTypeFilter !== "ALL" && o.orderType !== orderTypeFilter) return false;
+                        if (orderStatusFilter !== "ALL" && o.status !== orderStatusFilter) return false;
+
+                        const q = searchQuery.toLowerCase().trim();
+                        if (!q) return true;
                         return (
-                          o.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          (o.tableNumber && o.tableNumber.toLowerCase().includes(searchQuery.toLowerCase())) ||
-                          (o.deliveryAddress && o.deliveryAddress.toLowerCase().includes(searchQuery.toLowerCase()))
+                          o.orderNumber.toLowerCase().includes(q) ||
+                          (o.customerName && o.customerName.toLowerCase().includes(q)) ||
+                          (o.customerPhone && o.customerPhone.toLowerCase().includes(q)) ||
+                          (o.deliveryPhone && o.deliveryPhone.toLowerCase().includes(q)) ||
+                          (o.deliveryZoneName && o.deliveryZoneName.toLowerCase().includes(q)) ||
+                          (o.tableNumber && o.tableNumber.toLowerCase().includes(q)) ||
+                          (o.deliveryAddress && o.deliveryAddress.toLowerCase().includes(q))
                         );
                       })
                       .map((o) => {
-                        let parsedItems: any[] = [];
-                        try {
-                          parsedItems = JSON.parse(o.items || "[]");
-                        } catch {
-                          parsedItems = [];
-                        }
+                        const zoneLabel = o.deliveryZone?.nameAr || o.deliveryZoneName;
+                        const statusMeta: Record<string, { label: string; cls: string }> = {
+                          NEW_PENDING: { label: "🆕 جديد وارد", cls: "bg-amber-500/20 text-amber-300 border-amber-500/40" },
+                          PREPARING: { label: "📦 قيد التجهيز", cls: "bg-blue-500/20 text-blue-300 border-blue-500/40" },
+                          READY_TO_SERVE: { label: "✅ جاهز", cls: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40" },
+                          OUT_FOR_DELIVERY: { label: `🛵 مع الطيار${o.driverName ? ` (${o.driverName})` : ""}`, cls: "bg-purple-500/20 text-purple-300 border-purple-500/40" },
+                          COMPLETED: { label: "✔️ تم التسليم", cls: "bg-slate-800 text-emerald-400 border-slate-700" },
+                          CANCELLED: { label: "❌ ملغي", cls: "bg-rose-500/20 text-rose-300 border-rose-500/40" },
+                        };
+                        const st = statusMeta[o.status] || statusMeta.COMPLETED;
 
                         return (
-                          <tr key={o.id} className="hover:bg-slate-800/40">
-                            <td className="py-3 px-3 font-bold text-amber-400 font-mono">
-                              {o.orderNumber}
+                          <tr key={o.id} className="hover:bg-slate-800/40 align-top">
+                            <td className="py-3 px-3">
+                              <div className="font-bold text-amber-400 font-mono">{o.orderNumber}</div>
+                              <div className="text-[10px] text-slate-500 font-mono mt-0.5">
+                                {new Date(o.createdAt).toLocaleString("ar-EG")}
+                              </div>
                             </td>
                             <td className="py-3 px-3 text-slate-300">
                               {o.outlet?.name || "الفرع الرئيسي"}
                             </td>
-                            <td className="py-3 px-3">
+                            <td className="py-3 px-3 space-y-1">
                               <span
-                                className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
                                   o.orderType === "DELIVERY"
                                     ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                                    : o.orderType === "TAKEAWAY"
+                                    ? "bg-amber-500/15 text-amber-300 border border-amber-500/30"
                                     : "bg-slate-800 text-slate-300"
                                 }`}
                               >
                                 {o.orderType === "DINE_IN"
-                                  ? `ترابيزة ${o.tableNumber || "1"}`
+                                  ? `🪑 صالة • ترابيزة ${o.tableNumber || "1"}`
                                   : o.orderType === "DELIVERY"
-                                  ? "دليفري للمنزل 🛵"
-                                  : "تيك أواي"}
+                                  ? "🛵 دليفري للمنزل"
+                                  : "🛍️ تيك أواي / استلام"}
                               </span>
+                              {zoneLabel && (
+                                <div className="text-[10px] font-bold text-emerald-300 bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 rounded inline-block mr-1">
+                                  📍 {zoneLabel}
+                                </div>
+                              )}
                             </td>
-                            <td className="py-3 px-3 text-slate-300">
-                              <div>{o.customerName || "-"}</div>
+                            <td className="py-3 px-3 text-slate-300 max-w-xs">
+                              <div className="font-bold text-white">{o.customerName || "عميل كاشير"}</div>
+                              {(o.deliveryPhone || o.customerPhone) && (
+                                <div className="text-[10px] text-slate-400 font-mono">
+                                  📞 {o.deliveryPhone || o.customerPhone}
+                                </div>
+                              )}
                               {o.deliveryAddress && (
-                                <div className="text-[10px] text-amber-300">
-                                  {o.deliveryAddress} • {o.deliveryPhone || o.customerPhone}
+                                <div className="text-[10px] text-amber-300 mt-0.5 leading-snug">
+                                  {o.deliveryAddress}
+                                </div>
+                              )}
+                            </td>
+                            <td className="py-3 px-3 space-y-1">
+                              <div className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold border ${st.cls}`}>
+                                {st.label}
+                              </div>
+                              <div className="text-[10px]">
+                                <span
+                                  className={`px-1.5 py-0.5 rounded ${
+                                    o.paymentStatus === "PAID"
+                                      ? "bg-emerald-500/15 text-emerald-400"
+                                      : "bg-rose-500/15 text-rose-300"
+                                  }`}
+                                >
+                                  {o.paymentStatus === "PAID" ? `مدفوع (${o.paymentMethod})` : "عند الاستلام ⏳"}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="py-3 px-3 font-bold text-emerald-400 font-mono">
+                              <div>{o.finalAmount} ج.م</div>
+                              {Number(o.deliveryFee) > 0 && (
+                                <div className="text-[10px] text-slate-400 font-normal">
+                                  (توصيل: {o.deliveryFee} ج)
                                 </div>
                               )}
                             </td>
                             <td className="py-3 px-3">
-                              <span className="px-1.5 py-0.5 rounded text-[10px] bg-slate-800 text-slate-300">
-                                {o.paymentMethod}
-                              </span>
-                            </td>
-                            <td className="py-3 px-3 font-bold text-emerald-400 font-mono">
-                              {o.finalAmount} ج.م
-                            </td>
-                            <td className="py-3 px-3 text-slate-400 font-mono">
-                              {new Date(o.createdAt).toLocaleString("ar-EG")}
+                              <div className="flex flex-col gap-1.5 min-w-[160px]">
+                                {o.status === "NEW_PENDING" && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleUpdateOrderDispatch(
+                                        o.id,
+                                        { status: "PREPARING" },
+                                        `بدأ تجهيز الطلب ${o.orderNumber} 📦`
+                                      )
+                                    }
+                                    className="px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold transition"
+                                  >
+                                    بدء التجهيز والتعبئة 📦
+                                  </button>
+                                )}
+                                {o.status === "PREPARING" && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleUpdateOrderDispatch(
+                                        o.id,
+                                        { status: "READY_TO_SERVE" },
+                                        `الطلب ${o.orderNumber} جاهز للتسليم ✅`
+                                      )
+                                    }
+                                    className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold transition"
+                                  >
+                                    {o.orderType === "DELIVERY" ? "جاهز للطيار ✅" : "جاهز للاستلام ✅"}
+                                  </button>
+                                )}
+                                {o.status === "READY_TO_SERVE" && o.orderType === "DELIVERY" && (
+                                  <div className="flex items-center gap-1">
+                                    <input
+                                      type="text"
+                                      placeholder="اسم الطيار..."
+                                      value={dispatchDriverNames[o.id] || ""}
+                                      onChange={(e) =>
+                                        setDispatchDriverNames((prev) => ({
+                                          ...prev,
+                                          [o.id]: e.target.value,
+                                        }))
+                                      }
+                                      className="w-24 bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-[10px] text-white"
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleUpdateOrderDispatch(
+                                          o.id,
+                                          {
+                                            action: "DISPATCH_DRIVER",
+                                            driverName: dispatchDriverNames[o.id] || "مندوب التوصيل",
+                                          },
+                                          `خرج الطلب ${o.orderNumber} مع الطيار 🛵`
+                                        )
+                                      }
+                                      className="px-2 py-1 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-[10px] font-bold whitespace-nowrap"
+                                    >
+                                      خروج 🛵
+                                    </button>
+                                  </div>
+                                )}
+                                {(o.status === "OUT_FOR_DELIVERY" ||
+                                  (o.status === "READY_TO_SERVE" && o.orderType !== "DELIVERY")) &&
+                                  o.paymentStatus !== "PAID" && (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleUpdateOrderDispatch(
+                                          o.id,
+                                          {
+                                            action: "SETTLE",
+                                            paymentMethod: o.paymentMethod || "CASH",
+                                            cashierName: currentUser?.name || "الإدارة",
+                                          },
+                                          `تم تحصيل قيمة الطلب ${o.orderNumber} وإغلاقه 💵`
+                                        )
+                                      }
+                                      className="px-2.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-[11px] font-black transition"
+                                    >
+                                      تحصيل للخزنة وإغلاق 💵
+                                    </button>
+                                  )}
+                                {(o.status === "OUT_FOR_DELIVERY" ||
+                                  (o.status === "READY_TO_SERVE" && o.orderType !== "DELIVERY")) &&
+                                  o.paymentStatus === "PAID" && (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleUpdateOrderDispatch(
+                                          o.id,
+                                          { status: "COMPLETED" },
+                                          `تم تأكيد تسليم الطلب ${o.orderNumber} ✔️`
+                                        )
+                                      }
+                                      className="px-2.5 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-[11px] font-bold transition"
+                                    >
+                                      تأكيد التسليم النهائي ✔️
+                                    </button>
+                                  )}
+                              </div>
                             </td>
                             <td className="py-3 px-3 text-center">
                               <button
                                 onClick={() => setSelectedOrderForPrint(o)}
                                 className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-amber-400 transition"
-                                title="إعادة طباعة الفاتورة 80 مم"
+                                title="طباعة الإيصال 80 مم"
                               >
                                 <Printer className="w-4 h-4" />
                               </button>
@@ -4616,95 +5112,211 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        {/* TAB 7: LIVE CUSTOMER & BARISTA CHAT */}
-        {activeTab === "chat" && (
-          <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
-              <div className="flex items-center justify-between flex-wrap gap-3">
-                <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
-                  <MessageCircle className="w-4 h-4 text-amber-400" />
-                  <span>الشات المباشر مع الزبائن والترابيزات (Customer Live Chat)</span>
-                </h3>
+        {/* TAB 7: LIVE CUSTOMER CHAT (BOTH SOULMATE & ABU ADEL) */}
+        {activeTab === "chat" && (() => {
+          const branchFilteredChat = chatMessages.filter((m) => {
+            if (isUserSoulmate && m.outlet?.code !== "SOULMATE_CAFE") return false;
+            if (isUserAbuAdel && m.outlet?.code !== "ABU_ADEL_PATISSERIE") return false;
+            if (chatOutletFilter !== "ALL" && m.outletId !== chatOutletFilter) return false;
+            return true;
+          });
 
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-slate-400">تصفية حسب الترابيزة:</span>
-                  <select
-                    value={selectedChatTable}
-                    onChange={(e) => setSelectedChatTable(e.target.value)}
-                    className="bg-slate-950 text-amber-400 text-xs px-3 py-1.5 rounded-lg border border-slate-700"
-                  >
-                    <option value="ALL">جميع المحادثات</option>
-                    {tables.map((t) => (
-                      <option key={t.id} value={t.tableNumber}>
-                        ترابيزة {t.tableNumber}
-                      </option>
-                    ))}
-                  </select>
+          // Group customer conversations by Phone (online/delivery/takeaway) or Table Number
+          const threadMap: Record<
+            string,
+            { key: string; label: string; sub: string; outletCode: string; lastMsg: any; count: number }
+          > = {};
+
+          branchFilteredChat.forEach((m) => {
+            const key = m.senderPhone
+              ? `PHONE:${m.senderPhone}`
+              : m.tableNumber
+              ? `TABLE:${m.tableNumber}`
+              : "GENERAL";
+            if (!threadMap[key]) {
+              threadMap[key] = {
+                key,
+                label: m.senderPhone
+                  ? m.senderType === "CUSTOMER"
+                    ? `${m.senderName} (${m.senderPhone})`
+                    : m.senderPhone
+                  : m.tableNumber
+                  ? `ترابيزة ${m.tableNumber}`
+                  : "استفسارات عامة",
+                sub: m.outlet?.code === "ABU_ADEL_PATISSERIE" ? "🍰 حلواني أبو عادل" : "☕ سول ميت",
+                outletCode: m.outlet?.code || "",
+                lastMsg: m,
+                count: 0,
+              };
+            } else if (m.senderType === "CUSTOMER" && m.senderPhone) {
+              threadMap[key].label = `${m.senderName} (${m.senderPhone})`;
+            }
+            threadMap[key].lastMsg = m;
+            threadMap[key].count += 1;
+          });
+
+          const threads = Object.values(threadMap).reverse();
+          const displayedMsgs = branchFilteredChat.filter((m) => {
+            if (selectedChatThread === "ALL") return true;
+            if (selectedChatThread.startsWith("PHONE:")) return m.senderPhone === selectedChatThread.slice(6);
+            if (selectedChatThread.startsWith("TABLE:")) return m.tableNumber === selectedChatThread.slice(6);
+            return !m.senderPhone && !m.tableNumber;
+          });
+
+          return (
+            <div className="space-y-6">
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
+                    <MessageCircle className="w-4 h-4 text-amber-400" />
+                    <span>الشات المباشر مع العملاء (دليفري، تيك أواي، وترابيزات)</span>
+                  </h3>
+
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {isViewingAll && (
+                      <select
+                        value={chatOutletFilter}
+                        onChange={(e) => {
+                          setChatOutletFilter(e.target.value);
+                          setSelectedChatThread("ALL");
+                        }}
+                        className="bg-slate-950 text-slate-200 text-xs px-3 py-1.5 rounded-lg border border-slate-700"
+                      >
+                        <option value="ALL">كلا المحلين (سول ميت + أبو عادل)</option>
+                        {outlets.map((o) => (
+                          <option key={o.id} value={o.id}>
+                            {o.code === "SOULMATE_CAFE" ? "☕ سول ميت كافيه VIP" : "🍰 حلواني أبو عادل"}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+
+                    <select
+                      value={selectedChatThread}
+                      onChange={(e) => setSelectedChatThread(e.target.value)}
+                      className="bg-slate-950 text-amber-400 text-xs px-3 py-1.5 rounded-lg border border-slate-700"
+                    >
+                      <option value="ALL">جميع المحادثات ({branchFilteredChat.length})</option>
+                      {threads.map((th) => (
+                        <option key={th.key} value={th.key}>
+                          {th.sub} • {th.label} ({th.count})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
-              </div>
 
-              {/* Chat Messages Stream */}
-              <div className="max-h-96 overflow-y-auto space-y-3 p-4 bg-slate-950 rounded-2xl border border-slate-800 text-xs">
-                {chatMessages
-                  .filter((m) =>
-                    selectedChatTable === "ALL" ? true : m.tableNumber === selectedChatTable
-                  )
-                  .map((msg) => (
-                    <div
-                      key={msg.id}
-                      className={`flex flex-col ${
-                        msg.senderType === "STAFF" ? "items-start" : "items-end"
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                  {/* Customer Threads Sidebar */}
+                  <div className="lg:col-span-4 max-h-96 overflow-y-auto space-y-2 pr-1">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedChatThread("ALL")}
+                      className={`w-full text-right p-3 rounded-xl border text-xs transition ${
+                        selectedChatThread === "ALL"
+                          ? "bg-amber-500/15 border-amber-500/50 text-amber-300 font-bold"
+                          : "bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700"
                       }`}
                     >
-                      <div
-                        className={`max-w-[75%] p-3 rounded-2xl ${
-                          msg.senderType === "STAFF"
-                            ? "bg-amber-500 text-black font-medium"
-                            : "bg-slate-800 text-white border border-slate-700"
+                      📥 عرض كل الرسائل ({branchFilteredChat.length})
+                    </button>
+                    {threads.map((th) => (
+                      <button
+                        key={th.key}
+                        type="button"
+                        onClick={() => setSelectedChatThread(th.key)}
+                        className={`w-full text-right p-3 rounded-xl border text-xs transition ${
+                          selectedChatThread === th.key
+                            ? "bg-amber-500/15 border-amber-500/50 text-white"
+                            : "bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700"
                         }`}
                       >
-                        <div className="text-[10px] opacity-75 mb-0.5">
-                          {msg.senderType === "STAFF"
-                            ? `${msg.senderName} (طاقم العمل)`
-                            : `${msg.senderName} • ${
-                                msg.tableNumber ? `ترابيزة ${msg.tableNumber}` : "دليفري"
-                              }`}
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-bold truncate">{th.label}</span>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 shrink-0">
+                            {th.sub}
+                          </span>
                         </div>
-                        <div>{msg.message}</div>
-                      </div>
-                      <span className="text-[9px] text-slate-500 mt-0.5 px-1 font-mono">
-                        {new Date(msg.createdAt).toLocaleTimeString("ar-EG")}
-                      </span>
-                    </div>
-                  ))}
-
-                {chatMessages.length === 0 && (
-                  <div className="text-center py-8 text-slate-500 text-xs">
-                    لا توجد رسائل شات مسجلة حتى الآن
+                        <div className="text-[11px] text-slate-400 truncate mt-1">
+                          {th.lastMsg?.message}
+                        </div>
+                      </button>
+                    ))}
                   </div>
-                )}
-              </div>
 
-              {/* Staff Reply Form */}
-              <form onSubmit={handleSendStaffChatReply} className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="اكتب رداً رسمياً للزبون / الترابيزة المحددة..."
-                  value={chatReplyText}
-                  onChange={(e) => setChatReplyText(e.target.value)}
-                  className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
-                />
-                <button
-                  type="submit"
-                  disabled={!chatReplyText.trim()}
-                  className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-xs transition disabled:opacity-50"
-                >
-                  إرسال الرد 💬
-                </button>
-              </form>
+                  {/* Active Chat Stream + Reply */}
+                  <div className="lg:col-span-8 flex flex-col gap-3">
+                    <div className="h-80 overflow-y-auto space-y-3 p-4 bg-slate-950 rounded-2xl border border-slate-800 text-xs">
+                      {displayedMsgs.map((msg) => (
+                        <div
+                          key={msg.id}
+                          className={`flex flex-col ${
+                            msg.senderType === "STAFF" ? "items-start" : "items-end"
+                          }`}
+                        >
+                          <div
+                            className={`max-w-[78%] p-3 rounded-2xl ${
+                              msg.senderType === "STAFF"
+                                ? "bg-amber-500 text-black font-medium"
+                                : "bg-slate-800 text-white border border-slate-700"
+                            }`}
+                          >
+                            <div className="text-[10px] opacity-75 mb-0.5 flex items-center gap-1.5">
+                              <span>
+                                {msg.senderType === "STAFF"
+                                  ? `${msg.senderName} (خدمة العملاء)`
+                                  : `${msg.senderName} • ${
+                                      msg.tableNumber
+                                        ? `ترابيزة ${msg.tableNumber}`
+                                        : msg.senderPhone
+                                        ? `📱 ${msg.senderPhone}`
+                                        : "طلب أونلاين"
+                                    }`}
+                              </span>
+                              <span>•</span>
+                              <span>{msg.outlet?.code === "ABU_ADEL_PATISSERIE" ? "🍰 أبو عادل" : "☕ سول ميت"}</span>
+                            </div>
+                            <div>{msg.message}</div>
+                          </div>
+                          <span className="text-[9px] text-slate-500 mt-0.5 px-1 font-mono">
+                            {new Date(msg.createdAt).toLocaleTimeString("ar-EG")}
+                          </span>
+                        </div>
+                      ))}
+
+                      {displayedMsgs.length === 0 && (
+                        <div className="text-center py-12 text-slate-500 text-xs">
+                          لا توجد رسائل شات في هذا التحديد حتى الآن
+                        </div>
+                      )}
+                    </div>
+
+                    <form onSubmit={handleSendStaffChatReply} className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder={
+                          selectedChatThread !== "ALL"
+                            ? "اكتب رداً مباشراً للعميل المحدد..."
+                            : "اختر محادثة عميل للرد عليه أو أرسل رداً عاماً للفرع..."
+                        }
+                        value={chatReplyText}
+                        onChange={(e) => setChatReplyText(e.target.value)}
+                        className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                      />
+                      <button
+                        type="submit"
+                        disabled={!chatReplyText.trim()}
+                        className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-xs transition disabled:opacity-50"
+                      >
+                        إرسال الرد 💬
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* TAB 8: LOYALTY PROGRAM & POINTS */}
         {activeTab === "loyalty" && (
@@ -5066,10 +5678,10 @@ export default function AdminDashboardPage() {
                     <span className="text-amber-400 text-base">🍰</span>
                     <div>
                       <div className="text-xs font-bold text-amber-300">
-                        حلواني أبو عادل (كيان مستقل معتمد)
+                        حلواني أبو عادل (الفرع والإدارة المعتمدة)
                       </div>
                       <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
-                        تشغيل حر ومستقل بذاته تماماً مع نفس معايير الجودة، وليس منفذ بيع لأي موقع خارجي.
+                        إدارة حلواني أبو عادل للحلويات الشرقية والتورت والبيع المباشر والدليفري بكامل الصلاحيات.
                       </p>
                     </div>
                   </div>
@@ -5190,7 +5802,7 @@ export default function AdminDashboardPage() {
                     onChange={(e) => setUserForm({ ...userForm, role: e.target.value })}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500"
                   >
-                    <option value="branch_manager">🏢 مدير فرع مستقل</option>
+                    <option value="branch_manager">🏢 مدير فرع</option>
                     <option value="cashier">💳 كاشير (POS)</option>
                     <option value="barista">☕ باريستا (KDS)</option>
                     <option value="chef">👨‍🍳 شيف حلويات ومخبوزات</option>
@@ -6566,9 +7178,24 @@ export default function AdminDashboardPage() {
                     ? "دليفري للمنزل"
                     : "تيك أواي"}
                 </div>
+                {selectedOrderForPrint.deliveryZoneName && (
+                  <div className="text-[10px] font-bold">
+                    منطقة التوصيل: {selectedOrderForPrint.deliveryZoneName}
+                  </div>
+                )}
+                {selectedOrderForPrint.driverName && (
+                  <div className="text-[10px]">
+                    الطيار / المندوب: {selectedOrderForPrint.driverName}
+                  </div>
+                )}
                 {selectedOrderForPrint.deliveryAddress && (
                   <div className="text-[10px] text-slate-700">
                     العنوان: {selectedOrderForPrint.deliveryAddress}
+                  </div>
+                )}
+                {(selectedOrderForPrint.deliveryPhone || selectedOrderForPrint.customerPhone) && (
+                  <div className="text-[10px]">
+                    موبايل العميل: {selectedOrderForPrint.deliveryPhone || selectedOrderForPrint.customerPhone}
                   </div>
                 )}
                 <div className="text-[10px]">
@@ -6576,7 +7203,29 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
+              <div className="space-y-1 my-2 text-[10px]">
+                {(() => {
+                  try {
+                    const its = JSON.parse(selectedOrderForPrint.items || "[]");
+                    return its.map((it: any, idx: number) => (
+                      <div key={idx} className="flex justify-between">
+                        <span>{it.qty} × {it.nameAr}</span>
+                        <span>{Math.round(Number(it.price) * Number(it.qty) * 100) / 100} ج</span>
+                      </div>
+                    ));
+                  } catch {
+                    return null;
+                  }
+                })()}
+              </div>
+
               <div className="border-t border-black pt-2 mt-2 space-y-1 text-[11px]">
+                {Number(selectedOrderForPrint.deliveryFee) > 0 && (
+                  <div className="flex justify-between text-[10px]">
+                    <span>رسوم التوصيل:</span>
+                    <span>{selectedOrderForPrint.deliveryFee} ج.م</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-sm font-black border-t border-black pt-1">
                   <span>الإجمالي المدفوع:</span>
                   <span>{selectedOrderForPrint.finalAmount} ج.م</span>

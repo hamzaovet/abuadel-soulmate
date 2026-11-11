@@ -24,7 +24,7 @@ export async function GET(req: Request) {
     const messages = await prisma.chatMessage.findMany({
       where,
       orderBy: { createdAt: "asc" },
-      take: 100,
+      take: 150,
       include: { outlet: { select: { id: true, name: true, code: true } } },
     });
 
@@ -64,15 +64,34 @@ export async function POST(req: Request) {
       data: {
         outletId: targetOutletId,
         senderType: senderType || "CUSTOMER",
-        senderName: senderName || "زبون الترابيزة",
+        senderName: senderName || "عميل",
         senderPhone: senderPhone || null,
         tableNumber: tableNumber || null,
         orderNumber: orderNumber || null,
         message: message.trim(),
       },
+      include: { outlet: { select: { id: true, name: true, code: true } } },
     });
 
     return NextResponse.json({ success: true, message: chatMsg });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}
+
+export async function PATCH(req: Request) {
+  try {
+    const body = await req.json();
+    const { outletId } = body;
+    const where: any = { senderType: "CUSTOMER", isRead: false };
+    if (outletId && outletId !== "ALL") {
+      where.outletId = outletId;
+    }
+    await prisma.chatMessage.updateMany({
+      where,
+      data: { isRead: true },
+    });
+    return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }

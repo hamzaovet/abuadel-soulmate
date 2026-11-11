@@ -172,7 +172,7 @@ export default function DualBrandLandingPage() {
 
           <div className="flex items-center gap-4 text-[11px]">
             <span className="text-slate-400">
-              إدارة مركزية مستقلة التشغيل
+              منظومة سحابية متكاملة (POS + KDS + دليفري)
             </span>
             <span className="text-slate-600">|</span>
             <Link
@@ -258,7 +258,7 @@ export default function DualBrandLandingPage() {
             </button>
 
             <Link
-              href="/order"
+              href={activeBrand === "ABU_ADEL" ? "/order?brand=abuadel&mode=delivery" : "/order?brand=soulmate"}
               className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black shadow-lg transition ${
                 activeBrand === "SOULMATE"
                   ? "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black shadow-amber-500/20"
@@ -289,7 +289,7 @@ export default function DualBrandLandingPage() {
                 <span>
                   {activeBrand === "SOULMATE"
                     ? "قهوة مختصة، باريستا محترف، وحجز ترابيزات وحفلات راقية"
-                    : "حلويات شرقية بالسمن البلدي، تورت، وبوكسات هدايا وتوصيل دليفري"}
+                    : "حلويات شرقية بالسمن البلدي، تورت، وبوكسات هدايا وتوصيل دليفري لجميع المناطق"}
                 </span>
               </div>
 
@@ -310,21 +310,30 @@ export default function DualBrandLandingPage() {
               <p className="text-slate-300 text-sm md:text-base leading-relaxed max-w-xl">
                 {activeBrand === "SOULMATE"
                   ? "امسح الكيو آر كود من ترابيزتك، اختر مشروبك المفضل، ويصل طلبك فوراً لشاشة الباريستا بدون أي انتظار. واكسب نقاط ولاء حصرية مع كل طلب!"
-                  : "نقدم لكم أرقى تشكيلة من الحلويات الشرقية بالسمن البلدي الفاخر، والتورت والجاتوهات المعدة يومياً بأعلى معايير الجودة لتشارككم أجمل اللحظات."}
+                  : "نقدم لكم أرقى تشكيلة من الحلويات الشرقية بالسمن البلدي الفاخر، والتورت والجاتوهات المعدة يومياً بأعلى معايير الجودة — اطلب أونلاين دليفري لأي مكان أو استلم من الفرع."}
               </p>
 
               {/* Call to Actions & Hotline */}
               <div className="flex items-center gap-3 pt-2 flex-wrap">
                 <Link
-                  href="/order"
+                  href={activeBrand === "ABU_ADEL" ? "/order?brand=abuadel&mode=delivery" : "/order?brand=soulmate"}
                   className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black shadow-xl transition ${
                     activeBrand === "SOULMATE"
                       ? "bg-amber-500 hover:bg-amber-400 text-black shadow-amber-500/20"
                       : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-600/20"
                   }`}
                 >
-                  <QrCode className="w-4 h-4" />
-                  <span>الطلب من الترابيزة / دليفري</span>
+                  {activeBrand === "SOULMATE" ? (
+                    <>
+                      <QrCode className="w-4 h-4" />
+                      <span>اطلب من الترابيزة / تيك أواي / دليفري</span>
+                    </>
+                  ) : (
+                    <>
+                      <Truck className="w-4 h-4" />
+                      <span>اطلب دليفري أو استلام من الفرع 🛵</span>
+                    </>
+                  )}
                 </Link>
 
                 <a
@@ -347,29 +356,51 @@ export default function DualBrandLandingPage() {
 
             {/* Hero Right Visual: PROMOTIONS & RESERVATIONS BANNER */}
             <div className="space-y-4">
-              {/* Table Booking Banner */}
-              <div className="bg-gradient-to-br from-stone-900 to-amber-950/50 border border-amber-500/40 rounded-3xl p-5 shadow-2xl flex items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-amber-400" />
-                    <h3 className="text-sm font-bold text-white">
-                      حجز ترابيزة VIP مسبقاً (صالة داخلية أو تراس)
-                    </h3>
+              {/* Table Booking Banner (Strictly Soulmate Only — Abu Adel has NO Tables/Hall!) */}
+              {activeBrand === "SOULMATE" ? (
+                <div className="bg-gradient-to-br from-stone-900 to-amber-950/50 border border-amber-500/40 rounded-3xl p-5 shadow-2xl flex items-center justify-between gap-4">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-amber-400" />
+                      <h3 className="text-sm font-bold text-white">
+                        حجز ترابيزة VIP مسبقاً (صالة داخلية أو تراس)
+                      </h3>
+                    </div>
+                    <p className="text-xs text-slate-300">
+                      اضمن جلوسك بأرقى مكان مع إطلالة هادئة ومشروبات ترحيبية جاهزة فور وصولك.
+                    </p>
                   </div>
-                  <p className="text-xs text-slate-300">
-                    اضمن جلوسك بأرقى مكان مع إطلالة هادئة ومشروبات ترحيبية جاهزة فور وصولك.
-                  </p>
+                  <button
+                    onClick={() => {
+                      setReservationType("TABLE");
+                      setShowReservationModal(true);
+                    }}
+                    className="flex-shrink-0 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-xs shadow-lg transition"
+                  >
+                    احجز ترابيزتك 🥂
+                  </button>
                 </div>
-                <button
-                  onClick={() => {
-                    setReservationType("TABLE");
-                    setShowReservationModal(true);
-                  }}
-                  className="flex-shrink-0 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-xs shadow-lg transition"
-                >
-                  احجز ترابيزتك 🥂
-                </button>
-              </div>
+              ) : (
+                <div className="bg-gradient-to-br from-slate-900 to-emerald-950/50 border border-emerald-500/40 rounded-3xl p-5 shadow-2xl flex items-center justify-between gap-4">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <Truck className="w-4 h-4 text-emerald-400" />
+                      <h3 className="text-sm font-bold text-white">
+                        توصيل دليفري سريع لجميع المناطق 🛵
+                      </h3>
+                    </div>
+                    <p className="text-xs text-slate-300">
+                      نصلك أينما كنت! اختر منطقتك واعرف رسوم التوصيل فوراً واستمتع بالحلويات طازجة لباب البيت أو استلمها بنفسك من المحل.
+                    </p>
+                  </div>
+                  <Link
+                    href="/order?brand=abuadel&mode=delivery"
+                    className="flex-shrink-0 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-lg transition"
+                  >
+                    اطلب دليفري 🛵
+                  </Link>
+                </div>
+              )}
 
               {/* Birthday & Party Booking Banner */}
               <div className="bg-gradient-to-br from-slate-900 to-purple-950/50 border border-purple-500/40 rounded-3xl p-5 shadow-2xl flex items-center justify-between gap-4">
@@ -377,11 +408,15 @@ export default function DualBrandLandingPage() {
                   <div className="flex items-center gap-2">
                     <PartyPopper className="w-4 h-4 text-purple-400" />
                     <h3 className="text-sm font-bold text-white">
-                      إقامة الحفلات والمناسبات وأعياد الميلاد 🎉
+                      {activeBrand === "SOULMATE"
+                        ? "إقامة الحفلات والمناسبات وأعياد الميلاد 🎉"
+                        : "حجز تورت المناسبات وبوكسات الهدايا الخاصة 🎂"}
                     </h3>
                   </div>
                   <p className="text-xs text-slate-300">
-                    باقات حفلات متكاملة: تزيين احترافي، موسيقى خاصة، وتورتة حلواني أبو عادل المخصصة!
+                    {activeBrand === "SOULMATE"
+                      ? "باقات حفلات متكاملة: تزيين احترافي، موسيقى خاصة، وتورتة حلواني أبو عادل المخصصة!"
+                      : "احجز تورتتك الخاصة لحفلتك أو أعياد الميلاد بتصميمات فاخرة ومذاق لا يُقاوم."}
                   </p>
                 </div>
                 <button
@@ -391,7 +426,7 @@ export default function DualBrandLandingPage() {
                   }}
                   className="flex-shrink-0 px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-black text-xs shadow-lg transition"
                 >
-                  احجز حفلتك 🎂
+                  {activeBrand === "SOULMATE" ? "احجز حفلتك 🎂" : "احجز تورتتك 🎂"}
                 </button>
               </div>
             </div>
@@ -517,7 +552,7 @@ export default function DualBrandLandingPage() {
                 </div>
 
                 <Link
-                  href="/order"
+                  href={activeBrand === "ABU_ADEL" ? "/order?brand=abuadel&mode=delivery" : "/order?brand=soulmate"}
                   className="p-2 rounded-xl bg-slate-800 hover:bg-amber-500 hover:text-black text-slate-200 transition shadow"
                   title="اطلب الآن"
                 >

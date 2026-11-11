@@ -79,6 +79,11 @@ export type RecipeItem = $Result.DefaultSelection<Prisma.$RecipeItemPayload>
  */
 export type Customer = $Result.DefaultSelection<Prisma.$CustomerPayload>
 /**
+ * Model DeliveryZone
+ * 
+ */
+export type DeliveryZone = $Result.DefaultSelection<Prisma.$DeliveryZonePayload>
+/**
  * Model Order
  * 
  */
@@ -369,6 +374,16 @@ export class PrismaClient<
     * ```
     */
   get customer(): Prisma.CustomerDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.deliveryZone`: Exposes CRUD operations for the **DeliveryZone** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DeliveryZones
+    * const deliveryZones = await prisma.deliveryZone.findMany()
+    * ```
+    */
+  get deliveryZone(): Prisma.DeliveryZoneDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.order`: Exposes CRUD operations for the **Order** model.
@@ -909,6 +924,7 @@ export namespace Prisma {
     InventoryAuditItem: 'InventoryAuditItem',
     RecipeItem: 'RecipeItem',
     Customer: 'Customer',
+    DeliveryZone: 'DeliveryZone',
     Order: 'Order',
     KdsTicket: 'KdsTicket',
     Shift: 'Shift',
@@ -932,7 +948,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "outlet" | "user" | "diningTable" | "menuItem" | "productMovement" | "pastryAudit" | "pastryAuditItem" | "rawMaterial" | "rawMaterialMovement" | "inventoryAudit" | "inventoryAuditItem" | "recipeItem" | "customer" | "order" | "kdsTicket" | "shift" | "dailyClose" | "expense" | "systemSettings" | "reservation" | "chatMessage"
+      modelProps: "outlet" | "user" | "diningTable" | "menuItem" | "productMovement" | "pastryAudit" | "pastryAuditItem" | "rawMaterial" | "rawMaterialMovement" | "inventoryAudit" | "inventoryAuditItem" | "recipeItem" | "customer" | "deliveryZone" | "order" | "kdsTicket" | "shift" | "dailyClose" | "expense" | "systemSettings" | "reservation" | "chatMessage"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1898,6 +1914,80 @@ export namespace Prisma {
           }
         }
       }
+      DeliveryZone: {
+        payload: Prisma.$DeliveryZonePayload<ExtArgs>
+        fields: Prisma.DeliveryZoneFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DeliveryZoneFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryZonePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DeliveryZoneFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryZonePayload>
+          }
+          findFirst: {
+            args: Prisma.DeliveryZoneFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryZonePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DeliveryZoneFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryZonePayload>
+          }
+          findMany: {
+            args: Prisma.DeliveryZoneFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryZonePayload>[]
+          }
+          create: {
+            args: Prisma.DeliveryZoneCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryZonePayload>
+          }
+          createMany: {
+            args: Prisma.DeliveryZoneCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DeliveryZoneCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryZonePayload>[]
+          }
+          delete: {
+            args: Prisma.DeliveryZoneDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryZonePayload>
+          }
+          update: {
+            args: Prisma.DeliveryZoneUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryZonePayload>
+          }
+          deleteMany: {
+            args: Prisma.DeliveryZoneDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DeliveryZoneUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DeliveryZoneUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryZonePayload>[]
+          }
+          upsert: {
+            args: Prisma.DeliveryZoneUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryZonePayload>
+          }
+          aggregate: {
+            args: Prisma.DeliveryZoneAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDeliveryZone>
+          }
+          groupBy: {
+            args: Prisma.DeliveryZoneGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DeliveryZoneGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DeliveryZoneCountArgs<ExtArgs>
+            result: $Utils.Optional<DeliveryZoneCountAggregateOutputType> | number
+          }
+        }
+      }
       Order: {
         payload: Prisma.$OrderPayload<ExtArgs>
         fields: Prisma.OrderFieldRefs
@@ -2626,6 +2716,7 @@ export namespace Prisma {
     inventoryAuditItem?: InventoryAuditItemOmit
     recipeItem?: RecipeItemOmit
     customer?: CustomerOmit
+    deliveryZone?: DeliveryZoneOmit
     order?: OrderOmit
     kdsTicket?: KdsTicketOmit
     shift?: ShiftOmit
@@ -3039,6 +3130,37 @@ export namespace Prisma {
    * CustomerCountOutputType without action
    */
   export type CustomerCountOutputTypeCountOrdersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrderWhereInput
+  }
+
+
+  /**
+   * Count Type DeliveryZoneCountOutputType
+   */
+
+  export type DeliveryZoneCountOutputType = {
+    orders: number
+  }
+
+  export type DeliveryZoneCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    orders?: boolean | DeliveryZoneCountOutputTypeCountOrdersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * DeliveryZoneCountOutputType without action
+   */
+  export type DeliveryZoneCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryZoneCountOutputType
+     */
+    select?: DeliveryZoneCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * DeliveryZoneCountOutputType without action
+   */
+  export type DeliveryZoneCountOutputTypeCountOrdersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: OrderWhereInput
   }
 
@@ -18937,6 +19059,1158 @@ export namespace Prisma {
 
 
   /**
+   * Model DeliveryZone
+   */
+
+  export type AggregateDeliveryZone = {
+    _count: DeliveryZoneCountAggregateOutputType | null
+    _avg: DeliveryZoneAvgAggregateOutputType | null
+    _sum: DeliveryZoneSumAggregateOutputType | null
+    _min: DeliveryZoneMinAggregateOutputType | null
+    _max: DeliveryZoneMaxAggregateOutputType | null
+  }
+
+  export type DeliveryZoneAvgAggregateOutputType = {
+    fee: number | null
+    sortOrder: number | null
+  }
+
+  export type DeliveryZoneSumAggregateOutputType = {
+    fee: number | null
+    sortOrder: number | null
+  }
+
+  export type DeliveryZoneMinAggregateOutputType = {
+    id: string | null
+    nameAr: string | null
+    nameEn: string | null
+    fee: number | null
+    estimatedTime: string | null
+    isActive: boolean | null
+    sortOrder: number | null
+    createdAt: Date | null
+  }
+
+  export type DeliveryZoneMaxAggregateOutputType = {
+    id: string | null
+    nameAr: string | null
+    nameEn: string | null
+    fee: number | null
+    estimatedTime: string | null
+    isActive: boolean | null
+    sortOrder: number | null
+    createdAt: Date | null
+  }
+
+  export type DeliveryZoneCountAggregateOutputType = {
+    id: number
+    nameAr: number
+    nameEn: number
+    fee: number
+    estimatedTime: number
+    isActive: number
+    sortOrder: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type DeliveryZoneAvgAggregateInputType = {
+    fee?: true
+    sortOrder?: true
+  }
+
+  export type DeliveryZoneSumAggregateInputType = {
+    fee?: true
+    sortOrder?: true
+  }
+
+  export type DeliveryZoneMinAggregateInputType = {
+    id?: true
+    nameAr?: true
+    nameEn?: true
+    fee?: true
+    estimatedTime?: true
+    isActive?: true
+    sortOrder?: true
+    createdAt?: true
+  }
+
+  export type DeliveryZoneMaxAggregateInputType = {
+    id?: true
+    nameAr?: true
+    nameEn?: true
+    fee?: true
+    estimatedTime?: true
+    isActive?: true
+    sortOrder?: true
+    createdAt?: true
+  }
+
+  export type DeliveryZoneCountAggregateInputType = {
+    id?: true
+    nameAr?: true
+    nameEn?: true
+    fee?: true
+    estimatedTime?: true
+    isActive?: true
+    sortOrder?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type DeliveryZoneAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DeliveryZone to aggregate.
+     */
+    where?: DeliveryZoneWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeliveryZones to fetch.
+     */
+    orderBy?: DeliveryZoneOrderByWithRelationInput | DeliveryZoneOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DeliveryZoneWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeliveryZones from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeliveryZones.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DeliveryZones
+    **/
+    _count?: true | DeliveryZoneCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DeliveryZoneAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DeliveryZoneSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DeliveryZoneMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DeliveryZoneMaxAggregateInputType
+  }
+
+  export type GetDeliveryZoneAggregateType<T extends DeliveryZoneAggregateArgs> = {
+        [P in keyof T & keyof AggregateDeliveryZone]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDeliveryZone[P]>
+      : GetScalarType<T[P], AggregateDeliveryZone[P]>
+  }
+
+
+
+
+  export type DeliveryZoneGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DeliveryZoneWhereInput
+    orderBy?: DeliveryZoneOrderByWithAggregationInput | DeliveryZoneOrderByWithAggregationInput[]
+    by: DeliveryZoneScalarFieldEnum[] | DeliveryZoneScalarFieldEnum
+    having?: DeliveryZoneScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DeliveryZoneCountAggregateInputType | true
+    _avg?: DeliveryZoneAvgAggregateInputType
+    _sum?: DeliveryZoneSumAggregateInputType
+    _min?: DeliveryZoneMinAggregateInputType
+    _max?: DeliveryZoneMaxAggregateInputType
+  }
+
+  export type DeliveryZoneGroupByOutputType = {
+    id: string
+    nameAr: string
+    nameEn: string | null
+    fee: number
+    estimatedTime: string
+    isActive: boolean
+    sortOrder: number
+    createdAt: Date
+    _count: DeliveryZoneCountAggregateOutputType | null
+    _avg: DeliveryZoneAvgAggregateOutputType | null
+    _sum: DeliveryZoneSumAggregateOutputType | null
+    _min: DeliveryZoneMinAggregateOutputType | null
+    _max: DeliveryZoneMaxAggregateOutputType | null
+  }
+
+  type GetDeliveryZoneGroupByPayload<T extends DeliveryZoneGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DeliveryZoneGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DeliveryZoneGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DeliveryZoneGroupByOutputType[P]>
+            : GetScalarType<T[P], DeliveryZoneGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DeliveryZoneSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nameAr?: boolean
+    nameEn?: boolean
+    fee?: boolean
+    estimatedTime?: boolean
+    isActive?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    orders?: boolean | DeliveryZone$ordersArgs<ExtArgs>
+    _count?: boolean | DeliveryZoneCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["deliveryZone"]>
+
+  export type DeliveryZoneSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nameAr?: boolean
+    nameEn?: boolean
+    fee?: boolean
+    estimatedTime?: boolean
+    isActive?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["deliveryZone"]>
+
+  export type DeliveryZoneSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nameAr?: boolean
+    nameEn?: boolean
+    fee?: boolean
+    estimatedTime?: boolean
+    isActive?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["deliveryZone"]>
+
+  export type DeliveryZoneSelectScalar = {
+    id?: boolean
+    nameAr?: boolean
+    nameEn?: boolean
+    fee?: boolean
+    estimatedTime?: boolean
+    isActive?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+  }
+
+  export type DeliveryZoneOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nameAr" | "nameEn" | "fee" | "estimatedTime" | "isActive" | "sortOrder" | "createdAt", ExtArgs["result"]["deliveryZone"]>
+  export type DeliveryZoneInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    orders?: boolean | DeliveryZone$ordersArgs<ExtArgs>
+    _count?: boolean | DeliveryZoneCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type DeliveryZoneIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type DeliveryZoneIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $DeliveryZonePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DeliveryZone"
+    objects: {
+      orders: Prisma.$OrderPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      nameAr: string
+      nameEn: string | null
+      fee: number
+      estimatedTime: string
+      isActive: boolean
+      sortOrder: number
+      createdAt: Date
+    }, ExtArgs["result"]["deliveryZone"]>
+    composites: {}
+  }
+
+  type DeliveryZoneGetPayload<S extends boolean | null | undefined | DeliveryZoneDefaultArgs> = $Result.GetResult<Prisma.$DeliveryZonePayload, S>
+
+  type DeliveryZoneCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DeliveryZoneFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DeliveryZoneCountAggregateInputType | true
+    }
+
+  export interface DeliveryZoneDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DeliveryZone'], meta: { name: 'DeliveryZone' } }
+    /**
+     * Find zero or one DeliveryZone that matches the filter.
+     * @param {DeliveryZoneFindUniqueArgs} args - Arguments to find a DeliveryZone
+     * @example
+     * // Get one DeliveryZone
+     * const deliveryZone = await prisma.deliveryZone.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DeliveryZoneFindUniqueArgs>(args: SelectSubset<T, DeliveryZoneFindUniqueArgs<ExtArgs>>): Prisma__DeliveryZoneClient<$Result.GetResult<Prisma.$DeliveryZonePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DeliveryZone that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DeliveryZoneFindUniqueOrThrowArgs} args - Arguments to find a DeliveryZone
+     * @example
+     * // Get one DeliveryZone
+     * const deliveryZone = await prisma.deliveryZone.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DeliveryZoneFindUniqueOrThrowArgs>(args: SelectSubset<T, DeliveryZoneFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DeliveryZoneClient<$Result.GetResult<Prisma.$DeliveryZonePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DeliveryZone that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryZoneFindFirstArgs} args - Arguments to find a DeliveryZone
+     * @example
+     * // Get one DeliveryZone
+     * const deliveryZone = await prisma.deliveryZone.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DeliveryZoneFindFirstArgs>(args?: SelectSubset<T, DeliveryZoneFindFirstArgs<ExtArgs>>): Prisma__DeliveryZoneClient<$Result.GetResult<Prisma.$DeliveryZonePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DeliveryZone that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryZoneFindFirstOrThrowArgs} args - Arguments to find a DeliveryZone
+     * @example
+     * // Get one DeliveryZone
+     * const deliveryZone = await prisma.deliveryZone.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DeliveryZoneFindFirstOrThrowArgs>(args?: SelectSubset<T, DeliveryZoneFindFirstOrThrowArgs<ExtArgs>>): Prisma__DeliveryZoneClient<$Result.GetResult<Prisma.$DeliveryZonePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DeliveryZones that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryZoneFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DeliveryZones
+     * const deliveryZones = await prisma.deliveryZone.findMany()
+     * 
+     * // Get first 10 DeliveryZones
+     * const deliveryZones = await prisma.deliveryZone.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const deliveryZoneWithIdOnly = await prisma.deliveryZone.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DeliveryZoneFindManyArgs>(args?: SelectSubset<T, DeliveryZoneFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliveryZonePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DeliveryZone.
+     * @param {DeliveryZoneCreateArgs} args - Arguments to create a DeliveryZone.
+     * @example
+     * // Create one DeliveryZone
+     * const DeliveryZone = await prisma.deliveryZone.create({
+     *   data: {
+     *     // ... data to create a DeliveryZone
+     *   }
+     * })
+     * 
+     */
+    create<T extends DeliveryZoneCreateArgs>(args: SelectSubset<T, DeliveryZoneCreateArgs<ExtArgs>>): Prisma__DeliveryZoneClient<$Result.GetResult<Prisma.$DeliveryZonePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DeliveryZones.
+     * @param {DeliveryZoneCreateManyArgs} args - Arguments to create many DeliveryZones.
+     * @example
+     * // Create many DeliveryZones
+     * const deliveryZone = await prisma.deliveryZone.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DeliveryZoneCreateManyArgs>(args?: SelectSubset<T, DeliveryZoneCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DeliveryZones and returns the data saved in the database.
+     * @param {DeliveryZoneCreateManyAndReturnArgs} args - Arguments to create many DeliveryZones.
+     * @example
+     * // Create many DeliveryZones
+     * const deliveryZone = await prisma.deliveryZone.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DeliveryZones and only return the `id`
+     * const deliveryZoneWithIdOnly = await prisma.deliveryZone.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DeliveryZoneCreateManyAndReturnArgs>(args?: SelectSubset<T, DeliveryZoneCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliveryZonePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DeliveryZone.
+     * @param {DeliveryZoneDeleteArgs} args - Arguments to delete one DeliveryZone.
+     * @example
+     * // Delete one DeliveryZone
+     * const DeliveryZone = await prisma.deliveryZone.delete({
+     *   where: {
+     *     // ... filter to delete one DeliveryZone
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DeliveryZoneDeleteArgs>(args: SelectSubset<T, DeliveryZoneDeleteArgs<ExtArgs>>): Prisma__DeliveryZoneClient<$Result.GetResult<Prisma.$DeliveryZonePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DeliveryZone.
+     * @param {DeliveryZoneUpdateArgs} args - Arguments to update one DeliveryZone.
+     * @example
+     * // Update one DeliveryZone
+     * const deliveryZone = await prisma.deliveryZone.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DeliveryZoneUpdateArgs>(args: SelectSubset<T, DeliveryZoneUpdateArgs<ExtArgs>>): Prisma__DeliveryZoneClient<$Result.GetResult<Prisma.$DeliveryZonePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DeliveryZones.
+     * @param {DeliveryZoneDeleteManyArgs} args - Arguments to filter DeliveryZones to delete.
+     * @example
+     * // Delete a few DeliveryZones
+     * const { count } = await prisma.deliveryZone.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DeliveryZoneDeleteManyArgs>(args?: SelectSubset<T, DeliveryZoneDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DeliveryZones.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryZoneUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DeliveryZones
+     * const deliveryZone = await prisma.deliveryZone.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DeliveryZoneUpdateManyArgs>(args: SelectSubset<T, DeliveryZoneUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DeliveryZones and returns the data updated in the database.
+     * @param {DeliveryZoneUpdateManyAndReturnArgs} args - Arguments to update many DeliveryZones.
+     * @example
+     * // Update many DeliveryZones
+     * const deliveryZone = await prisma.deliveryZone.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DeliveryZones and only return the `id`
+     * const deliveryZoneWithIdOnly = await prisma.deliveryZone.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DeliveryZoneUpdateManyAndReturnArgs>(args: SelectSubset<T, DeliveryZoneUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliveryZonePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DeliveryZone.
+     * @param {DeliveryZoneUpsertArgs} args - Arguments to update or create a DeliveryZone.
+     * @example
+     * // Update or create a DeliveryZone
+     * const deliveryZone = await prisma.deliveryZone.upsert({
+     *   create: {
+     *     // ... data to create a DeliveryZone
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DeliveryZone we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DeliveryZoneUpsertArgs>(args: SelectSubset<T, DeliveryZoneUpsertArgs<ExtArgs>>): Prisma__DeliveryZoneClient<$Result.GetResult<Prisma.$DeliveryZonePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DeliveryZones.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryZoneCountArgs} args - Arguments to filter DeliveryZones to count.
+     * @example
+     * // Count the number of DeliveryZones
+     * const count = await prisma.deliveryZone.count({
+     *   where: {
+     *     // ... the filter for the DeliveryZones we want to count
+     *   }
+     * })
+    **/
+    count<T extends DeliveryZoneCountArgs>(
+      args?: Subset<T, DeliveryZoneCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DeliveryZoneCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DeliveryZone.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryZoneAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DeliveryZoneAggregateArgs>(args: Subset<T, DeliveryZoneAggregateArgs>): Prisma.PrismaPromise<GetDeliveryZoneAggregateType<T>>
+
+    /**
+     * Group by DeliveryZone.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryZoneGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DeliveryZoneGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DeliveryZoneGroupByArgs['orderBy'] }
+        : { orderBy?: DeliveryZoneGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DeliveryZoneGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDeliveryZoneGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DeliveryZone model
+   */
+  readonly fields: DeliveryZoneFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DeliveryZone.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DeliveryZoneClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    orders<T extends DeliveryZone$ordersArgs<ExtArgs> = {}>(args?: Subset<T, DeliveryZone$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DeliveryZone model
+   */
+  interface DeliveryZoneFieldRefs {
+    readonly id: FieldRef<"DeliveryZone", 'String'>
+    readonly nameAr: FieldRef<"DeliveryZone", 'String'>
+    readonly nameEn: FieldRef<"DeliveryZone", 'String'>
+    readonly fee: FieldRef<"DeliveryZone", 'Float'>
+    readonly estimatedTime: FieldRef<"DeliveryZone", 'String'>
+    readonly isActive: FieldRef<"DeliveryZone", 'Boolean'>
+    readonly sortOrder: FieldRef<"DeliveryZone", 'Int'>
+    readonly createdAt: FieldRef<"DeliveryZone", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DeliveryZone findUnique
+   */
+  export type DeliveryZoneFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryZone
+     */
+    select?: DeliveryZoneSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryZone
+     */
+    omit?: DeliveryZoneOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryZoneInclude<ExtArgs> | null
+    /**
+     * Filter, which DeliveryZone to fetch.
+     */
+    where: DeliveryZoneWhereUniqueInput
+  }
+
+  /**
+   * DeliveryZone findUniqueOrThrow
+   */
+  export type DeliveryZoneFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryZone
+     */
+    select?: DeliveryZoneSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryZone
+     */
+    omit?: DeliveryZoneOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryZoneInclude<ExtArgs> | null
+    /**
+     * Filter, which DeliveryZone to fetch.
+     */
+    where: DeliveryZoneWhereUniqueInput
+  }
+
+  /**
+   * DeliveryZone findFirst
+   */
+  export type DeliveryZoneFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryZone
+     */
+    select?: DeliveryZoneSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryZone
+     */
+    omit?: DeliveryZoneOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryZoneInclude<ExtArgs> | null
+    /**
+     * Filter, which DeliveryZone to fetch.
+     */
+    where?: DeliveryZoneWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeliveryZones to fetch.
+     */
+    orderBy?: DeliveryZoneOrderByWithRelationInput | DeliveryZoneOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DeliveryZones.
+     */
+    cursor?: DeliveryZoneWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeliveryZones from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeliveryZones.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeliveryZones.
+     */
+    distinct?: DeliveryZoneScalarFieldEnum | DeliveryZoneScalarFieldEnum[]
+  }
+
+  /**
+   * DeliveryZone findFirstOrThrow
+   */
+  export type DeliveryZoneFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryZone
+     */
+    select?: DeliveryZoneSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryZone
+     */
+    omit?: DeliveryZoneOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryZoneInclude<ExtArgs> | null
+    /**
+     * Filter, which DeliveryZone to fetch.
+     */
+    where?: DeliveryZoneWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeliveryZones to fetch.
+     */
+    orderBy?: DeliveryZoneOrderByWithRelationInput | DeliveryZoneOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DeliveryZones.
+     */
+    cursor?: DeliveryZoneWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeliveryZones from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeliveryZones.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeliveryZones.
+     */
+    distinct?: DeliveryZoneScalarFieldEnum | DeliveryZoneScalarFieldEnum[]
+  }
+
+  /**
+   * DeliveryZone findMany
+   */
+  export type DeliveryZoneFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryZone
+     */
+    select?: DeliveryZoneSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryZone
+     */
+    omit?: DeliveryZoneOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryZoneInclude<ExtArgs> | null
+    /**
+     * Filter, which DeliveryZones to fetch.
+     */
+    where?: DeliveryZoneWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeliveryZones to fetch.
+     */
+    orderBy?: DeliveryZoneOrderByWithRelationInput | DeliveryZoneOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DeliveryZones.
+     */
+    cursor?: DeliveryZoneWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeliveryZones from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeliveryZones.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeliveryZones.
+     */
+    distinct?: DeliveryZoneScalarFieldEnum | DeliveryZoneScalarFieldEnum[]
+  }
+
+  /**
+   * DeliveryZone create
+   */
+  export type DeliveryZoneCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryZone
+     */
+    select?: DeliveryZoneSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryZone
+     */
+    omit?: DeliveryZoneOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryZoneInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DeliveryZone.
+     */
+    data: XOR<DeliveryZoneCreateInput, DeliveryZoneUncheckedCreateInput>
+  }
+
+  /**
+   * DeliveryZone createMany
+   */
+  export type DeliveryZoneCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DeliveryZones.
+     */
+    data: DeliveryZoneCreateManyInput | DeliveryZoneCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DeliveryZone createManyAndReturn
+   */
+  export type DeliveryZoneCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryZone
+     */
+    select?: DeliveryZoneSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryZone
+     */
+    omit?: DeliveryZoneOmit<ExtArgs> | null
+    /**
+     * The data used to create many DeliveryZones.
+     */
+    data: DeliveryZoneCreateManyInput | DeliveryZoneCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DeliveryZone update
+   */
+  export type DeliveryZoneUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryZone
+     */
+    select?: DeliveryZoneSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryZone
+     */
+    omit?: DeliveryZoneOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryZoneInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DeliveryZone.
+     */
+    data: XOR<DeliveryZoneUpdateInput, DeliveryZoneUncheckedUpdateInput>
+    /**
+     * Choose, which DeliveryZone to update.
+     */
+    where: DeliveryZoneWhereUniqueInput
+  }
+
+  /**
+   * DeliveryZone updateMany
+   */
+  export type DeliveryZoneUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DeliveryZones.
+     */
+    data: XOR<DeliveryZoneUpdateManyMutationInput, DeliveryZoneUncheckedUpdateManyInput>
+    /**
+     * Filter which DeliveryZones to update
+     */
+    where?: DeliveryZoneWhereInput
+    /**
+     * Limit how many DeliveryZones to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeliveryZone updateManyAndReturn
+   */
+  export type DeliveryZoneUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryZone
+     */
+    select?: DeliveryZoneSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryZone
+     */
+    omit?: DeliveryZoneOmit<ExtArgs> | null
+    /**
+     * The data used to update DeliveryZones.
+     */
+    data: XOR<DeliveryZoneUpdateManyMutationInput, DeliveryZoneUncheckedUpdateManyInput>
+    /**
+     * Filter which DeliveryZones to update
+     */
+    where?: DeliveryZoneWhereInput
+    /**
+     * Limit how many DeliveryZones to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeliveryZone upsert
+   */
+  export type DeliveryZoneUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryZone
+     */
+    select?: DeliveryZoneSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryZone
+     */
+    omit?: DeliveryZoneOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryZoneInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DeliveryZone to update in case it exists.
+     */
+    where: DeliveryZoneWhereUniqueInput
+    /**
+     * In case the DeliveryZone found by the `where` argument doesn't exist, create a new DeliveryZone with this data.
+     */
+    create: XOR<DeliveryZoneCreateInput, DeliveryZoneUncheckedCreateInput>
+    /**
+     * In case the DeliveryZone was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DeliveryZoneUpdateInput, DeliveryZoneUncheckedUpdateInput>
+  }
+
+  /**
+   * DeliveryZone delete
+   */
+  export type DeliveryZoneDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryZone
+     */
+    select?: DeliveryZoneSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryZone
+     */
+    omit?: DeliveryZoneOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryZoneInclude<ExtArgs> | null
+    /**
+     * Filter which DeliveryZone to delete.
+     */
+    where: DeliveryZoneWhereUniqueInput
+  }
+
+  /**
+   * DeliveryZone deleteMany
+   */
+  export type DeliveryZoneDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DeliveryZones to delete
+     */
+    where?: DeliveryZoneWhereInput
+    /**
+     * Limit how many DeliveryZones to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeliveryZone.orders
+   */
+  export type DeliveryZone$ordersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Order
+     */
+    select?: OrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Order
+     */
+    omit?: OrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderInclude<ExtArgs> | null
+    where?: OrderWhereInput
+    orderBy?: OrderOrderByWithRelationInput | OrderOrderByWithRelationInput[]
+    cursor?: OrderWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OrderScalarFieldEnum | OrderScalarFieldEnum[]
+  }
+
+  /**
+   * DeliveryZone without action
+   */
+  export type DeliveryZoneDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryZone
+     */
+    select?: DeliveryZoneSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryZone
+     */
+    omit?: DeliveryZoneOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryZoneInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Order
    */
 
@@ -18979,9 +20253,13 @@ export namespace Prisma {
     orderType: string | null
     tableId: string | null
     tableNumber: string | null
+    deliveryZoneId: string | null
+    deliveryZoneName: string | null
     deliveryAddress: string | null
     deliveryPhone: string | null
     deliveryNotes: string | null
+    driverName: string | null
+    dispatchedAt: Date | null
     status: string | null
     paymentStatus: string | null
     paymentMethod: string | null
@@ -19012,9 +20290,13 @@ export namespace Prisma {
     orderType: string | null
     tableId: string | null
     tableNumber: string | null
+    deliveryZoneId: string | null
+    deliveryZoneName: string | null
     deliveryAddress: string | null
     deliveryPhone: string | null
     deliveryNotes: string | null
+    driverName: string | null
+    dispatchedAt: Date | null
     status: string | null
     paymentStatus: string | null
     paymentMethod: string | null
@@ -19045,9 +20327,13 @@ export namespace Prisma {
     orderType: number
     tableId: number
     tableNumber: number
+    deliveryZoneId: number
+    deliveryZoneName: number
     deliveryAddress: number
     deliveryPhone: number
     deliveryNotes: number
+    driverName: number
+    dispatchedAt: number
     status: number
     paymentStatus: number
     paymentMethod: number
@@ -19104,9 +20390,13 @@ export namespace Prisma {
     orderType?: true
     tableId?: true
     tableNumber?: true
+    deliveryZoneId?: true
+    deliveryZoneName?: true
     deliveryAddress?: true
     deliveryPhone?: true
     deliveryNotes?: true
+    driverName?: true
+    dispatchedAt?: true
     status?: true
     paymentStatus?: true
     paymentMethod?: true
@@ -19137,9 +20427,13 @@ export namespace Prisma {
     orderType?: true
     tableId?: true
     tableNumber?: true
+    deliveryZoneId?: true
+    deliveryZoneName?: true
     deliveryAddress?: true
     deliveryPhone?: true
     deliveryNotes?: true
+    driverName?: true
+    dispatchedAt?: true
     status?: true
     paymentStatus?: true
     paymentMethod?: true
@@ -19170,9 +20464,13 @@ export namespace Prisma {
     orderType?: true
     tableId?: true
     tableNumber?: true
+    deliveryZoneId?: true
+    deliveryZoneName?: true
     deliveryAddress?: true
     deliveryPhone?: true
     deliveryNotes?: true
+    driverName?: true
+    dispatchedAt?: true
     status?: true
     paymentStatus?: true
     paymentMethod?: true
@@ -19290,9 +20588,13 @@ export namespace Prisma {
     orderType: string
     tableId: string | null
     tableNumber: string | null
+    deliveryZoneId: string | null
+    deliveryZoneName: string | null
     deliveryAddress: string | null
     deliveryPhone: string | null
     deliveryNotes: string | null
+    driverName: string | null
+    dispatchedAt: Date | null
     status: string
     paymentStatus: string
     paymentMethod: string
@@ -19342,9 +20644,13 @@ export namespace Prisma {
     orderType?: boolean
     tableId?: boolean
     tableNumber?: boolean
+    deliveryZoneId?: boolean
+    deliveryZoneName?: boolean
     deliveryAddress?: boolean
     deliveryPhone?: boolean
     deliveryNotes?: boolean
+    driverName?: boolean
+    dispatchedAt?: boolean
     status?: boolean
     paymentStatus?: boolean
     paymentMethod?: boolean
@@ -19368,6 +20674,7 @@ export namespace Prisma {
     settledAt?: boolean
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     table?: boolean | Order$tableArgs<ExtArgs>
+    deliveryZone?: boolean | Order$deliveryZoneArgs<ExtArgs>
     customer?: boolean | Order$customerArgs<ExtArgs>
     kdsTickets?: boolean | Order$kdsTicketsArgs<ExtArgs>
     _count?: boolean | OrderCountOutputTypeDefaultArgs<ExtArgs>
@@ -19380,9 +20687,13 @@ export namespace Prisma {
     orderType?: boolean
     tableId?: boolean
     tableNumber?: boolean
+    deliveryZoneId?: boolean
+    deliveryZoneName?: boolean
     deliveryAddress?: boolean
     deliveryPhone?: boolean
     deliveryNotes?: boolean
+    driverName?: boolean
+    dispatchedAt?: boolean
     status?: boolean
     paymentStatus?: boolean
     paymentMethod?: boolean
@@ -19406,6 +20717,7 @@ export namespace Prisma {
     settledAt?: boolean
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     table?: boolean | Order$tableArgs<ExtArgs>
+    deliveryZone?: boolean | Order$deliveryZoneArgs<ExtArgs>
     customer?: boolean | Order$customerArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
 
@@ -19416,9 +20728,13 @@ export namespace Prisma {
     orderType?: boolean
     tableId?: boolean
     tableNumber?: boolean
+    deliveryZoneId?: boolean
+    deliveryZoneName?: boolean
     deliveryAddress?: boolean
     deliveryPhone?: boolean
     deliveryNotes?: boolean
+    driverName?: boolean
+    dispatchedAt?: boolean
     status?: boolean
     paymentStatus?: boolean
     paymentMethod?: boolean
@@ -19442,6 +20758,7 @@ export namespace Prisma {
     settledAt?: boolean
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     table?: boolean | Order$tableArgs<ExtArgs>
+    deliveryZone?: boolean | Order$deliveryZoneArgs<ExtArgs>
     customer?: boolean | Order$customerArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
 
@@ -19452,9 +20769,13 @@ export namespace Prisma {
     orderType?: boolean
     tableId?: boolean
     tableNumber?: boolean
+    deliveryZoneId?: boolean
+    deliveryZoneName?: boolean
     deliveryAddress?: boolean
     deliveryPhone?: boolean
     deliveryNotes?: boolean
+    driverName?: boolean
+    dispatchedAt?: boolean
     status?: boolean
     paymentStatus?: boolean
     paymentMethod?: boolean
@@ -19478,10 +20799,11 @@ export namespace Prisma {
     settledAt?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "orderNumber" | "orderType" | "tableId" | "tableNumber" | "deliveryAddress" | "deliveryPhone" | "deliveryNotes" | "status" | "paymentStatus" | "paymentMethod" | "subtotal" | "serviceCharge" | "taxAmount" | "deliveryFee" | "discountAmount" | "tipAmount" | "finalAmount" | "cashierName" | "waiterName" | "customerName" | "customerPhone" | "customerId" | "pointsEarned" | "pointsRedeemed" | "notes" | "items" | "createdAt" | "settledAt", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "orderNumber" | "orderType" | "tableId" | "tableNumber" | "deliveryZoneId" | "deliveryZoneName" | "deliveryAddress" | "deliveryPhone" | "deliveryNotes" | "driverName" | "dispatchedAt" | "status" | "paymentStatus" | "paymentMethod" | "subtotal" | "serviceCharge" | "taxAmount" | "deliveryFee" | "discountAmount" | "tipAmount" | "finalAmount" | "cashierName" | "waiterName" | "customerName" | "customerPhone" | "customerId" | "pointsEarned" | "pointsRedeemed" | "notes" | "items" | "createdAt" | "settledAt", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     table?: boolean | Order$tableArgs<ExtArgs>
+    deliveryZone?: boolean | Order$deliveryZoneArgs<ExtArgs>
     customer?: boolean | Order$customerArgs<ExtArgs>
     kdsTickets?: boolean | Order$kdsTicketsArgs<ExtArgs>
     _count?: boolean | OrderCountOutputTypeDefaultArgs<ExtArgs>
@@ -19489,11 +20811,13 @@ export namespace Prisma {
   export type OrderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     table?: boolean | Order$tableArgs<ExtArgs>
+    deliveryZone?: boolean | Order$deliveryZoneArgs<ExtArgs>
     customer?: boolean | Order$customerArgs<ExtArgs>
   }
   export type OrderIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     table?: boolean | Order$tableArgs<ExtArgs>
+    deliveryZone?: boolean | Order$deliveryZoneArgs<ExtArgs>
     customer?: boolean | Order$customerArgs<ExtArgs>
   }
 
@@ -19502,6 +20826,7 @@ export namespace Prisma {
     objects: {
       outlet: Prisma.$OutletPayload<ExtArgs>
       table: Prisma.$DiningTablePayload<ExtArgs> | null
+      deliveryZone: Prisma.$DeliveryZonePayload<ExtArgs> | null
       customer: Prisma.$CustomerPayload<ExtArgs> | null
       kdsTickets: Prisma.$KdsTicketPayload<ExtArgs>[]
     }
@@ -19512,9 +20837,13 @@ export namespace Prisma {
       orderType: string
       tableId: string | null
       tableNumber: string | null
+      deliveryZoneId: string | null
+      deliveryZoneName: string | null
       deliveryAddress: string | null
       deliveryPhone: string | null
       deliveryNotes: string | null
+      driverName: string | null
+      dispatchedAt: Date | null
       status: string
       paymentStatus: string
       paymentMethod: string
@@ -19932,6 +21261,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     outlet<T extends OutletDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OutletDefaultArgs<ExtArgs>>): Prisma__OutletClient<$Result.GetResult<Prisma.$OutletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     table<T extends Order$tableArgs<ExtArgs> = {}>(args?: Subset<T, Order$tableArgs<ExtArgs>>): Prisma__DiningTableClient<$Result.GetResult<Prisma.$DiningTablePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    deliveryZone<T extends Order$deliveryZoneArgs<ExtArgs> = {}>(args?: Subset<T, Order$deliveryZoneArgs<ExtArgs>>): Prisma__DeliveryZoneClient<$Result.GetResult<Prisma.$DeliveryZonePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     customer<T extends Order$customerArgs<ExtArgs> = {}>(args?: Subset<T, Order$customerArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     kdsTickets<T extends Order$kdsTicketsArgs<ExtArgs> = {}>(args?: Subset<T, Order$kdsTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KdsTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -19969,9 +21299,13 @@ export namespace Prisma {
     readonly orderType: FieldRef<"Order", 'String'>
     readonly tableId: FieldRef<"Order", 'String'>
     readonly tableNumber: FieldRef<"Order", 'String'>
+    readonly deliveryZoneId: FieldRef<"Order", 'String'>
+    readonly deliveryZoneName: FieldRef<"Order", 'String'>
     readonly deliveryAddress: FieldRef<"Order", 'String'>
     readonly deliveryPhone: FieldRef<"Order", 'String'>
     readonly deliveryNotes: FieldRef<"Order", 'String'>
+    readonly driverName: FieldRef<"Order", 'String'>
+    readonly dispatchedAt: FieldRef<"Order", 'DateTime'>
     readonly status: FieldRef<"Order", 'String'>
     readonly paymentStatus: FieldRef<"Order", 'String'>
     readonly paymentMethod: FieldRef<"Order", 'String'>
@@ -20410,6 +21744,25 @@ export namespace Prisma {
      */
     include?: DiningTableInclude<ExtArgs> | null
     where?: DiningTableWhereInput
+  }
+
+  /**
+   * Order.deliveryZone
+   */
+  export type Order$deliveryZoneArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryZone
+     */
+    select?: DeliveryZoneSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryZone
+     */
+    omit?: DeliveryZoneOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryZoneInclude<ExtArgs> | null
+    where?: DeliveryZoneWhereInput
   }
 
   /**
@@ -29144,6 +30497,20 @@ export namespace Prisma {
   export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
 
 
+  export const DeliveryZoneScalarFieldEnum: {
+    id: 'id',
+    nameAr: 'nameAr',
+    nameEn: 'nameEn',
+    fee: 'fee',
+    estimatedTime: 'estimatedTime',
+    isActive: 'isActive',
+    sortOrder: 'sortOrder',
+    createdAt: 'createdAt'
+  };
+
+  export type DeliveryZoneScalarFieldEnum = (typeof DeliveryZoneScalarFieldEnum)[keyof typeof DeliveryZoneScalarFieldEnum]
+
+
   export const OrderScalarFieldEnum: {
     id: 'id',
     outletId: 'outletId',
@@ -29151,9 +30518,13 @@ export namespace Prisma {
     orderType: 'orderType',
     tableId: 'tableId',
     tableNumber: 'tableNumber',
+    deliveryZoneId: 'deliveryZoneId',
+    deliveryZoneName: 'deliveryZoneName',
     deliveryAddress: 'deliveryAddress',
     deliveryPhone: 'deliveryPhone',
     deliveryNotes: 'deliveryNotes',
+    driverName: 'driverName',
+    dispatchedAt: 'dispatchedAt',
     status: 'status',
     paymentStatus: 'paymentStatus',
     paymentMethod: 'paymentMethod',
@@ -30604,6 +31975,78 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Customer"> | Date | string
   }
 
+  export type DeliveryZoneWhereInput = {
+    AND?: DeliveryZoneWhereInput | DeliveryZoneWhereInput[]
+    OR?: DeliveryZoneWhereInput[]
+    NOT?: DeliveryZoneWhereInput | DeliveryZoneWhereInput[]
+    id?: StringFilter<"DeliveryZone"> | string
+    nameAr?: StringFilter<"DeliveryZone"> | string
+    nameEn?: StringNullableFilter<"DeliveryZone"> | string | null
+    fee?: FloatFilter<"DeliveryZone"> | number
+    estimatedTime?: StringFilter<"DeliveryZone"> | string
+    isActive?: BoolFilter<"DeliveryZone"> | boolean
+    sortOrder?: IntFilter<"DeliveryZone"> | number
+    createdAt?: DateTimeFilter<"DeliveryZone"> | Date | string
+    orders?: OrderListRelationFilter
+  }
+
+  export type DeliveryZoneOrderByWithRelationInput = {
+    id?: SortOrder
+    nameAr?: SortOrder
+    nameEn?: SortOrderInput | SortOrder
+    fee?: SortOrder
+    estimatedTime?: SortOrder
+    isActive?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    orders?: OrderOrderByRelationAggregateInput
+  }
+
+  export type DeliveryZoneWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: DeliveryZoneWhereInput | DeliveryZoneWhereInput[]
+    OR?: DeliveryZoneWhereInput[]
+    NOT?: DeliveryZoneWhereInput | DeliveryZoneWhereInput[]
+    nameAr?: StringFilter<"DeliveryZone"> | string
+    nameEn?: StringNullableFilter<"DeliveryZone"> | string | null
+    fee?: FloatFilter<"DeliveryZone"> | number
+    estimatedTime?: StringFilter<"DeliveryZone"> | string
+    isActive?: BoolFilter<"DeliveryZone"> | boolean
+    sortOrder?: IntFilter<"DeliveryZone"> | number
+    createdAt?: DateTimeFilter<"DeliveryZone"> | Date | string
+    orders?: OrderListRelationFilter
+  }, "id">
+
+  export type DeliveryZoneOrderByWithAggregationInput = {
+    id?: SortOrder
+    nameAr?: SortOrder
+    nameEn?: SortOrderInput | SortOrder
+    fee?: SortOrder
+    estimatedTime?: SortOrder
+    isActive?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    _count?: DeliveryZoneCountOrderByAggregateInput
+    _avg?: DeliveryZoneAvgOrderByAggregateInput
+    _max?: DeliveryZoneMaxOrderByAggregateInput
+    _min?: DeliveryZoneMinOrderByAggregateInput
+    _sum?: DeliveryZoneSumOrderByAggregateInput
+  }
+
+  export type DeliveryZoneScalarWhereWithAggregatesInput = {
+    AND?: DeliveryZoneScalarWhereWithAggregatesInput | DeliveryZoneScalarWhereWithAggregatesInput[]
+    OR?: DeliveryZoneScalarWhereWithAggregatesInput[]
+    NOT?: DeliveryZoneScalarWhereWithAggregatesInput | DeliveryZoneScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"DeliveryZone"> | string
+    nameAr?: StringWithAggregatesFilter<"DeliveryZone"> | string
+    nameEn?: StringNullableWithAggregatesFilter<"DeliveryZone"> | string | null
+    fee?: FloatWithAggregatesFilter<"DeliveryZone"> | number
+    estimatedTime?: StringWithAggregatesFilter<"DeliveryZone"> | string
+    isActive?: BoolWithAggregatesFilter<"DeliveryZone"> | boolean
+    sortOrder?: IntWithAggregatesFilter<"DeliveryZone"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"DeliveryZone"> | Date | string
+  }
+
   export type OrderWhereInput = {
     AND?: OrderWhereInput | OrderWhereInput[]
     OR?: OrderWhereInput[]
@@ -30614,9 +32057,13 @@ export namespace Prisma {
     orderType?: StringFilter<"Order"> | string
     tableId?: StringNullableFilter<"Order"> | string | null
     tableNumber?: StringNullableFilter<"Order"> | string | null
+    deliveryZoneId?: StringNullableFilter<"Order"> | string | null
+    deliveryZoneName?: StringNullableFilter<"Order"> | string | null
     deliveryAddress?: StringNullableFilter<"Order"> | string | null
     deliveryPhone?: StringNullableFilter<"Order"> | string | null
     deliveryNotes?: StringNullableFilter<"Order"> | string | null
+    driverName?: StringNullableFilter<"Order"> | string | null
+    dispatchedAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     status?: StringFilter<"Order"> | string
     paymentStatus?: StringFilter<"Order"> | string
     paymentMethod?: StringFilter<"Order"> | string
@@ -30640,6 +32087,7 @@ export namespace Prisma {
     settledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
     table?: XOR<DiningTableNullableScalarRelationFilter, DiningTableWhereInput> | null
+    deliveryZone?: XOR<DeliveryZoneNullableScalarRelationFilter, DeliveryZoneWhereInput> | null
     customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
     kdsTickets?: KdsTicketListRelationFilter
   }
@@ -30651,9 +32099,13 @@ export namespace Prisma {
     orderType?: SortOrder
     tableId?: SortOrderInput | SortOrder
     tableNumber?: SortOrderInput | SortOrder
+    deliveryZoneId?: SortOrderInput | SortOrder
+    deliveryZoneName?: SortOrderInput | SortOrder
     deliveryAddress?: SortOrderInput | SortOrder
     deliveryPhone?: SortOrderInput | SortOrder
     deliveryNotes?: SortOrderInput | SortOrder
+    driverName?: SortOrderInput | SortOrder
+    dispatchedAt?: SortOrderInput | SortOrder
     status?: SortOrder
     paymentStatus?: SortOrder
     paymentMethod?: SortOrder
@@ -30677,6 +32129,7 @@ export namespace Prisma {
     settledAt?: SortOrderInput | SortOrder
     outlet?: OutletOrderByWithRelationInput
     table?: DiningTableOrderByWithRelationInput
+    deliveryZone?: DeliveryZoneOrderByWithRelationInput
     customer?: CustomerOrderByWithRelationInput
     kdsTickets?: KdsTicketOrderByRelationAggregateInput
   }
@@ -30691,9 +32144,13 @@ export namespace Prisma {
     orderType?: StringFilter<"Order"> | string
     tableId?: StringNullableFilter<"Order"> | string | null
     tableNumber?: StringNullableFilter<"Order"> | string | null
+    deliveryZoneId?: StringNullableFilter<"Order"> | string | null
+    deliveryZoneName?: StringNullableFilter<"Order"> | string | null
     deliveryAddress?: StringNullableFilter<"Order"> | string | null
     deliveryPhone?: StringNullableFilter<"Order"> | string | null
     deliveryNotes?: StringNullableFilter<"Order"> | string | null
+    driverName?: StringNullableFilter<"Order"> | string | null
+    dispatchedAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     status?: StringFilter<"Order"> | string
     paymentStatus?: StringFilter<"Order"> | string
     paymentMethod?: StringFilter<"Order"> | string
@@ -30717,6 +32174,7 @@ export namespace Prisma {
     settledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     outlet?: XOR<OutletScalarRelationFilter, OutletWhereInput>
     table?: XOR<DiningTableNullableScalarRelationFilter, DiningTableWhereInput> | null
+    deliveryZone?: XOR<DeliveryZoneNullableScalarRelationFilter, DeliveryZoneWhereInput> | null
     customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
     kdsTickets?: KdsTicketListRelationFilter
   }, "id" | "orderNumber">
@@ -30728,9 +32186,13 @@ export namespace Prisma {
     orderType?: SortOrder
     tableId?: SortOrderInput | SortOrder
     tableNumber?: SortOrderInput | SortOrder
+    deliveryZoneId?: SortOrderInput | SortOrder
+    deliveryZoneName?: SortOrderInput | SortOrder
     deliveryAddress?: SortOrderInput | SortOrder
     deliveryPhone?: SortOrderInput | SortOrder
     deliveryNotes?: SortOrderInput | SortOrder
+    driverName?: SortOrderInput | SortOrder
+    dispatchedAt?: SortOrderInput | SortOrder
     status?: SortOrder
     paymentStatus?: SortOrder
     paymentMethod?: SortOrder
@@ -30769,9 +32231,13 @@ export namespace Prisma {
     orderType?: StringWithAggregatesFilter<"Order"> | string
     tableId?: StringNullableWithAggregatesFilter<"Order"> | string | null
     tableNumber?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    deliveryZoneId?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    deliveryZoneName?: StringNullableWithAggregatesFilter<"Order"> | string | null
     deliveryAddress?: StringNullableWithAggregatesFilter<"Order"> | string | null
     deliveryPhone?: StringNullableWithAggregatesFilter<"Order"> | string | null
     deliveryNotes?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    driverName?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    dispatchedAt?: DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
     status?: StringWithAggregatesFilter<"Order"> | string
     paymentStatus?: StringWithAggregatesFilter<"Order"> | string
     paymentMethod?: StringWithAggregatesFilter<"Order"> | string
@@ -32848,14 +34314,98 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type DeliveryZoneCreateInput = {
+    id?: string
+    nameAr: string
+    nameEn?: string | null
+    fee?: number
+    estimatedTime?: string
+    isActive?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+    orders?: OrderCreateNestedManyWithoutDeliveryZoneInput
+  }
+
+  export type DeliveryZoneUncheckedCreateInput = {
+    id?: string
+    nameAr: string
+    nameEn?: string | null
+    fee?: number
+    estimatedTime?: string
+    isActive?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+    orders?: OrderUncheckedCreateNestedManyWithoutDeliveryZoneInput
+  }
+
+  export type DeliveryZoneUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nameAr?: StringFieldUpdateOperationsInput | string
+    nameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    fee?: FloatFieldUpdateOperationsInput | number
+    estimatedTime?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orders?: OrderUpdateManyWithoutDeliveryZoneNestedInput
+  }
+
+  export type DeliveryZoneUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nameAr?: StringFieldUpdateOperationsInput | string
+    nameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    fee?: FloatFieldUpdateOperationsInput | number
+    estimatedTime?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orders?: OrderUncheckedUpdateManyWithoutDeliveryZoneNestedInput
+  }
+
+  export type DeliveryZoneCreateManyInput = {
+    id?: string
+    nameAr: string
+    nameEn?: string | null
+    fee?: number
+    estimatedTime?: string
+    isActive?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+  }
+
+  export type DeliveryZoneUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nameAr?: StringFieldUpdateOperationsInput | string
+    nameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    fee?: FloatFieldUpdateOperationsInput | number
+    estimatedTime?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeliveryZoneUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nameAr?: StringFieldUpdateOperationsInput | string
+    nameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    fee?: FloatFieldUpdateOperationsInput | number
+    estimatedTime?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type OrderCreateInput = {
     id?: string
     orderNumber: string
     orderType?: string
     tableNumber?: string | null
+    deliveryZoneName?: string | null
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverName?: string | null
+    dispatchedAt?: Date | string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -32878,6 +34428,7 @@ export namespace Prisma {
     settledAt?: Date | string | null
     outlet: OutletCreateNestedOneWithoutOrdersInput
     table?: DiningTableCreateNestedOneWithoutOrdersInput
+    deliveryZone?: DeliveryZoneCreateNestedOneWithoutOrdersInput
     customer?: CustomerCreateNestedOneWithoutOrdersInput
     kdsTickets?: KdsTicketCreateNestedManyWithoutOrderInput
   }
@@ -32889,9 +34440,13 @@ export namespace Prisma {
     orderType?: string
     tableId?: string | null
     tableNumber?: string | null
+    deliveryZoneId?: string | null
+    deliveryZoneName?: string | null
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverName?: string | null
+    dispatchedAt?: Date | string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -32921,9 +34476,12 @@ export namespace Prisma {
     orderNumber?: StringFieldUpdateOperationsInput | string
     orderType?: StringFieldUpdateOperationsInput | string
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -32946,6 +34504,7 @@ export namespace Prisma {
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     outlet?: OutletUpdateOneRequiredWithoutOrdersNestedInput
     table?: DiningTableUpdateOneWithoutOrdersNestedInput
+    deliveryZone?: DeliveryZoneUpdateOneWithoutOrdersNestedInput
     customer?: CustomerUpdateOneWithoutOrdersNestedInput
     kdsTickets?: KdsTicketUpdateManyWithoutOrderNestedInput
   }
@@ -32957,9 +34516,13 @@ export namespace Prisma {
     orderType?: StringFieldUpdateOperationsInput | string
     tableId?: NullableStringFieldUpdateOperationsInput | string | null
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -32991,9 +34554,13 @@ export namespace Prisma {
     orderType?: string
     tableId?: string | null
     tableNumber?: string | null
+    deliveryZoneId?: string | null
+    deliveryZoneName?: string | null
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverName?: string | null
+    dispatchedAt?: Date | string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -33022,9 +34589,12 @@ export namespace Prisma {
     orderNumber?: StringFieldUpdateOperationsInput | string
     orderType?: StringFieldUpdateOperationsInput | string
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -33054,9 +34624,13 @@ export namespace Prisma {
     orderType?: StringFieldUpdateOperationsInput | string
     tableId?: NullableStringFieldUpdateOperationsInput | string | null
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -34976,6 +36550,49 @@ export namespace Prisma {
     visitCount?: SortOrder
   }
 
+  export type DeliveryZoneCountOrderByAggregateInput = {
+    id?: SortOrder
+    nameAr?: SortOrder
+    nameEn?: SortOrder
+    fee?: SortOrder
+    estimatedTime?: SortOrder
+    isActive?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DeliveryZoneAvgOrderByAggregateInput = {
+    fee?: SortOrder
+    sortOrder?: SortOrder
+  }
+
+  export type DeliveryZoneMaxOrderByAggregateInput = {
+    id?: SortOrder
+    nameAr?: SortOrder
+    nameEn?: SortOrder
+    fee?: SortOrder
+    estimatedTime?: SortOrder
+    isActive?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DeliveryZoneMinOrderByAggregateInput = {
+    id?: SortOrder
+    nameAr?: SortOrder
+    nameEn?: SortOrder
+    fee?: SortOrder
+    estimatedTime?: SortOrder
+    isActive?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DeliveryZoneSumOrderByAggregateInput = {
+    fee?: SortOrder
+    sortOrder?: SortOrder
+  }
+
   export type DateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -34990,6 +36607,11 @@ export namespace Prisma {
   export type DiningTableNullableScalarRelationFilter = {
     is?: DiningTableWhereInput | null
     isNot?: DiningTableWhereInput | null
+  }
+
+  export type DeliveryZoneNullableScalarRelationFilter = {
+    is?: DeliveryZoneWhereInput | null
+    isNot?: DeliveryZoneWhereInput | null
   }
 
   export type CustomerNullableScalarRelationFilter = {
@@ -35014,9 +36636,13 @@ export namespace Prisma {
     orderType?: SortOrder
     tableId?: SortOrder
     tableNumber?: SortOrder
+    deliveryZoneId?: SortOrder
+    deliveryZoneName?: SortOrder
     deliveryAddress?: SortOrder
     deliveryPhone?: SortOrder
     deliveryNotes?: SortOrder
+    driverName?: SortOrder
+    dispatchedAt?: SortOrder
     status?: SortOrder
     paymentStatus?: SortOrder
     paymentMethod?: SortOrder
@@ -35059,9 +36685,13 @@ export namespace Prisma {
     orderType?: SortOrder
     tableId?: SortOrder
     tableNumber?: SortOrder
+    deliveryZoneId?: SortOrder
+    deliveryZoneName?: SortOrder
     deliveryAddress?: SortOrder
     deliveryPhone?: SortOrder
     deliveryNotes?: SortOrder
+    driverName?: SortOrder
+    dispatchedAt?: SortOrder
     status?: SortOrder
     paymentStatus?: SortOrder
     paymentMethod?: SortOrder
@@ -35092,9 +36722,13 @@ export namespace Prisma {
     orderType?: SortOrder
     tableId?: SortOrder
     tableNumber?: SortOrder
+    deliveryZoneId?: SortOrder
+    deliveryZoneName?: SortOrder
     deliveryAddress?: SortOrder
     deliveryPhone?: SortOrder
     deliveryNotes?: SortOrder
+    driverName?: SortOrder
+    dispatchedAt?: SortOrder
     status?: SortOrder
     paymentStatus?: SortOrder
     paymentMethod?: SortOrder
@@ -36636,6 +38270,48 @@ export namespace Prisma {
     deleteMany?: OrderScalarWhereInput | OrderScalarWhereInput[]
   }
 
+  export type OrderCreateNestedManyWithoutDeliveryZoneInput = {
+    create?: XOR<OrderCreateWithoutDeliveryZoneInput, OrderUncheckedCreateWithoutDeliveryZoneInput> | OrderCreateWithoutDeliveryZoneInput[] | OrderUncheckedCreateWithoutDeliveryZoneInput[]
+    connectOrCreate?: OrderCreateOrConnectWithoutDeliveryZoneInput | OrderCreateOrConnectWithoutDeliveryZoneInput[]
+    createMany?: OrderCreateManyDeliveryZoneInputEnvelope
+    connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+  }
+
+  export type OrderUncheckedCreateNestedManyWithoutDeliveryZoneInput = {
+    create?: XOR<OrderCreateWithoutDeliveryZoneInput, OrderUncheckedCreateWithoutDeliveryZoneInput> | OrderCreateWithoutDeliveryZoneInput[] | OrderUncheckedCreateWithoutDeliveryZoneInput[]
+    connectOrCreate?: OrderCreateOrConnectWithoutDeliveryZoneInput | OrderCreateOrConnectWithoutDeliveryZoneInput[]
+    createMany?: OrderCreateManyDeliveryZoneInputEnvelope
+    connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+  }
+
+  export type OrderUpdateManyWithoutDeliveryZoneNestedInput = {
+    create?: XOR<OrderCreateWithoutDeliveryZoneInput, OrderUncheckedCreateWithoutDeliveryZoneInput> | OrderCreateWithoutDeliveryZoneInput[] | OrderUncheckedCreateWithoutDeliveryZoneInput[]
+    connectOrCreate?: OrderCreateOrConnectWithoutDeliveryZoneInput | OrderCreateOrConnectWithoutDeliveryZoneInput[]
+    upsert?: OrderUpsertWithWhereUniqueWithoutDeliveryZoneInput | OrderUpsertWithWhereUniqueWithoutDeliveryZoneInput[]
+    createMany?: OrderCreateManyDeliveryZoneInputEnvelope
+    set?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    disconnect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    delete?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    update?: OrderUpdateWithWhereUniqueWithoutDeliveryZoneInput | OrderUpdateWithWhereUniqueWithoutDeliveryZoneInput[]
+    updateMany?: OrderUpdateManyWithWhereWithoutDeliveryZoneInput | OrderUpdateManyWithWhereWithoutDeliveryZoneInput[]
+    deleteMany?: OrderScalarWhereInput | OrderScalarWhereInput[]
+  }
+
+  export type OrderUncheckedUpdateManyWithoutDeliveryZoneNestedInput = {
+    create?: XOR<OrderCreateWithoutDeliveryZoneInput, OrderUncheckedCreateWithoutDeliveryZoneInput> | OrderCreateWithoutDeliveryZoneInput[] | OrderUncheckedCreateWithoutDeliveryZoneInput[]
+    connectOrCreate?: OrderCreateOrConnectWithoutDeliveryZoneInput | OrderCreateOrConnectWithoutDeliveryZoneInput[]
+    upsert?: OrderUpsertWithWhereUniqueWithoutDeliveryZoneInput | OrderUpsertWithWhereUniqueWithoutDeliveryZoneInput[]
+    createMany?: OrderCreateManyDeliveryZoneInputEnvelope
+    set?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    disconnect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    delete?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    update?: OrderUpdateWithWhereUniqueWithoutDeliveryZoneInput | OrderUpdateWithWhereUniqueWithoutDeliveryZoneInput[]
+    updateMany?: OrderUpdateManyWithWhereWithoutDeliveryZoneInput | OrderUpdateManyWithWhereWithoutDeliveryZoneInput[]
+    deleteMany?: OrderScalarWhereInput | OrderScalarWhereInput[]
+  }
+
   export type OutletCreateNestedOneWithoutOrdersInput = {
     create?: XOR<OutletCreateWithoutOrdersInput, OutletUncheckedCreateWithoutOrdersInput>
     connectOrCreate?: OutletCreateOrConnectWithoutOrdersInput
@@ -36646,6 +38322,12 @@ export namespace Prisma {
     create?: XOR<DiningTableCreateWithoutOrdersInput, DiningTableUncheckedCreateWithoutOrdersInput>
     connectOrCreate?: DiningTableCreateOrConnectWithoutOrdersInput
     connect?: DiningTableWhereUniqueInput
+  }
+
+  export type DeliveryZoneCreateNestedOneWithoutOrdersInput = {
+    create?: XOR<DeliveryZoneCreateWithoutOrdersInput, DeliveryZoneUncheckedCreateWithoutOrdersInput>
+    connectOrCreate?: DeliveryZoneCreateOrConnectWithoutOrdersInput
+    connect?: DeliveryZoneWhereUniqueInput
   }
 
   export type CustomerCreateNestedOneWithoutOrdersInput = {
@@ -36688,6 +38370,16 @@ export namespace Prisma {
     delete?: DiningTableWhereInput | boolean
     connect?: DiningTableWhereUniqueInput
     update?: XOR<XOR<DiningTableUpdateToOneWithWhereWithoutOrdersInput, DiningTableUpdateWithoutOrdersInput>, DiningTableUncheckedUpdateWithoutOrdersInput>
+  }
+
+  export type DeliveryZoneUpdateOneWithoutOrdersNestedInput = {
+    create?: XOR<DeliveryZoneCreateWithoutOrdersInput, DeliveryZoneUncheckedCreateWithoutOrdersInput>
+    connectOrCreate?: DeliveryZoneCreateOrConnectWithoutOrdersInput
+    upsert?: DeliveryZoneUpsertWithoutOrdersInput
+    disconnect?: DeliveryZoneWhereInput | boolean
+    delete?: DeliveryZoneWhereInput | boolean
+    connect?: DeliveryZoneWhereUniqueInput
+    update?: XOR<XOR<DeliveryZoneUpdateToOneWithWhereWithoutOrdersInput, DeliveryZoneUpdateWithoutOrdersInput>, DeliveryZoneUncheckedUpdateWithoutOrdersInput>
   }
 
   export type CustomerUpdateOneWithoutOrdersNestedInput = {
@@ -37202,9 +38894,12 @@ export namespace Prisma {
     orderNumber: string
     orderType?: string
     tableNumber?: string | null
+    deliveryZoneName?: string | null
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverName?: string | null
+    dispatchedAt?: Date | string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -37226,6 +38921,7 @@ export namespace Prisma {
     createdAt?: Date | string
     settledAt?: Date | string | null
     table?: DiningTableCreateNestedOneWithoutOrdersInput
+    deliveryZone?: DeliveryZoneCreateNestedOneWithoutOrdersInput
     customer?: CustomerCreateNestedOneWithoutOrdersInput
     kdsTickets?: KdsTicketCreateNestedManyWithoutOrderInput
   }
@@ -37236,9 +38932,13 @@ export namespace Prisma {
     orderType?: string
     tableId?: string | null
     tableNumber?: string | null
+    deliveryZoneId?: string | null
+    deliveryZoneName?: string | null
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverName?: string | null
+    dispatchedAt?: Date | string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -37696,9 +39396,13 @@ export namespace Prisma {
     orderType?: StringFilter<"Order"> | string
     tableId?: StringNullableFilter<"Order"> | string | null
     tableNumber?: StringNullableFilter<"Order"> | string | null
+    deliveryZoneId?: StringNullableFilter<"Order"> | string | null
+    deliveryZoneName?: StringNullableFilter<"Order"> | string | null
     deliveryAddress?: StringNullableFilter<"Order"> | string | null
     deliveryPhone?: StringNullableFilter<"Order"> | string | null
     deliveryNotes?: StringNullableFilter<"Order"> | string | null
+    driverName?: StringNullableFilter<"Order"> | string | null
+    dispatchedAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     status?: StringFilter<"Order"> | string
     paymentStatus?: StringFilter<"Order"> | string
     paymentMethod?: StringFilter<"Order"> | string
@@ -38124,9 +39828,12 @@ export namespace Prisma {
     orderNumber: string
     orderType?: string
     tableNumber?: string | null
+    deliveryZoneName?: string | null
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverName?: string | null
+    dispatchedAt?: Date | string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -38148,6 +39855,7 @@ export namespace Prisma {
     createdAt?: Date | string
     settledAt?: Date | string | null
     outlet: OutletCreateNestedOneWithoutOrdersInput
+    deliveryZone?: DeliveryZoneCreateNestedOneWithoutOrdersInput
     customer?: CustomerCreateNestedOneWithoutOrdersInput
     kdsTickets?: KdsTicketCreateNestedManyWithoutOrderInput
   }
@@ -38158,9 +39866,13 @@ export namespace Prisma {
     orderNumber: string
     orderType?: string
     tableNumber?: string | null
+    deliveryZoneId?: string | null
+    deliveryZoneName?: string | null
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverName?: string | null
+    dispatchedAt?: Date | string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -39595,9 +41307,12 @@ export namespace Prisma {
     orderNumber: string
     orderType?: string
     tableNumber?: string | null
+    deliveryZoneName?: string | null
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverName?: string | null
+    dispatchedAt?: Date | string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -39620,6 +41335,7 @@ export namespace Prisma {
     settledAt?: Date | string | null
     outlet: OutletCreateNestedOneWithoutOrdersInput
     table?: DiningTableCreateNestedOneWithoutOrdersInput
+    deliveryZone?: DeliveryZoneCreateNestedOneWithoutOrdersInput
     kdsTickets?: KdsTicketCreateNestedManyWithoutOrderInput
   }
 
@@ -39630,9 +41346,13 @@ export namespace Prisma {
     orderType?: string
     tableId?: string | null
     tableNumber?: string | null
+    deliveryZoneId?: string | null
+    deliveryZoneName?: string | null
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverName?: string | null
+    dispatchedAt?: Date | string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -39680,6 +41400,106 @@ export namespace Prisma {
   export type OrderUpdateManyWithWhereWithoutCustomerInput = {
     where: OrderScalarWhereInput
     data: XOR<OrderUpdateManyMutationInput, OrderUncheckedUpdateManyWithoutCustomerInput>
+  }
+
+  export type OrderCreateWithoutDeliveryZoneInput = {
+    id?: string
+    orderNumber: string
+    orderType?: string
+    tableNumber?: string | null
+    deliveryZoneName?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
+    driverName?: string | null
+    dispatchedAt?: Date | string | null
+    status?: string
+    paymentStatus?: string
+    paymentMethod?: string
+    subtotal?: number
+    serviceCharge?: number
+    taxAmount?: number
+    deliveryFee?: number
+    discountAmount?: number
+    tipAmount?: number
+    finalAmount?: number
+    cashierName?: string | null
+    waiterName?: string | null
+    customerName?: string | null
+    customerPhone?: string | null
+    pointsEarned?: number
+    pointsRedeemed?: number
+    notes?: string | null
+    items: string
+    createdAt?: Date | string
+    settledAt?: Date | string | null
+    outlet: OutletCreateNestedOneWithoutOrdersInput
+    table?: DiningTableCreateNestedOneWithoutOrdersInput
+    customer?: CustomerCreateNestedOneWithoutOrdersInput
+    kdsTickets?: KdsTicketCreateNestedManyWithoutOrderInput
+  }
+
+  export type OrderUncheckedCreateWithoutDeliveryZoneInput = {
+    id?: string
+    outletId: string
+    orderNumber: string
+    orderType?: string
+    tableId?: string | null
+    tableNumber?: string | null
+    deliveryZoneName?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
+    driverName?: string | null
+    dispatchedAt?: Date | string | null
+    status?: string
+    paymentStatus?: string
+    paymentMethod?: string
+    subtotal?: number
+    serviceCharge?: number
+    taxAmount?: number
+    deliveryFee?: number
+    discountAmount?: number
+    tipAmount?: number
+    finalAmount?: number
+    cashierName?: string | null
+    waiterName?: string | null
+    customerName?: string | null
+    customerPhone?: string | null
+    customerId?: string | null
+    pointsEarned?: number
+    pointsRedeemed?: number
+    notes?: string | null
+    items: string
+    createdAt?: Date | string
+    settledAt?: Date | string | null
+    kdsTickets?: KdsTicketUncheckedCreateNestedManyWithoutOrderInput
+  }
+
+  export type OrderCreateOrConnectWithoutDeliveryZoneInput = {
+    where: OrderWhereUniqueInput
+    create: XOR<OrderCreateWithoutDeliveryZoneInput, OrderUncheckedCreateWithoutDeliveryZoneInput>
+  }
+
+  export type OrderCreateManyDeliveryZoneInputEnvelope = {
+    data: OrderCreateManyDeliveryZoneInput | OrderCreateManyDeliveryZoneInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrderUpsertWithWhereUniqueWithoutDeliveryZoneInput = {
+    where: OrderWhereUniqueInput
+    update: XOR<OrderUpdateWithoutDeliveryZoneInput, OrderUncheckedUpdateWithoutDeliveryZoneInput>
+    create: XOR<OrderCreateWithoutDeliveryZoneInput, OrderUncheckedCreateWithoutDeliveryZoneInput>
+  }
+
+  export type OrderUpdateWithWhereUniqueWithoutDeliveryZoneInput = {
+    where: OrderWhereUniqueInput
+    data: XOR<OrderUpdateWithoutDeliveryZoneInput, OrderUncheckedUpdateWithoutDeliveryZoneInput>
+  }
+
+  export type OrderUpdateManyWithWhereWithoutDeliveryZoneInput = {
+    where: OrderScalarWhereInput
+    data: XOR<OrderUpdateManyMutationInput, OrderUncheckedUpdateManyWithoutDeliveryZoneInput>
   }
 
   export type OutletCreateWithoutOrdersInput = {
@@ -39764,6 +41584,33 @@ export namespace Prisma {
   export type DiningTableCreateOrConnectWithoutOrdersInput = {
     where: DiningTableWhereUniqueInput
     create: XOR<DiningTableCreateWithoutOrdersInput, DiningTableUncheckedCreateWithoutOrdersInput>
+  }
+
+  export type DeliveryZoneCreateWithoutOrdersInput = {
+    id?: string
+    nameAr: string
+    nameEn?: string | null
+    fee?: number
+    estimatedTime?: string
+    isActive?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+  }
+
+  export type DeliveryZoneUncheckedCreateWithoutOrdersInput = {
+    id?: string
+    nameAr: string
+    nameEn?: string | null
+    fee?: number
+    estimatedTime?: string
+    isActive?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+  }
+
+  export type DeliveryZoneCreateOrConnectWithoutOrdersInput = {
+    where: DeliveryZoneWhereUniqueInput
+    create: XOR<DeliveryZoneCreateWithoutOrdersInput, DeliveryZoneUncheckedCreateWithoutOrdersInput>
   }
 
   export type CustomerCreateWithoutOrdersInput = {
@@ -39929,6 +41776,39 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type DeliveryZoneUpsertWithoutOrdersInput = {
+    update: XOR<DeliveryZoneUpdateWithoutOrdersInput, DeliveryZoneUncheckedUpdateWithoutOrdersInput>
+    create: XOR<DeliveryZoneCreateWithoutOrdersInput, DeliveryZoneUncheckedCreateWithoutOrdersInput>
+    where?: DeliveryZoneWhereInput
+  }
+
+  export type DeliveryZoneUpdateToOneWithWhereWithoutOrdersInput = {
+    where?: DeliveryZoneWhereInput
+    data: XOR<DeliveryZoneUpdateWithoutOrdersInput, DeliveryZoneUncheckedUpdateWithoutOrdersInput>
+  }
+
+  export type DeliveryZoneUpdateWithoutOrdersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nameAr?: StringFieldUpdateOperationsInput | string
+    nameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    fee?: FloatFieldUpdateOperationsInput | number
+    estimatedTime?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeliveryZoneUncheckedUpdateWithoutOrdersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nameAr?: StringFieldUpdateOperationsInput | string
+    nameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    fee?: FloatFieldUpdateOperationsInput | number
+    estimatedTime?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CustomerUpsertWithoutOrdersInput = {
     update: XOR<CustomerUpdateWithoutOrdersInput, CustomerUncheckedUpdateWithoutOrdersInput>
     create: XOR<CustomerCreateWithoutOrdersInput, CustomerUncheckedCreateWithoutOrdersInput>
@@ -40008,9 +41888,12 @@ export namespace Prisma {
     orderNumber: string
     orderType?: string
     tableNumber?: string | null
+    deliveryZoneName?: string | null
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverName?: string | null
+    dispatchedAt?: Date | string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -40033,6 +41916,7 @@ export namespace Prisma {
     settledAt?: Date | string | null
     outlet: OutletCreateNestedOneWithoutOrdersInput
     table?: DiningTableCreateNestedOneWithoutOrdersInput
+    deliveryZone?: DeliveryZoneCreateNestedOneWithoutOrdersInput
     customer?: CustomerCreateNestedOneWithoutOrdersInput
   }
 
@@ -40043,9 +41927,13 @@ export namespace Prisma {
     orderType?: string
     tableId?: string | null
     tableNumber?: string | null
+    deliveryZoneId?: string | null
+    deliveryZoneName?: string | null
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverName?: string | null
+    dispatchedAt?: Date | string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -40090,9 +41978,12 @@ export namespace Prisma {
     orderNumber?: StringFieldUpdateOperationsInput | string
     orderType?: StringFieldUpdateOperationsInput | string
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -40115,6 +42006,7 @@ export namespace Prisma {
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     outlet?: OutletUpdateOneRequiredWithoutOrdersNestedInput
     table?: DiningTableUpdateOneWithoutOrdersNestedInput
+    deliveryZone?: DeliveryZoneUpdateOneWithoutOrdersNestedInput
     customer?: CustomerUpdateOneWithoutOrdersNestedInput
   }
 
@@ -40125,9 +42017,13 @@ export namespace Prisma {
     orderType?: StringFieldUpdateOperationsInput | string
     tableId?: NullableStringFieldUpdateOperationsInput | string | null
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -40776,9 +42672,13 @@ export namespace Prisma {
     orderType?: string
     tableId?: string | null
     tableNumber?: string | null
+    deliveryZoneId?: string | null
+    deliveryZoneName?: string | null
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverName?: string | null
+    dispatchedAt?: Date | string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -41086,9 +42986,12 @@ export namespace Prisma {
     orderNumber?: StringFieldUpdateOperationsInput | string
     orderType?: StringFieldUpdateOperationsInput | string
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -41110,6 +43013,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     table?: DiningTableUpdateOneWithoutOrdersNestedInput
+    deliveryZone?: DeliveryZoneUpdateOneWithoutOrdersNestedInput
     customer?: CustomerUpdateOneWithoutOrdersNestedInput
     kdsTickets?: KdsTicketUpdateManyWithoutOrderNestedInput
   }
@@ -41120,9 +43024,13 @@ export namespace Prisma {
     orderType?: StringFieldUpdateOperationsInput | string
     tableId?: NullableStringFieldUpdateOperationsInput | string | null
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -41153,9 +43061,13 @@ export namespace Prisma {
     orderType?: StringFieldUpdateOperationsInput | string
     tableId?: NullableStringFieldUpdateOperationsInput | string | null
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -41465,9 +43377,13 @@ export namespace Prisma {
     orderNumber: string
     orderType?: string
     tableNumber?: string | null
+    deliveryZoneId?: string | null
+    deliveryZoneName?: string | null
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverName?: string | null
+    dispatchedAt?: Date | string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -41496,9 +43412,12 @@ export namespace Prisma {
     orderNumber?: StringFieldUpdateOperationsInput | string
     orderType?: StringFieldUpdateOperationsInput | string
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -41520,6 +43439,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     outlet?: OutletUpdateOneRequiredWithoutOrdersNestedInput
+    deliveryZone?: DeliveryZoneUpdateOneWithoutOrdersNestedInput
     customer?: CustomerUpdateOneWithoutOrdersNestedInput
     kdsTickets?: KdsTicketUpdateManyWithoutOrderNestedInput
   }
@@ -41530,9 +43450,13 @@ export namespace Prisma {
     orderNumber?: StringFieldUpdateOperationsInput | string
     orderType?: StringFieldUpdateOperationsInput | string
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -41563,9 +43487,13 @@ export namespace Prisma {
     orderNumber?: StringFieldUpdateOperationsInput | string
     orderType?: StringFieldUpdateOperationsInput | string
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -41904,9 +43832,13 @@ export namespace Prisma {
     orderType?: string
     tableId?: string | null
     tableNumber?: string | null
+    deliveryZoneId?: string | null
+    deliveryZoneName?: string | null
     deliveryAddress?: string | null
     deliveryPhone?: string | null
     deliveryNotes?: string | null
+    driverName?: string | null
+    dispatchedAt?: Date | string | null
     status?: string
     paymentStatus?: string
     paymentMethod?: string
@@ -41934,9 +43866,12 @@ export namespace Prisma {
     orderNumber?: StringFieldUpdateOperationsInput | string
     orderType?: StringFieldUpdateOperationsInput | string
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -41959,6 +43894,7 @@ export namespace Prisma {
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     outlet?: OutletUpdateOneRequiredWithoutOrdersNestedInput
     table?: DiningTableUpdateOneWithoutOrdersNestedInput
+    deliveryZone?: DeliveryZoneUpdateOneWithoutOrdersNestedInput
     kdsTickets?: KdsTicketUpdateManyWithoutOrderNestedInput
   }
 
@@ -41969,9 +43905,13 @@ export namespace Prisma {
     orderType?: StringFieldUpdateOperationsInput | string
     tableId?: NullableStringFieldUpdateOperationsInput | string | null
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -42002,9 +43942,13 @@ export namespace Prisma {
     orderType?: StringFieldUpdateOperationsInput | string
     tableId?: NullableStringFieldUpdateOperationsInput | string | null
     tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
@@ -42019,6 +43963,152 @@ export namespace Prisma {
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
     customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    pointsEarned?: IntFieldUpdateOperationsInput | number
+    pointsRedeemed?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type OrderCreateManyDeliveryZoneInput = {
+    id?: string
+    outletId: string
+    orderNumber: string
+    orderType?: string
+    tableId?: string | null
+    tableNumber?: string | null
+    deliveryZoneName?: string | null
+    deliveryAddress?: string | null
+    deliveryPhone?: string | null
+    deliveryNotes?: string | null
+    driverName?: string | null
+    dispatchedAt?: Date | string | null
+    status?: string
+    paymentStatus?: string
+    paymentMethod?: string
+    subtotal?: number
+    serviceCharge?: number
+    taxAmount?: number
+    deliveryFee?: number
+    discountAmount?: number
+    tipAmount?: number
+    finalAmount?: number
+    cashierName?: string | null
+    waiterName?: string | null
+    customerName?: string | null
+    customerPhone?: string | null
+    customerId?: string | null
+    pointsEarned?: number
+    pointsRedeemed?: number
+    notes?: string | null
+    items: string
+    createdAt?: Date | string
+    settledAt?: Date | string | null
+  }
+
+  export type OrderUpdateWithoutDeliveryZoneInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    orderType?: StringFieldUpdateOperationsInput | string
+    tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    serviceCharge?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
+    discountAmount?: FloatFieldUpdateOperationsInput | number
+    tipAmount?: FloatFieldUpdateOperationsInput | number
+    finalAmount?: FloatFieldUpdateOperationsInput | number
+    cashierName?: NullableStringFieldUpdateOperationsInput | string | null
+    waiterName?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    pointsEarned?: IntFieldUpdateOperationsInput | number
+    pointsRedeemed?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    outlet?: OutletUpdateOneRequiredWithoutOrdersNestedInput
+    table?: DiningTableUpdateOneWithoutOrdersNestedInput
+    customer?: CustomerUpdateOneWithoutOrdersNestedInput
+    kdsTickets?: KdsTicketUpdateManyWithoutOrderNestedInput
+  }
+
+  export type OrderUncheckedUpdateWithoutDeliveryZoneInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    orderType?: StringFieldUpdateOperationsInput | string
+    tableId?: NullableStringFieldUpdateOperationsInput | string | null
+    tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    serviceCharge?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
+    discountAmount?: FloatFieldUpdateOperationsInput | number
+    tipAmount?: FloatFieldUpdateOperationsInput | number
+    finalAmount?: FloatFieldUpdateOperationsInput | number
+    cashierName?: NullableStringFieldUpdateOperationsInput | string | null
+    waiterName?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    pointsEarned?: IntFieldUpdateOperationsInput | number
+    pointsRedeemed?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    kdsTickets?: KdsTicketUncheckedUpdateManyWithoutOrderNestedInput
+  }
+
+  export type OrderUncheckedUpdateManyWithoutDeliveryZoneInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletId?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    orderType?: StringFieldUpdateOperationsInput | string
+    tableId?: NullableStringFieldUpdateOperationsInput | string | null
+    tableNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryZoneName?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    serviceCharge?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    deliveryFee?: FloatFieldUpdateOperationsInput | number
+    discountAmount?: FloatFieldUpdateOperationsInput | number
+    tipAmount?: FloatFieldUpdateOperationsInput | number
+    finalAmount?: FloatFieldUpdateOperationsInput | number
+    cashierName?: NullableStringFieldUpdateOperationsInput | string | null
+    waiterName?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
     pointsEarned?: IntFieldUpdateOperationsInput | number
     pointsRedeemed?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
