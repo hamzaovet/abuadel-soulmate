@@ -11,6 +11,7 @@ import AdminAuditAlertsDrawer from "@/components/AdminAuditAlertsDrawer";
 import AdminBulkRawPriceEditor from "@/components/AdminBulkRawPriceEditor";
 import OrderRevisionModals, { RevisionModalMode } from "@/components/OrderRevisionModals";
 import { PushOptInButton } from "@/components/PwaBootAndPushButton";
+import { ThemeToggle } from "@/components/ThemeProviderAndToggle";
 import {
   SOULMATE_CATEGORIES,
   ABU_ADEL_CATEGORIES,
@@ -2385,6 +2386,8 @@ export default function AdminDashboardPage() {
               userName={currentUser?.name || "المدير العام"}
               compact
             />
+
+            <ThemeToggle compact />
 
             <button
               onClick={() => setShowQRModal(true)}

@@ -35,6 +35,469 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════════
+   LUXURY LIGHT MODE THEME ENGINE (html.light)
+   Preserves 100% WCAG readability on small text, white text, inputs & gradients,
+   while keeping solid action buttons, image overlays & thermal receipts crisp.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+html.light {
+  color-scheme: light;
+  --background: #f4f6fb;
+  --foreground: #0f172a;
+}
+
+html.light body {
+  background-color: #f4f6fb;
+  color: #0f172a;
+}
+
+html.light .gold-gradient-text {
+  background: linear-gradient(135deg, #78350f 0%, #b45309 55%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+html.light .coffee-gradient-text {
+  background: linear-gradient(135deg, #78350f 0%, #b45309 55%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+html.light .pastry-gradient-text {
+  background: linear-gradient(135deg, #881337 0%, #be123c 55%, #e11d48 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 1. Page Canvases & Primary Surfaces */
+html.light :is(
+  .bg-slate-950,
+  .bg-stone-950,
+  .bg-\[\#07070a\],
+  .bg-\[\#07070b\],
+  .bg-\[\#060a14\],
+  .bg-\[\#0f0e13\],
+  .bg-\[\#110c14\],
+  .bg-\[\#120d14\],
+  .bg-\[\#120e15\],
+  .bg-\[\#140e16\],
+  .bg-\[\#161208\],
+  .bg-\[\#18080c\]
+) {
+  background-color: #f4f6fb;
+}
+
+html.light :is(
+  .bg-slate-950\/40,
+  .bg-slate-950\/50,
+  .bg-slate-950\/60,
+  .bg-slate-950\/70,
+  .bg-slate-950\/80,
+  .bg-slate-950\/90,
+  .bg-slate-950\/95,
+  .bg-\[\#120d14\]\/95
+) {
+  background-color: rgba(255, 255, 255, 0.92);
+}
+
+/* Cards & Elevated Panels */
+html.light :is(
+  .bg-slate-900,
+  .bg-stone-900,
+  .bg-\[\#18121c\],
+  .bg-\[\#1d111b\]
+) {
+  background-color: #ffffff;
+}
+
+html.light :is(
+  .bg-slate-900\/50,
+  .bg-slate-900\/60,
+  .bg-slate-900\/70,
+  .bg-slate-900\/80,
+  .bg-slate-900\/90,
+  .bg-slate-900\/95
+) {
+  background-color: rgba(255, 255, 255, 0.94);
+}
+
+/* Secondary Inset Surfaces, Pills & Inputs */
+html.light :is(
+  .bg-slate-800,
+  .bg-slate-800\/30,
+  .bg-slate-800\/40,
+  .bg-slate-800\/60,
+  .bg-slate-800\/80,
+  .bg-slate-800\/90,
+  .bg-slate-700
+) {
+  background-color: #eef2f7;
+}
+
+html.light .bg-white\/5 {
+  background-color: rgba(15, 23, 42, 0.04);
+}
+html.light .bg-white\/10 {
+  background-color: rgba(15, 23, 42, 0.07);
+}
+html.light .bg-white\/15 {
+  background-color: rgba(15, 23, 42, 0.11);
+}
+html.light .bg-white\/20 {
+  background-color: rgba(15, 23, 42, 0.15);
+}
+
+html.light :is(.bg-black\/30, .bg-black\/40) {
+  background-color: rgba(241, 245, 249, 0.92);
+}
+html.light :is(.bg-black\/50, .bg-black\/55, .bg-black\/60, .bg-black\/70, .bg-black\/80, .bg-black\/85, .bg-black\/90) {
+  background-color: #f1f5f9;
+}
+
+/* Non-receipt plain bg-black inputs/tracks turn crisp soft surface */
+html.light .bg-black {
+  background-color: #f1f5f9;
+}
+
+/* Modal Backdrops MUST stay dark translucent */
+html.light .fixed.inset-0:is(.bg-black\/60, .bg-black\/70, .bg-black\/80, .bg-black\/85, .bg-black\/90) {
+  background-color: rgba(15, 23, 42, 0.56);
+}
+
+/* Deep Colored Surface Tints -> Warm Daylight Pastels */
+html.light :is(.bg-amber-950\/15, .bg-amber-950\/20, .bg-amber-950\/25, .bg-amber-950\/30, .bg-amber-950\/50) {
+  background-color: rgba(254, 243, 199, 0.68);
+}
+html.light .bg-amber-950\/90 {
+  background-color: #fef3c7;
+}
+html.light :is(.bg-emerald-950\/15, .bg-emerald-950\/20, .bg-emerald-950\/40, .bg-emerald-950\/50, .bg-emerald-950\/60) {
+  background-color: rgba(209, 250, 229, 0.7);
+}
+html.light .bg-emerald-950\/90 {
+  background-color: #d1fae5;
+}
+html.light :is(.bg-rose-950\/20, .bg-rose-950\/30, .bg-rose-950\/35, .bg-rose-950\/40, .bg-rose-950\/50, .bg-rose-950\/60, .bg-rose-900\/50, .bg-rose-900\/60) {
+  background-color: rgba(255, 228, 230, 0.78);
+}
+html.light :is(.bg-rose-950, .bg-rose-950\/90) {
+  background-color: #ffe4e6;
+}
+html.light :is(.bg-purple-950\/20, .bg-purple-950\/30, .bg-purple-950\/60) {
+  background-color: rgba(243, 232, 255, 0.78);
+}
+html.light :is(.bg-sky-950\/30, .bg-sky-950\/40, .bg-sky-950\/50) {
+  background-color: rgba(224, 242, 254, 0.78);
+}
+html.light .bg-cyan-950\/30 {
+  background-color: rgba(207, 250, 254, 0.78);
+}
+
+/* 2. Gradient Stops (Tailwind v4 custom props cascade cleanly into linear-gradients) */
+html.light :is(.from-slate-950, .from-stone-950, .from-\[\#060913\]) {
+  --tw-gradient-from: #f4f6fb;
+}
+html.light :is(.via-slate-950, .via-stone-950) {
+  --tw-gradient-via: #f8fafc;
+}
+html.light :is(.to-slate-950, .to-stone-950, .to-\[\#060913\]) {
+  --tw-gradient-to: #eef2f7;
+}
+html.light :is(.from-slate-900, .from-slate-900\/95, .from-stone-900, .from-\[\#161019\], .from-\[\#1a1209\], .from-\[\#1b1420\], .from-\[\#1b1224\]) {
+  --tw-gradient-from: #ffffff;
+}
+html.light :is(.via-slate-900, .via-\[\#0d0905\], .via-\[\#100b13\], .via-\[\#1b1224\]) {
+  --tw-gradient-via: #f8fafc;
+}
+html.light :is(.to-slate-900, .to-\[\#12080a\]) {
+  --tw-gradient-to: #f1f5f9;
+}
+html.light :is(.from-amber-950, .from-amber-950\/35, .from-amber-950\/40) {
+  --tw-gradient-from: #fffbeb;
+}
+html.light :is(.via-amber-950\/35, .via-amber-950\/40, .via-amber-950\/80) {
+  --tw-gradient-via: #fef3c7;
+}
+html.light :is(.to-amber-950\/30, .to-amber-950\/40, .to-amber-950\/50) {
+  --tw-gradient-to: #fef3c7;
+}
+html.light :is(.from-emerald-950\/40, .from-emerald-950\/60, .from-emerald-950\/80) {
+  --tw-gradient-from: #ecfdf5;
+}
+html.light .via-emerald-950\/20 {
+  --tw-gradient-via: #ecfdf5;
+}
+html.light :is(.to-emerald-950, .to-emerald-950\/30, .to-emerald-950\/35, .to-emerald-950\/50, .to-emerald-950\/80) {
+  --tw-gradient-to: #d1fae5;
+}
+html.light :is(.from-rose-950\/60, .from-rose-950\/90) {
+  --tw-gradient-from: #fff1f2;
+}
+html.light .via-rose-950\/30 {
+  --tw-gradient-via: #ffe4e6;
+}
+html.light :is(.to-rose-950\/60, .to-rose-950\/90) {
+  --tw-gradient-to: #ffe4e6;
+}
+html.light .from-purple-950\/40 {
+  --tw-gradient-from: #faf5ff;
+}
+html.light .to-purple-950\/50 {
+  --tw-gradient-to: #f3e8ff;
+}
+
+/* 3. Borders & Dividers */
+html.light :is(
+  .border-slate-900,
+  .border-slate-800,
+  .border-slate-800\/80,
+  .border-slate-800\/50,
+  .border-slate-700,
+  .border-slate-500
+) {
+  border-color: #cbd5e1;
+}
+html.light :is(.border-white\/5, .border-white\/10) {
+  border-color: rgba(15, 23, 42, 0.12);
+}
+html.light :is(.border-white\/15, .border-white\/20, .border-white\/25) {
+  border-color: rgba(15, 23, 42, 0.18);
+}
+html.light :is(.divide-slate-800, .divide-white\/10) > :not(:last-child) {
+  border-color: rgba(15, 23, 42, 0.1);
+}
+
+/* 4. Typography & Tiny Label Contrast Engine */
+html.light :is(.text-white, .text-slate-100) {
+  color: #0f172a;
+}
+html.light .text-white\/70 {
+  color: rgba(15, 23, 42, 0.8);
+}
+html.light .text-slate-200 {
+  color: #1e293b;
+}
+html.light .text-slate-300 {
+  color: #334155;
+}
+html.light :is(.text-slate-400, .text-slate-500) {
+  color: #475569;
+}
+html.light .text-slate-600 {
+  color: #64748b;
+}
+
+html.light :is(.text-amber-200, .text-amber-200\/90, .text-amber-200\/80, .text-amber-200\/70) {
+  color: #92400e;
+}
+html.light :is(.text-amber-300, .text-amber-300\/90, .text-amber-300\/80, .text-amber-300\/75, .text-amber-300\/70) {
+  color: #b45309;
+}
+html.light :is(.text-amber-400, .text-amber-400\/80, .text-amber-500) {
+  color: #b45309;
+}
+
+html.light :is(.text-emerald-200, .text-emerald-300, .text-emerald-300\/80, .text-emerald-300\/70) {
+  color: #065f46;
+}
+html.light .text-emerald-400 {
+  color: #047857;
+}
+
+html.light :is(.text-rose-200, .text-rose-300, .text-rose-300\/90, .text-rose-400) {
+  color: #be123c;
+}
+
+html.light :is(.text-purple-200, .text-purple-300, .text-purple-400) {
+  color: #6b21a8;
+}
+
+html.light :is(.text-sky-200, .text-sky-300, .text-sky-400) {
+  color: #0369a1;
+}
+html.light :is(.text-blue-300, .text-blue-400) {
+  color: #1d4ed8;
+}
+html.light .text-cyan-300 {
+  color: #0e7490;
+}
+html.light .text-orange-300 {
+  color: #c2410c;
+}
+html.light :is(.text-pink-300, .text-pink-400) {
+  color: #be185d;
+}
+
+/* 5. Hover Contrast Fixes */
+html.light :is(.hover\:bg-slate-800, .hover\:bg-slate-800\/80, .hover\:bg-slate-800\/40, .hover\:bg-slate-800\/30, .hover\:bg-slate-700, .hover\:bg-slate-900, .hover\:bg-slate-900\/60):hover {
+  background-color: #e2e8f0;
+}
+html.light :is(.hover\:bg-white\/10, .hover\:bg-white\/15, .hover\:bg-white\/20):hover {
+  background-color: rgba(15, 23, 42, 0.08);
+}
+html.light .hover\:text-white:hover {
+  color: #0f172a;
+}
+html.light :is(.hover\:bg-rose-500, .hover\:bg-rose-600, .hover\:bg-emerald-600, .hover\:bg-emerald-500, .hover\:bg-purple-600, .hover\:bg-sky-500, .hover\:bg-blue-500):hover.hover\:text-white:hover {
+  color: #ffffff;
+}
+
+/* 6. Solid Action Buttons, Badges & Gradient CTA Protection (ALWAYS keep text crisp WHITE) */
+html.light :is(
+  .bg-emerald-500,
+  .bg-emerald-600,
+  .bg-rose-500,
+  .bg-rose-600,
+  .bg-purple-500,
+  .bg-purple-600,
+  .bg-blue-500,
+  .bg-blue-600,
+  .bg-sky-500,
+  .bg-sky-600,
+  .from-emerald-500,
+  .from-emerald-600,
+  .from-rose-600,
+  .from-purple-600,
+  .from-blue-600,
+  .from-sky-500,
+  .from-indigo-600,
+  .from-amber-500.to-amber-700
+).text-white,
+html.light :is(
+  .bg-emerald-500,
+  .bg-emerald-600,
+  .bg-rose-500,
+  .bg-rose-600,
+  .bg-purple-500,
+  .bg-purple-600,
+  .bg-blue-500,
+  .bg-blue-600,
+  .bg-sky-500,
+  .bg-sky-600,
+  .from-emerald-500,
+  .from-emerald-600,
+  .from-rose-600,
+  .from-purple-600,
+  .from-blue-600,
+  .from-sky-500,
+  .from-indigo-600,
+  .from-amber-500.to-amber-700
+) .text-white {
+  color: #ffffff;
+}
+
+/* Also protect text inside amber-500 solid gold buttons (black text) */
+html.light :is(.bg-amber-500, .bg-amber-400):is(.text-black, .text-slate-950),
+html.light :is(.bg-amber-500, .bg-amber-400) :is(.text-black, .text-slate-950) {
+  color: #090d16;
+}
+
+/* Keep solid Rose alert/bell icon badges vivid */
+html.light .bg-rose-500 {
+  background-color: #e11d48;
+}
+
+/* Keep disabled colored action buttons legible in Light Mode instead of washing into pale pastels */
+html.light button:disabled[class*="bg-emerald-"],
+html.light button:disabled[class*="from-emerald-"],
+html.light button:disabled[class*="bg-amber-"],
+html.light button:disabled[class*="from-amber-"],
+html.light button:disabled[class*="bg-purple-"],
+html.light button:disabled[class*="bg-rose-"],
+html.light button:disabled[class*="bg-sky-"] {
+  opacity: 0.76;
+  filter: saturate(0.55);
+  cursor: not-allowed;
+}
+
+/* 7. Forced-Dark Containers (Photo Overlays, Logo Badges, Luxury VIP Print Card Preview) */
+html.light [data-force-dark="true"] {
+  color: #f8fafc;
+}
+html.light [data-force-dark="true"].bg-black,
+html.light [data-force-dark="true"] .bg-black {
+  background-color: #000000;
+}
+html.light [data-force-dark="true"].bg-slate-900,
+html.light [data-force-dark="true"] .bg-slate-900 {
+  background-color: #0f172a;
+}
+html.light [data-force-dark="true"] .bg-black\/80 {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+html.light [data-force-dark="true"] .from-black\/95 {
+  --tw-gradient-from: rgba(0, 0, 0, 0.95);
+}
+html.light [data-force-dark="true"] .from-black\/90 {
+  --tw-gradient-from: rgba(0, 0, 0, 0.9);
+}
+html.light [data-force-dark="true"] :is(.from-\[\#1a1209\]) {
+  --tw-gradient-from: #1a1209;
+}
+html.light [data-force-dark="true"] :is(.via-\[\#0d0905\]) {
+  --tw-gradient-via: #0d0905;
+}
+html.light [data-force-dark="true"] :is(.to-\[\#12080a\]) {
+  --tw-gradient-to: #12080a;
+}
+html.light [data-force-dark="true"] .text-white {
+  color: #ffffff;
+}
+html.light [data-force-dark="true"] .text-slate-200 {
+  color: #e2e8f0;
+}
+html.light [data-force-dark="true"] .text-slate-300 {
+  color: #cbd5e1;
+}
+html.light [data-force-dark="true"] .text-slate-400 {
+  color: #94a3b8;
+}
+html.light [data-force-dark="true"] .text-amber-300 {
+  color: #fcd34d;
+}
+html.light [data-force-dark="true"] .text-amber-400 {
+  color: #fbbf24;
+}
+html.light [data-force-dark="true"] .text-emerald-300 {
+  color: #6ee7b7;
+}
+html.light [data-force-dark="true"] .text-emerald-400 {
+  color: #34d399;
+}
+html.light [data-force-dark="true"] .text-purple-300 {
+  color: #d8b4fe;
+}
+html.light [data-force-dark="true"] .text-purple-400 {
+  color: #c084fc;
+}
+
+/* 8. Thermal Receipts Always Stay Pure Black Ink on White Paper */
+html.light :is(.receipt-container, #thermal-receipt, #shift-handover-receipt) {
+  background-color: #ffffff;
+  color: #000000;
+}
+html.light :is(.receipt-container, #thermal-receipt, #shift-handover-receipt) .bg-black {
+  background-color: #000000;
+}
+html.light :is(.receipt-container, #thermal-receipt, #shift-handover-receipt) .text-white {
+  color: #ffffff;
+}
+
+/* 9. Form Controls & Native Selects */
+html.light input,
+html.light textarea,
+html.light select {
+  color-scheme: light;
+}
+html.light select option {
+  background-color: #ffffff;
+  color: #0f172a;
+}
+html.light ::placeholder {
+  color: #64748b;
+  opacity: 1;
+}
+
 /* Thermal Receipt Print Styles (80mm) */
 @media print {
   body * {

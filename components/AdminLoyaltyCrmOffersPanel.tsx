@@ -1658,6 +1658,7 @@ export default function AdminLoyaltyCrmOffersPanel({
               </div>
 
               <div
+                data-force-dark="true"
                 className="relative h-32 rounded-2xl overflow-hidden border border-amber-500/30 flex items-center p-4"
                 style={{
                   backgroundImage: `url('${offers.banner.image || "/products/nawaem-mix-real.webp"}')`,

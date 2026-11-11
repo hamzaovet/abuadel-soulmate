@@ -16,6 +16,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { PushOptInButton } from "@/components/PwaBootAndPushButton";
+import { ThemeToggle } from "@/components/ThemeProviderAndToggle";
 
 export default function InstallAppPage() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -100,6 +101,13 @@ export default function InstallAppPage() {
       dir="rtl"
     >
       <div className="w-full max-w-xl space-y-5">
+        <div className="flex items-center justify-between">
+          <Link href="/" className="text-xs font-bold text-slate-400 hover:text-white flex items-center gap-1">
+            <Home className="w-3.5 h-3.5" />
+            <span>العودة للرئيسية</span>
+          </Link>
+          <ThemeToggle compact />
+        </div>
         {/* Luxury App Icon & Brand Header */}
         <div className="relative overflow-hidden rounded-3xl border border-amber-500/30 bg-gradient-to-b from-slate-900/95 via-slate-950 to-[#060913] p-6 text-center shadow-2xl">
           <div className="mx-auto w-28 h-28 rounded-3xl overflow-hidden border-2 border-amber-400/50 shadow-[0_0_40px_rgba(245,158,11,0.25)] mb-4">

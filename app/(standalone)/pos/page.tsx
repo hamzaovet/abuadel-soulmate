@@ -6,6 +6,7 @@ import Link from "next/link";
 import CardQRModal from "@/components/CardQRModal";
 import OrderRevisionModals, { RevisionModalMode } from "@/components/OrderRevisionModals";
 import { PushOptInButton } from "@/components/PwaBootAndPushButton";
+import { ThemeToggle } from "@/components/ThemeProviderAndToggle";
 import {
   SOULMATE_CATEGORIES,
   ABU_ADEL_CATEGORIES,
@@ -1061,7 +1062,7 @@ export default function PosTerminalPage() {
          ───────────────────────────────────────────────────────────── */}
       <header className="shrink-0 z-40 bg-[#120d14]/95 backdrop-blur-md border-b border-amber-500/25 px-3 sm:px-5 py-2 flex items-center justify-between shadow-lg no-print">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl overflow-hidden border-2 border-amber-400 bg-black shrink-0 p-1">
+          <div data-force-dark="true" className="w-10 h-10 rounded-2xl overflow-hidden border-2 border-amber-400 bg-black shrink-0 p-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={isAbuAdel ? "/abuadel-logo.svg" : "/soulmate-logo.svg"}
@@ -1198,6 +1199,8 @@ export default function PosTerminalPage() {
             userName={currentUser?.name || "الكاشير"}
             compact
           />
+
+          <ThemeToggle compact />
 
           {/* Navigation to Admin (Only for Owner or Branch Manager) */}
           {(isOwner || currentUser?.role === "branch_manager") && (

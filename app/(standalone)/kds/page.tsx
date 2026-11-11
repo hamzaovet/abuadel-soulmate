@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { PushOptInButton } from "@/components/PwaBootAndPushButton";
+import { ThemeToggle } from "@/components/ThemeProviderAndToggle";
 import {
   Coffee,
   Flame,
@@ -119,7 +120,7 @@ export default function KdsScreenPage() {
       {/* KDS TOP HEADER */}
       <header className="shrink-0 z-40 bg-[#120d14]/95 backdrop-blur-md border-b border-amber-500/25 px-3 sm:px-6 py-2.5 flex items-center justify-between shadow-lg">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl overflow-hidden border-2 border-amber-400 bg-black shrink-0 p-1">
+          <div data-force-dark="true" className="w-10 h-10 rounded-2xl overflow-hidden border-2 border-amber-400 bg-black shrink-0 p-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/soulmate-logo.svg" alt="Logo" className="w-full h-full object-contain" />
           </div>
@@ -194,6 +195,8 @@ export default function KdsScreenPage() {
             userName={currentUser?.name || "الباريستا"}
             compact
           />
+
+          <ThemeToggle compact />
 
           <button
             onClick={fetchKdsTickets}

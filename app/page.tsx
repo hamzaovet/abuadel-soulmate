@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import CardQRModal from "@/components/CardQRModal";
+import { ThemeToggle } from "@/components/ThemeProviderAndToggle";
 import {
   SOULMATE_CATEGORIES,
   ABU_ADEL_CATEGORIES,
@@ -220,47 +221,54 @@ export default function DualBrandLandingPage() {
           : "bg-gradient-to-b from-slate-950 via-emerald-950/20 to-slate-950"
       }`}
     >
-      {/* 1. TOP ANNOUNCEMENT BANNER */}
+      {/* 1. COMPACT TOP UTILITY STRIP (Mobile-First Clean Single Line) */}
       <div
-        className={`py-2 px-4 text-center text-xs font-bold transition-colors ${
+        className={`py-1.5 px-3 sm:px-4 text-[11px] font-bold transition-colors ${
           activeBrand === "SOULMATE"
             ? "bg-amber-500/10 text-amber-300 border-b border-amber-500/20"
             : "bg-emerald-500/10 text-emerald-300 border-b border-emerald-500/20"
         }`}
       >
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+            <span className="truncate md:hidden">
+              {activeBrand === "SOULMATE"
+                ? "☕ سول ميت كافيه VIP"
+                : "🍰 أبو عادل • دليفري 15992"}
+            </span>
+            <span className="hidden md:inline truncate">
               {activeBrand === "SOULMATE"
                 ? "☕ مرحباً بك في سول ميت كافيه VIP - قهوة مختصة وأجواء استثنائية مع خدمة الطلب من الترابيزة"
                 : "🍰 حلواني أبو عادل - حلي يومك مع المذاق المصري الأصيل وتوصيل دليفري (حجوزات وطلبات: 01146862114)"}
             </span>
           </div>
 
-          <div className="flex items-center gap-4 text-[11px]">
-            <span className="text-slate-400">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <span className="hidden lg:inline text-slate-400">
               منظومة سحابية متكاملة (POS + KDS + دليفري)
             </span>
-            <span className="text-slate-600">|</span>
+            <span className="hidden lg:inline text-slate-600">|</span>
+            <ThemeToggle compact />
             <Link
               href="/login"
-              className="hover:underline flex items-center gap-1 text-amber-400 font-bold"
+              className="hover:underline flex items-center gap-1 text-amber-400 font-black whitespace-nowrap px-2 py-1 rounded-lg bg-slate-900/60 border border-amber-500/25"
             >
-              <LogIn className="w-3 h-3" />
-              <span>دخول الإدارة والتشغيل</span>
+              <LogIn className="w-3 h-3 shrink-0" />
+              <span className="hidden sm:inline">دخول الإدارة والتشغيل</span>
+              <span className="sm:hidden">الإدارة</span>
             </Link>
           </div>
         </div>
       </div>
 
-      {/* 2. MAIN HEADER & BRAND SWITCHER */}
-      <header className="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
+      {/* 2. MAIN HEADER & BRAND SWITCHER (Sleek Mobile + Desktop Navbar) */}
+      <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-slate-800 shadow-sm">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 sm:py-2.5 flex flex-wrap items-center justify-between gap-2.5">
           {/* Logo & Identity */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
             <div
-              className={`w-11 h-11 rounded-2xl flex items-center justify-center font-black text-xl shadow-lg transition-transform hover:scale-105 ${
+              className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl flex items-center justify-center font-black text-lg sm:text-xl shadow-lg shrink-0 transition-transform hover:scale-105 ${
                 activeBrand === "SOULMATE"
                   ? "bg-gradient-to-br from-amber-500 to-amber-700 text-black shadow-amber-500/20"
                   : "bg-gradient-to-br from-emerald-500 to-emerald-700 text-white shadow-emerald-500/20"
@@ -268,34 +276,68 @@ export default function DualBrandLandingPage() {
             >
               {activeBrand === "SOULMATE" ? "S" : "ع"}
             </div>
-            <div>
-              <h1 className="text-base font-black text-white">
+            <div className="min-w-0">
+              <h1 className="text-sm sm:text-base font-black text-white leading-tight truncate">
                 {activeBrand === "SOULMATE"
                   ? "سول ميت كافيه VIP"
                   : "حلواني أبو عادل"}
               </h1>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[10px] sm:text-[11px] text-slate-400 truncate">
                 {activeBrand === "SOULMATE"
-                  ? "Soulmate Specialty Coffee & Lounge"
-                  : "Abu Adel Authentic Patisserie (حلي يومك)"}
+                  ? "Soulmate Specialty Coffee"
+                  : "Abu Adel Patisserie (حلي يومك)"}
               </p>
             </div>
           </div>
 
-          {/* Interactive Brand Selector Pills */}
-          <div className="flex items-center p-1 bg-slate-900 border border-slate-800 rounded-2xl shadow-inner">
+          {/* Header Quick CTA (Always crisp single row on right/left) */}
+          <div className="flex items-center gap-1.5 sm:gap-2 order-2 lg:order-3">
+            <Link
+              href="/install"
+              className="flex items-center gap-1 bg-purple-600/20 hover:bg-purple-600/30 text-purple-200 border border-purple-500/35 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-[11px] sm:text-xs font-black transition shadow-sm whitespace-nowrap"
+              title="تثبيت التطبيق على الموبايل وتفعيل إشعارات الخلفية"
+            >
+              <span>📲</span>
+              <span className="hidden sm:inline">تثبيت التطبيق</span>
+            </Link>
+
+            <button
+              onClick={() => setShowQRCardModal(true)}
+              className="flex items-center gap-1 bg-slate-900 hover:bg-slate-800 text-amber-400 border border-amber-500/30 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition shadow-sm whitespace-nowrap cursor-pointer"
+              title="عرض وطباعة كارت الـ 3 QR"
+            >
+              <QrCode className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+              <span className="hidden sm:inline">كارت الـ 3 QR</span>
+              <span className="sm:hidden">QR</span>
+            </button>
+
+            <Link
+              href={activeBrand === "ABU_ADEL" ? "/order?brand=abuadel&mode=delivery" : "/order?brand=soulmate"}
+              className={`flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[11px] sm:text-xs font-black shadow-lg transition whitespace-nowrap ${
+                activeBrand === "SOULMATE"
+                  ? "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black shadow-amber-500/20"
+                  : "bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white shadow-emerald-600/20"
+              }`}
+            >
+              <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+              <span>اطلب الآن</span>
+            </Link>
+          </div>
+
+          {/* Interactive Brand Selector Pills (Full neat row on mobile, centered on desktop) */}
+          <div className="w-full lg:w-auto order-3 lg:order-2 flex items-center p-1 bg-slate-900 border border-slate-800 rounded-2xl shadow-inner">
             <button
               onClick={() => {
                 setActiveBrand("SOULMATE");
                 setSelectedCategory("ALL");
               }}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition ${
+              className={`flex-1 lg:flex-initial flex items-center justify-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-black transition cursor-pointer ${
                 activeBrand === "SOULMATE"
                   ? "bg-amber-500 text-black shadow-md shadow-amber-500/20"
                   : "text-slate-400 hover:text-white"
               }`}
             >
-              <Coffee className="w-4 h-4" />
+              <Coffee className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>☕ سول ميت كافيه</span>
             </button>
 
@@ -304,46 +346,15 @@ export default function DualBrandLandingPage() {
                 setActiveBrand("ABU_ADEL");
                 setSelectedCategory("ALL");
               }}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition ${
+              className={`flex-1 lg:flex-initial flex items-center justify-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-black transition cursor-pointer ${
                 activeBrand === "ABU_ADEL"
                   ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/20"
                   : "text-slate-400 hover:text-white"
               }`}
             >
-              <Cake className="w-4 h-4" />
+              <Cake className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>🍰 حلواني أبو عادل</span>
             </button>
-          </div>
-
-          {/* Header Quick CTA */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <Link
-              href="/install"
-              className="flex items-center gap-1.5 bg-purple-600/20 hover:bg-purple-600/30 text-purple-200 border border-purple-500/35 px-3 py-2 rounded-xl text-xs font-black transition shadow"
-              title="تثبيت التطبيق على الموبايل وتفعيل إشعارات الخلفية"
-            >
-              <span>📲 تثبيت التطبيق</span>
-            </Link>
-
-            <button
-              onClick={() => setShowQRCardModal(true)}
-              className="flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-amber-400 border border-amber-500/30 px-3.5 py-2 rounded-xl text-xs font-bold transition shadow"
-            >
-              <QrCode className="w-4 h-4" />
-              <span>كارت الـ 3 QR</span>
-            </button>
-
-            <Link
-              href={activeBrand === "ABU_ADEL" ? "/order?brand=abuadel&mode=delivery" : "/order?brand=soulmate"}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black shadow-lg transition ${
-                activeBrand === "SOULMATE"
-                  ? "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black shadow-amber-500/20"
-                  : "bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white shadow-emerald-600/20"
-              }`}
-            >
-              <ShoppingBag className="w-4 h-4" />
-              <span>اطلب الآن 📱</span>
-            </Link>
           </div>
         </div>
       </header>
@@ -555,6 +566,7 @@ export default function DualBrandLandingPage() {
           {offers.banner && (
             <Link
               href={offers.banner.linkHref || "#menu"}
+              data-force-dark="true"
               className="relative block min-h-[150px] rounded-3xl overflow-hidden border border-amber-500/35 shadow-2xl group"
             >
               <div

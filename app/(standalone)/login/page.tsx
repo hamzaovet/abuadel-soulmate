@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Lock, User, Sparkles, ArrowRight, ShieldCheck, KeyRound } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeProviderAndToggle";
 
 export default function StaffLoginPage() {
   const router = useRouter();
@@ -75,13 +76,16 @@ export default function StaffLoginPage() {
       <div className="absolute w-96 h-96 bg-rose-500/10 blur-[130px] rounded-full pointer-events-none -bottom-10 -left-10" />
 
       <div className="relative w-full max-w-md bg-[#120d14]/95 border-2 border-amber-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5">
+        <div className="flex items-center justify-end">
+          <ThemeToggle compact />
+        </div>
         {/* Dual Logos and Brand Header */}
         <div className="text-center space-y-2">
           <div className="flex items-center justify-center gap-3">
-            <div className="w-13 h-13 rounded-2xl overflow-hidden border-2 border-amber-400 bg-black shadow-lg shadow-amber-500/20 p-1 flex items-center justify-center font-black text-amber-400 text-2xl">
+            <div data-force-dark="true" className="w-13 h-13 rounded-2xl overflow-hidden border-2 border-amber-400 bg-black shadow-lg shadow-amber-500/20 p-1 flex items-center justify-center font-black text-amber-400 text-2xl">
               S
             </div>
-            <div className="w-13 h-13 rounded-2xl overflow-hidden border-2 border-rose-400 bg-black shadow-lg shadow-rose-500/20 p-1 flex items-center justify-center font-black text-rose-400 text-2xl">
+            <div data-force-dark="true" className="w-13 h-13 rounded-2xl overflow-hidden border-2 border-rose-400 bg-black shadow-lg shadow-rose-500/20 p-1 flex items-center justify-center font-black text-rose-400 text-2xl">
               ع
             </div>
           </div>

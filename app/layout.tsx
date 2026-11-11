@@ -27,8 +27,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" className="dark">
-      <body className="min-h-screen bg-[#07070a] text-slate-100 antialiased font-sans selection:bg-amber-500 selection:text-black">
+    <html lang="ar" dir="rtl" className="dark" suppressHydrationWarning>
+      <head>
+        <meta name="theme-color" content="#09090d" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('abuadel_theme');if(t==='light'){var r=document.documentElement;r.classList.remove('dark');r.classList.add('light');r.style.colorScheme='light';var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#f4f6fb');}}catch(e){}})();`,
+          }}
+        />
+      </head>
+      <body className="min-h-screen bg-[#07070a] text-slate-100 antialiased font-sans selection:bg-amber-500 selection:text-black transition-colors duration-200">
         <PwaRegistrar />
         {children}
       </body>

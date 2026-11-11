@@ -4,6 +4,7 @@ import React, { useState, useEffect, Suspense, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { PushOptInButton } from "@/components/PwaBootAndPushButton";
+import { ThemeToggle } from "@/components/ThemeProviderAndToggle";
 import {
   SOULMATE_CATEGORIES,
   ABU_ADEL_CATEGORIES,
@@ -1347,6 +1348,8 @@ function TableOrderContent() {
               customerPhone={(loggedInCustomer?.phone || customerPhone || "").trim() || null}
               compact
             />
+
+            <ThemeToggle compact />
           </div>
         </div>
 

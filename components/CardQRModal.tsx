@@ -142,6 +142,7 @@ export default function CardQRModal({
         {/* PRINTABLE CARD AREA (3-QR CODES) */}
         <div
           id="printable-card-container"
+          data-force-dark="true"
           className="print-section bg-gradient-to-b from-[#1a1209] via-[#0d0905] to-[#12080a] border-2 border-amber-500/50 rounded-3xl p-6 sm:p-8 text-center text-white relative shadow-2xl overflow-hidden font-sans"
           dir="rtl"
         >
