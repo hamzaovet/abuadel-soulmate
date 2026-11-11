@@ -508,8 +508,8 @@ export default function DualBrandLandingPage() {
                       onError={(e) => {
                         (e.target as any).src =
                           item.itemType === "READY_PASTRY"
-                            ? "https://images.unsplash.com/photo-1579372786545-d24232daf58c?w=600"
-                            : "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=600";
+                            ? "/products/nawaem-mix-real.webp"
+                            : "/products/cafe-cappuccino.webp";
                       }}
                     />
                   </div>

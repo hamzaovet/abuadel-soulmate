@@ -247,7 +247,7 @@ async function main() {
       costPrice: 21.3,
       itemType: "PREPARED_BEVERAGE",
       description: "دبل شوت إسبريسو كولومبي مع حليب كريمي وفوم حريري ورشة كاكاو بلجيكي.",
-      image: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=600&auto=format&fit=crop&q=80",
+      image: "/products/cafe-cappuccino.webp",
       recipes: [
         { rawName: "بن إسبريسو كولومبي حبوب فاخر", qty: 18 }, // 18g * 0.8 = 14.4
         { rawName: "حليب طازج مبستر كامل الدسم", qty: 160 }, // 160ml * 0.04 = 6.4
@@ -262,7 +262,7 @@ async function main() {
       costPrice: 26.7,
       itemType: "PREPARED_BEVERAGE",
       description: "إسبريسو غني مع حليب مكثف وحليب طازج يقدم مع مكعبات الثلج لإنعاش حقيقي.",
-      image: "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=600&auto=format&fit=crop&q=80",
+      image: "/products/cafe-iced-latte.webp",
       recipes: [
         { rawName: "بن إسبريسو كولومبي حبوب فاخر", qty: 20 },
         { rawName: "حليب طازج مبستر كامل الدسم", qty: 180 },
@@ -279,7 +279,7 @@ async function main() {
       costPrice: 22.1,
       itemType: "PREPARED_BEVERAGE",
       description: "ريستريتو مركز بنكهة قوية مع طبقة ميكروفوم متناغمة لعشاق القهوة المختصة.",
-      image: "https://images.unsplash.com/photo-1585494156145-1c60a4fe9d2b?w=600&auto=format&fit=crop&q=80",
+      image: "/products/cafe-flatwhite.webp",
       recipes: [
         { rawName: "بن إسبريسو كولومبي حبوب فاخر", qty: 20 },
         { rawName: "حليب طازج مبستر كامل الدسم", qty: 140 },
@@ -294,7 +294,7 @@ async function main() {
       costPrice: 26.5,
       itemType: "PREPARED_BEVERAGE",
       description: "فوم حليب كريمي مع لمسات سيرب الكراميل المملح ودبل شوت إسبريسو على الوجه.",
-      image: "https://images.unsplash.com/photo-1485808191679-5f86510681a2?w=600&auto=format&fit=crop&q=80",
+      image: "/products/cafe-caramel-macchiato.webp",
       recipes: [
         { rawName: "بن إسبريسو كولومبي حبوب فاخر", qty: 18 },
         { rawName: "حليب طازج مبستر كامل الدسم", qty: 180 },
@@ -310,7 +310,7 @@ async function main() {
       costPrice: 22.8,
       itemType: "PREPARED_BEVERAGE",
       description: "حليب ساخن مخفوق مع الشوكولاتة البلجيكية الداكنة ولمسة مارشميلو.",
-      image: "https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=600&auto=format&fit=crop&q=80",
+      image: "/products/cafe-hot-mocha.webp",
       recipes: [
         { rawName: "بودرة كاكاو وشوكولاتة بلجيكي", qty: 35 },
         { rawName: "حليب طازج مبستر كامل الدسم", qty: 200 },
@@ -325,7 +325,7 @@ async function main() {
       costPrice: 32.0,
       itemType: "PREPARED_BEVERAGE",
       description: "طبقات من البان كيك الذهبي الهش مغطاة بغزارة بالنوتيلا الإيطالية وقطع الفراولة.",
-      image: "https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=600&auto=format&fit=crop&q=80",
+      image: "/products/cafe-pancake-nutella.webp",
       recipes: [],
     },
     {
@@ -336,7 +336,7 @@ async function main() {
       costPrice: 28.5,
       itemType: "PREPARED_BEVERAGE",
       description: "وافل بلجيكي مقرمش محشو ومغطى بسبريد اللوتس وبودرة بسكويت اللوتس المقرمش.",
-      image: "https://images.unsplash.com/photo-1562376552-0d160a2f238d?w=600&auto=format&fit=crop&q=80",
+      image: "/products/cafe-pancake-caramel.webp",
       recipes: [
         { rawName: "صوص لوتس بلجيكي أصلي", qty: 50 },
       ],
@@ -401,7 +401,7 @@ async function main() {
       stockQty: 50,
       itemType: "READY_PASTRY",
       description: "تشكيلة فاخرة من الكنافة البورمة بالفستق، البسبوسة بالسمن البلدي، البقلاوة التركية، وعش البلبل.",
-      image: "https://images.unsplash.com/photo-1579372786545-d24232daf58c?w=600&auto=format&fit=crop&q=80",
+      image: "/products/mshklnawashf.webp",
     },
     {
       nameAr: "كيلو بسبوسة بالسمن البلدي والمكسرات (Basbousa Almonds)",
@@ -413,7 +413,7 @@ async function main() {
       stockQty: 40,
       itemType: "READY_PASTRY",
       description: "بسبوسة طرية ومرملة بالسمن البلدي الفلاحي مغطاة بحبات اللوز المحمص الذهبي.",
-      image: "https://images.unsplash.com/photo-1587314168485-3236d6710814?w=600&auto=format&fit=crop&q=80",
+      image: "/products/basbousanuts.webp",
     },
     {
       nameAr: "تورتة لوتس سبريم مقاس 24 (Lotus Supreme Torte)",
@@ -425,7 +425,7 @@ async function main() {
       stockQty: 15,
       itemType: "READY_PASTRY",
       description: "طبقات كيك الفانيليا الهش مع كريمة اللوتس الغنية وجناش اللوتس البلجيكي وحبات البسكويت المقرمشة.",
-      image: "https://images.unsplash.com/photo-1535141192574-5d4897c13136?w=600&auto=format&fit=crop&q=80",
+      image: "/products/lotus-2.webp",
     },
     {
       nameAr: "تورتة فور سيزونز الفاخرة (Four Seasons Torte)",
@@ -437,7 +437,7 @@ async function main() {
       stockQty: 12,
       itemType: "READY_PASTRY",
       description: "أربعة أقسام مميزة: ربع فواكه طبيعية، ربع شوكولاتة كندر، ربع لوتس، وربع مكسرات محمصة.",
-      image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&auto=format&fit=crop&q=80",
+      image: "/products/4season.webp",
     },
     {
       nameAr: "دستة جاتوه سوبر لوكس مشكل (12 قطعة)",
@@ -449,7 +449,7 @@ async function main() {
       stockQty: 25,
       itemType: "READY_PASTRY",
       description: "تشكيلة مختارة من 12 قطعة جاتوه فرنسي وسويسري (إكلير، شوكولاتة روشيه، تيراميسو، وفاكهة الموسم).",
-      image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80",
+      image: "/products/westcat.webp",
     },
     {
       nameAr: "قطعة تشيز كيك فراولة بلدي فاخرة",
@@ -461,7 +461,7 @@ async function main() {
       stockQty: 30,
       itemType: "READY_PASTRY",
       description: "قاعدة بسكويت مقرمشة مع كريمة الجبن النيويوركي وتوبينج الفراولة الطازجة.",
-      image: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=600&auto=format&fit=crop&q=80",
+      image: "/products/cheesecake.webp",
     },
     {
       nameAr: "علبة نواعم وساليزون مشكل حفلات (Salizon Box)",
@@ -473,7 +473,7 @@ async function main() {
       stockQty: 20,
       itemType: "READY_PASTRY",
       description: "أصابع وفطائر ساليزون ميني محشوة جبن شيدر، رومي، سلامي، وتونة لحفلات الشاي والمناسبات.",
-      image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=600&auto=format&fit=crop&q=80",
+      image: "/products/salizon.webp",
     },
   ];
 
