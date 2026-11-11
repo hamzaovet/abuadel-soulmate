@@ -3,6 +3,7 @@
 import React, { useState, useEffect, Suspense, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { PushOptInButton } from "@/components/PwaBootAndPushButton";
 import {
   SOULMATE_CATEGORIES,
   ABU_ADEL_CATEGORIES,
@@ -1340,6 +1341,12 @@ function TableOrderContent() {
                 <span>دخول / تسجيل</span>
               </button>
             )}
+
+            <PushOptInButton
+              role="CUSTOMER"
+              customerPhone={(loggedInCustomer?.phone || customerPhone || "").trim() || null}
+              compact
+            />
           </div>
         </div>
 

@@ -507,6 +507,8 @@ model SystemSettings {
   receiptFooterNotes            String         @default("شكراً لزيارتكم حلواني أبو عادل وسول ميت كافيه • حلي يومك واستمتع بقهوتك ☕🍰")
   systemLocked              Boolean        @default(false)
   lockMessage               String         @default("النظام مغلق مؤقتاً لأعمال الجرد والصيانة الدورية.")
+  vapidPublicKey            String?
+  vapidPrivateKey           String?
   updatedAt                 DateTime       @default(now()) @updatedAt
 }
 
@@ -666,6 +668,23 @@ model AdminNotification {
   readBy       String?
   readAt       DateTime?
   createdAt    DateTime  @default(now())
+}
+
+model PushSubscription {
+  id             String    @id @default(cuid())
+  endpoint       String    @unique
+  p256dh         String
+  auth           String
+  role           String    @default("CUSTOMER") // OWNER, ADMIN, POS, KDS, CUSTOMER
+  outletId       String?
+  userId         String?
+  userName       String?
+  customerPhone  String?
+  userAgent      String?
+  isActive       Boolean   @default(true)
+  lastNotifiedAt DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 }
 
 

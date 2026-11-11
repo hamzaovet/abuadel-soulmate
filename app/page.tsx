@@ -316,7 +316,15 @@ export default function DualBrandLandingPage() {
           </div>
 
           {/* Header Quick CTA */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <Link
+              href="/install"
+              className="flex items-center gap-1.5 bg-purple-600/20 hover:bg-purple-600/30 text-purple-200 border border-purple-500/35 px-3 py-2 rounded-xl text-xs font-black transition shadow"
+              title="تثبيت التطبيق على الموبايل وتفعيل إشعارات الخلفية"
+            >
+              <span>📲 تثبيت التطبيق</span>
+            </Link>
+
             <button
               onClick={() => setShowQRCardModal(true)}
               className="flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-amber-400 border border-amber-500/30 px-3.5 py-2 rounded-xl text-xs font-bold transition shadow"

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sendPushNotifications } from "@/lib/push";
 
 export const dynamic = "force-dynamic";
 
@@ -124,6 +125,32 @@ export async function POST(req: Request) {
           // Ignore non-critical CRM sync failures
         }
       }
+    }
+
+    if (chatMsg.senderType === "CUSTOMER") {
+      await sendPushNotifications(
+        {
+          roles: ["OWNER", "ADMIN", "POS"],
+          outletId: chatMsg.outletId,
+        },
+        {
+          title: `💬 رسالة عميل جديدة — ${chatMsg.outlet?.name || "أبو عادل & سول ميت"}`,
+          body: `${chatMsg.senderName || "عميل"}${chatMsg.tableNumber ? ` (ترابيزة ${chatMsg.tableNumber})` : ""}: ${chatMsg.message}`,
+          url: "/pos",
+          tag: `chat-staff-${chatMsg.id}`,
+          requireInteraction: true,
+        }
+      );
+    } else if (chatMsg.senderType === "STAFF" && chatMsg.senderPhone) {
+      await sendPushNotifications(
+        { customerPhone: chatMsg.senderPhone },
+        {
+          title: `💬 رد مباشر من ${chatMsg.outlet?.name || "أبو عادل & سول ميت"}`,
+          body: chatMsg.message,
+          url: "/order",
+          tag: `chat-cust-${chatMsg.id}`,
+        }
+      );
     }
 
     return NextResponse.json({ success: true, message: chatMsg });

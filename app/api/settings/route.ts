@@ -11,7 +11,7 @@ export async function GET() {
         data: { id: "default-settings" },
       });
     }
-    const { geminiApiKey: storedKey, ...safeSettings } = settings;
+    const { geminiApiKey: storedKey, vapidPrivateKey: _vp, ...safeSettings } = settings;
     return NextResponse.json({
       success: true,
       settings: {
@@ -102,7 +102,7 @@ export async function PATCH(req: Request) {
       },
     });
 
-    const { geminiApiKey: storedKey, ...safeSettings } = settings;
+    const { geminiApiKey: storedKey, vapidPrivateKey: _vp, ...safeSettings } = settings;
     return NextResponse.json({
       success: true,
       settings: {

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { PushOptInButton } from "@/components/PwaBootAndPushButton";
 import {
   Coffee,
   Flame,
@@ -185,6 +186,14 @@ export default function KdsScreenPage() {
           >
             {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
           </button>
+
+          <PushOptInButton
+            role="KDS"
+            outletId={currentUser?.outletId || null}
+            userId={currentUser?.id || null}
+            userName={currentUser?.name || "الباريستا"}
+            compact
+          />
 
           <button
             onClick={fetchKdsTickets}

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sendPushNotifications } from "@/lib/push";
 import {
   calculateEarnedPoints,
   extractLoyaltyConfig,
@@ -712,6 +713,23 @@ export async function POST(req: Request) {
       await createKdsTickets(items, order.id);
     }
 
+    // 6. Real-Time Background Web Push Notification (wakes up mobile/desktop even when closed)
+    await sendPushNotifications(
+      {
+        roles: targetOutletObj?.code === "SOULMATE_CAFE" ? ["OWNER", "ADMIN", "POS", "KDS"] : ["OWNER", "ADMIN", "POS"],
+        outletId: order.outletId,
+      },
+      {
+        title: `🛎️ طلب جديد #${order.orderNumber} — ${targetOutletObj?.name || "النظام"}`,
+        body: `${order.customerName || "عميل"} • الإجمالي: ${order.finalAmount} ج.م${
+          order.orderType === "DELIVERY" ? " 🛵 (دليفري)" : order.orderType === "DINE_IN" ? " ☕ (صالة)" : " 🛍️ (تيك أواي)"
+        }`,
+        url: targetOutletObj?.code === "SOULMATE_CAFE" ? "/kds" : "/pos",
+        tag: `new-order-${order.id}`,
+        requireInteraction: true,
+      }
+    );
+
     return NextResponse.json({
       success: true,
       order,
@@ -828,6 +846,20 @@ export async function PATCH(req: Request) {
           driver: { select: { id: true, name: true, phone: true } },
         },
       });
+      if (updatedOrder.customerPhone) {
+        await sendPushNotifications(
+          { customerPhone: updatedOrder.customerPhone },
+          {
+            title: `🛵 طلبك #${updatedOrder.orderNumber} في الطريق إليك!`,
+            body: `خرج الطلب للتوصيل مع الكابتن ${updatedOrder.driverName || "التوصيل"}${
+              updatedOrder.driverPhone ? ` (${updatedOrder.driverPhone})` : ""
+            }`,
+            url: "/order",
+            tag: `order-driver-${updatedOrder.id}`,
+          }
+        );
+      }
+
       return NextResponse.json({
         success: true,
         message: `تم تسليم الطلب (${order.orderNumber}) للطيار: ${updatedOrder.driverName}${updatedOrder.driverPhone ? ` (${updatedOrder.driverPhone})` : ""} وخرج للتوصيل 🛵`,
@@ -1051,6 +1083,17 @@ export async function PATCH(req: Request) {
         },
       });
 
+      await sendPushNotifications(
+        { roles: ["OWNER", "ADMIN"] },
+        {
+          title: `🚨 فاتورة معدلة: ${order.orderNumber} (${outletLabel})`,
+          body: `تعديل من ${oldFinalAmount} إلى ${newFinalAmount} ج.م (${diffDesc}) بواسطة ${actor} — ${cleanReason}`,
+          url: "/admin",
+          tag: `admin-alert-${auditLog.id}`,
+          requireInteraction: true,
+        }
+      );
+
       return NextResponse.json({
         success: true,
         message: `تم حفظ التعديل وختم الفاتورة (${order.orderNumber}) بعلامة [فاتورة معدلة] وإرسال تنبيه فوري للإدارة 🚨✅`,
@@ -1159,6 +1202,17 @@ export async function PATCH(req: Request) {
           }),
         },
       });
+
+      await sendPushNotifications(
+        { roles: ["OWNER", "ADMIN"] },
+        {
+          title: `💳 تعديل وسيلة الدفع: ${order.orderNumber} (${outletLabel})`,
+          body: `تم التغيير من ${getPaymentMethodLabelAr(oldMethod)} إلى ${getPaymentMethodLabelAr(targetMethod)} بواسطة ${actor} — ${cleanReason}`,
+          url: "/admin",
+          tag: `admin-pay-${auditLog.id}`,
+          requireInteraction: true,
+        }
+      );
 
       return NextResponse.json({
         success: true,
@@ -1468,6 +1522,39 @@ export async function PATCH(req: Request) {
           where: { id: order.tableId },
           data: { status: "AVAILABLE", activeOrderId: null },
         });
+      }
+
+      if (status === "READY_TO_SERVE") {
+        await sendPushNotifications(
+          { roles: ["POS"], outletId: updatedOrder.outletId },
+          {
+            title: `✅ الطلب #${updatedOrder.orderNumber} جاهز للتسليم`,
+            body: `أنهى المطبخ/البار تجهيز طلب ${updatedOrder.customerName || "العميل"} (${updatedOrder.outlet?.name || ""})`,
+            url: "/pos",
+            tag: `ready-pos-${updatedOrder.id}`,
+          }
+        );
+        if (updatedOrder.customerPhone) {
+          await sendPushNotifications(
+            { customerPhone: updatedOrder.customerPhone },
+            {
+              title: `✅ طلبك #${updatedOrder.orderNumber} جاهز الآن!`,
+              body: `طلبك جاهز في ${updatedOrder.outlet?.name || "أبو عادل & سول ميت"} 🎉`,
+              url: "/order",
+              tag: `ready-cust-${updatedOrder.id}`,
+            }
+          );
+        }
+      } else if (status === "OUT_FOR_DELIVERY" && updatedOrder.customerPhone) {
+        await sendPushNotifications(
+          { customerPhone: updatedOrder.customerPhone },
+          {
+            title: `🛵 طلبك #${updatedOrder.orderNumber} في الطريق!`,
+            body: `خرج الطلب للتوصيل إليك الآن${updatedOrder.driverName ? ` مع ${updatedOrder.driverName}` : ""}.`,
+            url: "/order",
+            tag: `delivery-cust-${updatedOrder.id}`,
+          }
+        );
       }
 
       return NextResponse.json({ success: true, order: updatedOrder });

@@ -10,6 +10,7 @@ import AdminSuppliersAndAiPanel from "@/components/AdminSuppliersAndAiPanel";
 import AdminAuditAlertsDrawer from "@/components/AdminAuditAlertsDrawer";
 import AdminBulkRawPriceEditor from "@/components/AdminBulkRawPriceEditor";
 import OrderRevisionModals, { RevisionModalMode } from "@/components/OrderRevisionModals";
+import { PushOptInButton } from "@/components/PwaBootAndPushButton";
 import {
   SOULMATE_CATEGORIES,
   ABU_ADEL_CATEGORIES,
@@ -2376,6 +2377,14 @@ export default function AdminDashboardPage() {
                 onToast={addToast}
               />
             )}
+
+            <PushOptInButton
+              role={isOwner ? "OWNER" : "ADMIN"}
+              outletId={isOwner ? null : currentUser?.outletId || selectedOutletId || null}
+              userId={currentUser?.id || null}
+              userName={currentUser?.name || "المدير العام"}
+              compact
+            />
 
             <button
               onClick={() => setShowQRModal(true)}

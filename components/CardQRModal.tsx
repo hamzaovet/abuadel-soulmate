@@ -59,8 +59,8 @@ export default function CardQRModal({
         .then(setWebQrDataUrl)
         .catch(console.error);
 
-      // QR 3: Direct Mobile App / PWA Install
-      const appUrl = `${origin}/manifest.json`;
+      // QR 3: Direct Mobile App / PWA Install Page
+      const appUrl = `${origin}/install`;
       QRCode.toDataURL(appUrl, {
         width: 350,
         margin: 1,
@@ -101,15 +101,25 @@ export default function CardQRModal({
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <a
+              href="/vip-3qr-card-print.png"
+              download="abuadel-soulmate-3qr-card.png"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-600/20 border border-emerald-500/40 hover:bg-emerald-600/30 text-xs font-black text-emerald-300 transition"
+              title="تحميل صورة الكارت عالية الدقة للطباعة (300 DPI)"
+            >
+              <Download className="w-4 h-4 text-emerald-400" />
+              <span>تحميل صورة الكارت (PNG)</span>
+            </a>
+
             <a
               href="/printable-card-3qr.html"
               target="_blank"
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 transition"
               title="فتح النسخة المحفوظة في فولدر المشروع"
             >
-              <Download className="w-4 h-4 text-emerald-400" />
-              <span>نسخة الفولدر HTML</span>
+              <Download className="w-4 h-4 text-slate-400" />
+              <span>نسخة HTML</span>
             </a>
 
             <button

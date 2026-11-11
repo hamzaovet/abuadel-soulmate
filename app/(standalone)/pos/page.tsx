@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import CardQRModal from "@/components/CardQRModal";
 import OrderRevisionModals, { RevisionModalMode } from "@/components/OrderRevisionModals";
+import { PushOptInButton } from "@/components/PwaBootAndPushButton";
 import {
   SOULMATE_CATEGORIES,
   ABU_ADEL_CATEGORIES,
@@ -1189,6 +1190,14 @@ export default function PosTerminalPage() {
             <Lock className="w-3.5 h-3.5 text-amber-400" />
             <span>إقفال الوردية 🔒</span>
           </button>
+
+          <PushOptInButton
+            role="POS"
+            outletId={activeOutletId || currentUser?.outletId || null}
+            userId={currentUser?.id || null}
+            userName={currentUser?.name || "الكاشير"}
+            compact
+          />
 
           {/* Navigation to Admin (Only for Owner or Branch Manager) */}
           {(isOwner || currentUser?.role === "branch_manager") && (
