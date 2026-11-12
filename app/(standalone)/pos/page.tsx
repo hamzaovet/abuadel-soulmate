@@ -191,6 +191,7 @@ export default function PosTerminalPage() {
   const [selectedShiftType, setSelectedShiftType] = useState<"SHIFT_1" | "SHIFT_2">("SHIFT_1");
   const [lastDailyClose, setLastDailyClose] = useState<any>(null);
   const [closingDaily, setClosingDaily] = useState<boolean>(false);
+  const [mobilePane, setMobilePane] = useState<"MENU" | "CART">("MENU");
 
   // Custom Weighed Sweet Box Builder (تكوين علبة مشكل بالوزن - ورقة الميزان)
   const [showBoxBuilderModal, setShowBoxBuilderModal] = useState<boolean>(false);
@@ -1061,13 +1062,13 @@ export default function PosTerminalPage() {
   };
 
   return (
-    <div className="h-screen max-h-screen overflow-hidden bg-[#07070a] text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-black" dir="rtl">
+    <div className="min-h-screen lg:h-screen lg:max-h-screen lg:overflow-hidden bg-[#07070a] text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-black" dir="rtl">
       {/* ─────────────────────────────────────────────────────────────
           1. POS TOP HEADER
          ───────────────────────────────────────────────────────────── */}
-      <header className="shrink-0 z-40 bg-[#120d14]/95 backdrop-blur-md border-b border-amber-500/25 px-3 sm:px-5 py-2 flex items-center justify-between shadow-lg no-print">
-        <div className="flex items-center gap-3">
-          <div data-force-dark="true" className="w-10 h-10 rounded-2xl overflow-hidden border-2 border-amber-400 bg-black shrink-0 p-1">
+      <header className="shrink-0 z-40 bg-[#120d14]/95 backdrop-blur-md border-b border-amber-500/25 px-3 sm:px-5 py-2 flex flex-wrap items-center justify-between gap-2 shadow-lg no-print">
+        <div className="flex items-center gap-2.5 min-w-0 flex-1 sm:flex-initial">
+          <div data-force-dark="true" className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl overflow-hidden border-2 border-amber-400 bg-black shrink-0 p-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={isAbuAdel ? "/abuadel-logo.svg" : "/soulmate-logo.svg"}
@@ -1075,23 +1076,23 @@ export default function PosTerminalPage() {
               className="w-full h-full object-contain"
             />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-sm sm:text-base font-black text-amber-300">
-                {isAbuAdel ? "كاشير حلواني أبو عادل 🍰" : "كاشير سول ميت كافيه والترابيزات ☕"}
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <h1 className="text-xs sm:text-base font-black text-amber-300 truncate">
+                {isAbuAdel ? "كاشير حلواني أبو عادل 🍰" : "كاشير سول ميت كافيه ☕"}
               </h1>
-              <span className="py-0.5 px-2 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black">
+              <span className="py-0.5 px-2 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black shrink-0">
                 نشط 🟢
               </span>
             </div>
-            <p className="text-xs text-slate-400 font-bold">
+            <p className="text-[11px] sm:text-xs text-slate-400 font-bold truncate">
               الكاشير: {currentUser?.name}
             </p>
           </div>
         </div>
 
         {/* Top Controls & Direct Navigation */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap w-full lg:w-auto justify-between sm:justify-end">
           {/* Outlet Switcher (Maestro Owner only) or Locked Badge (Cashiers & Branch Managers) */}
           {isOwner ? (
             <select
@@ -1270,12 +1271,50 @@ export default function PosTerminalPage() {
         </div>
       </header>
 
+      {/* Mobile View Switcher Bar (< lg screens) */}
+      <div className="lg:hidden sticky top-0 z-30 bg-[#0d0910]/95 backdrop-blur-md border-b border-white/10 px-3 py-2 grid grid-cols-2 gap-2 no-print">
+        <button
+          type="button"
+          onClick={() => setMobilePane("MENU")}
+          className={`py-2 px-3 rounded-xl text-xs font-black transition flex items-center justify-center gap-1.5 cursor-pointer ${
+            mobilePane === "MENU"
+              ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+              : "bg-white/5 text-slate-300 border border-white/10"
+          }`}
+        >
+          <span>🛍️ المنيو والأصناف</span>
+          <span className="px-1.5 py-0.5 rounded-full bg-black/25 text-[10px] font-mono">
+            {filteredMenuItems.length}
+          </span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setMobilePane("CART")}
+          className={`py-2 px-3 rounded-xl text-xs font-black transition flex items-center justify-center gap-1.5 cursor-pointer ${
+            mobilePane === "CART"
+              ? "bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20"
+              : cart.length > 0
+              ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/40"
+              : "bg-white/5 text-slate-300 border border-white/10"
+          }`}
+        >
+          <span>🧾 الفاتورة</span>
+          <span className="px-1.5 py-0.5 rounded-full bg-black/25 text-[10px] font-mono">
+            {cart.reduce((s, it) => s + (it.isCustomBox ? 1 : Number(it.qty || 1)), 0)} • {calculatedFinal} ج
+          </span>
+        </button>
+      </div>
+
       {/* ─────────────────────────────────────────────────────────────
           2. MAIN POS WORKSPACE: 2 WIDE COLUMNS (MENU CATALOG 8 COLS | CART & CHECKOUT 4 COLS)
          ───────────────────────────────────────────────────────────── */}
-      <div className="flex-1 min-h-0 h-[calc(100vh-58px)] max-h-[calc(100vh-58px)] grid grid-cols-1 lg:grid-cols-12 gap-3 p-3 overflow-hidden no-print">
+      <div className="lg:flex-1 lg:min-h-0 lg:h-[calc(100vh-58px)] lg:max-h-[calc(100vh-58px)] grid grid-cols-1 lg:grid-cols-12 gap-3 p-2.5 sm:p-3 lg:overflow-hidden pb-20 lg:pb-3 no-print">
         {/* COLUMN 1: MENU CATALOG & SEARCH (8 Cols - Wide & Spacious!) */}
-        <div className="lg:col-span-8 h-full max-h-full bg-[#110c14] border border-white/10 rounded-2xl p-3.5 flex flex-col overflow-hidden shadow-xl">
+        <div
+          className={`${
+            mobilePane === "MENU" ? "flex" : "hidden lg:flex"
+          } lg:col-span-8 lg:h-full lg:max-h-full bg-[#110c14] border border-white/10 rounded-2xl p-3 sm:p-3.5 flex-col lg:overflow-hidden shadow-xl`}
+        >
           {/* Search Bar & Categories Header */}
           <div className="shrink-0 space-y-2 pb-2">
             <div className="relative">
@@ -1346,7 +1385,7 @@ export default function PosTerminalPage() {
           )}
 
           {/* Menu Items Grid: 4 columns on large screens! */}
-          <div className="flex-1 overflow-y-auto min-h-0 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2.5 pr-1 content-start">
+          <div className="lg:flex-1 lg:overflow-y-auto lg:min-h-0 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-2.5 lg:pr-1 content-start">
             {filteredMenuItems.map((item) => {
               const pricing = getItemDiscountPricing({ ...item, outlet: item.outlet || currentOutlet }, offers);
               return (
@@ -1394,7 +1433,7 @@ export default function PosTerminalPage() {
         </div>
 
         {/* COLUMN 2: CART, BILL & PINNED SETTLEMENT (4 Cols) */}
-        <div className="lg:col-span-4 h-full max-h-full bg-[#110c14] border border-white/10 rounded-2xl p-3 flex flex-col overflow-hidden shadow-xl">
+        <div className={`${mobilePane === "CART" ? "flex" : "hidden lg:flex"} lg:col-span-4 lg:h-full lg:max-h-full bg-[#110c14] border border-white/10 rounded-2xl p-3 flex-col lg:overflow-hidden shadow-xl`}>
           {/* Header & Quick Table Selector Button */}
           <div className="shrink-0 space-y-2 pb-2 border-b border-white/10">
             <div className="flex items-center justify-between">
@@ -1440,7 +1479,7 @@ export default function PosTerminalPage() {
             </div>
 
             {/* ORDER TYPE SEGMENTED TABS (2 tabs for Abu Adel, 4 tabs for Soulmate incl. Talabat) */}
-            <div className={`grid ${isAbuAdel ? "grid-cols-2" : "grid-cols-4"} gap-1 p-1 bg-black/60 border border-white/10 rounded-2xl text-xs font-black`}>
+            <div className={`grid ${isAbuAdel ? "grid-cols-2" : "grid-cols-2 sm:grid-cols-4"} gap-1 p-1 bg-black/60 border border-white/10 rounded-2xl text-xs font-black`}>
               {/* Option 1: DINE_IN (صالة) - Strictly for Soulmate Cafe */}
               {!isAbuAdel && (
                 <button
@@ -1706,7 +1745,7 @@ export default function PosTerminalPage() {
           </div>
 
           {/* Cart Items List: SCROLLABLE INDEPENDENTLY */}
-          <div className="flex-1 overflow-y-auto min-h-0 space-y-1.5 pr-1 py-1">
+          <div className="lg:flex-1 lg:overflow-y-auto lg:min-h-0 space-y-1.5 pr-1 py-1">
             {cart.length === 0 ? (
               <div className="h-full min-h-[120px] flex flex-col items-center justify-center text-center text-slate-500 text-xs py-4">
                 <Receipt className="w-8 h-8 mb-1 opacity-30 text-amber-400" />
@@ -1826,7 +1865,7 @@ export default function PosTerminalPage() {
             </div>
 
             {/* Payment Method Selector */}
-            <div className={`grid ${!isAbuAdel ? "grid-cols-5" : "grid-cols-4"} gap-1 text-[11px] font-bold`}>
+            <div className={`grid ${!isAbuAdel ? "grid-cols-3 sm:grid-cols-5" : "grid-cols-2 sm:grid-cols-4"} gap-1 text-[11px] font-bold`}>
               <button
                 onClick={() => setPaymentMethod("CASH")}
                 className={`py-1.5 rounded-lg border transition cursor-pointer flex flex-col items-center gap-0.5 ${
@@ -1972,11 +2011,30 @@ export default function PosTerminalPage() {
         </div>
       </div>
 
+      {/* MOBILE FLOATING CART BAR (Visible only on MENU pane when cart has items) */}
+      {mobilePane === "MENU" && cart.length > 0 && (
+        <div className="lg:hidden fixed bottom-3 inset-x-3 z-40 no-print">
+          <button
+            type="button"
+            onClick={() => setMobilePane("CART")}
+            className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-emerald-500 text-slate-950 font-black text-sm shadow-2xl shadow-amber-500/30 flex items-center justify-between gap-3 cursor-pointer"
+          >
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded-full bg-slate-950 text-amber-400 font-mono text-xs">
+                {cart.reduce((s, it) => s + it.qty, 0)}
+              </span>
+              <span>عرض الفاتورة والتحصيل</span>
+            </div>
+            <span className="font-mono text-base font-black">{calculatedFinal} ج.م ←</span>
+          </button>
+        </div>
+      )}
+
       {/* ─────────────────────────────────────────────────────────────
           3. MODAL: TRANSFER TABLE (نقل ترابيزة)
          ───────────────────────────────────────────────────────────── */}
       {showTransferModal && selectedTable && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in no-print">
+        <div className="fixed inset-0 z-[120] flex items-start sm:items-center justify-center p-3 sm:p-4 pt-6 pb-8 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fade-in no-print">
           <div className="bg-[#140e16] border-2 border-sky-500/40 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
             <h3 className="font-black text-sm text-white flex items-center gap-2">
               <ArrowRightLeft className="w-4 h-4 text-sky-400" />
@@ -2023,7 +2081,7 @@ export default function PosTerminalPage() {
           3.1 MODAL: FAST TABLE & ORDER TYPE SELECTOR (خريطة الترابيزات الذكية)
          ───────────────────────────────────────────────────────────── */}
       {showTableModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in no-print">
+        <div className="fixed inset-0 z-[120] flex items-start sm:items-center justify-center p-3 sm:p-4 pt-6 pb-8 overflow-y-auto bg-black/85 backdrop-blur-md animate-fade-in no-print">
           <div className="bg-[#140e16] border-2 border-amber-500/40 rounded-3xl p-5 max-w-lg w-full space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-white/10 pb-2">
               <div>
@@ -2154,7 +2212,7 @@ export default function PosTerminalPage() {
           3.2 MODAL: WEIGHTED CUSTOM SWEET BOX BUILDER (حساب ورقة الميزان)
          ───────────────────────────────────────────────────────────── */}
       {showBoxBuilderModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in no-print">
+        <div className="fixed inset-0 z-[120] flex items-start sm:items-center justify-center p-3 sm:p-4 pt-6 pb-8 overflow-y-auto bg-black/85 backdrop-blur-md animate-fade-in no-print">
           <div className="bg-[#140e16] border-2 border-rose-500/50 rounded-3xl p-5 max-w-lg w-full space-y-4 shadow-2xl max-h-[92vh] overflow-y-auto">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-white/10 pb-2">
@@ -2389,7 +2447,7 @@ export default function PosTerminalPage() {
           4. MODAL: SPLIT BILL (تقسيم الفاتورة)
          ───────────────────────────────────────────────────────────── */}
       {showSplitModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in no-print">
+        <div className="fixed inset-0 z-[120] flex items-start sm:items-center justify-center p-3 sm:p-4 pt-6 pb-8 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fade-in no-print">
           <div className="bg-[#140e16] border-2 border-purple-500/40 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
             <h3 className="font-black text-sm text-white flex items-center gap-2">
               <Split className="w-4 h-4 text-purple-400" />
@@ -2437,7 +2495,7 @@ export default function PosTerminalPage() {
           5. MODAL: PETTY CASH EXPENSE (صرف نثريات نقدية من الدرج)
          ───────────────────────────────────────────────────────────── */}
       {showExpenseModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in no-print">
+        <div className="fixed inset-0 z-[120] flex items-start sm:items-center justify-center p-3 sm:p-4 pt-6 pb-8 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fade-in no-print">
           <div className="bg-[#140e16] border-2 border-rose-500/40 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
             <h3 className="font-black text-sm text-white flex items-center gap-2">
               <Wallet className="w-4 h-4 text-rose-400" />
@@ -2493,7 +2551,7 @@ export default function PosTerminalPage() {
           6. MODAL: CLOSE SHIFT & DAILY CLOSE (إقفال الشيفت واليومية الشاملة)
          ───────────────────────────────────────────────────────────── */}
       {showShiftModal && openShift && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in no-print">
+        <div className="fixed inset-0 z-[120] flex items-start sm:items-center justify-center p-3 sm:p-4 pt-6 pb-8 overflow-y-auto bg-black/85 backdrop-blur-md animate-fade-in no-print">
           <div className="bg-[#140e16] border-2 border-amber-500/40 rounded-3xl p-5 max-w-md w-full space-y-4 shadow-2xl max-h-[92vh] overflow-y-auto">
             {/* Header & Tabs */}
             <div className="flex items-center justify-between border-b border-white/10 pb-2">
@@ -3003,7 +3061,7 @@ export default function PosTerminalPage() {
           9A. MODAL: ONLINE & DELIVERY QUEUE (تجهيز وتجميع الدليفري حسب المنطقة)
          ───────────────────────────────────────────────────────────── */}
       {showOnlineQueueModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in no-print">
+        <div className="fixed inset-0 z-[120] flex items-start sm:items-center justify-center p-3 sm:p-4 pt-6 pb-8 overflow-y-auto bg-black/85 backdrop-blur-md animate-fade-in no-print">
           <div className="bg-[#140e16] border-2 border-purple-500/40 rounded-3xl p-5 max-w-5xl w-full space-y-4 shadow-2xl max-h-[92vh] flex flex-col">
             <div className="flex items-center justify-between border-b border-white/10 pb-3 shrink-0 flex-wrap gap-2">
               <div>
@@ -3387,7 +3445,7 @@ export default function PosTerminalPage() {
           9B. MODAL: DIRECT CUSTOMER LIVE CHAT (POS STAFF)
          ───────────────────────────────────────────────────────────── */}
       {showPosChatModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in no-print">
+        <div className="fixed inset-0 z-[120] flex items-start sm:items-center justify-center p-3 sm:p-4 pt-6 pb-8 overflow-y-auto bg-black/85 backdrop-blur-md animate-fade-in no-print">
           <div className="bg-[#140e16] border-2 border-sky-500/40 rounded-3xl p-5 max-w-4xl w-full space-y-4 shadow-2xl max-h-[90vh] flex flex-col">
             <div className="flex items-center justify-between border-b border-white/10 pb-3 shrink-0">
               <div>
@@ -3584,7 +3642,7 @@ export default function PosTerminalPage() {
       {weightPickerItem && (() => {
         const wPricing = getItemDiscountPricing({ ...weightPickerItem, outlet: weightPickerItem.outlet || currentOutlet }, offers);
         return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md no-print">
+        <div className="fixed inset-0 z-[120] flex items-start sm:items-center justify-center p-3 sm:p-4 pt-6 pb-8 overflow-y-auto bg-black/85 backdrop-blur-md no-print">
           <div className="bg-[#140e16] border-2 border-emerald-500/40 rounded-3xl p-5 max-w-md w-full space-y-4 shadow-2xl relative">
             <button
               onClick={() => setWeightPickerItem(null)}
@@ -3653,7 +3711,7 @@ export default function PosTerminalPage() {
       {previewPosImage && (
         <div
           onClick={() => setPreviewPosImage(null)}
-          className="fixed inset-0 z-[60] bg-black/90 flex items-center justify-center p-4 cursor-pointer no-print"
+          className="fixed inset-0 z-[130] bg-black/90 flex items-start sm:items-center justify-center p-3 sm:p-4 pt-6 pb-8 overflow-y-auto cursor-pointer no-print"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={previewPosImage} alt="صورة" className="max-w-full max-h-[85vh] rounded-2xl border border-white/20" />

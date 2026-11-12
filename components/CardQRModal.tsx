@@ -81,11 +81,11 @@ export default function CardQRModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-[130] bg-black/85 backdrop-blur-md flex items-start sm:items-center justify-center p-3 sm:p-4 pt-6 pb-8 overflow-y-auto">
       {/* Modal Dialog Box */}
-      <div className="bg-[#0f0e13] border-2 border-amber-500/40 rounded-3xl w-full max-w-4xl p-6 shadow-2xl relative space-y-6">
+      <div className="my-auto bg-[#0f0e13] border-2 border-amber-500/40 rounded-3xl w-full max-w-4xl p-4 sm:p-6 shadow-2xl relative space-y-6">
         {/* Modal Actions Header */}
-        <div className="flex items-center justify-between border-b border-white/10 pb-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 text-black flex items-center justify-center font-black text-lg shadow-lg shadow-amber-500/20">
               3QR

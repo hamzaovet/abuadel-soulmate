@@ -116,10 +116,10 @@ export default function KdsScreenPage() {
   };
 
   return (
-    <div className="h-screen max-h-screen overflow-hidden bg-[#07070b] text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-black" dir="rtl">
+    <div className="min-h-screen lg:h-screen lg:max-h-screen lg:overflow-hidden bg-[#07070b] text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-black" dir="rtl">
       {/* KDS TOP HEADER */}
-      <header className="shrink-0 z-40 bg-[#120d14]/95 backdrop-blur-md border-b border-amber-500/25 px-3 sm:px-6 py-2.5 flex items-center justify-between shadow-lg">
-        <div className="flex items-center gap-3">
+      <header className="shrink-0 z-40 bg-[#120d14]/95 backdrop-blur-md border-b border-amber-500/25 px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2 shadow-lg">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <div data-force-dark="true" className="w-10 h-10 rounded-2xl overflow-hidden border-2 border-amber-400 bg-black shrink-0 p-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/soulmate-logo.svg" alt="Logo" className="w-full h-full object-contain" />
@@ -140,9 +140,9 @@ export default function KdsScreenPage() {
         </div>
 
         {/* Station Filters & Controls */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
+        <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2 sm:gap-2.5 w-full lg:w-auto">
           {/* Station Filter Pills */}
-          <div className="hidden lg:flex items-center gap-1 p-1 rounded-xl bg-black/60 border border-white/10 text-xs font-bold">
+          <div className="flex flex-wrap items-center justify-center gap-1 p-1 rounded-xl bg-black/60 border border-white/10 text-[11px] sm:text-xs font-bold w-full sm:w-auto">
             <button
               onClick={() => setStationFilter("ALL")}
               className={`py-1 px-3 rounded-lg transition ${
@@ -249,7 +249,7 @@ export default function KdsScreenPage() {
       </header>
 
       {/* TICKETS BOARD: Smooth inner scroll */}
-      <main className="flex-1 min-h-0 h-[calc(100vh-62px)] overflow-y-auto p-4 sm:p-6 space-y-4">
+      <main className="flex-1 lg:min-h-0 lg:h-[calc(100vh-62px)] lg:overflow-y-auto p-3 sm:p-6 space-y-4">
         {tickets.length === 0 ? (
           <div className="h-96 flex flex-col items-center justify-center text-center space-y-3 text-slate-500">
             <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center text-slate-600">
