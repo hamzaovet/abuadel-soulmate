@@ -163,6 +163,11 @@ export type AdminNotification = $Result.DefaultSelection<Prisma.$AdminNotificati
  * 
  */
 export type PushSubscription = $Result.DefaultSelection<Prisma.$PushSubscriptionPayload>
+/**
+ * Model ConsignmentBatch
+ * 
+ */
+export type ConsignmentBatch = $Result.DefaultSelection<Prisma.$ConsignmentBatchPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -584,6 +589,16 @@ export class PrismaClient<
     * ```
     */
   get pushSubscription(): Prisma.PushSubscriptionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.consignmentBatch`: Exposes CRUD operations for the **ConsignmentBatch** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ConsignmentBatches
+    * const consignmentBatches = await prisma.consignmentBatch.findMany()
+    * ```
+    */
+  get consignmentBatch(): Prisma.ConsignmentBatchDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1060,7 +1075,8 @@ export namespace Prisma {
     SupplierTransaction: 'SupplierTransaction',
     OrderAuditLog: 'OrderAuditLog',
     AdminNotification: 'AdminNotification',
-    PushSubscription: 'PushSubscription'
+    PushSubscription: 'PushSubscription',
+    ConsignmentBatch: 'ConsignmentBatch'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1076,7 +1092,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "outlet" | "user" | "diningTable" | "menuItem" | "productMovement" | "pastryAudit" | "pastryAuditItem" | "rawMaterial" | "rawMaterialMovement" | "inventoryAudit" | "inventoryAuditItem" | "recipeItem" | "customer" | "deliveryZone" | "deliveryDriver" | "order" | "kdsTicket" | "shift" | "dailyClose" | "expense" | "systemSettings" | "reservation" | "chatMessage" | "factoryOrder" | "factoryOrderItem" | "supplier" | "supplierTransaction" | "orderAuditLog" | "adminNotification" | "pushSubscription"
+      modelProps: "outlet" | "user" | "diningTable" | "menuItem" | "productMovement" | "pastryAudit" | "pastryAuditItem" | "rawMaterial" | "rawMaterialMovement" | "inventoryAudit" | "inventoryAuditItem" | "recipeItem" | "customer" | "deliveryZone" | "deliveryDriver" | "order" | "kdsTicket" | "shift" | "dailyClose" | "expense" | "systemSettings" | "reservation" | "chatMessage" | "factoryOrder" | "factoryOrderItem" | "supplier" | "supplierTransaction" | "orderAuditLog" | "adminNotification" | "pushSubscription" | "consignmentBatch"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3300,6 +3316,80 @@ export namespace Prisma {
           }
         }
       }
+      ConsignmentBatch: {
+        payload: Prisma.$ConsignmentBatchPayload<ExtArgs>
+        fields: Prisma.ConsignmentBatchFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ConsignmentBatchFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConsignmentBatchPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ConsignmentBatchFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConsignmentBatchPayload>
+          }
+          findFirst: {
+            args: Prisma.ConsignmentBatchFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConsignmentBatchPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ConsignmentBatchFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConsignmentBatchPayload>
+          }
+          findMany: {
+            args: Prisma.ConsignmentBatchFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConsignmentBatchPayload>[]
+          }
+          create: {
+            args: Prisma.ConsignmentBatchCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConsignmentBatchPayload>
+          }
+          createMany: {
+            args: Prisma.ConsignmentBatchCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ConsignmentBatchCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConsignmentBatchPayload>[]
+          }
+          delete: {
+            args: Prisma.ConsignmentBatchDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConsignmentBatchPayload>
+          }
+          update: {
+            args: Prisma.ConsignmentBatchUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConsignmentBatchPayload>
+          }
+          deleteMany: {
+            args: Prisma.ConsignmentBatchDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ConsignmentBatchUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ConsignmentBatchUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConsignmentBatchPayload>[]
+          }
+          upsert: {
+            args: Prisma.ConsignmentBatchUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConsignmentBatchPayload>
+          }
+          aggregate: {
+            args: Prisma.ConsignmentBatchAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateConsignmentBatch>
+          }
+          groupBy: {
+            args: Prisma.ConsignmentBatchGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ConsignmentBatchGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ConsignmentBatchCountArgs<ExtArgs>
+            result: $Utils.Optional<ConsignmentBatchCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3453,6 +3543,7 @@ export namespace Prisma {
     orderAuditLog?: OrderAuditLogOmit
     adminNotification?: AdminNotificationOmit
     pushSubscription?: PushSubscriptionOmit
+    consignmentBatch?: ConsignmentBatchOmit
   }
 
   /* Types for Logging */
@@ -22447,6 +22538,9 @@ export namespace Prisma {
     discountAmount: number | null
     tipAmount: number | null
     finalAmount: number | null
+    commissionPercent: number | null
+    commissionAmount: number | null
+    platformNetAmount: number | null
     pointsEarned: number | null
     pointsRedeemed: number | null
     revisionCount: number | null
@@ -22462,6 +22556,9 @@ export namespace Prisma {
     discountAmount: number | null
     tipAmount: number | null
     finalAmount: number | null
+    commissionPercent: number | null
+    commissionAmount: number | null
+    platformNetAmount: number | null
     pointsEarned: number | null
     pointsRedeemed: number | null
     revisionCount: number | null
@@ -22501,6 +22598,9 @@ export namespace Prisma {
     discountAmount: number | null
     tipAmount: number | null
     finalAmount: number | null
+    commissionPercent: number | null
+    commissionAmount: number | null
+    platformNetAmount: number | null
     cashierName: string | null
     waiterName: string | null
     customerName: string | null
@@ -22554,6 +22654,9 @@ export namespace Prisma {
     discountAmount: number | null
     tipAmount: number | null
     finalAmount: number | null
+    commissionPercent: number | null
+    commissionAmount: number | null
+    platformNetAmount: number | null
     cashierName: string | null
     waiterName: string | null
     customerName: string | null
@@ -22607,6 +22710,9 @@ export namespace Prisma {
     discountAmount: number
     tipAmount: number
     finalAmount: number
+    commissionPercent: number
+    commissionAmount: number
+    platformNetAmount: number
     cashierName: number
     waiterName: number
     customerName: number
@@ -22638,6 +22744,9 @@ export namespace Prisma {
     discountAmount?: true
     tipAmount?: true
     finalAmount?: true
+    commissionPercent?: true
+    commissionAmount?: true
+    platformNetAmount?: true
     pointsEarned?: true
     pointsRedeemed?: true
     revisionCount?: true
@@ -22653,6 +22762,9 @@ export namespace Prisma {
     discountAmount?: true
     tipAmount?: true
     finalAmount?: true
+    commissionPercent?: true
+    commissionAmount?: true
+    platformNetAmount?: true
     pointsEarned?: true
     pointsRedeemed?: true
     revisionCount?: true
@@ -22692,6 +22804,9 @@ export namespace Prisma {
     discountAmount?: true
     tipAmount?: true
     finalAmount?: true
+    commissionPercent?: true
+    commissionAmount?: true
+    platformNetAmount?: true
     cashierName?: true
     waiterName?: true
     customerName?: true
@@ -22745,6 +22860,9 @@ export namespace Prisma {
     discountAmount?: true
     tipAmount?: true
     finalAmount?: true
+    commissionPercent?: true
+    commissionAmount?: true
+    platformNetAmount?: true
     cashierName?: true
     waiterName?: true
     customerName?: true
@@ -22798,6 +22916,9 @@ export namespace Prisma {
     discountAmount?: true
     tipAmount?: true
     finalAmount?: true
+    commissionPercent?: true
+    commissionAmount?: true
+    platformNetAmount?: true
     cashierName?: true
     waiterName?: true
     customerName?: true
@@ -22938,6 +23059,9 @@ export namespace Prisma {
     discountAmount: number
     tipAmount: number
     finalAmount: number
+    commissionPercent: number
+    commissionAmount: number
+    platformNetAmount: number
     cashierName: string | null
     waiterName: string | null
     customerName: string | null
@@ -23010,6 +23134,9 @@ export namespace Prisma {
     discountAmount?: boolean
     tipAmount?: boolean
     finalAmount?: boolean
+    commissionPercent?: boolean
+    commissionAmount?: boolean
+    platformNetAmount?: boolean
     cashierName?: boolean
     waiterName?: boolean
     customerName?: boolean
@@ -23071,6 +23198,9 @@ export namespace Prisma {
     discountAmount?: boolean
     tipAmount?: boolean
     finalAmount?: boolean
+    commissionPercent?: boolean
+    commissionAmount?: boolean
+    platformNetAmount?: boolean
     cashierName?: boolean
     waiterName?: boolean
     customerName?: boolean
@@ -23129,6 +23259,9 @@ export namespace Prisma {
     discountAmount?: boolean
     tipAmount?: boolean
     finalAmount?: boolean
+    commissionPercent?: boolean
+    commissionAmount?: boolean
+    platformNetAmount?: boolean
     cashierName?: boolean
     waiterName?: boolean
     customerName?: boolean
@@ -23187,6 +23320,9 @@ export namespace Prisma {
     discountAmount?: boolean
     tipAmount?: boolean
     finalAmount?: boolean
+    commissionPercent?: boolean
+    commissionAmount?: boolean
+    platformNetAmount?: boolean
     cashierName?: boolean
     waiterName?: boolean
     customerName?: boolean
@@ -23206,7 +23342,7 @@ export namespace Prisma {
     settledAt?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "orderNumber" | "orderType" | "tableId" | "tableNumber" | "deliveryZoneId" | "deliveryZoneName" | "deliveryAddress" | "deliveryPhone" | "deliveryNotes" | "driverId" | "driverName" | "driverPhone" | "dispatchedAt" | "isScheduled" | "scheduledFor" | "depositRequired" | "depositPaid" | "depositStatus" | "depositReceiptUrl" | "alertSent48h" | "alertSent24h" | "status" | "paymentStatus" | "paymentMethod" | "subtotal" | "serviceCharge" | "taxAmount" | "deliveryFee" | "discountAmount" | "tipAmount" | "finalAmount" | "cashierName" | "waiterName" | "customerName" | "customerPhone" | "customerId" | "pointsEarned" | "pointsRedeemed" | "notes" | "items" | "isEdited" | "revisionCount" | "paymentModified" | "lastEditReason" | "lastEditedBy" | "lastEditedAt" | "createdAt" | "settledAt", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "orderNumber" | "orderType" | "tableId" | "tableNumber" | "deliveryZoneId" | "deliveryZoneName" | "deliveryAddress" | "deliveryPhone" | "deliveryNotes" | "driverId" | "driverName" | "driverPhone" | "dispatchedAt" | "isScheduled" | "scheduledFor" | "depositRequired" | "depositPaid" | "depositStatus" | "depositReceiptUrl" | "alertSent48h" | "alertSent24h" | "status" | "paymentStatus" | "paymentMethod" | "subtotal" | "serviceCharge" | "taxAmount" | "deliveryFee" | "discountAmount" | "tipAmount" | "finalAmount" | "commissionPercent" | "commissionAmount" | "platformNetAmount" | "cashierName" | "waiterName" | "customerName" | "customerPhone" | "customerId" | "pointsEarned" | "pointsRedeemed" | "notes" | "items" | "isEdited" | "revisionCount" | "paymentModified" | "lastEditReason" | "lastEditedBy" | "lastEditedAt" | "createdAt" | "settledAt", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
     table?: boolean | Order$tableArgs<ExtArgs>
@@ -23277,6 +23413,9 @@ export namespace Prisma {
       discountAmount: number
       tipAmount: number
       finalAmount: number
+      commissionPercent: number
+      commissionAmount: number
+      platformNetAmount: number
       cashierName: string | null
       waiterName: string | null
       customerName: string | null
@@ -23757,6 +23896,9 @@ export namespace Prisma {
     readonly discountAmount: FieldRef<"Order", 'Float'>
     readonly tipAmount: FieldRef<"Order", 'Float'>
     readonly finalAmount: FieldRef<"Order", 'Float'>
+    readonly commissionPercent: FieldRef<"Order", 'Float'>
+    readonly commissionAmount: FieldRef<"Order", 'Float'>
+    readonly platformNetAmount: FieldRef<"Order", 'Float'>
     readonly cashierName: FieldRef<"Order", 'String'>
     readonly waiterName: FieldRef<"Order", 'String'>
     readonly customerName: FieldRef<"Order", 'String'>
@@ -25428,6 +25570,8 @@ export namespace Prisma {
     visaCollected: number | null
     instapayCollected: number | null
     vodafoneCollected: number | null
+    talabatCollected: number | null
+    talabatCommission: number | null
     deliveryFeesTotal: number | null
     totalRevenue: number | null
     expensesTotal: number | null
@@ -25444,6 +25588,8 @@ export namespace Prisma {
     visaCollected: number | null
     instapayCollected: number | null
     vodafoneCollected: number | null
+    talabatCollected: number | null
+    talabatCommission: number | null
     deliveryFeesTotal: number | null
     totalRevenue: number | null
     expensesTotal: number | null
@@ -25464,6 +25610,8 @@ export namespace Prisma {
     visaCollected: number | null
     instapayCollected: number | null
     vodafoneCollected: number | null
+    talabatCollected: number | null
+    talabatCommission: number | null
     deliveryFeesTotal: number | null
     totalRevenue: number | null
     expensesTotal: number | null
@@ -25489,6 +25637,8 @@ export namespace Prisma {
     visaCollected: number | null
     instapayCollected: number | null
     vodafoneCollected: number | null
+    talabatCollected: number | null
+    talabatCommission: number | null
     deliveryFeesTotal: number | null
     totalRevenue: number | null
     expensesTotal: number | null
@@ -25514,6 +25664,8 @@ export namespace Prisma {
     visaCollected: number
     instapayCollected: number
     vodafoneCollected: number
+    talabatCollected: number
+    talabatCommission: number
     deliveryFeesTotal: number
     totalRevenue: number
     expensesTotal: number
@@ -25537,6 +25689,8 @@ export namespace Prisma {
     visaCollected?: true
     instapayCollected?: true
     vodafoneCollected?: true
+    talabatCollected?: true
+    talabatCommission?: true
     deliveryFeesTotal?: true
     totalRevenue?: true
     expensesTotal?: true
@@ -25553,6 +25707,8 @@ export namespace Prisma {
     visaCollected?: true
     instapayCollected?: true
     vodafoneCollected?: true
+    talabatCollected?: true
+    talabatCommission?: true
     deliveryFeesTotal?: true
     totalRevenue?: true
     expensesTotal?: true
@@ -25573,6 +25729,8 @@ export namespace Prisma {
     visaCollected?: true
     instapayCollected?: true
     vodafoneCollected?: true
+    talabatCollected?: true
+    talabatCommission?: true
     deliveryFeesTotal?: true
     totalRevenue?: true
     expensesTotal?: true
@@ -25598,6 +25756,8 @@ export namespace Prisma {
     visaCollected?: true
     instapayCollected?: true
     vodafoneCollected?: true
+    talabatCollected?: true
+    talabatCommission?: true
     deliveryFeesTotal?: true
     totalRevenue?: true
     expensesTotal?: true
@@ -25623,6 +25783,8 @@ export namespace Prisma {
     visaCollected?: true
     instapayCollected?: true
     vodafoneCollected?: true
+    talabatCollected?: true
+    talabatCommission?: true
     deliveryFeesTotal?: true
     totalRevenue?: true
     expensesTotal?: true
@@ -25735,6 +25897,8 @@ export namespace Prisma {
     visaCollected: number
     instapayCollected: number
     vodafoneCollected: number
+    talabatCollected: number
+    talabatCommission: number
     deliveryFeesTotal: number
     totalRevenue: number
     expensesTotal: number
@@ -25779,6 +25943,8 @@ export namespace Prisma {
     visaCollected?: boolean
     instapayCollected?: boolean
     vodafoneCollected?: boolean
+    talabatCollected?: boolean
+    talabatCommission?: boolean
     deliveryFeesTotal?: boolean
     totalRevenue?: boolean
     expensesTotal?: boolean
@@ -25805,6 +25971,8 @@ export namespace Prisma {
     visaCollected?: boolean
     instapayCollected?: boolean
     vodafoneCollected?: boolean
+    talabatCollected?: boolean
+    talabatCommission?: boolean
     deliveryFeesTotal?: boolean
     totalRevenue?: boolean
     expensesTotal?: boolean
@@ -25831,6 +25999,8 @@ export namespace Prisma {
     visaCollected?: boolean
     instapayCollected?: boolean
     vodafoneCollected?: boolean
+    talabatCollected?: boolean
+    talabatCommission?: boolean
     deliveryFeesTotal?: boolean
     totalRevenue?: boolean
     expensesTotal?: boolean
@@ -25857,6 +26027,8 @@ export namespace Prisma {
     visaCollected?: boolean
     instapayCollected?: boolean
     vodafoneCollected?: boolean
+    talabatCollected?: boolean
+    talabatCommission?: boolean
     deliveryFeesTotal?: boolean
     totalRevenue?: boolean
     expensesTotal?: boolean
@@ -25868,7 +26040,7 @@ export namespace Prisma {
     closedAt?: boolean
   }
 
-  export type ShiftOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "shiftNumber" | "openedBy" | "closedBy" | "openingCashFloat" | "expectedCash" | "actualCash" | "difference" | "cashCollected" | "visaCollected" | "instapayCollected" | "vodafoneCollected" | "deliveryFeesTotal" | "totalRevenue" | "expensesTotal" | "ticketsCount" | "handedTo" | "notes" | "status" | "openedAt" | "closedAt", ExtArgs["result"]["shift"]>
+  export type ShiftOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "shiftNumber" | "openedBy" | "closedBy" | "openingCashFloat" | "expectedCash" | "actualCash" | "difference" | "cashCollected" | "visaCollected" | "instapayCollected" | "vodafoneCollected" | "talabatCollected" | "talabatCommission" | "deliveryFeesTotal" | "totalRevenue" | "expensesTotal" | "ticketsCount" | "handedTo" | "notes" | "status" | "openedAt" | "closedAt", ExtArgs["result"]["shift"]>
   export type ShiftInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
   }
@@ -25898,6 +26070,8 @@ export namespace Prisma {
       visaCollected: number
       instapayCollected: number
       vodafoneCollected: number
+      talabatCollected: number
+      talabatCommission: number
       deliveryFeesTotal: number
       totalRevenue: number
       expensesTotal: number
@@ -26344,6 +26518,8 @@ export namespace Prisma {
     readonly visaCollected: FieldRef<"Shift", 'Float'>
     readonly instapayCollected: FieldRef<"Shift", 'Float'>
     readonly vodafoneCollected: FieldRef<"Shift", 'Float'>
+    readonly talabatCollected: FieldRef<"Shift", 'Float'>
+    readonly talabatCommission: FieldRef<"Shift", 'Float'>
     readonly deliveryFeesTotal: FieldRef<"Shift", 'Float'>
     readonly totalRevenue: FieldRef<"Shift", 'Float'>
     readonly expensesTotal: FieldRef<"Shift", 'Float'>
@@ -26791,6 +26967,8 @@ export namespace Prisma {
     totalVisa: number | null
     totalInstapay: number | null
     totalVodafone: number | null
+    totalTalabat: number | null
+    totalTalabatCommission: number | null
     totalExpenses: number | null
     netCashInSafe: number | null
     ordersCount: number | null
@@ -26803,6 +26981,8 @@ export namespace Prisma {
     totalVisa: number | null
     totalInstapay: number | null
     totalVodafone: number | null
+    totalTalabat: number | null
+    totalTalabatCommission: number | null
     totalExpenses: number | null
     netCashInSafe: number | null
     ordersCount: number | null
@@ -26819,6 +26999,8 @@ export namespace Prisma {
     totalVisa: number | null
     totalInstapay: number | null
     totalVodafone: number | null
+    totalTalabat: number | null
+    totalTalabatCommission: number | null
     totalExpenses: number | null
     netCashInSafe: number | null
     ordersCount: number | null
@@ -26838,6 +27020,8 @@ export namespace Prisma {
     totalVisa: number | null
     totalInstapay: number | null
     totalVodafone: number | null
+    totalTalabat: number | null
+    totalTalabatCommission: number | null
     totalExpenses: number | null
     netCashInSafe: number | null
     ordersCount: number | null
@@ -26857,6 +27041,8 @@ export namespace Prisma {
     totalVisa: number
     totalInstapay: number
     totalVodafone: number
+    totalTalabat: number
+    totalTalabatCommission: number
     totalExpenses: number
     netCashInSafe: number
     ordersCount: number
@@ -26874,6 +27060,8 @@ export namespace Prisma {
     totalVisa?: true
     totalInstapay?: true
     totalVodafone?: true
+    totalTalabat?: true
+    totalTalabatCommission?: true
     totalExpenses?: true
     netCashInSafe?: true
     ordersCount?: true
@@ -26886,6 +27074,8 @@ export namespace Prisma {
     totalVisa?: true
     totalInstapay?: true
     totalVodafone?: true
+    totalTalabat?: true
+    totalTalabatCommission?: true
     totalExpenses?: true
     netCashInSafe?: true
     ordersCount?: true
@@ -26902,6 +27092,8 @@ export namespace Prisma {
     totalVisa?: true
     totalInstapay?: true
     totalVodafone?: true
+    totalTalabat?: true
+    totalTalabatCommission?: true
     totalExpenses?: true
     netCashInSafe?: true
     ordersCount?: true
@@ -26921,6 +27113,8 @@ export namespace Prisma {
     totalVisa?: true
     totalInstapay?: true
     totalVodafone?: true
+    totalTalabat?: true
+    totalTalabatCommission?: true
     totalExpenses?: true
     netCashInSafe?: true
     ordersCount?: true
@@ -26940,6 +27134,8 @@ export namespace Prisma {
     totalVisa?: true
     totalInstapay?: true
     totalVodafone?: true
+    totalTalabat?: true
+    totalTalabatCommission?: true
     totalExpenses?: true
     netCashInSafe?: true
     ordersCount?: true
@@ -27046,6 +27242,8 @@ export namespace Prisma {
     totalVisa: number
     totalInstapay: number
     totalVodafone: number
+    totalTalabat: number
+    totalTalabatCommission: number
     totalExpenses: number
     netCashInSafe: number
     ordersCount: number
@@ -27084,6 +27282,8 @@ export namespace Prisma {
     totalVisa?: boolean
     totalInstapay?: boolean
     totalVodafone?: boolean
+    totalTalabat?: boolean
+    totalTalabatCommission?: boolean
     totalExpenses?: boolean
     netCashInSafe?: boolean
     ordersCount?: boolean
@@ -27104,6 +27304,8 @@ export namespace Prisma {
     totalVisa?: boolean
     totalInstapay?: boolean
     totalVodafone?: boolean
+    totalTalabat?: boolean
+    totalTalabatCommission?: boolean
     totalExpenses?: boolean
     netCashInSafe?: boolean
     ordersCount?: boolean
@@ -27124,6 +27326,8 @@ export namespace Prisma {
     totalVisa?: boolean
     totalInstapay?: boolean
     totalVodafone?: boolean
+    totalTalabat?: boolean
+    totalTalabatCommission?: boolean
     totalExpenses?: boolean
     netCashInSafe?: boolean
     ordersCount?: boolean
@@ -27144,6 +27348,8 @@ export namespace Prisma {
     totalVisa?: boolean
     totalInstapay?: boolean
     totalVodafone?: boolean
+    totalTalabat?: boolean
+    totalTalabatCommission?: boolean
     totalExpenses?: boolean
     netCashInSafe?: boolean
     ordersCount?: boolean
@@ -27152,7 +27358,7 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type DailyCloseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "closeDate" | "dayName" | "shiftsCount" | "totalRevenue" | "totalCash" | "totalVisa" | "totalInstapay" | "totalVodafone" | "totalExpenses" | "netCashInSafe" | "ordersCount" | "closedBy" | "notes" | "createdAt", ExtArgs["result"]["dailyClose"]>
+  export type DailyCloseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletId" | "closeDate" | "dayName" | "shiftsCount" | "totalRevenue" | "totalCash" | "totalVisa" | "totalInstapay" | "totalVodafone" | "totalTalabat" | "totalTalabatCommission" | "totalExpenses" | "netCashInSafe" | "ordersCount" | "closedBy" | "notes" | "createdAt", ExtArgs["result"]["dailyClose"]>
   export type DailyCloseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outlet?: boolean | OutletDefaultArgs<ExtArgs>
   }
@@ -27179,6 +27385,8 @@ export namespace Prisma {
       totalVisa: number
       totalInstapay: number
       totalVodafone: number
+      totalTalabat: number
+      totalTalabatCommission: number
       totalExpenses: number
       netCashInSafe: number
       ordersCount: number
@@ -27619,6 +27827,8 @@ export namespace Prisma {
     readonly totalVisa: FieldRef<"DailyClose", 'Float'>
     readonly totalInstapay: FieldRef<"DailyClose", 'Float'>
     readonly totalVodafone: FieldRef<"DailyClose", 'Float'>
+    readonly totalTalabat: FieldRef<"DailyClose", 'Float'>
+    readonly totalTalabatCommission: FieldRef<"DailyClose", 'Float'>
     readonly totalExpenses: FieldRef<"DailyClose", 'Float'>
     readonly netCashInSafe: FieldRef<"DailyClose", 'Float'>
     readonly ordersCount: FieldRef<"DailyClose", 'Int'>
@@ -29203,6 +29413,7 @@ export namespace Prisma {
     loyaltyRewardValue: number | null
     dailyReportRepeatSeconds: number | null
     internalSupplyMarkupPercent: number | null
+    talabatCommissionPercent: number | null
   }
 
   export type SystemSettingsSumAggregateOutputType = {
@@ -29216,6 +29427,7 @@ export namespace Prisma {
     loyaltyRewardValue: number | null
     dailyReportRepeatSeconds: number | null
     internalSupplyMarkupPercent: number | null
+    talabatCommissionPercent: number | null
   }
 
   export type SystemSettingsMinAggregateOutputType = {
@@ -29252,6 +29464,7 @@ export namespace Prisma {
     dailyReportAlertSound: boolean | null
     internalSupplyMarkupEnabled: boolean | null
     internalSupplyMarkupPercent: number | null
+    talabatCommissionPercent: number | null
     geminiApiKey: string | null
     receiptFooterNotes: string | null
     systemLocked: boolean | null
@@ -29295,6 +29508,7 @@ export namespace Prisma {
     dailyReportAlertSound: boolean | null
     internalSupplyMarkupEnabled: boolean | null
     internalSupplyMarkupPercent: number | null
+    talabatCommissionPercent: number | null
     geminiApiKey: string | null
     receiptFooterNotes: string | null
     systemLocked: boolean | null
@@ -29338,6 +29552,7 @@ export namespace Prisma {
     dailyReportAlertSound: number
     internalSupplyMarkupEnabled: number
     internalSupplyMarkupPercent: number
+    talabatCommissionPercent: number
     geminiApiKey: number
     receiptFooterNotes: number
     systemLocked: number
@@ -29360,6 +29575,7 @@ export namespace Prisma {
     loyaltyRewardValue?: true
     dailyReportRepeatSeconds?: true
     internalSupplyMarkupPercent?: true
+    talabatCommissionPercent?: true
   }
 
   export type SystemSettingsSumAggregateInputType = {
@@ -29373,6 +29589,7 @@ export namespace Prisma {
     loyaltyRewardValue?: true
     dailyReportRepeatSeconds?: true
     internalSupplyMarkupPercent?: true
+    talabatCommissionPercent?: true
   }
 
   export type SystemSettingsMinAggregateInputType = {
@@ -29409,6 +29626,7 @@ export namespace Prisma {
     dailyReportAlertSound?: true
     internalSupplyMarkupEnabled?: true
     internalSupplyMarkupPercent?: true
+    talabatCommissionPercent?: true
     geminiApiKey?: true
     receiptFooterNotes?: true
     systemLocked?: true
@@ -29452,6 +29670,7 @@ export namespace Prisma {
     dailyReportAlertSound?: true
     internalSupplyMarkupEnabled?: true
     internalSupplyMarkupPercent?: true
+    talabatCommissionPercent?: true
     geminiApiKey?: true
     receiptFooterNotes?: true
     systemLocked?: true
@@ -29495,6 +29714,7 @@ export namespace Prisma {
     dailyReportAlertSound?: true
     internalSupplyMarkupEnabled?: true
     internalSupplyMarkupPercent?: true
+    talabatCommissionPercent?: true
     geminiApiKey?: true
     receiptFooterNotes?: true
     systemLocked?: true
@@ -29625,6 +29845,7 @@ export namespace Prisma {
     dailyReportAlertSound: boolean
     internalSupplyMarkupEnabled: boolean
     internalSupplyMarkupPercent: number
+    talabatCommissionPercent: number
     geminiApiKey: string | null
     receiptFooterNotes: string
     systemLocked: boolean
@@ -29687,6 +29908,7 @@ export namespace Prisma {
     dailyReportAlertSound?: boolean
     internalSupplyMarkupEnabled?: boolean
     internalSupplyMarkupPercent?: boolean
+    talabatCommissionPercent?: boolean
     geminiApiKey?: boolean
     receiptFooterNotes?: boolean
     systemLocked?: boolean
@@ -29730,6 +29952,7 @@ export namespace Prisma {
     dailyReportAlertSound?: boolean
     internalSupplyMarkupEnabled?: boolean
     internalSupplyMarkupPercent?: boolean
+    talabatCommissionPercent?: boolean
     geminiApiKey?: boolean
     receiptFooterNotes?: boolean
     systemLocked?: boolean
@@ -29773,6 +29996,7 @@ export namespace Prisma {
     dailyReportAlertSound?: boolean
     internalSupplyMarkupEnabled?: boolean
     internalSupplyMarkupPercent?: boolean
+    talabatCommissionPercent?: boolean
     geminiApiKey?: boolean
     receiptFooterNotes?: boolean
     systemLocked?: boolean
@@ -29816,6 +30040,7 @@ export namespace Prisma {
     dailyReportAlertSound?: boolean
     internalSupplyMarkupEnabled?: boolean
     internalSupplyMarkupPercent?: boolean
+    talabatCommissionPercent?: boolean
     geminiApiKey?: boolean
     receiptFooterNotes?: boolean
     systemLocked?: boolean
@@ -29825,7 +30050,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SystemSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "brandNameAr" | "brandNameEn" | "soulmatePhone" | "abuAdelPhone" | "hotline" | "whatsapp" | "haliyomakUrl" | "facebookUrl" | "serviceChargePercent" | "taxPercent" | "deliveryFee" | "preOrderDepositPercent" | "instapayAccount" | "vodafoneCashNumber" | "isServiceChargeEnabled" | "isTaxEnabled" | "isLoyaltyEnabled" | "pointsPerPoundSpent" | "poundValuePerPoint" | "loyaltyRewardThreshold" | "loyaltyRewardValue" | "loyaltyAppliesToAbuAdel" | "loyaltyAppliesToSoulmate" | "loyaltyMotivationalMsg" | "offersEnabled" | "specialOffers" | "dailyReportAlertEnabled" | "dailyReportAlertTime" | "dailyReportRepeatSeconds" | "dailyReportAlertSound" | "internalSupplyMarkupEnabled" | "internalSupplyMarkupPercent" | "geminiApiKey" | "receiptFooterNotes" | "systemLocked" | "lockMessage" | "vapidPublicKey" | "vapidPrivateKey" | "updatedAt", ExtArgs["result"]["systemSettings"]>
+  export type SystemSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "brandNameAr" | "brandNameEn" | "soulmatePhone" | "abuAdelPhone" | "hotline" | "whatsapp" | "haliyomakUrl" | "facebookUrl" | "serviceChargePercent" | "taxPercent" | "deliveryFee" | "preOrderDepositPercent" | "instapayAccount" | "vodafoneCashNumber" | "isServiceChargeEnabled" | "isTaxEnabled" | "isLoyaltyEnabled" | "pointsPerPoundSpent" | "poundValuePerPoint" | "loyaltyRewardThreshold" | "loyaltyRewardValue" | "loyaltyAppliesToAbuAdel" | "loyaltyAppliesToSoulmate" | "loyaltyMotivationalMsg" | "offersEnabled" | "specialOffers" | "dailyReportAlertEnabled" | "dailyReportAlertTime" | "dailyReportRepeatSeconds" | "dailyReportAlertSound" | "internalSupplyMarkupEnabled" | "internalSupplyMarkupPercent" | "talabatCommissionPercent" | "geminiApiKey" | "receiptFooterNotes" | "systemLocked" | "lockMessage" | "vapidPublicKey" | "vapidPrivateKey" | "updatedAt", ExtArgs["result"]["systemSettings"]>
 
   export type $SystemSettingsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SystemSettings"
@@ -29864,6 +30089,7 @@ export namespace Prisma {
       dailyReportAlertSound: boolean
       internalSupplyMarkupEnabled: boolean
       internalSupplyMarkupPercent: number
+      talabatCommissionPercent: number
       geminiApiKey: string | null
       receiptFooterNotes: string
       systemLocked: boolean
@@ -30327,6 +30553,7 @@ export namespace Prisma {
     readonly dailyReportAlertSound: FieldRef<"SystemSettings", 'Boolean'>
     readonly internalSupplyMarkupEnabled: FieldRef<"SystemSettings", 'Boolean'>
     readonly internalSupplyMarkupPercent: FieldRef<"SystemSettings", 'Float'>
+    readonly talabatCommissionPercent: FieldRef<"SystemSettings", 'Float'>
     readonly geminiApiKey: FieldRef<"SystemSettings", 'String'>
     readonly receiptFooterNotes: FieldRef<"SystemSettings", 'String'>
     readonly systemLocked: FieldRef<"SystemSettings", 'Boolean'>
@@ -41422,6 +41649,1276 @@ export namespace Prisma {
 
 
   /**
+   * Model ConsignmentBatch
+   */
+
+  export type AggregateConsignmentBatch = {
+    _count: ConsignmentBatchCountAggregateOutputType | null
+    _avg: ConsignmentBatchAvgAggregateOutputType | null
+    _sum: ConsignmentBatchSumAggregateOutputType | null
+    _min: ConsignmentBatchMinAggregateOutputType | null
+    _max: ConsignmentBatchMaxAggregateOutputType | null
+  }
+
+  export type ConsignmentBatchAvgAggregateOutputType = {
+    unitCost: number | null
+    sellingPrice: number | null
+    sentQty: number | null
+    soldQty: number | null
+    returnedQty: number | null
+    remainingQty: number | null
+    soldRevenue: number | null
+    settledAmount: number | null
+  }
+
+  export type ConsignmentBatchSumAggregateOutputType = {
+    unitCost: number | null
+    sellingPrice: number | null
+    sentQty: number | null
+    soldQty: number | null
+    returnedQty: number | null
+    remainingQty: number | null
+    soldRevenue: number | null
+    settledAmount: number | null
+  }
+
+  export type ConsignmentBatchMinAggregateOutputType = {
+    id: string | null
+    outletSourceCode: string | null
+    outletDestCode: string | null
+    soulmateMenuItemId: string | null
+    abuAdelMenuItemId: string | null
+    itemName: string | null
+    unitType: string | null
+    unitCost: number | null
+    sellingPrice: number | null
+    sentQty: number | null
+    soldQty: number | null
+    returnedQty: number | null
+    remainingQty: number | null
+    soldRevenue: number | null
+    settledAmount: number | null
+    settlementMode: string | null
+    status: string | null
+    notes: string | null
+    recordedBy: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ConsignmentBatchMaxAggregateOutputType = {
+    id: string | null
+    outletSourceCode: string | null
+    outletDestCode: string | null
+    soulmateMenuItemId: string | null
+    abuAdelMenuItemId: string | null
+    itemName: string | null
+    unitType: string | null
+    unitCost: number | null
+    sellingPrice: number | null
+    sentQty: number | null
+    soldQty: number | null
+    returnedQty: number | null
+    remainingQty: number | null
+    soldRevenue: number | null
+    settledAmount: number | null
+    settlementMode: string | null
+    status: string | null
+    notes: string | null
+    recordedBy: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ConsignmentBatchCountAggregateOutputType = {
+    id: number
+    outletSourceCode: number
+    outletDestCode: number
+    soulmateMenuItemId: number
+    abuAdelMenuItemId: number
+    itemName: number
+    unitType: number
+    unitCost: number
+    sellingPrice: number
+    sentQty: number
+    soldQty: number
+    returnedQty: number
+    remainingQty: number
+    soldRevenue: number
+    settledAmount: number
+    settlementMode: number
+    status: number
+    notes: number
+    recordedBy: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ConsignmentBatchAvgAggregateInputType = {
+    unitCost?: true
+    sellingPrice?: true
+    sentQty?: true
+    soldQty?: true
+    returnedQty?: true
+    remainingQty?: true
+    soldRevenue?: true
+    settledAmount?: true
+  }
+
+  export type ConsignmentBatchSumAggregateInputType = {
+    unitCost?: true
+    sellingPrice?: true
+    sentQty?: true
+    soldQty?: true
+    returnedQty?: true
+    remainingQty?: true
+    soldRevenue?: true
+    settledAmount?: true
+  }
+
+  export type ConsignmentBatchMinAggregateInputType = {
+    id?: true
+    outletSourceCode?: true
+    outletDestCode?: true
+    soulmateMenuItemId?: true
+    abuAdelMenuItemId?: true
+    itemName?: true
+    unitType?: true
+    unitCost?: true
+    sellingPrice?: true
+    sentQty?: true
+    soldQty?: true
+    returnedQty?: true
+    remainingQty?: true
+    soldRevenue?: true
+    settledAmount?: true
+    settlementMode?: true
+    status?: true
+    notes?: true
+    recordedBy?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ConsignmentBatchMaxAggregateInputType = {
+    id?: true
+    outletSourceCode?: true
+    outletDestCode?: true
+    soulmateMenuItemId?: true
+    abuAdelMenuItemId?: true
+    itemName?: true
+    unitType?: true
+    unitCost?: true
+    sellingPrice?: true
+    sentQty?: true
+    soldQty?: true
+    returnedQty?: true
+    remainingQty?: true
+    soldRevenue?: true
+    settledAmount?: true
+    settlementMode?: true
+    status?: true
+    notes?: true
+    recordedBy?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ConsignmentBatchCountAggregateInputType = {
+    id?: true
+    outletSourceCode?: true
+    outletDestCode?: true
+    soulmateMenuItemId?: true
+    abuAdelMenuItemId?: true
+    itemName?: true
+    unitType?: true
+    unitCost?: true
+    sellingPrice?: true
+    sentQty?: true
+    soldQty?: true
+    returnedQty?: true
+    remainingQty?: true
+    soldRevenue?: true
+    settledAmount?: true
+    settlementMode?: true
+    status?: true
+    notes?: true
+    recordedBy?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ConsignmentBatchAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ConsignmentBatch to aggregate.
+     */
+    where?: ConsignmentBatchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConsignmentBatches to fetch.
+     */
+    orderBy?: ConsignmentBatchOrderByWithRelationInput | ConsignmentBatchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ConsignmentBatchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConsignmentBatches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConsignmentBatches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ConsignmentBatches
+    **/
+    _count?: true | ConsignmentBatchCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ConsignmentBatchAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ConsignmentBatchSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ConsignmentBatchMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ConsignmentBatchMaxAggregateInputType
+  }
+
+  export type GetConsignmentBatchAggregateType<T extends ConsignmentBatchAggregateArgs> = {
+        [P in keyof T & keyof AggregateConsignmentBatch]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateConsignmentBatch[P]>
+      : GetScalarType<T[P], AggregateConsignmentBatch[P]>
+  }
+
+
+
+
+  export type ConsignmentBatchGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConsignmentBatchWhereInput
+    orderBy?: ConsignmentBatchOrderByWithAggregationInput | ConsignmentBatchOrderByWithAggregationInput[]
+    by: ConsignmentBatchScalarFieldEnum[] | ConsignmentBatchScalarFieldEnum
+    having?: ConsignmentBatchScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ConsignmentBatchCountAggregateInputType | true
+    _avg?: ConsignmentBatchAvgAggregateInputType
+    _sum?: ConsignmentBatchSumAggregateInputType
+    _min?: ConsignmentBatchMinAggregateInputType
+    _max?: ConsignmentBatchMaxAggregateInputType
+  }
+
+  export type ConsignmentBatchGroupByOutputType = {
+    id: string
+    outletSourceCode: string
+    outletDestCode: string
+    soulmateMenuItemId: string
+    abuAdelMenuItemId: string | null
+    itemName: string
+    unitType: string
+    unitCost: number
+    sellingPrice: number
+    sentQty: number
+    soldQty: number
+    returnedQty: number
+    remainingQty: number
+    soldRevenue: number
+    settledAmount: number
+    settlementMode: string
+    status: string
+    notes: string | null
+    recordedBy: string
+    createdAt: Date
+    updatedAt: Date
+    _count: ConsignmentBatchCountAggregateOutputType | null
+    _avg: ConsignmentBatchAvgAggregateOutputType | null
+    _sum: ConsignmentBatchSumAggregateOutputType | null
+    _min: ConsignmentBatchMinAggregateOutputType | null
+    _max: ConsignmentBatchMaxAggregateOutputType | null
+  }
+
+  type GetConsignmentBatchGroupByPayload<T extends ConsignmentBatchGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ConsignmentBatchGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ConsignmentBatchGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ConsignmentBatchGroupByOutputType[P]>
+            : GetScalarType<T[P], ConsignmentBatchGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ConsignmentBatchSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletSourceCode?: boolean
+    outletDestCode?: boolean
+    soulmateMenuItemId?: boolean
+    abuAdelMenuItemId?: boolean
+    itemName?: boolean
+    unitType?: boolean
+    unitCost?: boolean
+    sellingPrice?: boolean
+    sentQty?: boolean
+    soldQty?: boolean
+    returnedQty?: boolean
+    remainingQty?: boolean
+    soldRevenue?: boolean
+    settledAmount?: boolean
+    settlementMode?: boolean
+    status?: boolean
+    notes?: boolean
+    recordedBy?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["consignmentBatch"]>
+
+  export type ConsignmentBatchSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletSourceCode?: boolean
+    outletDestCode?: boolean
+    soulmateMenuItemId?: boolean
+    abuAdelMenuItemId?: boolean
+    itemName?: boolean
+    unitType?: boolean
+    unitCost?: boolean
+    sellingPrice?: boolean
+    sentQty?: boolean
+    soldQty?: boolean
+    returnedQty?: boolean
+    remainingQty?: boolean
+    soldRevenue?: boolean
+    settledAmount?: boolean
+    settlementMode?: boolean
+    status?: boolean
+    notes?: boolean
+    recordedBy?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["consignmentBatch"]>
+
+  export type ConsignmentBatchSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outletSourceCode?: boolean
+    outletDestCode?: boolean
+    soulmateMenuItemId?: boolean
+    abuAdelMenuItemId?: boolean
+    itemName?: boolean
+    unitType?: boolean
+    unitCost?: boolean
+    sellingPrice?: boolean
+    sentQty?: boolean
+    soldQty?: boolean
+    returnedQty?: boolean
+    remainingQty?: boolean
+    soldRevenue?: boolean
+    settledAmount?: boolean
+    settlementMode?: boolean
+    status?: boolean
+    notes?: boolean
+    recordedBy?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["consignmentBatch"]>
+
+  export type ConsignmentBatchSelectScalar = {
+    id?: boolean
+    outletSourceCode?: boolean
+    outletDestCode?: boolean
+    soulmateMenuItemId?: boolean
+    abuAdelMenuItemId?: boolean
+    itemName?: boolean
+    unitType?: boolean
+    unitCost?: boolean
+    sellingPrice?: boolean
+    sentQty?: boolean
+    soldQty?: boolean
+    returnedQty?: boolean
+    remainingQty?: boolean
+    soldRevenue?: boolean
+    settledAmount?: boolean
+    settlementMode?: boolean
+    status?: boolean
+    notes?: boolean
+    recordedBy?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ConsignmentBatchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outletSourceCode" | "outletDestCode" | "soulmateMenuItemId" | "abuAdelMenuItemId" | "itemName" | "unitType" | "unitCost" | "sellingPrice" | "sentQty" | "soldQty" | "returnedQty" | "remainingQty" | "soldRevenue" | "settledAmount" | "settlementMode" | "status" | "notes" | "recordedBy" | "createdAt" | "updatedAt", ExtArgs["result"]["consignmentBatch"]>
+
+  export type $ConsignmentBatchPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ConsignmentBatch"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      outletSourceCode: string
+      outletDestCode: string
+      soulmateMenuItemId: string
+      abuAdelMenuItemId: string | null
+      itemName: string
+      unitType: string
+      unitCost: number
+      sellingPrice: number
+      sentQty: number
+      soldQty: number
+      returnedQty: number
+      remainingQty: number
+      soldRevenue: number
+      settledAmount: number
+      settlementMode: string
+      status: string
+      notes: string | null
+      recordedBy: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["consignmentBatch"]>
+    composites: {}
+  }
+
+  type ConsignmentBatchGetPayload<S extends boolean | null | undefined | ConsignmentBatchDefaultArgs> = $Result.GetResult<Prisma.$ConsignmentBatchPayload, S>
+
+  type ConsignmentBatchCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ConsignmentBatchFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ConsignmentBatchCountAggregateInputType | true
+    }
+
+  export interface ConsignmentBatchDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ConsignmentBatch'], meta: { name: 'ConsignmentBatch' } }
+    /**
+     * Find zero or one ConsignmentBatch that matches the filter.
+     * @param {ConsignmentBatchFindUniqueArgs} args - Arguments to find a ConsignmentBatch
+     * @example
+     * // Get one ConsignmentBatch
+     * const consignmentBatch = await prisma.consignmentBatch.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ConsignmentBatchFindUniqueArgs>(args: SelectSubset<T, ConsignmentBatchFindUniqueArgs<ExtArgs>>): Prisma__ConsignmentBatchClient<$Result.GetResult<Prisma.$ConsignmentBatchPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ConsignmentBatch that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ConsignmentBatchFindUniqueOrThrowArgs} args - Arguments to find a ConsignmentBatch
+     * @example
+     * // Get one ConsignmentBatch
+     * const consignmentBatch = await prisma.consignmentBatch.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ConsignmentBatchFindUniqueOrThrowArgs>(args: SelectSubset<T, ConsignmentBatchFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ConsignmentBatchClient<$Result.GetResult<Prisma.$ConsignmentBatchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ConsignmentBatch that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConsignmentBatchFindFirstArgs} args - Arguments to find a ConsignmentBatch
+     * @example
+     * // Get one ConsignmentBatch
+     * const consignmentBatch = await prisma.consignmentBatch.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ConsignmentBatchFindFirstArgs>(args?: SelectSubset<T, ConsignmentBatchFindFirstArgs<ExtArgs>>): Prisma__ConsignmentBatchClient<$Result.GetResult<Prisma.$ConsignmentBatchPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ConsignmentBatch that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConsignmentBatchFindFirstOrThrowArgs} args - Arguments to find a ConsignmentBatch
+     * @example
+     * // Get one ConsignmentBatch
+     * const consignmentBatch = await prisma.consignmentBatch.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ConsignmentBatchFindFirstOrThrowArgs>(args?: SelectSubset<T, ConsignmentBatchFindFirstOrThrowArgs<ExtArgs>>): Prisma__ConsignmentBatchClient<$Result.GetResult<Prisma.$ConsignmentBatchPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ConsignmentBatches that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConsignmentBatchFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ConsignmentBatches
+     * const consignmentBatches = await prisma.consignmentBatch.findMany()
+     * 
+     * // Get first 10 ConsignmentBatches
+     * const consignmentBatches = await prisma.consignmentBatch.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const consignmentBatchWithIdOnly = await prisma.consignmentBatch.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ConsignmentBatchFindManyArgs>(args?: SelectSubset<T, ConsignmentBatchFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConsignmentBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ConsignmentBatch.
+     * @param {ConsignmentBatchCreateArgs} args - Arguments to create a ConsignmentBatch.
+     * @example
+     * // Create one ConsignmentBatch
+     * const ConsignmentBatch = await prisma.consignmentBatch.create({
+     *   data: {
+     *     // ... data to create a ConsignmentBatch
+     *   }
+     * })
+     * 
+     */
+    create<T extends ConsignmentBatchCreateArgs>(args: SelectSubset<T, ConsignmentBatchCreateArgs<ExtArgs>>): Prisma__ConsignmentBatchClient<$Result.GetResult<Prisma.$ConsignmentBatchPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ConsignmentBatches.
+     * @param {ConsignmentBatchCreateManyArgs} args - Arguments to create many ConsignmentBatches.
+     * @example
+     * // Create many ConsignmentBatches
+     * const consignmentBatch = await prisma.consignmentBatch.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ConsignmentBatchCreateManyArgs>(args?: SelectSubset<T, ConsignmentBatchCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ConsignmentBatches and returns the data saved in the database.
+     * @param {ConsignmentBatchCreateManyAndReturnArgs} args - Arguments to create many ConsignmentBatches.
+     * @example
+     * // Create many ConsignmentBatches
+     * const consignmentBatch = await prisma.consignmentBatch.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ConsignmentBatches and only return the `id`
+     * const consignmentBatchWithIdOnly = await prisma.consignmentBatch.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ConsignmentBatchCreateManyAndReturnArgs>(args?: SelectSubset<T, ConsignmentBatchCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConsignmentBatchPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ConsignmentBatch.
+     * @param {ConsignmentBatchDeleteArgs} args - Arguments to delete one ConsignmentBatch.
+     * @example
+     * // Delete one ConsignmentBatch
+     * const ConsignmentBatch = await prisma.consignmentBatch.delete({
+     *   where: {
+     *     // ... filter to delete one ConsignmentBatch
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ConsignmentBatchDeleteArgs>(args: SelectSubset<T, ConsignmentBatchDeleteArgs<ExtArgs>>): Prisma__ConsignmentBatchClient<$Result.GetResult<Prisma.$ConsignmentBatchPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ConsignmentBatch.
+     * @param {ConsignmentBatchUpdateArgs} args - Arguments to update one ConsignmentBatch.
+     * @example
+     * // Update one ConsignmentBatch
+     * const consignmentBatch = await prisma.consignmentBatch.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ConsignmentBatchUpdateArgs>(args: SelectSubset<T, ConsignmentBatchUpdateArgs<ExtArgs>>): Prisma__ConsignmentBatchClient<$Result.GetResult<Prisma.$ConsignmentBatchPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ConsignmentBatches.
+     * @param {ConsignmentBatchDeleteManyArgs} args - Arguments to filter ConsignmentBatches to delete.
+     * @example
+     * // Delete a few ConsignmentBatches
+     * const { count } = await prisma.consignmentBatch.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ConsignmentBatchDeleteManyArgs>(args?: SelectSubset<T, ConsignmentBatchDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ConsignmentBatches.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConsignmentBatchUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ConsignmentBatches
+     * const consignmentBatch = await prisma.consignmentBatch.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ConsignmentBatchUpdateManyArgs>(args: SelectSubset<T, ConsignmentBatchUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ConsignmentBatches and returns the data updated in the database.
+     * @param {ConsignmentBatchUpdateManyAndReturnArgs} args - Arguments to update many ConsignmentBatches.
+     * @example
+     * // Update many ConsignmentBatches
+     * const consignmentBatch = await prisma.consignmentBatch.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ConsignmentBatches and only return the `id`
+     * const consignmentBatchWithIdOnly = await prisma.consignmentBatch.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ConsignmentBatchUpdateManyAndReturnArgs>(args: SelectSubset<T, ConsignmentBatchUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConsignmentBatchPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ConsignmentBatch.
+     * @param {ConsignmentBatchUpsertArgs} args - Arguments to update or create a ConsignmentBatch.
+     * @example
+     * // Update or create a ConsignmentBatch
+     * const consignmentBatch = await prisma.consignmentBatch.upsert({
+     *   create: {
+     *     // ... data to create a ConsignmentBatch
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ConsignmentBatch we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ConsignmentBatchUpsertArgs>(args: SelectSubset<T, ConsignmentBatchUpsertArgs<ExtArgs>>): Prisma__ConsignmentBatchClient<$Result.GetResult<Prisma.$ConsignmentBatchPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ConsignmentBatches.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConsignmentBatchCountArgs} args - Arguments to filter ConsignmentBatches to count.
+     * @example
+     * // Count the number of ConsignmentBatches
+     * const count = await prisma.consignmentBatch.count({
+     *   where: {
+     *     // ... the filter for the ConsignmentBatches we want to count
+     *   }
+     * })
+    **/
+    count<T extends ConsignmentBatchCountArgs>(
+      args?: Subset<T, ConsignmentBatchCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ConsignmentBatchCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ConsignmentBatch.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConsignmentBatchAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ConsignmentBatchAggregateArgs>(args: Subset<T, ConsignmentBatchAggregateArgs>): Prisma.PrismaPromise<GetConsignmentBatchAggregateType<T>>
+
+    /**
+     * Group by ConsignmentBatch.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConsignmentBatchGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ConsignmentBatchGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ConsignmentBatchGroupByArgs['orderBy'] }
+        : { orderBy?: ConsignmentBatchGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ConsignmentBatchGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetConsignmentBatchGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ConsignmentBatch model
+   */
+  readonly fields: ConsignmentBatchFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ConsignmentBatch.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ConsignmentBatchClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ConsignmentBatch model
+   */
+  interface ConsignmentBatchFieldRefs {
+    readonly id: FieldRef<"ConsignmentBatch", 'String'>
+    readonly outletSourceCode: FieldRef<"ConsignmentBatch", 'String'>
+    readonly outletDestCode: FieldRef<"ConsignmentBatch", 'String'>
+    readonly soulmateMenuItemId: FieldRef<"ConsignmentBatch", 'String'>
+    readonly abuAdelMenuItemId: FieldRef<"ConsignmentBatch", 'String'>
+    readonly itemName: FieldRef<"ConsignmentBatch", 'String'>
+    readonly unitType: FieldRef<"ConsignmentBatch", 'String'>
+    readonly unitCost: FieldRef<"ConsignmentBatch", 'Float'>
+    readonly sellingPrice: FieldRef<"ConsignmentBatch", 'Float'>
+    readonly sentQty: FieldRef<"ConsignmentBatch", 'Float'>
+    readonly soldQty: FieldRef<"ConsignmentBatch", 'Float'>
+    readonly returnedQty: FieldRef<"ConsignmentBatch", 'Float'>
+    readonly remainingQty: FieldRef<"ConsignmentBatch", 'Float'>
+    readonly soldRevenue: FieldRef<"ConsignmentBatch", 'Float'>
+    readonly settledAmount: FieldRef<"ConsignmentBatch", 'Float'>
+    readonly settlementMode: FieldRef<"ConsignmentBatch", 'String'>
+    readonly status: FieldRef<"ConsignmentBatch", 'String'>
+    readonly notes: FieldRef<"ConsignmentBatch", 'String'>
+    readonly recordedBy: FieldRef<"ConsignmentBatch", 'String'>
+    readonly createdAt: FieldRef<"ConsignmentBatch", 'DateTime'>
+    readonly updatedAt: FieldRef<"ConsignmentBatch", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ConsignmentBatch findUnique
+   */
+  export type ConsignmentBatchFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConsignmentBatch
+     */
+    select?: ConsignmentBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConsignmentBatch
+     */
+    omit?: ConsignmentBatchOmit<ExtArgs> | null
+    /**
+     * Filter, which ConsignmentBatch to fetch.
+     */
+    where: ConsignmentBatchWhereUniqueInput
+  }
+
+  /**
+   * ConsignmentBatch findUniqueOrThrow
+   */
+  export type ConsignmentBatchFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConsignmentBatch
+     */
+    select?: ConsignmentBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConsignmentBatch
+     */
+    omit?: ConsignmentBatchOmit<ExtArgs> | null
+    /**
+     * Filter, which ConsignmentBatch to fetch.
+     */
+    where: ConsignmentBatchWhereUniqueInput
+  }
+
+  /**
+   * ConsignmentBatch findFirst
+   */
+  export type ConsignmentBatchFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConsignmentBatch
+     */
+    select?: ConsignmentBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConsignmentBatch
+     */
+    omit?: ConsignmentBatchOmit<ExtArgs> | null
+    /**
+     * Filter, which ConsignmentBatch to fetch.
+     */
+    where?: ConsignmentBatchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConsignmentBatches to fetch.
+     */
+    orderBy?: ConsignmentBatchOrderByWithRelationInput | ConsignmentBatchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ConsignmentBatches.
+     */
+    cursor?: ConsignmentBatchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConsignmentBatches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConsignmentBatches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ConsignmentBatches.
+     */
+    distinct?: ConsignmentBatchScalarFieldEnum | ConsignmentBatchScalarFieldEnum[]
+  }
+
+  /**
+   * ConsignmentBatch findFirstOrThrow
+   */
+  export type ConsignmentBatchFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConsignmentBatch
+     */
+    select?: ConsignmentBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConsignmentBatch
+     */
+    omit?: ConsignmentBatchOmit<ExtArgs> | null
+    /**
+     * Filter, which ConsignmentBatch to fetch.
+     */
+    where?: ConsignmentBatchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConsignmentBatches to fetch.
+     */
+    orderBy?: ConsignmentBatchOrderByWithRelationInput | ConsignmentBatchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ConsignmentBatches.
+     */
+    cursor?: ConsignmentBatchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConsignmentBatches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConsignmentBatches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ConsignmentBatches.
+     */
+    distinct?: ConsignmentBatchScalarFieldEnum | ConsignmentBatchScalarFieldEnum[]
+  }
+
+  /**
+   * ConsignmentBatch findMany
+   */
+  export type ConsignmentBatchFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConsignmentBatch
+     */
+    select?: ConsignmentBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConsignmentBatch
+     */
+    omit?: ConsignmentBatchOmit<ExtArgs> | null
+    /**
+     * Filter, which ConsignmentBatches to fetch.
+     */
+    where?: ConsignmentBatchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConsignmentBatches to fetch.
+     */
+    orderBy?: ConsignmentBatchOrderByWithRelationInput | ConsignmentBatchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ConsignmentBatches.
+     */
+    cursor?: ConsignmentBatchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConsignmentBatches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConsignmentBatches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ConsignmentBatches.
+     */
+    distinct?: ConsignmentBatchScalarFieldEnum | ConsignmentBatchScalarFieldEnum[]
+  }
+
+  /**
+   * ConsignmentBatch create
+   */
+  export type ConsignmentBatchCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConsignmentBatch
+     */
+    select?: ConsignmentBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConsignmentBatch
+     */
+    omit?: ConsignmentBatchOmit<ExtArgs> | null
+    /**
+     * The data needed to create a ConsignmentBatch.
+     */
+    data: XOR<ConsignmentBatchCreateInput, ConsignmentBatchUncheckedCreateInput>
+  }
+
+  /**
+   * ConsignmentBatch createMany
+   */
+  export type ConsignmentBatchCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ConsignmentBatches.
+     */
+    data: ConsignmentBatchCreateManyInput | ConsignmentBatchCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ConsignmentBatch createManyAndReturn
+   */
+  export type ConsignmentBatchCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConsignmentBatch
+     */
+    select?: ConsignmentBatchSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConsignmentBatch
+     */
+    omit?: ConsignmentBatchOmit<ExtArgs> | null
+    /**
+     * The data used to create many ConsignmentBatches.
+     */
+    data: ConsignmentBatchCreateManyInput | ConsignmentBatchCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ConsignmentBatch update
+   */
+  export type ConsignmentBatchUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConsignmentBatch
+     */
+    select?: ConsignmentBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConsignmentBatch
+     */
+    omit?: ConsignmentBatchOmit<ExtArgs> | null
+    /**
+     * The data needed to update a ConsignmentBatch.
+     */
+    data: XOR<ConsignmentBatchUpdateInput, ConsignmentBatchUncheckedUpdateInput>
+    /**
+     * Choose, which ConsignmentBatch to update.
+     */
+    where: ConsignmentBatchWhereUniqueInput
+  }
+
+  /**
+   * ConsignmentBatch updateMany
+   */
+  export type ConsignmentBatchUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ConsignmentBatches.
+     */
+    data: XOR<ConsignmentBatchUpdateManyMutationInput, ConsignmentBatchUncheckedUpdateManyInput>
+    /**
+     * Filter which ConsignmentBatches to update
+     */
+    where?: ConsignmentBatchWhereInput
+    /**
+     * Limit how many ConsignmentBatches to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ConsignmentBatch updateManyAndReturn
+   */
+  export type ConsignmentBatchUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConsignmentBatch
+     */
+    select?: ConsignmentBatchSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConsignmentBatch
+     */
+    omit?: ConsignmentBatchOmit<ExtArgs> | null
+    /**
+     * The data used to update ConsignmentBatches.
+     */
+    data: XOR<ConsignmentBatchUpdateManyMutationInput, ConsignmentBatchUncheckedUpdateManyInput>
+    /**
+     * Filter which ConsignmentBatches to update
+     */
+    where?: ConsignmentBatchWhereInput
+    /**
+     * Limit how many ConsignmentBatches to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ConsignmentBatch upsert
+   */
+  export type ConsignmentBatchUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConsignmentBatch
+     */
+    select?: ConsignmentBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConsignmentBatch
+     */
+    omit?: ConsignmentBatchOmit<ExtArgs> | null
+    /**
+     * The filter to search for the ConsignmentBatch to update in case it exists.
+     */
+    where: ConsignmentBatchWhereUniqueInput
+    /**
+     * In case the ConsignmentBatch found by the `where` argument doesn't exist, create a new ConsignmentBatch with this data.
+     */
+    create: XOR<ConsignmentBatchCreateInput, ConsignmentBatchUncheckedCreateInput>
+    /**
+     * In case the ConsignmentBatch was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ConsignmentBatchUpdateInput, ConsignmentBatchUncheckedUpdateInput>
+  }
+
+  /**
+   * ConsignmentBatch delete
+   */
+  export type ConsignmentBatchDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConsignmentBatch
+     */
+    select?: ConsignmentBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConsignmentBatch
+     */
+    omit?: ConsignmentBatchOmit<ExtArgs> | null
+    /**
+     * Filter which ConsignmentBatch to delete.
+     */
+    where: ConsignmentBatchWhereUniqueInput
+  }
+
+  /**
+   * ConsignmentBatch deleteMany
+   */
+  export type ConsignmentBatchDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ConsignmentBatches to delete
+     */
+    where?: ConsignmentBatchWhereInput
+    /**
+     * Limit how many ConsignmentBatches to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ConsignmentBatch without action
+   */
+  export type ConsignmentBatchDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConsignmentBatch
+     */
+    select?: ConsignmentBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConsignmentBatch
+     */
+    omit?: ConsignmentBatchOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -41726,6 +43223,9 @@ export namespace Prisma {
     discountAmount: 'discountAmount',
     tipAmount: 'tipAmount',
     finalAmount: 'finalAmount',
+    commissionPercent: 'commissionPercent',
+    commissionAmount: 'commissionAmount',
+    platformNetAmount: 'platformNetAmount',
     cashierName: 'cashierName',
     waiterName: 'waiterName',
     customerName: 'customerName',
@@ -41775,6 +43275,8 @@ export namespace Prisma {
     visaCollected: 'visaCollected',
     instapayCollected: 'instapayCollected',
     vodafoneCollected: 'vodafoneCollected',
+    talabatCollected: 'talabatCollected',
+    talabatCommission: 'talabatCommission',
     deliveryFeesTotal: 'deliveryFeesTotal',
     totalRevenue: 'totalRevenue',
     expensesTotal: 'expensesTotal',
@@ -41800,6 +43302,8 @@ export namespace Prisma {
     totalVisa: 'totalVisa',
     totalInstapay: 'totalInstapay',
     totalVodafone: 'totalVodafone',
+    totalTalabat: 'totalTalabat',
+    totalTalabatCommission: 'totalTalabatCommission',
     totalExpenses: 'totalExpenses',
     netCashInSafe: 'netCashInSafe',
     ordersCount: 'ordersCount',
@@ -41859,6 +43363,7 @@ export namespace Prisma {
     dailyReportAlertSound: 'dailyReportAlertSound',
     internalSupplyMarkupEnabled: 'internalSupplyMarkupEnabled',
     internalSupplyMarkupPercent: 'internalSupplyMarkupPercent',
+    talabatCommissionPercent: 'talabatCommissionPercent',
     geminiApiKey: 'geminiApiKey',
     receiptFooterNotes: 'receiptFooterNotes',
     systemLocked: 'systemLocked',
@@ -42045,6 +43550,33 @@ export namespace Prisma {
   };
 
   export type PushSubscriptionScalarFieldEnum = (typeof PushSubscriptionScalarFieldEnum)[keyof typeof PushSubscriptionScalarFieldEnum]
+
+
+  export const ConsignmentBatchScalarFieldEnum: {
+    id: 'id',
+    outletSourceCode: 'outletSourceCode',
+    outletDestCode: 'outletDestCode',
+    soulmateMenuItemId: 'soulmateMenuItemId',
+    abuAdelMenuItemId: 'abuAdelMenuItemId',
+    itemName: 'itemName',
+    unitType: 'unitType',
+    unitCost: 'unitCost',
+    sellingPrice: 'sellingPrice',
+    sentQty: 'sentQty',
+    soldQty: 'soldQty',
+    returnedQty: 'returnedQty',
+    remainingQty: 'remainingQty',
+    soldRevenue: 'soldRevenue',
+    settledAmount: 'settledAmount',
+    settlementMode: 'settlementMode',
+    status: 'status',
+    notes: 'notes',
+    recordedBy: 'recordedBy',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ConsignmentBatchScalarFieldEnum = (typeof ConsignmentBatchScalarFieldEnum)[keyof typeof ConsignmentBatchScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -43557,6 +45089,9 @@ export namespace Prisma {
     discountAmount?: FloatFilter<"Order"> | number
     tipAmount?: FloatFilter<"Order"> | number
     finalAmount?: FloatFilter<"Order"> | number
+    commissionPercent?: FloatFilter<"Order"> | number
+    commissionAmount?: FloatFilter<"Order"> | number
+    platformNetAmount?: FloatFilter<"Order"> | number
     cashierName?: StringNullableFilter<"Order"> | string | null
     waiterName?: StringNullableFilter<"Order"> | string | null
     customerName?: StringNullableFilter<"Order"> | string | null
@@ -43617,6 +45152,9 @@ export namespace Prisma {
     discountAmount?: SortOrder
     tipAmount?: SortOrder
     finalAmount?: SortOrder
+    commissionPercent?: SortOrder
+    commissionAmount?: SortOrder
+    platformNetAmount?: SortOrder
     cashierName?: SortOrderInput | SortOrder
     waiterName?: SortOrderInput | SortOrder
     customerName?: SortOrderInput | SortOrder
@@ -43680,6 +45218,9 @@ export namespace Prisma {
     discountAmount?: FloatFilter<"Order"> | number
     tipAmount?: FloatFilter<"Order"> | number
     finalAmount?: FloatFilter<"Order"> | number
+    commissionPercent?: FloatFilter<"Order"> | number
+    commissionAmount?: FloatFilter<"Order"> | number
+    platformNetAmount?: FloatFilter<"Order"> | number
     cashierName?: StringNullableFilter<"Order"> | string | null
     waiterName?: StringNullableFilter<"Order"> | string | null
     customerName?: StringNullableFilter<"Order"> | string | null
@@ -43740,6 +45281,9 @@ export namespace Prisma {
     discountAmount?: SortOrder
     tipAmount?: SortOrder
     finalAmount?: SortOrder
+    commissionPercent?: SortOrder
+    commissionAmount?: SortOrder
+    platformNetAmount?: SortOrder
     cashierName?: SortOrderInput | SortOrder
     waiterName?: SortOrderInput | SortOrder
     customerName?: SortOrderInput | SortOrder
@@ -43801,6 +45345,9 @@ export namespace Prisma {
     discountAmount?: FloatWithAggregatesFilter<"Order"> | number
     tipAmount?: FloatWithAggregatesFilter<"Order"> | number
     finalAmount?: FloatWithAggregatesFilter<"Order"> | number
+    commissionPercent?: FloatWithAggregatesFilter<"Order"> | number
+    commissionAmount?: FloatWithAggregatesFilter<"Order"> | number
+    platformNetAmount?: FloatWithAggregatesFilter<"Order"> | number
     cashierName?: StringNullableWithAggregatesFilter<"Order"> | string | null
     waiterName?: StringNullableWithAggregatesFilter<"Order"> | string | null
     customerName?: StringNullableWithAggregatesFilter<"Order"> | string | null
@@ -43902,6 +45449,8 @@ export namespace Prisma {
     visaCollected?: FloatFilter<"Shift"> | number
     instapayCollected?: FloatFilter<"Shift"> | number
     vodafoneCollected?: FloatFilter<"Shift"> | number
+    talabatCollected?: FloatFilter<"Shift"> | number
+    talabatCommission?: FloatFilter<"Shift"> | number
     deliveryFeesTotal?: FloatFilter<"Shift"> | number
     totalRevenue?: FloatFilter<"Shift"> | number
     expensesTotal?: FloatFilter<"Shift"> | number
@@ -43928,6 +45477,8 @@ export namespace Prisma {
     visaCollected?: SortOrder
     instapayCollected?: SortOrder
     vodafoneCollected?: SortOrder
+    talabatCollected?: SortOrder
+    talabatCommission?: SortOrder
     deliveryFeesTotal?: SortOrder
     totalRevenue?: SortOrder
     expensesTotal?: SortOrder
@@ -43957,6 +45508,8 @@ export namespace Prisma {
     visaCollected?: FloatFilter<"Shift"> | number
     instapayCollected?: FloatFilter<"Shift"> | number
     vodafoneCollected?: FloatFilter<"Shift"> | number
+    talabatCollected?: FloatFilter<"Shift"> | number
+    talabatCommission?: FloatFilter<"Shift"> | number
     deliveryFeesTotal?: FloatFilter<"Shift"> | number
     totalRevenue?: FloatFilter<"Shift"> | number
     expensesTotal?: FloatFilter<"Shift"> | number
@@ -43983,6 +45536,8 @@ export namespace Prisma {
     visaCollected?: SortOrder
     instapayCollected?: SortOrder
     vodafoneCollected?: SortOrder
+    talabatCollected?: SortOrder
+    talabatCommission?: SortOrder
     deliveryFeesTotal?: SortOrder
     totalRevenue?: SortOrder
     expensesTotal?: SortOrder
@@ -44016,6 +45571,8 @@ export namespace Prisma {
     visaCollected?: FloatWithAggregatesFilter<"Shift"> | number
     instapayCollected?: FloatWithAggregatesFilter<"Shift"> | number
     vodafoneCollected?: FloatWithAggregatesFilter<"Shift"> | number
+    talabatCollected?: FloatWithAggregatesFilter<"Shift"> | number
+    talabatCommission?: FloatWithAggregatesFilter<"Shift"> | number
     deliveryFeesTotal?: FloatWithAggregatesFilter<"Shift"> | number
     totalRevenue?: FloatWithAggregatesFilter<"Shift"> | number
     expensesTotal?: FloatWithAggregatesFilter<"Shift"> | number
@@ -44041,6 +45598,8 @@ export namespace Prisma {
     totalVisa?: FloatFilter<"DailyClose"> | number
     totalInstapay?: FloatFilter<"DailyClose"> | number
     totalVodafone?: FloatFilter<"DailyClose"> | number
+    totalTalabat?: FloatFilter<"DailyClose"> | number
+    totalTalabatCommission?: FloatFilter<"DailyClose"> | number
     totalExpenses?: FloatFilter<"DailyClose"> | number
     netCashInSafe?: FloatFilter<"DailyClose"> | number
     ordersCount?: IntFilter<"DailyClose"> | number
@@ -44061,6 +45620,8 @@ export namespace Prisma {
     totalVisa?: SortOrder
     totalInstapay?: SortOrder
     totalVodafone?: SortOrder
+    totalTalabat?: SortOrder
+    totalTalabatCommission?: SortOrder
     totalExpenses?: SortOrder
     netCashInSafe?: SortOrder
     ordersCount?: SortOrder
@@ -44084,6 +45645,8 @@ export namespace Prisma {
     totalVisa?: FloatFilter<"DailyClose"> | number
     totalInstapay?: FloatFilter<"DailyClose"> | number
     totalVodafone?: FloatFilter<"DailyClose"> | number
+    totalTalabat?: FloatFilter<"DailyClose"> | number
+    totalTalabatCommission?: FloatFilter<"DailyClose"> | number
     totalExpenses?: FloatFilter<"DailyClose"> | number
     netCashInSafe?: FloatFilter<"DailyClose"> | number
     ordersCount?: IntFilter<"DailyClose"> | number
@@ -44104,6 +45667,8 @@ export namespace Prisma {
     totalVisa?: SortOrder
     totalInstapay?: SortOrder
     totalVodafone?: SortOrder
+    totalTalabat?: SortOrder
+    totalTalabatCommission?: SortOrder
     totalExpenses?: SortOrder
     netCashInSafe?: SortOrder
     ordersCount?: SortOrder
@@ -44131,6 +45696,8 @@ export namespace Prisma {
     totalVisa?: FloatWithAggregatesFilter<"DailyClose"> | number
     totalInstapay?: FloatWithAggregatesFilter<"DailyClose"> | number
     totalVodafone?: FloatWithAggregatesFilter<"DailyClose"> | number
+    totalTalabat?: FloatWithAggregatesFilter<"DailyClose"> | number
+    totalTalabatCommission?: FloatWithAggregatesFilter<"DailyClose"> | number
     totalExpenses?: FloatWithAggregatesFilter<"DailyClose"> | number
     netCashInSafe?: FloatWithAggregatesFilter<"DailyClose"> | number
     ordersCount?: IntWithAggregatesFilter<"DailyClose"> | number
@@ -44248,6 +45815,7 @@ export namespace Prisma {
     dailyReportAlertSound?: BoolFilter<"SystemSettings"> | boolean
     internalSupplyMarkupEnabled?: BoolFilter<"SystemSettings"> | boolean
     internalSupplyMarkupPercent?: FloatFilter<"SystemSettings"> | number
+    talabatCommissionPercent?: FloatFilter<"SystemSettings"> | number
     geminiApiKey?: StringNullableFilter<"SystemSettings"> | string | null
     receiptFooterNotes?: StringFilter<"SystemSettings"> | string
     systemLocked?: BoolFilter<"SystemSettings"> | boolean
@@ -44291,6 +45859,7 @@ export namespace Prisma {
     dailyReportAlertSound?: SortOrder
     internalSupplyMarkupEnabled?: SortOrder
     internalSupplyMarkupPercent?: SortOrder
+    talabatCommissionPercent?: SortOrder
     geminiApiKey?: SortOrderInput | SortOrder
     receiptFooterNotes?: SortOrder
     systemLocked?: SortOrder
@@ -44337,6 +45906,7 @@ export namespace Prisma {
     dailyReportAlertSound?: BoolFilter<"SystemSettings"> | boolean
     internalSupplyMarkupEnabled?: BoolFilter<"SystemSettings"> | boolean
     internalSupplyMarkupPercent?: FloatFilter<"SystemSettings"> | number
+    talabatCommissionPercent?: FloatFilter<"SystemSettings"> | number
     geminiApiKey?: StringNullableFilter<"SystemSettings"> | string | null
     receiptFooterNotes?: StringFilter<"SystemSettings"> | string
     systemLocked?: BoolFilter<"SystemSettings"> | boolean
@@ -44380,6 +45950,7 @@ export namespace Prisma {
     dailyReportAlertSound?: SortOrder
     internalSupplyMarkupEnabled?: SortOrder
     internalSupplyMarkupPercent?: SortOrder
+    talabatCommissionPercent?: SortOrder
     geminiApiKey?: SortOrderInput | SortOrder
     receiptFooterNotes?: SortOrder
     systemLocked?: SortOrder
@@ -44431,6 +46002,7 @@ export namespace Prisma {
     dailyReportAlertSound?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
     internalSupplyMarkupEnabled?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
     internalSupplyMarkupPercent?: FloatWithAggregatesFilter<"SystemSettings"> | number
+    talabatCommissionPercent?: FloatWithAggregatesFilter<"SystemSettings"> | number
     geminiApiKey?: StringNullableWithAggregatesFilter<"SystemSettings"> | string | null
     receiptFooterNotes?: StringWithAggregatesFilter<"SystemSettings"> | string
     systemLocked?: BoolWithAggregatesFilter<"SystemSettings"> | boolean
@@ -45331,6 +46903,140 @@ export namespace Prisma {
     lastNotifiedAt?: DateTimeNullableWithAggregatesFilter<"PushSubscription"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"PushSubscription"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"PushSubscription"> | Date | string
+  }
+
+  export type ConsignmentBatchWhereInput = {
+    AND?: ConsignmentBatchWhereInput | ConsignmentBatchWhereInput[]
+    OR?: ConsignmentBatchWhereInput[]
+    NOT?: ConsignmentBatchWhereInput | ConsignmentBatchWhereInput[]
+    id?: StringFilter<"ConsignmentBatch"> | string
+    outletSourceCode?: StringFilter<"ConsignmentBatch"> | string
+    outletDestCode?: StringFilter<"ConsignmentBatch"> | string
+    soulmateMenuItemId?: StringFilter<"ConsignmentBatch"> | string
+    abuAdelMenuItemId?: StringNullableFilter<"ConsignmentBatch"> | string | null
+    itemName?: StringFilter<"ConsignmentBatch"> | string
+    unitType?: StringFilter<"ConsignmentBatch"> | string
+    unitCost?: FloatFilter<"ConsignmentBatch"> | number
+    sellingPrice?: FloatFilter<"ConsignmentBatch"> | number
+    sentQty?: FloatFilter<"ConsignmentBatch"> | number
+    soldQty?: FloatFilter<"ConsignmentBatch"> | number
+    returnedQty?: FloatFilter<"ConsignmentBatch"> | number
+    remainingQty?: FloatFilter<"ConsignmentBatch"> | number
+    soldRevenue?: FloatFilter<"ConsignmentBatch"> | number
+    settledAmount?: FloatFilter<"ConsignmentBatch"> | number
+    settlementMode?: StringFilter<"ConsignmentBatch"> | string
+    status?: StringFilter<"ConsignmentBatch"> | string
+    notes?: StringNullableFilter<"ConsignmentBatch"> | string | null
+    recordedBy?: StringFilter<"ConsignmentBatch"> | string
+    createdAt?: DateTimeFilter<"ConsignmentBatch"> | Date | string
+    updatedAt?: DateTimeFilter<"ConsignmentBatch"> | Date | string
+  }
+
+  export type ConsignmentBatchOrderByWithRelationInput = {
+    id?: SortOrder
+    outletSourceCode?: SortOrder
+    outletDestCode?: SortOrder
+    soulmateMenuItemId?: SortOrder
+    abuAdelMenuItemId?: SortOrderInput | SortOrder
+    itemName?: SortOrder
+    unitType?: SortOrder
+    unitCost?: SortOrder
+    sellingPrice?: SortOrder
+    sentQty?: SortOrder
+    soldQty?: SortOrder
+    returnedQty?: SortOrder
+    remainingQty?: SortOrder
+    soldRevenue?: SortOrder
+    settledAmount?: SortOrder
+    settlementMode?: SortOrder
+    status?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    recordedBy?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ConsignmentBatchWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ConsignmentBatchWhereInput | ConsignmentBatchWhereInput[]
+    OR?: ConsignmentBatchWhereInput[]
+    NOT?: ConsignmentBatchWhereInput | ConsignmentBatchWhereInput[]
+    outletSourceCode?: StringFilter<"ConsignmentBatch"> | string
+    outletDestCode?: StringFilter<"ConsignmentBatch"> | string
+    soulmateMenuItemId?: StringFilter<"ConsignmentBatch"> | string
+    abuAdelMenuItemId?: StringNullableFilter<"ConsignmentBatch"> | string | null
+    itemName?: StringFilter<"ConsignmentBatch"> | string
+    unitType?: StringFilter<"ConsignmentBatch"> | string
+    unitCost?: FloatFilter<"ConsignmentBatch"> | number
+    sellingPrice?: FloatFilter<"ConsignmentBatch"> | number
+    sentQty?: FloatFilter<"ConsignmentBatch"> | number
+    soldQty?: FloatFilter<"ConsignmentBatch"> | number
+    returnedQty?: FloatFilter<"ConsignmentBatch"> | number
+    remainingQty?: FloatFilter<"ConsignmentBatch"> | number
+    soldRevenue?: FloatFilter<"ConsignmentBatch"> | number
+    settledAmount?: FloatFilter<"ConsignmentBatch"> | number
+    settlementMode?: StringFilter<"ConsignmentBatch"> | string
+    status?: StringFilter<"ConsignmentBatch"> | string
+    notes?: StringNullableFilter<"ConsignmentBatch"> | string | null
+    recordedBy?: StringFilter<"ConsignmentBatch"> | string
+    createdAt?: DateTimeFilter<"ConsignmentBatch"> | Date | string
+    updatedAt?: DateTimeFilter<"ConsignmentBatch"> | Date | string
+  }, "id">
+
+  export type ConsignmentBatchOrderByWithAggregationInput = {
+    id?: SortOrder
+    outletSourceCode?: SortOrder
+    outletDestCode?: SortOrder
+    soulmateMenuItemId?: SortOrder
+    abuAdelMenuItemId?: SortOrderInput | SortOrder
+    itemName?: SortOrder
+    unitType?: SortOrder
+    unitCost?: SortOrder
+    sellingPrice?: SortOrder
+    sentQty?: SortOrder
+    soldQty?: SortOrder
+    returnedQty?: SortOrder
+    remainingQty?: SortOrder
+    soldRevenue?: SortOrder
+    settledAmount?: SortOrder
+    settlementMode?: SortOrder
+    status?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    recordedBy?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ConsignmentBatchCountOrderByAggregateInput
+    _avg?: ConsignmentBatchAvgOrderByAggregateInput
+    _max?: ConsignmentBatchMaxOrderByAggregateInput
+    _min?: ConsignmentBatchMinOrderByAggregateInput
+    _sum?: ConsignmentBatchSumOrderByAggregateInput
+  }
+
+  export type ConsignmentBatchScalarWhereWithAggregatesInput = {
+    AND?: ConsignmentBatchScalarWhereWithAggregatesInput | ConsignmentBatchScalarWhereWithAggregatesInput[]
+    OR?: ConsignmentBatchScalarWhereWithAggregatesInput[]
+    NOT?: ConsignmentBatchScalarWhereWithAggregatesInput | ConsignmentBatchScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ConsignmentBatch"> | string
+    outletSourceCode?: StringWithAggregatesFilter<"ConsignmentBatch"> | string
+    outletDestCode?: StringWithAggregatesFilter<"ConsignmentBatch"> | string
+    soulmateMenuItemId?: StringWithAggregatesFilter<"ConsignmentBatch"> | string
+    abuAdelMenuItemId?: StringNullableWithAggregatesFilter<"ConsignmentBatch"> | string | null
+    itemName?: StringWithAggregatesFilter<"ConsignmentBatch"> | string
+    unitType?: StringWithAggregatesFilter<"ConsignmentBatch"> | string
+    unitCost?: FloatWithAggregatesFilter<"ConsignmentBatch"> | number
+    sellingPrice?: FloatWithAggregatesFilter<"ConsignmentBatch"> | number
+    sentQty?: FloatWithAggregatesFilter<"ConsignmentBatch"> | number
+    soldQty?: FloatWithAggregatesFilter<"ConsignmentBatch"> | number
+    returnedQty?: FloatWithAggregatesFilter<"ConsignmentBatch"> | number
+    remainingQty?: FloatWithAggregatesFilter<"ConsignmentBatch"> | number
+    soldRevenue?: FloatWithAggregatesFilter<"ConsignmentBatch"> | number
+    settledAmount?: FloatWithAggregatesFilter<"ConsignmentBatch"> | number
+    settlementMode?: StringWithAggregatesFilter<"ConsignmentBatch"> | string
+    status?: StringWithAggregatesFilter<"ConsignmentBatch"> | string
+    notes?: StringNullableWithAggregatesFilter<"ConsignmentBatch"> | string | null
+    recordedBy?: StringWithAggregatesFilter<"ConsignmentBatch"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"ConsignmentBatch"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ConsignmentBatch"> | Date | string
   }
 
   export type OutletCreateInput = {
@@ -46938,6 +48644,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -46997,6 +48706,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -47048,6 +48760,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47107,6 +48822,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47162,6 +48880,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -47211,6 +48932,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47263,6 +48987,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47364,6 +49091,8 @@ export namespace Prisma {
     visaCollected?: number
     instapayCollected?: number
     vodafoneCollected?: number
+    talabatCollected?: number
+    talabatCommission?: number
     deliveryFeesTotal?: number
     totalRevenue?: number
     expensesTotal?: number
@@ -47390,6 +49119,8 @@ export namespace Prisma {
     visaCollected?: number
     instapayCollected?: number
     vodafoneCollected?: number
+    talabatCollected?: number
+    talabatCommission?: number
     deliveryFeesTotal?: number
     totalRevenue?: number
     expensesTotal?: number
@@ -47414,6 +49145,8 @@ export namespace Prisma {
     visaCollected?: FloatFieldUpdateOperationsInput | number
     instapayCollected?: FloatFieldUpdateOperationsInput | number
     vodafoneCollected?: FloatFieldUpdateOperationsInput | number
+    talabatCollected?: FloatFieldUpdateOperationsInput | number
+    talabatCommission?: FloatFieldUpdateOperationsInput | number
     deliveryFeesTotal?: FloatFieldUpdateOperationsInput | number
     totalRevenue?: FloatFieldUpdateOperationsInput | number
     expensesTotal?: FloatFieldUpdateOperationsInput | number
@@ -47440,6 +49173,8 @@ export namespace Prisma {
     visaCollected?: FloatFieldUpdateOperationsInput | number
     instapayCollected?: FloatFieldUpdateOperationsInput | number
     vodafoneCollected?: FloatFieldUpdateOperationsInput | number
+    talabatCollected?: FloatFieldUpdateOperationsInput | number
+    talabatCommission?: FloatFieldUpdateOperationsInput | number
     deliveryFeesTotal?: FloatFieldUpdateOperationsInput | number
     totalRevenue?: FloatFieldUpdateOperationsInput | number
     expensesTotal?: FloatFieldUpdateOperationsInput | number
@@ -47465,6 +49200,8 @@ export namespace Prisma {
     visaCollected?: number
     instapayCollected?: number
     vodafoneCollected?: number
+    talabatCollected?: number
+    talabatCommission?: number
     deliveryFeesTotal?: number
     totalRevenue?: number
     expensesTotal?: number
@@ -47489,6 +49226,8 @@ export namespace Prisma {
     visaCollected?: FloatFieldUpdateOperationsInput | number
     instapayCollected?: FloatFieldUpdateOperationsInput | number
     vodafoneCollected?: FloatFieldUpdateOperationsInput | number
+    talabatCollected?: FloatFieldUpdateOperationsInput | number
+    talabatCommission?: FloatFieldUpdateOperationsInput | number
     deliveryFeesTotal?: FloatFieldUpdateOperationsInput | number
     totalRevenue?: FloatFieldUpdateOperationsInput | number
     expensesTotal?: FloatFieldUpdateOperationsInput | number
@@ -47514,6 +49253,8 @@ export namespace Prisma {
     visaCollected?: FloatFieldUpdateOperationsInput | number
     instapayCollected?: FloatFieldUpdateOperationsInput | number
     vodafoneCollected?: FloatFieldUpdateOperationsInput | number
+    talabatCollected?: FloatFieldUpdateOperationsInput | number
+    talabatCommission?: FloatFieldUpdateOperationsInput | number
     deliveryFeesTotal?: FloatFieldUpdateOperationsInput | number
     totalRevenue?: FloatFieldUpdateOperationsInput | number
     expensesTotal?: FloatFieldUpdateOperationsInput | number
@@ -47535,6 +49276,8 @@ export namespace Prisma {
     totalVisa?: number
     totalInstapay?: number
     totalVodafone?: number
+    totalTalabat?: number
+    totalTalabatCommission?: number
     totalExpenses?: number
     netCashInSafe?: number
     ordersCount?: number
@@ -47555,6 +49298,8 @@ export namespace Prisma {
     totalVisa?: number
     totalInstapay?: number
     totalVodafone?: number
+    totalTalabat?: number
+    totalTalabatCommission?: number
     totalExpenses?: number
     netCashInSafe?: number
     ordersCount?: number
@@ -47573,6 +49318,8 @@ export namespace Prisma {
     totalVisa?: FloatFieldUpdateOperationsInput | number
     totalInstapay?: FloatFieldUpdateOperationsInput | number
     totalVodafone?: FloatFieldUpdateOperationsInput | number
+    totalTalabat?: FloatFieldUpdateOperationsInput | number
+    totalTalabatCommission?: FloatFieldUpdateOperationsInput | number
     totalExpenses?: FloatFieldUpdateOperationsInput | number
     netCashInSafe?: FloatFieldUpdateOperationsInput | number
     ordersCount?: IntFieldUpdateOperationsInput | number
@@ -47593,6 +49340,8 @@ export namespace Prisma {
     totalVisa?: FloatFieldUpdateOperationsInput | number
     totalInstapay?: FloatFieldUpdateOperationsInput | number
     totalVodafone?: FloatFieldUpdateOperationsInput | number
+    totalTalabat?: FloatFieldUpdateOperationsInput | number
+    totalTalabatCommission?: FloatFieldUpdateOperationsInput | number
     totalExpenses?: FloatFieldUpdateOperationsInput | number
     netCashInSafe?: FloatFieldUpdateOperationsInput | number
     ordersCount?: IntFieldUpdateOperationsInput | number
@@ -47612,6 +49361,8 @@ export namespace Prisma {
     totalVisa?: number
     totalInstapay?: number
     totalVodafone?: number
+    totalTalabat?: number
+    totalTalabatCommission?: number
     totalExpenses?: number
     netCashInSafe?: number
     ordersCount?: number
@@ -47630,6 +49381,8 @@ export namespace Prisma {
     totalVisa?: FloatFieldUpdateOperationsInput | number
     totalInstapay?: FloatFieldUpdateOperationsInput | number
     totalVodafone?: FloatFieldUpdateOperationsInput | number
+    totalTalabat?: FloatFieldUpdateOperationsInput | number
+    totalTalabatCommission?: FloatFieldUpdateOperationsInput | number
     totalExpenses?: FloatFieldUpdateOperationsInput | number
     netCashInSafe?: FloatFieldUpdateOperationsInput | number
     ordersCount?: IntFieldUpdateOperationsInput | number
@@ -47649,6 +49402,8 @@ export namespace Prisma {
     totalVisa?: FloatFieldUpdateOperationsInput | number
     totalInstapay?: FloatFieldUpdateOperationsInput | number
     totalVodafone?: FloatFieldUpdateOperationsInput | number
+    totalTalabat?: FloatFieldUpdateOperationsInput | number
+    totalTalabatCommission?: FloatFieldUpdateOperationsInput | number
     totalExpenses?: FloatFieldUpdateOperationsInput | number
     netCashInSafe?: FloatFieldUpdateOperationsInput | number
     ordersCount?: IntFieldUpdateOperationsInput | number
@@ -47767,6 +49522,7 @@ export namespace Prisma {
     dailyReportAlertSound?: boolean
     internalSupplyMarkupEnabled?: boolean
     internalSupplyMarkupPercent?: number
+    talabatCommissionPercent?: number
     geminiApiKey?: string | null
     receiptFooterNotes?: string
     systemLocked?: boolean
@@ -47810,6 +49566,7 @@ export namespace Prisma {
     dailyReportAlertSound?: boolean
     internalSupplyMarkupEnabled?: boolean
     internalSupplyMarkupPercent?: number
+    talabatCommissionPercent?: number
     geminiApiKey?: string | null
     receiptFooterNotes?: string
     systemLocked?: boolean
@@ -47853,6 +49610,7 @@ export namespace Prisma {
     dailyReportAlertSound?: BoolFieldUpdateOperationsInput | boolean
     internalSupplyMarkupEnabled?: BoolFieldUpdateOperationsInput | boolean
     internalSupplyMarkupPercent?: FloatFieldUpdateOperationsInput | number
+    talabatCommissionPercent?: FloatFieldUpdateOperationsInput | number
     geminiApiKey?: NullableStringFieldUpdateOperationsInput | string | null
     receiptFooterNotes?: StringFieldUpdateOperationsInput | string
     systemLocked?: BoolFieldUpdateOperationsInput | boolean
@@ -47896,6 +49654,7 @@ export namespace Prisma {
     dailyReportAlertSound?: BoolFieldUpdateOperationsInput | boolean
     internalSupplyMarkupEnabled?: BoolFieldUpdateOperationsInput | boolean
     internalSupplyMarkupPercent?: FloatFieldUpdateOperationsInput | number
+    talabatCommissionPercent?: FloatFieldUpdateOperationsInput | number
     geminiApiKey?: NullableStringFieldUpdateOperationsInput | string | null
     receiptFooterNotes?: StringFieldUpdateOperationsInput | string
     systemLocked?: BoolFieldUpdateOperationsInput | boolean
@@ -47939,6 +49698,7 @@ export namespace Prisma {
     dailyReportAlertSound?: boolean
     internalSupplyMarkupEnabled?: boolean
     internalSupplyMarkupPercent?: number
+    talabatCommissionPercent?: number
     geminiApiKey?: string | null
     receiptFooterNotes?: string
     systemLocked?: boolean
@@ -47982,6 +49742,7 @@ export namespace Prisma {
     dailyReportAlertSound?: BoolFieldUpdateOperationsInput | boolean
     internalSupplyMarkupEnabled?: BoolFieldUpdateOperationsInput | boolean
     internalSupplyMarkupPercent?: FloatFieldUpdateOperationsInput | number
+    talabatCommissionPercent?: FloatFieldUpdateOperationsInput | number
     geminiApiKey?: NullableStringFieldUpdateOperationsInput | string | null
     receiptFooterNotes?: StringFieldUpdateOperationsInput | string
     systemLocked?: BoolFieldUpdateOperationsInput | boolean
@@ -48025,6 +49786,7 @@ export namespace Prisma {
     dailyReportAlertSound?: BoolFieldUpdateOperationsInput | boolean
     internalSupplyMarkupEnabled?: BoolFieldUpdateOperationsInput | boolean
     internalSupplyMarkupPercent?: FloatFieldUpdateOperationsInput | number
+    talabatCommissionPercent?: FloatFieldUpdateOperationsInput | number
     geminiApiKey?: NullableStringFieldUpdateOperationsInput | string | null
     receiptFooterNotes?: StringFieldUpdateOperationsInput | string
     systemLocked?: BoolFieldUpdateOperationsInput | boolean
@@ -49073,6 +50835,174 @@ export namespace Prisma {
     userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     lastNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConsignmentBatchCreateInput = {
+    id?: string
+    outletSourceCode?: string
+    outletDestCode?: string
+    soulmateMenuItemId: string
+    abuAdelMenuItemId?: string | null
+    itemName: string
+    unitType?: string
+    unitCost?: number
+    sellingPrice?: number
+    sentQty?: number
+    soldQty?: number
+    returnedQty?: number
+    remainingQty?: number
+    soldRevenue?: number
+    settledAmount?: number
+    settlementMode?: string
+    status?: string
+    notes?: string | null
+    recordedBy?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ConsignmentBatchUncheckedCreateInput = {
+    id?: string
+    outletSourceCode?: string
+    outletDestCode?: string
+    soulmateMenuItemId: string
+    abuAdelMenuItemId?: string | null
+    itemName: string
+    unitType?: string
+    unitCost?: number
+    sellingPrice?: number
+    sentQty?: number
+    soldQty?: number
+    returnedQty?: number
+    remainingQty?: number
+    soldRevenue?: number
+    settledAmount?: number
+    settlementMode?: string
+    status?: string
+    notes?: string | null
+    recordedBy?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ConsignmentBatchUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletSourceCode?: StringFieldUpdateOperationsInput | string
+    outletDestCode?: StringFieldUpdateOperationsInput | string
+    soulmateMenuItemId?: StringFieldUpdateOperationsInput | string
+    abuAdelMenuItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    itemName?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    unitCost?: FloatFieldUpdateOperationsInput | number
+    sellingPrice?: FloatFieldUpdateOperationsInput | number
+    sentQty?: FloatFieldUpdateOperationsInput | number
+    soldQty?: FloatFieldUpdateOperationsInput | number
+    returnedQty?: FloatFieldUpdateOperationsInput | number
+    remainingQty?: FloatFieldUpdateOperationsInput | number
+    soldRevenue?: FloatFieldUpdateOperationsInput | number
+    settledAmount?: FloatFieldUpdateOperationsInput | number
+    settlementMode?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConsignmentBatchUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletSourceCode?: StringFieldUpdateOperationsInput | string
+    outletDestCode?: StringFieldUpdateOperationsInput | string
+    soulmateMenuItemId?: StringFieldUpdateOperationsInput | string
+    abuAdelMenuItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    itemName?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    unitCost?: FloatFieldUpdateOperationsInput | number
+    sellingPrice?: FloatFieldUpdateOperationsInput | number
+    sentQty?: FloatFieldUpdateOperationsInput | number
+    soldQty?: FloatFieldUpdateOperationsInput | number
+    returnedQty?: FloatFieldUpdateOperationsInput | number
+    remainingQty?: FloatFieldUpdateOperationsInput | number
+    soldRevenue?: FloatFieldUpdateOperationsInput | number
+    settledAmount?: FloatFieldUpdateOperationsInput | number
+    settlementMode?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConsignmentBatchCreateManyInput = {
+    id?: string
+    outletSourceCode?: string
+    outletDestCode?: string
+    soulmateMenuItemId: string
+    abuAdelMenuItemId?: string | null
+    itemName: string
+    unitType?: string
+    unitCost?: number
+    sellingPrice?: number
+    sentQty?: number
+    soldQty?: number
+    returnedQty?: number
+    remainingQty?: number
+    soldRevenue?: number
+    settledAmount?: number
+    settlementMode?: string
+    status?: string
+    notes?: string | null
+    recordedBy?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ConsignmentBatchUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletSourceCode?: StringFieldUpdateOperationsInput | string
+    outletDestCode?: StringFieldUpdateOperationsInput | string
+    soulmateMenuItemId?: StringFieldUpdateOperationsInput | string
+    abuAdelMenuItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    itemName?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    unitCost?: FloatFieldUpdateOperationsInput | number
+    sellingPrice?: FloatFieldUpdateOperationsInput | number
+    sentQty?: FloatFieldUpdateOperationsInput | number
+    soldQty?: FloatFieldUpdateOperationsInput | number
+    returnedQty?: FloatFieldUpdateOperationsInput | number
+    remainingQty?: FloatFieldUpdateOperationsInput | number
+    soldRevenue?: FloatFieldUpdateOperationsInput | number
+    settledAmount?: FloatFieldUpdateOperationsInput | number
+    settlementMode?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConsignmentBatchUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outletSourceCode?: StringFieldUpdateOperationsInput | string
+    outletDestCode?: StringFieldUpdateOperationsInput | string
+    soulmateMenuItemId?: StringFieldUpdateOperationsInput | string
+    abuAdelMenuItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    itemName?: StringFieldUpdateOperationsInput | string
+    unitType?: StringFieldUpdateOperationsInput | string
+    unitCost?: FloatFieldUpdateOperationsInput | number
+    sellingPrice?: FloatFieldUpdateOperationsInput | number
+    sentQty?: FloatFieldUpdateOperationsInput | number
+    soldQty?: FloatFieldUpdateOperationsInput | number
+    returnedQty?: FloatFieldUpdateOperationsInput | number
+    remainingQty?: FloatFieldUpdateOperationsInput | number
+    soldRevenue?: FloatFieldUpdateOperationsInput | number
+    settledAmount?: FloatFieldUpdateOperationsInput | number
+    settlementMode?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -50397,6 +52327,9 @@ export namespace Prisma {
     discountAmount?: SortOrder
     tipAmount?: SortOrder
     finalAmount?: SortOrder
+    commissionPercent?: SortOrder
+    commissionAmount?: SortOrder
+    platformNetAmount?: SortOrder
     cashierName?: SortOrder
     waiterName?: SortOrder
     customerName?: SortOrder
@@ -50426,6 +52359,9 @@ export namespace Prisma {
     discountAmount?: SortOrder
     tipAmount?: SortOrder
     finalAmount?: SortOrder
+    commissionPercent?: SortOrder
+    commissionAmount?: SortOrder
+    platformNetAmount?: SortOrder
     pointsEarned?: SortOrder
     pointsRedeemed?: SortOrder
     revisionCount?: SortOrder
@@ -50465,6 +52401,9 @@ export namespace Prisma {
     discountAmount?: SortOrder
     tipAmount?: SortOrder
     finalAmount?: SortOrder
+    commissionPercent?: SortOrder
+    commissionAmount?: SortOrder
+    platformNetAmount?: SortOrder
     cashierName?: SortOrder
     waiterName?: SortOrder
     customerName?: SortOrder
@@ -50518,6 +52457,9 @@ export namespace Prisma {
     discountAmount?: SortOrder
     tipAmount?: SortOrder
     finalAmount?: SortOrder
+    commissionPercent?: SortOrder
+    commissionAmount?: SortOrder
+    platformNetAmount?: SortOrder
     cashierName?: SortOrder
     waiterName?: SortOrder
     customerName?: SortOrder
@@ -50547,6 +52489,9 @@ export namespace Prisma {
     discountAmount?: SortOrder
     tipAmount?: SortOrder
     finalAmount?: SortOrder
+    commissionPercent?: SortOrder
+    commissionAmount?: SortOrder
+    platformNetAmount?: SortOrder
     pointsEarned?: SortOrder
     pointsRedeemed?: SortOrder
     revisionCount?: SortOrder
@@ -50601,6 +52546,8 @@ export namespace Prisma {
     visaCollected?: SortOrder
     instapayCollected?: SortOrder
     vodafoneCollected?: SortOrder
+    talabatCollected?: SortOrder
+    talabatCommission?: SortOrder
     deliveryFeesTotal?: SortOrder
     totalRevenue?: SortOrder
     expensesTotal?: SortOrder
@@ -50622,6 +52569,8 @@ export namespace Prisma {
     visaCollected?: SortOrder
     instapayCollected?: SortOrder
     vodafoneCollected?: SortOrder
+    talabatCollected?: SortOrder
+    talabatCommission?: SortOrder
     deliveryFeesTotal?: SortOrder
     totalRevenue?: SortOrder
     expensesTotal?: SortOrder
@@ -50642,6 +52591,8 @@ export namespace Prisma {
     visaCollected?: SortOrder
     instapayCollected?: SortOrder
     vodafoneCollected?: SortOrder
+    talabatCollected?: SortOrder
+    talabatCommission?: SortOrder
     deliveryFeesTotal?: SortOrder
     totalRevenue?: SortOrder
     expensesTotal?: SortOrder
@@ -50667,6 +52618,8 @@ export namespace Prisma {
     visaCollected?: SortOrder
     instapayCollected?: SortOrder
     vodafoneCollected?: SortOrder
+    talabatCollected?: SortOrder
+    talabatCommission?: SortOrder
     deliveryFeesTotal?: SortOrder
     totalRevenue?: SortOrder
     expensesTotal?: SortOrder
@@ -50688,6 +52641,8 @@ export namespace Prisma {
     visaCollected?: SortOrder
     instapayCollected?: SortOrder
     vodafoneCollected?: SortOrder
+    talabatCollected?: SortOrder
+    talabatCommission?: SortOrder
     deliveryFeesTotal?: SortOrder
     totalRevenue?: SortOrder
     expensesTotal?: SortOrder
@@ -50705,6 +52660,8 @@ export namespace Prisma {
     totalVisa?: SortOrder
     totalInstapay?: SortOrder
     totalVodafone?: SortOrder
+    totalTalabat?: SortOrder
+    totalTalabatCommission?: SortOrder
     totalExpenses?: SortOrder
     netCashInSafe?: SortOrder
     ordersCount?: SortOrder
@@ -50720,6 +52677,8 @@ export namespace Prisma {
     totalVisa?: SortOrder
     totalInstapay?: SortOrder
     totalVodafone?: SortOrder
+    totalTalabat?: SortOrder
+    totalTalabatCommission?: SortOrder
     totalExpenses?: SortOrder
     netCashInSafe?: SortOrder
     ordersCount?: SortOrder
@@ -50736,6 +52695,8 @@ export namespace Prisma {
     totalVisa?: SortOrder
     totalInstapay?: SortOrder
     totalVodafone?: SortOrder
+    totalTalabat?: SortOrder
+    totalTalabatCommission?: SortOrder
     totalExpenses?: SortOrder
     netCashInSafe?: SortOrder
     ordersCount?: SortOrder
@@ -50755,6 +52716,8 @@ export namespace Prisma {
     totalVisa?: SortOrder
     totalInstapay?: SortOrder
     totalVodafone?: SortOrder
+    totalTalabat?: SortOrder
+    totalTalabatCommission?: SortOrder
     totalExpenses?: SortOrder
     netCashInSafe?: SortOrder
     ordersCount?: SortOrder
@@ -50770,6 +52733,8 @@ export namespace Prisma {
     totalVisa?: SortOrder
     totalInstapay?: SortOrder
     totalVodafone?: SortOrder
+    totalTalabat?: SortOrder
+    totalTalabatCommission?: SortOrder
     totalExpenses?: SortOrder
     netCashInSafe?: SortOrder
     ordersCount?: SortOrder
@@ -50850,6 +52815,7 @@ export namespace Prisma {
     dailyReportAlertSound?: SortOrder
     internalSupplyMarkupEnabled?: SortOrder
     internalSupplyMarkupPercent?: SortOrder
+    talabatCommissionPercent?: SortOrder
     geminiApiKey?: SortOrder
     receiptFooterNotes?: SortOrder
     systemLocked?: SortOrder
@@ -50870,6 +52836,7 @@ export namespace Prisma {
     loyaltyRewardValue?: SortOrder
     dailyReportRepeatSeconds?: SortOrder
     internalSupplyMarkupPercent?: SortOrder
+    talabatCommissionPercent?: SortOrder
   }
 
   export type SystemSettingsMaxOrderByAggregateInput = {
@@ -50906,6 +52873,7 @@ export namespace Prisma {
     dailyReportAlertSound?: SortOrder
     internalSupplyMarkupEnabled?: SortOrder
     internalSupplyMarkupPercent?: SortOrder
+    talabatCommissionPercent?: SortOrder
     geminiApiKey?: SortOrder
     receiptFooterNotes?: SortOrder
     systemLocked?: SortOrder
@@ -50949,6 +52917,7 @@ export namespace Prisma {
     dailyReportAlertSound?: SortOrder
     internalSupplyMarkupEnabled?: SortOrder
     internalSupplyMarkupPercent?: SortOrder
+    talabatCommissionPercent?: SortOrder
     geminiApiKey?: SortOrder
     receiptFooterNotes?: SortOrder
     systemLocked?: SortOrder
@@ -50969,6 +52938,7 @@ export namespace Prisma {
     loyaltyRewardValue?: SortOrder
     dailyReportRepeatSeconds?: SortOrder
     internalSupplyMarkupPercent?: SortOrder
+    talabatCommissionPercent?: SortOrder
   }
 
   export type ReservationCountOrderByAggregateInput = {
@@ -51494,6 +53464,100 @@ export namespace Prisma {
     lastNotifiedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type ConsignmentBatchCountOrderByAggregateInput = {
+    id?: SortOrder
+    outletSourceCode?: SortOrder
+    outletDestCode?: SortOrder
+    soulmateMenuItemId?: SortOrder
+    abuAdelMenuItemId?: SortOrder
+    itemName?: SortOrder
+    unitType?: SortOrder
+    unitCost?: SortOrder
+    sellingPrice?: SortOrder
+    sentQty?: SortOrder
+    soldQty?: SortOrder
+    returnedQty?: SortOrder
+    remainingQty?: SortOrder
+    soldRevenue?: SortOrder
+    settledAmount?: SortOrder
+    settlementMode?: SortOrder
+    status?: SortOrder
+    notes?: SortOrder
+    recordedBy?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ConsignmentBatchAvgOrderByAggregateInput = {
+    unitCost?: SortOrder
+    sellingPrice?: SortOrder
+    sentQty?: SortOrder
+    soldQty?: SortOrder
+    returnedQty?: SortOrder
+    remainingQty?: SortOrder
+    soldRevenue?: SortOrder
+    settledAmount?: SortOrder
+  }
+
+  export type ConsignmentBatchMaxOrderByAggregateInput = {
+    id?: SortOrder
+    outletSourceCode?: SortOrder
+    outletDestCode?: SortOrder
+    soulmateMenuItemId?: SortOrder
+    abuAdelMenuItemId?: SortOrder
+    itemName?: SortOrder
+    unitType?: SortOrder
+    unitCost?: SortOrder
+    sellingPrice?: SortOrder
+    sentQty?: SortOrder
+    soldQty?: SortOrder
+    returnedQty?: SortOrder
+    remainingQty?: SortOrder
+    soldRevenue?: SortOrder
+    settledAmount?: SortOrder
+    settlementMode?: SortOrder
+    status?: SortOrder
+    notes?: SortOrder
+    recordedBy?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ConsignmentBatchMinOrderByAggregateInput = {
+    id?: SortOrder
+    outletSourceCode?: SortOrder
+    outletDestCode?: SortOrder
+    soulmateMenuItemId?: SortOrder
+    abuAdelMenuItemId?: SortOrder
+    itemName?: SortOrder
+    unitType?: SortOrder
+    unitCost?: SortOrder
+    sellingPrice?: SortOrder
+    sentQty?: SortOrder
+    soldQty?: SortOrder
+    returnedQty?: SortOrder
+    remainingQty?: SortOrder
+    soldRevenue?: SortOrder
+    settledAmount?: SortOrder
+    settlementMode?: SortOrder
+    status?: SortOrder
+    notes?: SortOrder
+    recordedBy?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ConsignmentBatchSumOrderByAggregateInput = {
+    unitCost?: SortOrder
+    sellingPrice?: SortOrder
+    sentQty?: SortOrder
+    soldQty?: SortOrder
+    returnedQty?: SortOrder
+    remainingQty?: SortOrder
+    soldRevenue?: SortOrder
+    settledAmount?: SortOrder
   }
 
   export type UserCreateNestedManyWithoutOutletInput = {
@@ -53655,6 +55719,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -53712,6 +55779,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -53756,6 +55826,8 @@ export namespace Prisma {
     visaCollected?: number
     instapayCollected?: number
     vodafoneCollected?: number
+    talabatCollected?: number
+    talabatCommission?: number
     deliveryFeesTotal?: number
     totalRevenue?: number
     expensesTotal?: number
@@ -53780,6 +55852,8 @@ export namespace Prisma {
     visaCollected?: number
     instapayCollected?: number
     vodafoneCollected?: number
+    talabatCollected?: number
+    talabatCommission?: number
     deliveryFeesTotal?: number
     totalRevenue?: number
     expensesTotal?: number
@@ -53969,6 +56043,8 @@ export namespace Prisma {
     totalVisa?: number
     totalInstapay?: number
     totalVodafone?: number
+    totalTalabat?: number
+    totalTalabatCommission?: number
     totalExpenses?: number
     netCashInSafe?: number
     ordersCount?: number
@@ -53987,6 +56063,8 @@ export namespace Prisma {
     totalVisa?: number
     totalInstapay?: number
     totalVodafone?: number
+    totalTalabat?: number
+    totalTalabatCommission?: number
     totalExpenses?: number
     netCashInSafe?: number
     ordersCount?: number
@@ -54363,6 +56441,9 @@ export namespace Prisma {
     discountAmount?: FloatFilter<"Order"> | number
     tipAmount?: FloatFilter<"Order"> | number
     finalAmount?: FloatFilter<"Order"> | number
+    commissionPercent?: FloatFilter<"Order"> | number
+    commissionAmount?: FloatFilter<"Order"> | number
+    platformNetAmount?: FloatFilter<"Order"> | number
     cashierName?: StringNullableFilter<"Order"> | string | null
     waiterName?: StringNullableFilter<"Order"> | string | null
     customerName?: StringNullableFilter<"Order"> | string | null
@@ -54415,6 +56496,8 @@ export namespace Prisma {
     visaCollected?: FloatFilter<"Shift"> | number
     instapayCollected?: FloatFilter<"Shift"> | number
     vodafoneCollected?: FloatFilter<"Shift"> | number
+    talabatCollected?: FloatFilter<"Shift"> | number
+    talabatCommission?: FloatFilter<"Shift"> | number
     deliveryFeesTotal?: FloatFilter<"Shift"> | number
     totalRevenue?: FloatFilter<"Shift"> | number
     expensesTotal?: FloatFilter<"Shift"> | number
@@ -54608,6 +56691,8 @@ export namespace Prisma {
     totalVisa?: FloatFilter<"DailyClose"> | number
     totalInstapay?: FloatFilter<"DailyClose"> | number
     totalVodafone?: FloatFilter<"DailyClose"> | number
+    totalTalabat?: FloatFilter<"DailyClose"> | number
+    totalTalabatCommission?: FloatFilter<"DailyClose"> | number
     totalExpenses?: FloatFilter<"DailyClose"> | number
     netCashInSafe?: FloatFilter<"DailyClose"> | number
     ordersCount?: IntFilter<"DailyClose"> | number
@@ -54973,6 +57058,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -55030,6 +57118,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -56590,6 +58681,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -56648,6 +58742,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -56724,6 +58821,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -56781,6 +58881,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -56919,6 +59022,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -56976,6 +59082,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -57669,6 +59778,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -57727,6 +59839,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -57793,6 +59908,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -57851,6 +59969,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -59213,6 +61334,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -59271,6 +61395,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -59337,6 +61464,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -59395,6 +61525,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -59511,6 +61644,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -59543,6 +61679,8 @@ export namespace Prisma {
     visaCollected?: number
     instapayCollected?: number
     vodafoneCollected?: number
+    talabatCollected?: number
+    talabatCommission?: number
     deliveryFeesTotal?: number
     totalRevenue?: number
     expensesTotal?: number
@@ -59616,6 +61754,8 @@ export namespace Prisma {
     totalVisa?: number
     totalInstapay?: number
     totalVodafone?: number
+    totalTalabat?: number
+    totalTalabatCommission?: number
     totalExpenses?: number
     netCashInSafe?: number
     ordersCount?: number
@@ -59911,6 +62051,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -59968,6 +62111,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -60022,6 +62168,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -60054,6 +62203,8 @@ export namespace Prisma {
     visaCollected?: FloatFieldUpdateOperationsInput | number
     instapayCollected?: FloatFieldUpdateOperationsInput | number
     vodafoneCollected?: FloatFieldUpdateOperationsInput | number
+    talabatCollected?: FloatFieldUpdateOperationsInput | number
+    talabatCommission?: FloatFieldUpdateOperationsInput | number
     deliveryFeesTotal?: FloatFieldUpdateOperationsInput | number
     totalRevenue?: FloatFieldUpdateOperationsInput | number
     expensesTotal?: FloatFieldUpdateOperationsInput | number
@@ -60078,6 +62229,8 @@ export namespace Prisma {
     visaCollected?: FloatFieldUpdateOperationsInput | number
     instapayCollected?: FloatFieldUpdateOperationsInput | number
     vodafoneCollected?: FloatFieldUpdateOperationsInput | number
+    talabatCollected?: FloatFieldUpdateOperationsInput | number
+    talabatCommission?: FloatFieldUpdateOperationsInput | number
     deliveryFeesTotal?: FloatFieldUpdateOperationsInput | number
     totalRevenue?: FloatFieldUpdateOperationsInput | number
     expensesTotal?: FloatFieldUpdateOperationsInput | number
@@ -60102,6 +62255,8 @@ export namespace Prisma {
     visaCollected?: FloatFieldUpdateOperationsInput | number
     instapayCollected?: FloatFieldUpdateOperationsInput | number
     vodafoneCollected?: FloatFieldUpdateOperationsInput | number
+    talabatCollected?: FloatFieldUpdateOperationsInput | number
+    talabatCommission?: FloatFieldUpdateOperationsInput | number
     deliveryFeesTotal?: FloatFieldUpdateOperationsInput | number
     totalRevenue?: FloatFieldUpdateOperationsInput | number
     expensesTotal?: FloatFieldUpdateOperationsInput | number
@@ -60283,6 +62438,8 @@ export namespace Prisma {
     totalVisa?: FloatFieldUpdateOperationsInput | number
     totalInstapay?: FloatFieldUpdateOperationsInput | number
     totalVodafone?: FloatFieldUpdateOperationsInput | number
+    totalTalabat?: FloatFieldUpdateOperationsInput | number
+    totalTalabatCommission?: FloatFieldUpdateOperationsInput | number
     totalExpenses?: FloatFieldUpdateOperationsInput | number
     netCashInSafe?: FloatFieldUpdateOperationsInput | number
     ordersCount?: IntFieldUpdateOperationsInput | number
@@ -60301,6 +62458,8 @@ export namespace Prisma {
     totalVisa?: FloatFieldUpdateOperationsInput | number
     totalInstapay?: FloatFieldUpdateOperationsInput | number
     totalVodafone?: FloatFieldUpdateOperationsInput | number
+    totalTalabat?: FloatFieldUpdateOperationsInput | number
+    totalTalabatCommission?: FloatFieldUpdateOperationsInput | number
     totalExpenses?: FloatFieldUpdateOperationsInput | number
     netCashInSafe?: FloatFieldUpdateOperationsInput | number
     ordersCount?: IntFieldUpdateOperationsInput | number
@@ -60319,6 +62478,8 @@ export namespace Prisma {
     totalVisa?: FloatFieldUpdateOperationsInput | number
     totalInstapay?: FloatFieldUpdateOperationsInput | number
     totalVodafone?: FloatFieldUpdateOperationsInput | number
+    totalTalabat?: FloatFieldUpdateOperationsInput | number
+    totalTalabatCommission?: FloatFieldUpdateOperationsInput | number
     totalExpenses?: FloatFieldUpdateOperationsInput | number
     netCashInSafe?: FloatFieldUpdateOperationsInput | number
     ordersCount?: IntFieldUpdateOperationsInput | number
@@ -60540,6 +62701,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -60589,6 +62753,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -60646,6 +62813,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -60700,6 +62870,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -61061,6 +63234,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -61109,6 +63285,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -61167,6 +63346,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -61221,6 +63403,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -61272,6 +63457,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -61321,6 +63509,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -61378,6 +63569,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -61432,6 +63626,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -61484,6 +63681,9 @@ export namespace Prisma {
     discountAmount?: number
     tipAmount?: number
     finalAmount?: number
+    commissionPercent?: number
+    commissionAmount?: number
+    platformNetAmount?: number
     cashierName?: string | null
     waiterName?: string | null
     customerName?: string | null
@@ -61533,6 +63733,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -61590,6 +63793,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -61644,6 +63850,9 @@ export namespace Prisma {
     discountAmount?: FloatFieldUpdateOperationsInput | number
     tipAmount?: FloatFieldUpdateOperationsInput | number
     finalAmount?: FloatFieldUpdateOperationsInput | number
+    commissionPercent?: FloatFieldUpdateOperationsInput | number
+    commissionAmount?: FloatFieldUpdateOperationsInput | number
+    platformNetAmount?: FloatFieldUpdateOperationsInput | number
     cashierName?: NullableStringFieldUpdateOperationsInput | string | null
     waiterName?: NullableStringFieldUpdateOperationsInput | string | null
     customerName?: NullableStringFieldUpdateOperationsInput | string | null

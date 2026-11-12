@@ -115,6 +115,12 @@ export async function GET(req: Request) {
       const vodafoneSales = paidOrders
         .filter((o) => o.paymentMethod === "VODAFONE_CASH")
         .reduce((s, o) => s + getStoreNet(o), 0);
+      const talabatSales = paidOrders
+        .filter((o) => o.paymentMethod === "TALABAT" || o.orderType === "TALABAT")
+        .reduce((s, o) => s + getStoreNet(o), 0);
+      const talabatCommission = paidOrders
+        .filter((o) => o.paymentMethod === "TALABAT" || o.orderType === "TALABAT")
+        .reduce((s, o) => s + (Number(o.commissionAmount) || getStoreNet(o) * 0.25), 0);
       const deliveryFeesTotal = paidOrders.reduce((s, o) => s + (Number(o.deliveryFee) || 0), 0);
       const expensesTotal = branchExpenses.reduce((s, e) => s + (Number(e.amount) || 0), 0);
       const openingFloat = Number(openShift?.openingCashFloat || 0);
@@ -132,6 +138,9 @@ export async function GET(req: Request) {
         visaSales: Number(visaSales.toFixed(2)),
         instapaySales: Number(instapaySales.toFixed(2)),
         vodafoneSales: Number(vodafoneSales.toFixed(2)),
+        talabatSales: Number(talabatSales.toFixed(2)),
+        talabatCommission: Number(talabatCommission.toFixed(2)),
+        talabatNetReceivable: Number(Math.max(0, talabatSales - talabatCommission).toFixed(2)),
         deliveryFeesTotal: Number(deliveryFeesTotal.toFixed(2)),
         expensesTotal: Number(expensesTotal.toFixed(2)),
         openingFloat: Number(openingFloat.toFixed(2)),

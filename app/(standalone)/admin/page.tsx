@@ -90,6 +90,7 @@ const PAYMENT_METHOD_LABELS: Record<string, string> = {
   CARD: "فيزا / بطاقة",
   INSTAPAY: "إنستاباي",
   VODAFONE_CASH: "فودافون كاش",
+  TALABAT: "طلبات (Talabat)",
 };
 
 function getStoreNet(o: any): number {
@@ -753,7 +754,14 @@ export default function AdminDashboardPage() {
         const lineRev = price * qty;
 
         const catalogItem = menuItems.find((m) => m.id === it.menuItemId || m.nameAr === it.nameAr);
-        const unitCost = Number(catalogItem?.calculatedCost || catalogItem?.costPrice || it.costPrice || 0);
+        // Priority 1: Historical snapshotted unit cost locked inside Order.items (so future factory invoices never mutate past P&L!)
+        // Priority 2 (legacy orders before snapshotting): fallback to current catalog calculatedCost/costPrice
+        const hasSnapshot =
+          it.costSnapshotted === true ||
+          (it.costPrice !== undefined && it.costPrice !== null && Number(it.costPrice) > 0);
+        const unitCost = hasSnapshot
+          ? Number(it.costPrice) || 0
+          : Number(catalogItem?.calculatedCost || catalogItem?.costPrice || 0);
         const lineCost = unitCost * qty;
 
         totalCOGS += lineCost;
@@ -790,10 +798,14 @@ export default function AdminDashboardPage() {
       CARD: { label: "فيزا / بطاقات بنكية", amount: 0, count: 0, color: "text-blue-400", border: "border-blue-500/30", bg: "bg-blue-500/10" },
       INSTAPAY: { label: "إنستاباي (InstaPay)", amount: 0, count: 0, color: "text-purple-400", border: "border-purple-500/30", bg: "bg-purple-500/10" },
       VODAFONE_CASH: { label: "فودافون كاش ومحافظ", amount: 0, count: 0, color: "text-rose-400", border: "border-rose-500/30", bg: "bg-rose-500/10" },
+      TALABAT: { label: "طلبات (Talabat)", amount: 0, count: 0, color: "text-orange-400", border: "border-orange-500/30", bg: "bg-orange-500/10" },
     };
 
     filteredOrders.forEach((o) => {
-      const pm = (o.paymentMethod || "CASH").toUpperCase();
+      const pm =
+        o.orderType === "TALABAT" || (o.paymentMethod || "").toUpperCase() === "TALABAT"
+          ? "TALABAT"
+          : (o.paymentMethod || "CASH").toUpperCase();
       const netStore = getStoreNet(o);
       if (paymentMethods[pm]) {
         paymentMethods[pm].amount += netStore;
@@ -809,6 +821,7 @@ export default function AdminDashboardPage() {
       DINE_IN: { label: "صالة الكافيه 🪑", amount: 0, count: 0 },
       TAKEAWAY: { label: "تيك أواي / بيع مباشر 🛍️", amount: 0, count: 0 },
       DELIVERY: { label: "توصيل دليفري 🛵", amount: 0, count: 0 },
+      TALABAT: { label: "تطبيق طلبات (Talabat) 🟠", amount: 0, count: 0 },
     };
 
     filteredOrders.forEach((o) => {
@@ -818,6 +831,14 @@ export default function AdminDashboardPage() {
         orderTypes[ot].count += 1;
       }
     });
+
+    const totalTalabatGross = filteredOrders
+      .filter((o) => o.orderType === "TALABAT" || (o.paymentMethod || "").toUpperCase() === "TALABAT")
+      .reduce((s, o) => s + getStoreNet(o), 0);
+    const totalTalabatCommission = filteredOrders
+      .filter((o) => o.orderType === "TALABAT" || (o.paymentMethod || "").toUpperCase() === "TALABAT")
+      .reduce((s, o) => s + (Number(o.commissionAmount) || getStoreNet(o) * ((Number(settings?.talabatCommissionPercent ?? 25) || 25) / 100)), 0);
+    const totalTalabatNet = Math.max(0, totalTalabatGross - totalTalabatCommission);
 
     // 7. Branch Comparison (Net Store Revenue)
     const soulmateOrders = filteredOrders.filter(
@@ -840,7 +861,7 @@ export default function AdminDashboardPage() {
     // 8. Financial Summary (P&L)
     const grossProfit = totalRevenue - totalCOGS;
     const grossProfitMargin = totalRevenue > 0 ? (grossProfit / totalRevenue) * 100 : 0;
-    const netProfit = grossProfit - totalExpensesAmount;
+    const netProfit = grossProfit - totalExpensesAmount - totalTalabatCommission;
     const netProfitMargin = totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0;
     const averageOrderValue = filteredOrders.length > 0 ? totalRevenue / filteredOrders.length : 0;
 
@@ -853,6 +874,9 @@ export default function AdminDashboardPage() {
       totalTips,
       totalDeliveryFees,
       totalExpensesAmount,
+      totalTalabatGross,
+      totalTalabatCommission,
+      totalTalabatNet,
       totalCOGS,
       grossProfit,
       grossProfitMargin,
@@ -874,7 +898,7 @@ export default function AdminDashboardPage() {
       confirmedDepositsCollected,
       upcomingPreOrdersValue,
     };
-  }, [orders, expenses, menuItems, outlets, reportTimeframe, reportOutletFilter]);
+  }, [orders, expenses, menuItems, outlets, settings?.talabatCommissionPercent, reportTimeframe, reportOutletFilter]);
 
   const handleExportFinancialCSV = () => {
     const data = filteredReportData;
@@ -887,12 +911,20 @@ export default function AdminDashboardPage() {
     csvContent += "=== ملخص قائمة الدخل والأرباح (صافي إيراد المحل بعد فصل رسوم الدليفري) ===\n";
     csvContent += `صافي إيرادات المحل,${data.totalRevenue.toFixed(2)} ج.م\n`;
     csvContent += `رسوم التوصيل المستحقة للطيارين (خارج الإيراد),${data.totalDeliveryFees.toFixed(2)} ج.م\n`;
+    if (data.totalTalabatGross > 0) {
+      csvContent += `إجمالي مبيعات طلبات (Talabat),${data.totalTalabatGross.toFixed(2)} ج.م\n`;
+      csvContent += `عمولة طلبات المستقطعة,${data.totalTalabatCommission.toFixed(2)} ج.م\n`;
+      csvContent += `صافي المستحق من شركة طلبات,${data.totalTalabatNet.toFixed(2)} ج.م\n`;
+    }
     if (data.upcomingScheduledCount > 0) {
       csvContent += `عربون مؤكد لحجوزات قادمة (${data.upcomingScheduledCount} حجز),${data.confirmedDepositsCollected.toFixed(2)} ج.م\n`;
     }
     csvContent += `تكلفة الخامات والمبيعات (COGS),${data.totalCOGS.toFixed(2)} ج.م\n`;
     csvContent += `مجمل الربح,${data.grossProfit.toFixed(2)} ج.م (${data.grossProfitMargin.toFixed(1)}%)\n`;
     csvContent += `المصروفات والنثريات,${data.totalExpensesAmount.toFixed(2)} ج.م\n`;
+    if (data.totalTalabatCommission > 0) {
+      csvContent += `عمولة طلبات (Talabat),${data.totalTalabatCommission.toFixed(2)} ج.م\n`;
+    }
     csvContent += `صافي الربح النهائي,${data.netProfit.toFixed(2)} ج.م (${data.netProfitMargin.toFixed(1)}%)\n`;
     csvContent += `عدد الطلبات,${data.ordersCount}\n`;
     csvContent += `متوسط الفاتورة,${data.averageOrderValue.toFixed(2)} ج.م\n\n`;
@@ -2208,6 +2240,34 @@ export default function AdminDashboardPage() {
     printWin.document.close();
   };
 
+  const handleDispatchFactoryWhatsappAdmin = async () => {
+    if (!factoryData?.rows) return;
+    const rowsToSend = factoryData.rows.filter((r: any) => {
+      const qty = parseFloat(factoryApprovedEdits[r.menuItemId] ?? String(r.approvedQty ?? 0)) || 0;
+      return qty > 0;
+    });
+    const unitLabel = (u: string) => (u === "KG" ? "كجم" : u === "BOX" ? "علبة" : "قطعة");
+    const lines = rowsToSend.map((r: any, idx: number) => {
+      const qty = parseFloat(factoryApprovedEdits[r.menuItemId] ?? String(r.approvedQty ?? 0)) || 0;
+      return `${idx + 1}. ${r.nameAr}: *${qty}* ${unitLabel(r.unitType)}`;
+    });
+    const text = [
+      `🏭 *طلبية المصنع اليومية - حلواني أبو عادل*`,
+      `📅 تاريخ التسليم المطلوب: *${factoryDate}*`,
+      `👤 المعتمد: ${currentUser?.name || "الإدارة"}`,
+      ...(factoryNotesInput ? [`📝 ملاحظات: ${factoryNotesInput}`] : []),
+      `────────────────────`,
+      ...(lines.length > 0 ? lines : ["لا توجد أصناف مطلوبة."]),
+    ].join("\n");
+    try {
+      if (typeof navigator !== "undefined" && navigator.clipboard) {
+        await navigator.clipboard.writeText(text);
+      }
+    } catch {}
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+    addToast("success", "تم نسخ نص طلبية المصنع وفتح واتساب للإرسال الفوري 📱✅");
+  };
+
   // Update Settings
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -3190,6 +3250,18 @@ export default function AdminDashboardPage() {
                       </div>
                     </div>
 
+                    <div className="bg-orange-950/25 p-3 rounded-xl border border-orange-500/30">
+                      <div className="text-[11px] text-orange-300 font-bold">🟠 طلبات (Talabat - خارج الدرج)</div>
+                      <div className="text-lg font-black text-orange-400 font-mono mt-1">
+                        {(shiftData?.liveStats?.talabatCollected ?? shiftData?.talabatCollected ?? 0).toLocaleString()} ج.م
+                      </div>
+                      {(shiftData?.liveStats?.talabatCommission ?? shiftData?.talabatCommission ?? 0) > 0 && (
+                        <div className="text-[9px] text-slate-400 mt-0.5 font-mono">
+                          عمولة: -{Number(shiftData?.liveStats?.talabatCommission ?? shiftData?.talabatCommission ?? 0).toFixed(0)} | صافي: {Number((shiftData?.liveStats?.talabatNetReceivable ?? ((shiftData?.talabatCollected || 0) - (shiftData?.talabatCommission || 0))) || 0).toFixed(0)} ج
+                        </div>
+                      )}
+                    </div>
+
                     <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
                       <div className="text-[11px] text-slate-400">المصروفات والنثريات</div>
                       <div className="text-lg font-bold text-rose-400 font-mono mt-1">
@@ -3479,6 +3551,23 @@ export default function AdminDashboardPage() {
                           - {filteredReportData.totalExpensesAmount.toFixed(2)} ج.م
                         </div>
                       </div>
+
+                      {filteredReportData.totalTalabatGross > 0 && (
+                        <div className="flex items-center justify-between py-2.5 px-3 rounded-xl bg-orange-950/30 border border-orange-500/40">
+                          <div>
+                            <div className="flex items-center gap-2 text-orange-300 font-bold">
+                              <span className="text-slate-500 font-mono">7.</span>
+                              <span>(-) عمولة تطبيق طلبات / Talabat ({settings?.talabatCommissionPercent ?? 25}%)</span>
+                            </div>
+                            <div className="text-[10px] text-emerald-300 mt-0.5 font-mono">
+                              إجمالي طلبات: {filteredReportData.totalTalabatGross.toFixed(2)} ج.م • صافي المستحق للتحصيل من الشركة: {filteredReportData.totalTalabatNet.toFixed(2)} ج.م (لا يدخل درج الكاشير)
+                            </div>
+                          </div>
+                          <div className="font-mono font-bold text-orange-400">
+                            - {filteredReportData.totalTalabatCommission.toFixed(2)} ج.م
+                          </div>
+                        </div>
+                      )}
 
                       {/* Net Operating Profit */}
                       <div className="flex items-center justify-between py-3.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-slate-950 to-emerald-950/80 border-2 border-emerald-500/60 shadow-lg">
@@ -5083,6 +5172,15 @@ export default function AdminDashboardPage() {
                     </button>
                     <button
                       type="button"
+                      onClick={handleDispatchFactoryWhatsappAdmin}
+                      className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3.5 py-2 rounded-xl text-xs shadow transition"
+                      title="نسخ كشف الطريحة وفتحه على واتساب لإرساله لإدارة المصنع مباشرة"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      <span>إرسال واتساب للمصنع 📱</span>
+                    </button>
+                    <button
+                      type="button"
                       onClick={() => handleSaveFactorySheet("DRAFT")}
                       disabled={factorySaving || factoryData?.savedFactoryOrder?.status === "RECEIVED"}
                       className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white font-bold px-3.5 py-2 rounded-xl text-xs transition"
@@ -6474,14 +6572,18 @@ export default function AdminDashboardPage() {
                             <td className="py-3 px-3 space-y-1">
                               <span
                                 className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
-                                  o.orderType === "DELIVERY"
+                                  o.orderType === "TALABAT" || o.paymentMethod === "TALABAT"
+                                    ? "bg-orange-500/20 text-orange-300 border border-orange-500/40"
+                                    : o.orderType === "DELIVERY"
                                     ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
                                     : o.orderType === "TAKEAWAY"
                                     ? "bg-amber-500/15 text-amber-300 border border-amber-500/30"
                                     : "bg-slate-800 text-slate-300"
                                 }`}
                               >
-                                {o.orderType === "DINE_IN"
+                                {o.orderType === "TALABAT" || o.paymentMethod === "TALABAT"
+                                  ? `🟠 طلبات (عمولة ${o.commissionPercent || 25}% = ${Number(o.commissionAmount || 0).toFixed(0)} ج)`
+                                  : o.orderType === "DINE_IN"
                                   ? `🪑 صالة • ترابيزة ${o.tableNumber || "1"}`
                                   : o.orderType === "DELIVERY"
                                   ? "🛵 دليفري للمنزل"
@@ -7432,6 +7534,23 @@ export default function AdminDashboardPage() {
 
                   <div>
                     <label className="block text-xs text-slate-400 mb-1.5">
+                      نسبة عمولة طلبات (Talabat %) — سول ميت كافيه
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="0.5"
+                      value={settings.talabatCommissionPercent ?? 25}
+                      onChange={(e) =>
+                        setSettings({ ...settings, talabatCommissionPercent: parseFloat(e.target.value) || 0 })
+                      }
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-orange-400 focus:outline-none focus:border-orange-500 font-mono font-bold"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-slate-400 mb-1.5">
                       حساب / عنوان إنستاباي (InstaPay) لاستقبال العربون
                     </label>
                     <input
@@ -7502,7 +7621,7 @@ export default function AdminDashboardPage() {
 
       {/* USER MODAL (ADD / EDIT) */}
       {showUserModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] bg-black/80 backdrop-blur-sm flex items-start justify-center p-4 pt-6 sm:pt-12 pb-8 overflow-y-auto">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative text-right">
             <button
               onClick={() => setShowUserModal(false)}
@@ -7635,7 +7754,7 @@ export default function AdminDashboardPage() {
 
       {/* MENU ITEM MODAL (ADD / EDIT WITH IMGBB UPLOAD) */}
       {showMenuItemModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] bg-black/80 backdrop-blur-sm flex items-start justify-center p-4 pt-6 sm:pt-12 pb-8 overflow-y-auto">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative text-right max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setShowMenuItemModal(false)}
@@ -7852,7 +7971,7 @@ export default function AdminDashboardPage() {
 
       {/* EXPENSE MODAL */}
       {showExpenseModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] bg-black/80 backdrop-blur-sm flex items-start justify-center p-4 pt-6 sm:pt-12 pb-8 overflow-y-auto">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
             <button
               onClick={() => setShowExpenseModal(false)}
@@ -7932,7 +8051,7 @@ export default function AdminDashboardPage() {
 
       {/* PASTRY MODAL (WITH IMGBB UPLOAD) */}
       {showPastryModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] bg-black/80 backdrop-blur-sm flex items-start justify-center p-4 pt-6 sm:pt-12 pb-8 overflow-y-auto">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
             <button
               onClick={() => setShowPastryModal(false)}
@@ -8070,7 +8189,7 @@ export default function AdminDashboardPage() {
 
       {/* 1. RAW MATERIAL ITEM CARD MODAL */}
       {showRawMaterialModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] bg-black/80 backdrop-blur-sm flex items-start justify-center p-4 pt-6 sm:pt-12 pb-8 overflow-y-auto">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative text-right">
             <button
               onClick={() => setShowRawMaterialModal(false)}
@@ -8229,7 +8348,7 @@ export default function AdminDashboardPage() {
 
       {/* 2. INBOUND STOCK MOVEMENT MODAL (حركة توريد منفصلة) */}
       {showInboundModal && selectedRawForInbound && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] bg-black/80 backdrop-blur-sm flex items-start justify-center p-4 pt-6 sm:pt-12 pb-8 overflow-y-auto">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative text-right">
             <button
               onClick={() => {
@@ -8354,7 +8473,7 @@ export default function AdminDashboardPage() {
 
       {/* 3. MOVEMENTS HISTORY MODAL (سجل حركات الخامة) */}
       {showMovementsModal && selectedRawForMovements && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] bg-black/80 backdrop-blur-sm flex items-start justify-center p-4 pt-6 sm:pt-12 pb-8 overflow-y-auto">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl p-6 shadow-2xl relative text-right max-h-[85vh] flex flex-col">
             <button
               onClick={() => {
@@ -8474,7 +8593,7 @@ export default function AdminDashboardPage() {
 
       {/* 4. RECIPE BOM EDIT MODAL (تعديل ريسيبي المشروب) */}
       {showRecipeModal && selectedMenuItemForRecipe && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] bg-black/80 backdrop-blur-sm flex items-start justify-center p-4 pt-6 sm:pt-12 pb-8 overflow-y-auto">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative text-right">
             <button
               onClick={() => {
@@ -8625,7 +8744,7 @@ export default function AdminDashboardPage() {
 
       {/* 5. RAW OPENING STOCK MODAL */}
       {showRawOpeningModal && selectedRawForOpening && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] bg-black/80 backdrop-blur-sm flex items-start justify-center p-4 pt-6 sm:pt-12 pb-8 overflow-y-auto">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative text-right">
             <button
               onClick={() => {
@@ -8689,7 +8808,7 @@ export default function AdminDashboardPage() {
 
       {/* 6. PASTRY OPENING STOCK MODAL */}
       {showPastryOpeningModal && selectedPastryForOpening && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] bg-black/80 backdrop-blur-sm flex items-start justify-center p-4 pt-6 sm:pt-12 pb-8 overflow-y-auto">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative text-right">
             <button
               onClick={() => {
@@ -8753,7 +8872,7 @@ export default function AdminDashboardPage() {
 
       {/* 7. PASTRY INBOUND MOVEMENT MODAL */}
       {showPastryInboundModal && selectedPastryForInbound && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] bg-black/80 backdrop-blur-sm flex items-start justify-center p-4 pt-6 sm:pt-12 pb-8 overflow-y-auto">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative text-right">
             <button
               onClick={() => {
@@ -8864,7 +8983,7 @@ export default function AdminDashboardPage() {
 
       {/* 8. PASTRY MOVEMENTS AUDIT LEDGER MODAL */}
       {showPastryMovementsModal && selectedPastryForMovements && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] bg-black/80 backdrop-blur-sm flex items-start justify-center p-4 pt-6 sm:pt-12 pb-8 overflow-y-auto">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl p-6 shadow-2xl relative text-right max-h-[85vh] flex flex-col">
             <button
               onClick={() => {
@@ -8984,7 +9103,7 @@ export default function AdminDashboardPage() {
 
       {/* REPRINT RECEIPT MODAL */}
       {selectedOrderForPrint && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] bg-black/80 backdrop-blur-sm flex items-start justify-center p-4 pt-6 sm:pt-12 pb-8 overflow-y-auto">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative text-right">
             <button
               onClick={() => setSelectedOrderForPrint(null)}
@@ -9125,7 +9244,7 @@ export default function AdminDashboardPage() {
       {previewAdminImage && (
         <div
           onClick={() => setPreviewAdminImage(null)}
-          className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-[130] bg-black/90 backdrop-blur-sm flex items-start justify-center p-4 pt-8 sm:pt-12 pb-8 overflow-y-auto"
         >
           <div onClick={(e) => e.stopPropagation()} className="relative max-w-xl w-full bg-slate-900 border border-slate-700 rounded-2xl p-3">
             <button

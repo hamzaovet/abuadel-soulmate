@@ -32,7 +32,7 @@ interface AdminSuppliersAndAiPanelProps {
   onDataChanged?: () => void;
 }
 
-type SupSubTab = "overview" | "ai_digest" | "manual_tx" | "statement";
+type SupSubTab = "overview" | "ai_digest" | "manual_tx" | "statement" | "consignments";
 
 const PAYMENT_METHODS = [
   { id: "CASH", label: "💵 كاش" },
@@ -209,6 +209,275 @@ export default function AdminSuppliersAndAiPanel({
   });
   const [aiParsedItems, setAiParsedItems] = useState<any[]>([]);
   const [aiCommitting, setAiCommitting] = useState(false);
+  const [aiUpdateCostPrices, setAiUpdateCostPrices] = useState<boolean>(true);
+  const [uploadingNewItemIdx, setUploadingNewItemIdx] = useState<number | null>(null);
+
+  // Consignments & Inter-Branch Transfers (Abu Adel <-> Soulmate)
+  const [consignData, setConsignData] = useState<{
+    consignments: any[];
+    transferHistory: any[];
+    abuAdelItems: any[];
+    soulmateReadyItems: any[];
+  }>({ consignments: [], transferHistory: [], abuAdelItems: [], soulmateReadyItems: [] });
+  const [consignLoading, setConsignLoading] = useState(false);
+  const [consignBusy, setConsignBusy] = useState(false);
+  const [trfForm, setTrfForm] = useState({
+    abuAdelMenuItemId: "",
+    soulmateMenuItemId: "",
+    quantity: "1",
+    unitCost: "",
+    deductFromAbuAdel: true,
+    notes: "",
+  });
+  const [conForm, setConForm] = useState({
+    soulmateMenuItemId: "",
+    abuAdelMenuItemId: "",
+    quantity: "1",
+    unitCost: "",
+    sellingPrice: "",
+    notes: "",
+  });
+  const [payoutSourceChoice, setPayoutSourceChoice] = useState<"DRAWER" | "MAIN_SAFE">("DRAWER");
+
+  const loadConsignments = async () => {
+    try {
+      setConsignLoading(true);
+      const res = await fetch("/api/consignments", { cache: "no-store" });
+      const data = await res.json();
+      if (data.success) {
+        setConsignData({
+          consignments: data.consignments || [],
+          transferHistory: data.transferHistory || [],
+          abuAdelItems: data.abuAdelItems || [],
+          soulmateReadyItems: data.soulmateReadyItems || [],
+        });
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setConsignLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (subTab === "consignments") {
+      loadConsignments();
+    }
+  }, [subTab]);
+
+  const handleUploadNewItemImage = async (idx: number, file: File | undefined) => {
+    if (!file) return;
+    setUploadingNewItemIdx(idx);
+    try {
+      const fd = new FormData();
+      fd.append("image", file);
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (!data.success || !data.url) {
+        notify("error", data.error || "فشل رفع صورة الصنف");
+        return;
+      }
+      setAiParsedItems((prev) =>
+        prev.map((x, i) => (i === idx ? { ...x, image: data.url } : x))
+      );
+      notify("success", "تم رفع صورة الصنف الجديد وتجهيزها للظهور في اللاندينج بيدج ✅");
+    } catch (e: any) {
+      notify("error", e.message || "خطأ أثناء رفع الصورة");
+    } finally {
+      setUploadingNewItemIdx(null);
+    }
+  };
+
+  const handleTransferAbuAdelToSoulmate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!trfForm.abuAdelMenuItemId || Number(trfForm.quantity) <= 0) {
+      return notify("error", "يرجى اختيار الصنف من حلواني أبو عادل وتحديد كمية صحيحة");
+    }
+    setConsignBusy(true);
+    try {
+      const res = await fetch("/api/consignments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "TRANSFER_ABU_ADEL_TO_SOULMATE",
+          items: [
+            {
+              abuAdelMenuItemId: trfForm.abuAdelMenuItemId,
+              soulmateMenuItemId: trfForm.soulmateMenuItemId || undefined,
+              quantity: Number(trfForm.quantity),
+              unitCost: trfForm.unitCost !== "" ? Number(trfForm.unitCost) : undefined,
+            },
+          ],
+          deductFromAbuAdel: trfForm.deductFromAbuAdel,
+          notes: trfForm.notes,
+          recordedBy: currentUser?.name || "المايسترو",
+        }),
+      });
+      const data = await res.json();
+      if (!data.success) return notify("error", data.error || "فشل التحويل البيني");
+      notify("success", data.message || "تم التحويل البيني بالتكلفة بنجاح ✅");
+      setTrfForm({
+        abuAdelMenuItemId: "",
+        soulmateMenuItemId: "",
+        quantity: "1",
+        unitCost: "",
+        deductFromAbuAdel: true,
+        notes: "",
+      });
+      await Promise.all([loadConsignments(), loadSuppliers()]);
+      onDataChanged?.();
+    } catch (err: any) {
+      notify("error", err.message);
+    } finally {
+      setConsignBusy(false);
+    }
+  };
+
+  const handleSendConsignmentToAbuAdel = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!conForm.soulmateMenuItemId || Number(conForm.quantity) <= 0) {
+      return notify("error", "يرجى اختيار الصنف من سول ميت وتحديد الكمية المُرسلة");
+    }
+    setConsignBusy(true);
+    try {
+      const res = await fetch("/api/consignments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "SEND_CONSIGNMENT_TO_ABU_ADEL",
+          soulmateMenuItemId: conForm.soulmateMenuItemId,
+          abuAdelMenuItemId: conForm.abuAdelMenuItemId || undefined,
+          quantity: Number(conForm.quantity),
+          unitCost: conForm.unitCost !== "" ? Number(conForm.unitCost) : undefined,
+          sellingPrice: conForm.sellingPrice !== "" ? Number(conForm.sellingPrice) : undefined,
+          notes: conForm.notes,
+          recordedBy: currentUser?.name || "المايسترو",
+        }),
+      });
+      const data = await res.json();
+      if (!data.success) return notify("error", data.error || "فشل إرسال الأمانة");
+      notify("success", data.message || "تم قيد الأمانة عند حلواني أبو عادل بنجاح ✅");
+      setConForm({
+        soulmateMenuItemId: "",
+        abuAdelMenuItemId: "",
+        quantity: "1",
+        unitCost: "",
+        sellingPrice: "",
+        notes: "",
+      });
+      await loadConsignments();
+      onDataChanged?.();
+    } catch (err: any) {
+      notify("error", err.message);
+    } finally {
+      setConsignBusy(false);
+    }
+  };
+
+  const handleRecordConsignmentSold = async (batch: any) => {
+    const raw = window.prompt(
+      `كمية البيع اليدوية لصنف "${batch.itemName}" (المتبقي بالأمانة: ${batch.remainingQty})؟`,
+      "1"
+    );
+    if (!raw) return;
+    const qty = Number(raw);
+    if (!Number.isFinite(qty) || qty <= 0) return notify("error", "كمية غير صالحة");
+    setConsignBusy(true);
+    try {
+      const res = await fetch("/api/consignments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "RECORD_CONSIGNMENT_SOLD",
+          batchId: batch.id,
+          soldQty: qty,
+          deductAbuAdelStock: true,
+          recordedBy: currentUser?.name || "المايسترو",
+        }),
+      });
+      const data = await res.json();
+      if (!data.success) return notify("error", data.error || "فشل تسجيل بيع الأمانة");
+      notify("success", data.message);
+      await loadConsignments();
+      onDataChanged?.();
+    } catch (err: any) {
+      notify("error", err.message);
+    } finally {
+      setConsignBusy(false);
+    }
+  };
+
+  const handleSettleConsignmentSold = async (batch: any, settlementMode: "OFFSET_DEBT" | "CASH_PAYOUT") => {
+    const due = Math.max(0, Number(((batch.soldRevenue || 0) - (batch.settledAmount || 0)).toFixed(2)));
+    if (due <= 0.01) return notify("info", "لا توجد مستحقات مباعة غير مسوّاة على هذه الدفعة");
+    const raw = window.prompt(
+      settlementMode === "OFFSET_DEBT"
+        ? `تأكيد خصم مبلغ (ج.م) من مديونية سول ميت لأبو عادل (المستحق: ${due} ج.م):`
+        : `تأكيد صرف نقدي (ج.م) لحساب سول ميت من ${payoutSourceChoice === "DRAWER" ? "درج أبو عادل" : "الخزنة الرئيسية"} (المستحق: ${due} ج.م):`,
+      String(due)
+    );
+    if (!raw) return;
+    const amount = Number(raw);
+    if (!Number.isFinite(amount) || amount <= 0) return notify("error", "مبلغ غير صالح");
+    setConsignBusy(true);
+    try {
+      const res = await fetch("/api/consignments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "SETTLE_CONSIGNMENT_SOLD",
+          batchId: batch.id,
+          settlementMode,
+          amount,
+          paymentSource: payoutSourceChoice,
+          recordedBy: currentUser?.name || "المايسترو",
+        }),
+      });
+      const data = await res.json();
+      if (!data.success) return notify("error", data.error || "فشلت التسوية");
+      notify("success", data.message);
+      await Promise.all([loadConsignments(), loadSuppliers()]);
+      onDataChanged?.();
+    } catch (err: any) {
+      notify("error", err.message);
+    } finally {
+      setConsignBusy(false);
+    }
+  };
+
+  const handleReturnConsignmentUnsold = async (batch: any) => {
+    const rem = Number(batch.remainingQty || 0);
+    if (rem <= 0) return notify("info", "لا توجد كمية متبقية غير مباعة لإرجاعها");
+    const raw = window.prompt(
+      `الكمية المراد إرجاعها لسول ميت بنفس التكلفة (${batch.unitCost} ج.م) — المتبقي ${rem}:`,
+      String(rem)
+    );
+    if (!raw) return;
+    const qty = Number(raw);
+    if (!Number.isFinite(qty) || qty <= 0) return notify("error", "كمية غير صالحة");
+    setConsignBusy(true);
+    try {
+      const res = await fetch("/api/consignments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "RETURN_CONSIGNMENT_UNSOLD",
+          batchId: batch.id,
+          returnQty: qty,
+          recordedBy: currentUser?.name || "المايسترو",
+        }),
+      });
+      const data = await res.json();
+      if (!data.success) return notify("error", data.error || "فشل رد الأمانة");
+      notify("success", data.message);
+      await loadConsignments();
+      onDataChanged?.();
+    } catch (err: any) {
+      notify("error", err.message);
+    } finally {
+      setConsignBusy(false);
+    }
+  };
 
   useEffect(() => {
     if (settings) {
@@ -495,6 +764,7 @@ export default function AdminSuppliersAndAiPanel({
               aiDomain === "SOULMATE_RAW_MATERIALS"
                 ? outlets.find((o) => o.code === "SOULMATE_CAFE")?.id
                 : outlets.find((o) => o.code === "ABU_ADEL_PATISSERIE")?.id,
+            updateCostPrices: aiUpdateCostPrices,
             items: aiParsedItems.map((it) => ({
               targetType: it.matchedTargetType,
               id: it.matchedId || undefined,
@@ -503,6 +773,9 @@ export default function AdminSuppliersAndAiPanel({
               unit: it.unit || "PIECE",
               unitCost: Number(it.unitCost) || 0,
               dailyLimit: it.dailyLimit,
+              image: it.image || undefined,
+              price: it.price !== undefined && it.price !== "" ? Number(it.price) : undefined,
+              category: it.category || undefined,
             })),
             recordedBy: currentUser?.name || "المايسترو (Gemini AI)",
           }),
@@ -540,6 +813,7 @@ export default function AdminSuppliersAndAiPanel({
             supplierId: aiInvoiceMeta.supplierId,
             invoiceNumber: aiInvoiceMeta.invoiceNumber,
             transactionDate: aiInvoiceMeta.transactionDate,
+            updateCostPrices: aiUpdateCostPrices,
             items: aiParsedItems.map((it) => ({
               targetType: it.matchedTargetType,
               id: it.matchedId || undefined,
@@ -548,6 +822,9 @@ export default function AdminSuppliersAndAiPanel({
               unit: it.unit || "PIECE",
               unitCost: Number(it.unitCost) || 0,
               dailyLimit: it.dailyLimit,
+              image: it.image || undefined,
+              price: it.price !== undefined && it.price !== "" ? Number(it.price) : undefined,
+              category: it.category || undefined,
             })),
             totalAmount: Number(computedTotal.toFixed(2)),
             paidAmount: Number(effectivePaid.toFixed(2)),
@@ -721,6 +998,18 @@ export default function AdminSuppliersAndAiPanel({
           >
             <FileText className="w-4 h-4" />
             <span>كشف حساب الموردين التفصيلي 📒</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setSubTab("consignments")}
+            className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 transition cursor-pointer ${
+              subTab === "consignments"
+                ? "bg-gradient-to-r from-indigo-500 to-teal-400 text-slate-950 shadow-lg"
+                : "text-slate-300 hover:bg-slate-800"
+            }`}
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>التحويلات والأمانات (أبو عادل ↔ سول ميت) 🔄</span>
           </button>
         </div>
 
@@ -1240,6 +1529,81 @@ export default function AdminSuppliersAndAiPanel({
                               </option>
                             ))}
                           </select>
+                          {!row.matchedId && row.matchedTargetType !== "RAW_MATERIAL" && (
+                            <div className="mt-1.5 p-2 rounded-lg bg-amber-500/5 border border-amber-500/25 space-y-1.5 w-52">
+                              <div className="flex items-center gap-1.5">
+                                {row.image ? (
+                                  <img
+                                    src={row.image}
+                                    alt={row.extractedName}
+                                    className="w-8 h-8 rounded object-cover border border-white/20 shrink-0"
+                                  />
+                                ) : null}
+                                <label className="flex-1 cursor-pointer flex items-center justify-center gap-1 px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 border border-amber-500/30 text-[10px] font-bold text-amber-200">
+                                  <Upload className="w-3 h-3" />
+                                  <span>
+                                    {uploadingNewItemIdx === idx
+                                      ? "جاري الرفع..."
+                                      : row.image
+                                      ? "تغيير الصورة 📷"
+                                      : "رفع صورة للاندينج 📷"}
+                                  </span>
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    disabled={uploadingNewItemIdx === idx}
+                                    onChange={(e) => handleUploadNewItemImage(idx, e.target.files?.[0])}
+                                  />
+                                </label>
+                                {row.image && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setAiParsedItems((prev) =>
+                                        prev.map((x, i) => (i === idx ? { ...x, image: "" } : x))
+                                      )
+                                    }
+                                    title="حذف الصورة"
+                                    className="p-1 text-rose-400 hover:bg-rose-500/15 rounded cursor-pointer"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </button>
+                                )}
+                              </div>
+                              <div className="grid grid-cols-2 gap-1">
+                                <input
+                                  type="number"
+                                  step="any"
+                                  placeholder="سعر البيع"
+                                  value={row.price ?? ""}
+                                  onChange={(e) =>
+                                    setAiParsedItems((prev) =>
+                                      prev.map((x, i) => (i === idx ? { ...x, price: e.target.value } : x))
+                                    )
+                                  }
+                                  className="w-full bg-slate-950 border border-slate-700 rounded px-1.5 py-1 text-[10px] text-emerald-300 font-mono"
+                                />
+                                <select
+                                  value={row.category ?? ""}
+                                  onChange={(e) =>
+                                    setAiParsedItems((prev) =>
+                                      prev.map((x, i) => (i === idx ? { ...x, category: e.target.value } : x))
+                                    )
+                                  }
+                                  className="w-full bg-slate-950 border border-slate-700 rounded px-1 py-1 text-[10px] text-slate-200"
+                                >
+                                  <option value="">القسم التلقائي</option>
+                                  <option value="ORIENTAL_SWEETS">حلويات شرقية</option>
+                                  <option value="WESTERN_PASTRY">غربية وجاتوه</option>
+                                  <option value="CAKES_TORTES">تورت وكيك</option>
+                                  <option value="GIFT_BOXES">بوكسات ومواسم</option>
+                                  <option value="DESSERT">حلى وديسيرت</option>
+                                  <option value="PASTRY">معجنات / كافيه</option>
+                                </select>
+                              </div>
+                            </div>
+                          )}
                         </td>
                         <td className="py-2 px-2 text-center">
                           <input
@@ -1316,6 +1680,21 @@ export default function AdminSuppliersAndAiPanel({
                     ))}
                   </tbody>
                 </table>
+              </div>
+
+              {/* Catalog cost update toggle (Safe: preserves historical snapshot cost on past sales) */}
+              <div className="bg-emerald-950/30 border border-emerald-500/30 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <label className="flex items-center gap-2.5 cursor-pointer text-emerald-200 font-bold">
+                  <input
+                    type="checkbox"
+                    checked={aiUpdateCostPrices}
+                    onChange={(e) => setAiUpdateCostPrices(e.target.checked)}
+                    className="w-4 h-4 accent-emerald-400"
+                  />
+                  <span>
+                    اعتماد وتحديث التكلفة الفعلية للأصناف في الكتالوج من هذه الفاتورة (تُطبّق على المبيعات القادمة فقط ولا تعدّل أرباح الفواتير السابقة بأثر رجعي 🔒)
+                  </span>
+                </label>
               </div>
 
               {/* Settlement & Supplier Target Box for AI Invoice Mode */}
@@ -1906,12 +2285,420 @@ export default function AdminSuppliersAndAiPanel({
         </div>
       )}
 
+      {/* ================================================================= */}
+      {/* SUBTAB 5: INTER-BRANCH TRANSFERS & CONSIGNMENT RETURNS            */}
+      {/* ================================================================= */}
+      {subTab === "consignments" && (
+        <div className="space-y-6">
+          <div className="bg-gradient-to-l from-indigo-950/70 via-slate-900 to-teal-950/60 border border-indigo-500/30 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 className="font-black text-base text-white flex items-center gap-2">
+                🔄 مركز التحويلات والأمانات: أبو عادل ↔ سول ميت كافيه
+              </h3>
+              <p className="text-xs text-slate-300 mt-1">
+                ١) <strong className="text-amber-300">تحويل بالتكلفة (أبو عادل ← سول ميت)</strong>: ينقل الرصيد ويقيّد مديونية بالتكلفة بدون فواتير مبيعات وهمية.
+                ٢) <strong className="text-teal-300">أمانة بيع (سول ميت ← أبو عادل)</strong>: عند البيع في أبو عادل تتجمّع مستحقات سول ميت وتُسوى إما بخصمها من دين سول ميت أو بصرف كاش أو رد الباقي بنفس التكلفة.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={loadConsignments}
+              disabled={consignLoading}
+              className="px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-700 hover:border-indigo-400 text-xs font-bold text-indigo-200 flex items-center gap-1.5 cursor-pointer"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${consignLoading ? "animate-spin" : ""}`} />
+              <span>تحديث الأمانات والتحويلات</span>
+            </button>
+          </div>
+
+          {/* Two Action Forms Side by Side */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            {/* Form A: Abu Adel -> Soulmate Inter-Branch Transfer at Cost */}
+            <form
+              onSubmit={handleTransferAbuAdelToSoulmate}
+              className="bg-slate-900 border border-amber-500/30 rounded-2xl p-4 space-y-3 text-xs"
+            >
+              <div className="font-black text-sm text-amber-300 flex items-center justify-between">
+                <span>📦 تحويل أصناف من أبو عادل ➔ سول ميت (بالتكلفة)</span>
+                <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/15 border border-amber-500/30 text-amber-200">
+                  بدون مبيعات POS
+                </span>
+              </div>
+
+              <div>
+                <label className="block text-[11px] text-slate-400 mb-1 font-bold">الصنف المصدر في حلواني أبو عادل *</label>
+                <select
+                  value={trfForm.abuAdelMenuItemId}
+                  onChange={(e) => {
+                    const picked = consignData.abuAdelItems.find((x) => x.id === e.target.value);
+                    setTrfForm((p) => ({
+                      ...p,
+                      abuAdelMenuItemId: e.target.value,
+                      unitCost: picked ? String(picked.costPrice || 0) : "",
+                    }));
+                  }}
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold"
+                >
+                  <option value="">-- اختر الصنف من حلواني أبو عادل --</option>
+                  {consignData.abuAdelItems.map((it) => (
+                    <option key={it.id} value={it.id}>
+                      {it.nameAr} — تكلفة: {Number(it.costPrice || 0)} ج.م (رصيد: {it.stockQty})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2.5">
+                <div>
+                  <label className="block text-[11px] text-slate-400 mb-1 font-bold">الكمية المحوّلة *</label>
+                  <input
+                    type="number"
+                    step="any"
+                    value={trfForm.quantity}
+                    onChange={(e) => setTrfForm((p) => ({ ...p, quantity: e.target.value }))}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white font-mono font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] text-slate-400 mb-1 font-bold">التكلفة للوحدة (ج.م)</label>
+                  <input
+                    type="number"
+                    step="any"
+                    placeholder="تلقائي من الكتالوج"
+                    value={trfForm.unitCost}
+                    onChange={(e) => setTrfForm((p) => ({ ...p, unitCost: e.target.value }))}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-amber-300 font-mono font-bold"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] text-slate-400 mb-1 font-bold">
+                  الصنف المستلم في سول ميت (اختياري — يُطابق تلقائياً بالاسم)
+                </label>
+                <select
+                  value={trfForm.soulmateMenuItemId}
+                  onChange={(e) => setTrfForm((p) => ({ ...p, soulmateMenuItemId: e.target.value }))}
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200"
+                >
+                  <option value="">✨ مطابقة أو إنشاء تلقائي بالاسم في سول ميت</option>
+                  {consignData.soulmateReadyItems.map((it) => (
+                    <option key={it.id} value={it.id}>
+                      {it.nameAr} (رصيد حالي: {it.stockQty})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <label className="flex items-center gap-2 text-slate-300 font-bold cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={trfForm.deductFromAbuAdel}
+                  onChange={(e) => setTrfForm((p) => ({ ...p, deductFromAbuAdel: e.target.checked }))}
+                />
+                <span>خصم الكمية من مخزون حلواني أبو عادل وإضافتها على مديونية سول ميت بالتكلفة</span>
+              </label>
+
+              <input
+                type="text"
+                placeholder="ملاحظات إذن التحويل (اختياري)..."
+                value={trfForm.notes}
+                onChange={(e) => setTrfForm((p) => ({ ...p, notes: e.target.value }))}
+                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white"
+              />
+
+              <button
+                type="submit"
+                disabled={consignBusy}
+                className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-black cursor-pointer"
+              >
+                {consignBusy ? "جاري التنفيذ..." : "اعتماد التحويل بالتكلفة (أبو عادل ← سول ميت) ✅"}
+              </button>
+            </form>
+
+            {/* Form B: Soulmate -> Abu Adel Consignment Return */}
+            <form
+              onSubmit={handleSendConsignmentToAbuAdel}
+              className="bg-slate-900 border border-teal-500/30 rounded-2xl p-4 space-y-3 text-xs"
+            >
+              <div className="font-black text-sm text-teal-300 flex items-center justify-between">
+                <span>🤝 إرسال أمانة بيع من سول ميت ➔ أبو عادل</span>
+                <span className="text-[10px] px-2 py-0.5 rounded bg-teal-500/15 border border-teal-500/30 text-teal-200">
+                  أمانة لحساب سول ميت
+                </span>
+              </div>
+
+              <div>
+                <label className="block text-[11px] text-slate-400 mb-1 font-bold">الصنف المرتجع كأمانة من سول ميت *</label>
+                <select
+                  value={conForm.soulmateMenuItemId}
+                  onChange={(e) => {
+                    const picked = consignData.soulmateReadyItems.find((x) => x.id === e.target.value);
+                    setConForm((p) => ({
+                      ...p,
+                      soulmateMenuItemId: e.target.value,
+                      unitCost: picked ? String(picked.costPrice || 0) : "",
+                      sellingPrice: picked ? String(picked.price || 0) : "",
+                    }));
+                  }}
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold"
+                >
+                  <option value="">-- اختر الصنف من حلويات سول ميت --</option>
+                  {consignData.soulmateReadyItems.map((it) => (
+                    <option key={it.id} value={it.id}>
+                      {it.nameAr} — تكلفة: {Number(it.costPrice || 0)} | بيع: {Number(it.price || 0)} (رصيد: {it.stockQty})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  <label className="block text-[11px] text-slate-400 mb-1 font-bold">الكمية *</label>
+                  <input
+                    type="number"
+                    step="any"
+                    value={conForm.quantity}
+                    onChange={(e) => setConForm((p) => ({ ...p, quantity: e.target.value }))}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-white font-mono font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] text-slate-400 mb-1 font-bold">التكلفة للوحدة</label>
+                  <input
+                    type="number"
+                    step="any"
+                    value={conForm.unitCost}
+                    onChange={(e) => setConForm((p) => ({ ...p, unitCost: e.target.value }))}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-amber-300 font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] text-slate-400 mb-1 font-bold">سعر البيع عند أبو عادل</label>
+                  <input
+                    type="number"
+                    step="any"
+                    value={conForm.sellingPrice}
+                    onChange={(e) => setConForm((p) => ({ ...p, sellingPrice: e.target.value }))}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-emerald-300 font-mono"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] text-slate-400 mb-1 font-bold">
+                  الصنف الهدف عند أبو عادل (اختياري — يطابق تلقائياً بالاسم)
+                </label>
+                <select
+                  value={conForm.abuAdelMenuItemId}
+                  onChange={(e) => setConForm((p) => ({ ...p, abuAdelMenuItemId: e.target.value }))}
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200"
+                >
+                  <option value="">✨ مطابقة أو إنشاء تلقائي في أبو عادل</option>
+                  {consignData.abuAdelItems.map((it) => (
+                    <option key={it.id} value={it.id}>
+                      {it.nameAr} (سعر: {it.price} | رصيد: {it.stockQty})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <input
+                type="text"
+                placeholder="سبب / ملاحظات الأمانة (مثال: قرب الصلاحية - تصفية لحساب سول ميت)..."
+                value={conForm.notes}
+                onChange={(e) => setConForm((p) => ({ ...p, notes: e.target.value }))}
+                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white"
+              />
+
+              <button
+                type="submit"
+                disabled={consignBusy}
+                className="w-full py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 disabled:opacity-50 text-slate-950 font-black cursor-pointer"
+              >
+                {consignBusy ? "جاري التنفيذ..." : "قيد أمانة بيع لحساب سول ميت عند أبو عادل 🤝"}
+              </button>
+            </form>
+          </div>
+
+          {/* Open & Historical Consignment Batches Table */}
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h4 className="font-black text-sm text-teal-300">
+                📋 دفتر الأمانات النشطة والمُقفلة ({consignData.consignments.length} دفعة)
+              </h4>
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-slate-400 font-bold">مصدر الصرف النقدي عند التوريد الكاش:</span>
+                <select
+                  value={payoutSourceChoice}
+                  onChange={(e) => setPayoutSourceChoice(e.target.value as any)}
+                  className="bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1 text-amber-300 font-bold"
+                >
+                  <option value="DRAWER">💵 درج كاشير أبو عادل (تُخصم من الشيفت)</option>
+                  <option value="MAIN_SAFE">🏦 الخزنة الرئيسية</option>
+                </select>
+              </div>
+            </div>
+
+            {consignData.consignments.length === 0 ? (
+              <div className="text-center py-8 text-xs text-slate-400">
+                لا توجد دفعات أمانات بيع مسجلة حتى الآن.
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs text-right">
+                  <thead>
+                    <tr className="border-b border-slate-800 text-slate-400">
+                      <th className="py-2 px-2">الصنف / التاريخ</th>
+                      <th className="py-2 px-2 text-center">مُرسل</th>
+                      <th className="py-2 px-2 text-center">مُباع</th>
+                      <th className="py-2 px-2 text-center">مرتجع</th>
+                      <th className="py-2 px-2 text-center">متبقي</th>
+                      <th className="py-2 px-2 text-center">حصة سول ميت (مُباع)</th>
+                      <th className="py-2 px-2 text-center">المسوّى</th>
+                      <th className="py-2 px-2 text-center">الحالة</th>
+                      <th className="py-2 px-2 text-center">إجراءات التسوية والرد</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800/70">
+                    {consignData.consignments.map((b) => {
+                      const unsettled = Math.max(0, Number(((b.soldRevenue || 0) - (b.settledAmount || 0)).toFixed(2)));
+                      return (
+                        <tr key={b.id} className="hover:bg-slate-950/60">
+                          <td className="py-2.5 px-2">
+                            <div className="font-black text-white">{b.itemName}</div>
+                            <div className="text-[10px] text-slate-400">
+                              تكلفة: {b.unitCost} ج.م | بيع: {b.sellingPrice} ج.م •{" "}
+                              {b.createdAt ? new Date(b.createdAt).toLocaleDateString("ar-EG") : ""}
+                            </div>
+                          </td>
+                          <td className="py-2.5 px-2 text-center font-mono font-bold text-slate-200">{b.sentQty}</td>
+                          <td className="py-2.5 px-2 text-center font-mono font-bold text-emerald-300">{b.soldQty}</td>
+                          <td className="py-2.5 px-2 text-center font-mono font-bold text-sky-300">{b.returnedQty}</td>
+                          <td className="py-2.5 px-2 text-center font-mono font-black text-amber-300">{b.remainingQty}</td>
+                          <td className="py-2.5 px-2 text-center font-mono font-bold text-emerald-300">
+                            {Number(b.soldRevenue || 0).toLocaleString()} ج.م
+                          </td>
+                          <td className="py-2.5 px-2 text-center font-mono">
+                            <div className="text-slate-300 font-bold">{Number(b.settledAmount || 0).toLocaleString()} ج.م</div>
+                            {unsettled > 0.01 && (
+                              <div className="text-[10px] text-rose-400 font-black">
+                                مستحق: {unsettled.toLocaleString()} ج.م
+                              </div>
+                            )}
+                          </td>
+                          <td className="py-2.5 px-2 text-center">
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+                                b.status === "SETTLED"
+                                  ? "bg-emerald-500/20 text-emerald-300"
+                                  : b.status === "PARTIAL"
+                                  ? "bg-amber-500/20 text-amber-300"
+                                  : "bg-sky-500/20 text-sky-300"
+                              }`}
+                            >
+                              {b.status === "SETTLED" ? "مقفلة ✅" : b.status === "PARTIAL" ? "جارية / جزئي" : "مفتوحة"}
+                            </span>
+                          </td>
+                          <td className="py-2.5 px-2">
+                            <div className="flex flex-wrap items-center justify-center gap-1">
+                              {Number(b.remainingQty || 0) > 0 && (
+                                <>
+                                  <button
+                                    type="button"
+                                    disabled={consignBusy}
+                                    onClick={() => handleRecordConsignmentSold(b)}
+                                    className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-200 cursor-pointer"
+                                  >
+                                    + قيد بيع يدوي
+                                  </button>
+                                  <button
+                                    type="button"
+                                    disabled={consignBusy}
+                                    onClick={() => handleReturnConsignmentUnsold(b)}
+                                    className="px-2 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/30 text-[10px] font-bold text-sky-200 cursor-pointer"
+                                  >
+                                    🔄 رد الباقي لسول ميت
+                                  </button>
+                                </>
+                              )}
+                              {unsettled > 0.01 && (
+                                <>
+                                  <button
+                                    type="button"
+                                    disabled={consignBusy}
+                                    onClick={() => handleSettleConsignmentSold(b, "OFFSET_DEBT")}
+                                    className="px-2 py-1 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/30 text-[10px] font-bold text-indigo-200 cursor-pointer"
+                                  >
+                                    ♻️ خصم من مديونية سول ميت
+                                  </button>
+                                  <button
+                                    type="button"
+                                    disabled={consignBusy}
+                                    onClick={() => handleSettleConsignmentSold(b, "CASH_PAYOUT")}
+                                    className="px-2 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 text-[10px] font-bold text-emerald-200 cursor-pointer"
+                                  >
+                                    💵 صرف كاش لسول ميت
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+          {/* Inter-Branch Transfer & Settlement Voucher History */}
+          {consignData.transferHistory.length > 0 && (
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+              <h4 className="font-black text-sm text-amber-300">
+                📒 سجل قيود الحساب البيني (تحويلات التكلفة + تسويات الأمانات)
+              </h4>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs text-right">
+                  <thead>
+                    <tr className="border-b border-slate-800 text-slate-400">
+                      <th className="py-2 px-2">التاريخ / المستند</th>
+                      <th className="py-2 px-2">النوع</th>
+                      <th className="py-2 px-2">البيان والملاحظات</th>
+                      <th className="py-2 px-2 text-center">المبلغ (ج.م)</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800/70">
+                    {consignData.transferHistory.map((tx: any) => (
+                      <tr key={tx.id}>
+                        <td className="py-2 px-2 font-mono text-[11px] text-slate-300">
+                          {tx.invoiceNumber || "-"} •{" "}
+                          {tx.transactionDate ? new Date(tx.transactionDate).toLocaleDateString("ar-EG") : ""}
+                        </td>
+                        <td className="py-2 px-2 font-bold text-amber-300">
+                          {tx.type === "INVOICE" ? "📦 تحويل بيني بالتكلفة" : tx.type === "PAYMENT" ? "♻️ تسوية / خصم مديونية" : tx.type}
+                        </td>
+                        <td className="py-2 px-2 text-slate-300">{tx.notes || "-"}</td>
+                        <td className="py-2 px-2 text-center font-mono font-black text-white">
+                          {Number(tx.totalAmount || tx.paidAmount || 0).toLocaleString()} ج.م
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* MODAL: CREATE / EDIT SUPPLIER */}
       {showSupplierModal && (
-        <div className="fixed inset-0 z-[85] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[130] flex items-start sm:items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
           <form
             onSubmit={handleSaveSupplier}
-            className="bg-slate-900 border border-amber-500/40 rounded-3xl p-6 max-w-lg w-full space-y-4 text-xs shadow-2xl"
+            className="my-auto bg-slate-900 border border-amber-500/40 rounded-3xl p-6 max-w-lg max-h-[90vh] overflow-y-auto w-full space-y-4 text-xs shadow-2xl"
           >
             <h3 className="font-black text-base text-white">
               {supplierForm.id ? "✏️ تعديل بيانات المورد ورصيد أول المدة" : "➕ إضافة مصنع / مورد جديد"}

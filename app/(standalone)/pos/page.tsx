@@ -116,7 +116,7 @@ export default function PosTerminalPage() {
 
   // Current Order Cart (Active Table Check or Walk-In Order)
   const [cart, setCart] = useState<any[]>([]);
-  const [orderType, setOrderType] = useState<"DINE_IN" | "TAKEAWAY" | "DELIVERY">(() => {
+  const [orderType, setOrderType] = useState<"DINE_IN" | "TAKEAWAY" | "DELIVERY" | "TALABAT">(() => {
     if (typeof window === "undefined") return "DINE_IN";
     try {
       const saved =
@@ -160,7 +160,7 @@ export default function PosTerminalPage() {
   const lastPendingCountRef = useRef<number>(0);
   const [discountAmount, setDiscountAmount] = useState<number>(0);
   const [tipAmount, setTipAmount] = useState<number>(0);
-  const [paymentMethod, setPaymentMethod] = useState<"CASH" | "CARD" | "INSTAPAY" | "VODAFONE_CASH">("CASH");
+  const [paymentMethod, setPaymentMethod] = useState<"CASH" | "CARD" | "INSTAPAY" | "VODAFONE_CASH" | "TALABAT">("CASH");
 
   // Offers, Auto-Discount & Customer CRM / Loyalty in POS
   const [offers, setOffers] = useState<OfferData>(DEFAULT_OFFERS);
@@ -229,6 +229,7 @@ export default function PosTerminalPage() {
         id: selectedBoxItem.id,
         nameAr: selectedBoxItem.nameAr,
         pricePerKg,
+        unitCost: Number(selectedBoxItem.costPrice || 0),
         grams: Number(tempBoxGrams),
         subtotal,
       },
@@ -262,12 +263,13 @@ export default function PosTerminalPage() {
       category: "ORIENTAL_SWEETS",
       isCustomBox: true,
       totalWeightGrams,
-      boxComponents: boxComponents.map((c) => ({
+      boxComponents: boxComponents.map((c: any) => ({
         id: c.id,
         nameAr: c.nameAr,
         grams: c.grams,
         weightKg: c.grams / 1000,
         pricePerKg: c.pricePerKg,
+        unitCost: Number(c.unitCost || 0),
         subtotal: c.subtotal,
       })),
     };
@@ -586,6 +588,7 @@ export default function PosTerminalPage() {
           nameAr: item.nameAr,
           price: pricing.finalPrice,
           originalPrice: pricing.hasDiscount ? pricing.originalPrice : undefined,
+          costPrice: Number(item.calculatedCost || item.costPrice || 0),
           qty: cleanQty,
           unitType: item.unitType || "KG",
           notes: "",
@@ -623,6 +626,7 @@ export default function PosTerminalPage() {
           nameAr: item.nameAr,
           price: pricing.finalPrice,
           originalPrice: pricing.hasDiscount ? pricing.originalPrice : undefined,
+          costPrice: Number(item.calculatedCost || item.costPrice || 0),
           qty: 1,
           unitType: item.unitType || "PIECE",
           notes: "",
@@ -851,10 +855,11 @@ export default function PosTerminalPage() {
           body: JSON.stringify({
             outletId: currentOutlet?.id,
             orderType,
+            paymentMethod,
             tableId: selectedTable?.id || null,
             tableNumber: selectedTable?.tableNumber || null,
             items: cart,
-            customerName: customerName.trim() || (selectedTable ? `ترابيزة ${selectedTable.tableNumber}` : orderType === "DELIVERY" ? "عميل دليفري" : "عميل كاشير"),
+            customerName: customerName.trim() || (selectedTable ? `ترابيزة ${selectedTable.tableNumber}` : orderType === "DELIVERY" ? "عميل دليفري" : orderType === "TALABAT" ? "أوردر طلبات (Talabat)" : "عميل كاشير"),
             customerPhone: customerPhone.trim() || null,
             deliveryAddress: orderType === "DELIVERY" ? deliveryAddress.trim() : null,
             deliveryPhone: orderType === "DELIVERY" ? customerPhone.trim() : null,
@@ -1434,17 +1439,18 @@ export default function PosTerminalPage() {
               </div>
             </div>
 
-            {/* ORDER TYPE SEGMENTED TABS (2 tabs for Abu Adel, 3 tabs for Soulmate) */}
-            <div className={`grid ${isAbuAdel ? "grid-cols-2" : "grid-cols-3"} gap-1 p-1 bg-black/60 border border-white/10 rounded-2xl text-xs font-black`}>
+            {/* ORDER TYPE SEGMENTED TABS (2 tabs for Abu Adel, 4 tabs for Soulmate incl. Talabat) */}
+            <div className={`grid ${isAbuAdel ? "grid-cols-2" : "grid-cols-4"} gap-1 p-1 bg-black/60 border border-white/10 rounded-2xl text-xs font-black`}>
               {/* Option 1: DINE_IN (صالة) - Strictly for Soulmate Cafe */}
               {!isAbuAdel && (
                 <button
                   type="button"
                   onClick={() => {
                     setOrderType("DINE_IN");
+                    if (paymentMethod === "TALABAT") setPaymentMethod("CASH");
                     setShowTableModal(true);
                   }}
-                  className={`py-2 px-1 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                  className={`py-2 px-1 rounded-xl transition flex items-center justify-center gap-1 cursor-pointer ${
                     orderType === "DINE_IN"
                       ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-black"
                       : "text-slate-400 hover:text-white"
@@ -1452,7 +1458,7 @@ export default function PosTerminalPage() {
                 >
                   <span>🪑</span>
                   <span className="truncate">
-                    {selectedTable ? `ترابيزة ${selectedTable.tableNumber}` : "صالة"}
+                    {selectedTable ? `ط${selectedTable.tableNumber}` : "صالة"}
                   </span>
                 </button>
               )}
@@ -1462,10 +1468,11 @@ export default function PosTerminalPage() {
                 type="button"
                 onClick={() => {
                   setOrderType("TAKEAWAY");
+                  if (paymentMethod === "TALABAT") setPaymentMethod("CASH");
                   setSelectedTable(null);
                   showToast("info", isAbuAdel ? "تم تفعيل وضع البيع المباشر (استلام فوري من المحل) 🛍️" : "تم تفعيل وضع التيك أواي السفري 🛍️");
                 }}
-                className={`py-2 px-1 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                className={`py-2 px-1 rounded-xl transition flex items-center justify-center gap-1 cursor-pointer ${
                   orderType === "TAKEAWAY"
                     ? isAbuAdel
                       ? "bg-rose-600 text-white shadow-md shadow-rose-600/20 font-black"
@@ -1482,10 +1489,11 @@ export default function PosTerminalPage() {
                 type="button"
                 onClick={() => {
                   setOrderType("DELIVERY");
+                  if (paymentMethod === "TALABAT") setPaymentMethod("CASH");
                   setSelectedTable(null);
                   showToast("info", "تم تفعيل وضع التوصيل والدليفري 🛵");
                 }}
-                className={`py-2 px-1 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                className={`py-2 px-1 rounded-xl transition flex items-center justify-center gap-1 cursor-pointer ${
                   orderType === "DELIVERY"
                     ? "bg-sky-500 text-white shadow-md shadow-sky-500/20 font-black"
                     : "text-slate-400 hover:text-white"
@@ -1494,6 +1502,27 @@ export default function PosTerminalPage() {
                 <span>🛵</span>
                 <span>دليفري</span>
               </button>
+
+              {/* Option 4: TALABAT (طلبات - عمولة 25%) - Strictly for Soulmate Cafe */}
+              {!isAbuAdel && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOrderType("TALABAT");
+                    setPaymentMethod("TALABAT");
+                    setSelectedTable(null);
+                    showToast("info", `تم تفعيل قناة طلبات (عمولة ${settings?.talabatCommissionPercent ?? 25}% — لا يدخل درج الكاشير) 🟠`);
+                  }}
+                  className={`py-2 px-1 rounded-xl transition flex items-center justify-center gap-1 cursor-pointer ${
+                    orderType === "TALABAT"
+                      ? "bg-orange-500 text-slate-950 shadow-md shadow-orange-500/30 font-black"
+                      : "text-slate-400 hover:text-orange-300"
+                  }`}
+                >
+                  <span>🟠</span>
+                  <span>طلبات</span>
+                </button>
+              )}
             </div>
 
             {/* Contextual Sub-bar based on Selected Order Type */}
@@ -1797,7 +1826,7 @@ export default function PosTerminalPage() {
             </div>
 
             {/* Payment Method Selector */}
-            <div className="grid grid-cols-4 gap-1 text-[11px] font-bold">
+            <div className={`grid ${!isAbuAdel ? "grid-cols-5" : "grid-cols-4"} gap-1 text-[11px] font-bold`}>
               <button
                 onClick={() => setPaymentMethod("CASH")}
                 className={`py-1.5 rounded-lg border transition cursor-pointer flex flex-col items-center gap-0.5 ${
@@ -1834,7 +1863,41 @@ export default function PosTerminalPage() {
                 <span>📱</span>
                 <span>فودافون</span>
               </button>
+              {!isAbuAdel && (
+                <button
+                  onClick={() => {
+                    setOrderType("TALABAT");
+                    setPaymentMethod("TALABAT");
+                    setSelectedTable(null);
+                  }}
+                  className={`py-1.5 rounded-lg border transition cursor-pointer flex flex-col items-center gap-0.5 ${
+                    paymentMethod === "TALABAT" ? "bg-orange-500 text-slate-950 font-black border-orange-400 shadow-md shadow-orange-500/25" : "bg-black/40 text-orange-300/80 border-white/5 hover:text-orange-200"
+                  }`}
+                >
+                  <span>🟠</span>
+                  <span>طلبات</span>
+                </button>
+              )}
             </div>
+
+            {(paymentMethod === "TALABAT" || orderType === "TALABAT") && (() => {
+              const talabatPct = Number(settings?.talabatCommissionPercent ?? 25) || 25;
+              const storeBase = Math.max(0, calculatedFinal - deliveryFee);
+              const commVal = (storeBase * talabatPct) / 100;
+              const netVal = Math.max(0, storeBase - commVal);
+              return (
+                <div className="p-2 rounded-xl bg-orange-950/40 border border-orange-500/40 text-[10px] space-y-0.5">
+                  <div className="flex justify-between text-orange-300 font-bold">
+                    <span>🟠 أوردر تطبيق طلبات (لا يدخل الدرج الكاش)</span>
+                    <span className="font-mono">كاش بالدرج = 0 ج</span>
+                  </div>
+                  <div className="flex justify-between text-slate-300 font-mono">
+                    <span>عمولة طلبات ({talabatPct}%): -{commVal.toFixed(2)} ج</span>
+                    <span className="text-emerald-300 font-black">صافي مستحق: {netVal.toFixed(2)} ج</span>
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Totals Breakdown & Settle Button */}
             <div className="space-y-1 border-t border-white/10 pt-1.5 text-xs">
@@ -2553,6 +2616,18 @@ export default function PosTerminalPage() {
                     <span>فودافون كاش:</span>
                     <span>{shiftLiveStats?.vodafoneCollected || 0} ج</span>
                   </div>
+                  {(shiftLiveStats?.talabatCollected || 0) > 0 && (
+                    <div className="flex flex-col gap-0.5 text-orange-300 bg-orange-950/30 px-2 py-1.5 rounded-lg border border-orange-500/30">
+                      <div className="flex justify-between font-bold">
+                        <span>🟠 مبيعات طلبات (Talabat - خارج الدرج):</span>
+                        <span>{shiftLiveStats?.talabatCollected || 0} ج</span>
+                      </div>
+                      <div className="flex justify-between text-[10px] text-slate-300">
+                        <span>عمولة التطبيق: -{shiftLiveStats?.talabatCommission || 0} ج</span>
+                        <span className="text-emerald-300 font-bold">صافي مستحق: {shiftLiveStats?.talabatNetReceivable || 0} ج</span>
+                      </div>
+                    </div>
+                  )}
                   {(shiftLiveStats?.deliveryFeesTotal || 0) > 0 && (
                     <div className="flex justify-between text-cyan-300 bg-cyan-950/30 px-2 py-1 rounded-lg border border-cyan-500/20">
                       <span>🛵 رسوم توصيل (حق الطيارين — مفصولة):</span>
@@ -2679,6 +2754,8 @@ export default function PosTerminalPage() {
             <p className="text-[10px]">
               {lastPrintedOrder.orderType === "DINE_IN" && lastPrintedOrder.tableNumber
                 ? `ترابيزة: ${lastPrintedOrder.tableNumber}`
+                : lastPrintedOrder.orderType === "TALABAT" || lastPrintedOrder.paymentMethod === "TALABAT"
+                ? "🟠 أوردر تطبيق طلبات (Talabat)"
                 : lastPrintedOrder.orderType === "DELIVERY"
                 ? `🛵 توصيل دليفري للمنزل${lastPrintedOrder.deliveryZoneName ? ` (${lastPrintedOrder.deliveryZoneName})` : ""}`
                 : "🛍️ طلب تيك أواي / استلام من الفرع"}
@@ -2745,6 +2822,8 @@ export default function PosTerminalPage() {
                   ? "بطاقة بنكية 💳"
                   : lastPrintedOrder.paymentMethod === "INSTAPAY"
                   ? "انستاباي ⚡"
+                  : lastPrintedOrder.paymentMethod === "TALABAT"
+                  ? "تطبيق طلبات (Talabat) 🟠"
                   : "فودافون كاش 📱"}
               </strong>
             </div>

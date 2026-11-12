@@ -33,6 +33,7 @@ const PAYMENT_OPTIONS = [
   { id: "CARD", label: "فيزا / بطاقة بنكية", icon: CreditCard, activeClass: "border-sky-500 bg-sky-500/20 text-sky-300" },
   { id: "INSTAPAY", label: "إنستاباي (InstaPay)", icon: Smartphone, activeClass: "border-violet-500 bg-violet-500/20 text-violet-300" },
   { id: "VODAFONE_CASH", label: "فودافون كاش", icon: Wallet, activeClass: "border-rose-500 bg-rose-500/20 text-rose-300" },
+  { id: "TALABAT", label: "طلبات (Talabat - عمولة 25%)", icon: Smartphone, activeClass: "border-orange-500 bg-orange-500/20 text-orange-300" },
 ];
 
 export function paymentMethodAr(method?: string | null) {
@@ -45,6 +46,8 @@ export function paymentMethodAr(method?: string | null) {
       return "إنستاباي";
     case "VODAFONE_CASH":
       return "فودافون كاش";
+    case "TALABAT":
+      return "طلبات (Talabat)";
     default:
       return method || "كاش";
   }

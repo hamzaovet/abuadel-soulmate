@@ -1691,7 +1691,7 @@ export default function AdminLoyaltyCrmOffersPanel({
           MODAL: ADD / EDIT CUSTOMER CRM
       ═══════════════════════════════════════════════════════ */}
       {showCustomerModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] bg-black/80 backdrop-blur-sm flex items-start justify-center p-4 pt-6 sm:pt-12 pb-8 overflow-y-auto">
           <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md p-6 shadow-2xl relative space-y-4">
             <button
               type="button"
@@ -1808,7 +1808,7 @@ export default function AdminLoyaltyCrmOffersPanel({
           MODAL: CUSTOMER ORDER HISTORY
       ═══════════════════════════════════════════════════════ */}
       {selectedCustomer && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] bg-black/80 backdrop-blur-sm flex items-start justify-center p-4 pt-6 sm:pt-12 pb-8 overflow-y-auto">
           <div className="bg-slate-900 border border-amber-500/40 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative space-y-4 max-h-[85vh] flex flex-col">
             <button
               type="button"

@@ -341,13 +341,16 @@ model Order {
   paymentStatus     String          @default("PENDING") // "PENDING", "PAID"
   paymentMethod     String          @default("CASH") // "CASH", "CARD", "INSTAPAY", "VODAFONE_CASH", "SPLIT"
 
-  subtotal       Float @default(0)
-  serviceCharge  Float @default(0)
-  taxAmount      Float @default(0)
-  deliveryFee    Float @default(0)
-  discountAmount Float @default(0)
-  tipAmount      Float @default(0)
-  finalAmount    Float @default(0)
+  subtotal          Float @default(0)
+  serviceCharge     Float @default(0)
+  taxAmount         Float @default(0)
+  deliveryFee       Float @default(0)
+  discountAmount    Float @default(0)
+  tipAmount         Float @default(0)
+  finalAmount       Float @default(0)
+  commissionPercent Float @default(0)
+  commissionAmount  Float @default(0)
+  platformNetAmount Float @default(0)
 
   cashierName   String?
   waiterName    String?
@@ -408,6 +411,8 @@ model Shift {
   visaCollected     Float @default(0)
   instapayCollected Float @default(0)
   vodafoneCollected Float @default(0)
+  talabatCollected  Float @default(0)
+  talabatCommission Float @default(0)
   deliveryFeesTotal Float @default(0) // رسوم الدليفري المنفصلة (مستحقات الطيارين)
   totalRevenue      Float @default(0) // صافي إيراد المحل بدون رسوم التوصيل
   expensesTotal     Float @default(0)
@@ -424,23 +429,25 @@ model Shift {
 // 10.1 DAILY CLOSE (إقفال اليومية الشاملة لكافة الشيفتات)
 // ----------------------------------------------------
 model DailyClose {
-  id            String   @id @default(cuid())
-  outletId      String
-  outlet        Outlet   @relation(fields: [outletId], references: [id], onDelete: Cascade)
-  closeDate     DateTime @default(now())
-  dayName       String? // "الأحد", "الإثنين", إلخ
-  shiftsCount   Int      @default(2)
-  totalRevenue  Float    @default(0)
-  totalCash     Float    @default(0)
-  totalVisa     Float    @default(0)
-  totalInstapay Float    @default(0)
-  totalVodafone Float    @default(0)
-  totalExpenses Float    @default(0)
-  netCashInSafe Float    @default(0)
-  ordersCount   Int      @default(0)
-  closedBy      String
-  notes         String?
-  createdAt     DateTime @default(now())
+  id                     String   @id @default(cuid())
+  outletId               String
+  outlet                 Outlet   @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  closeDate              DateTime @default(now())
+  dayName                String? // "الأحد", "الإثنين", إلخ
+  shiftsCount            Int      @default(2)
+  totalRevenue           Float    @default(0)
+  totalCash              Float    @default(0)
+  totalVisa              Float    @default(0)
+  totalInstapay          Float    @default(0)
+  totalVodafone          Float    @default(0)
+  totalTalabat           Float    @default(0)
+  totalTalabatCommission Float    @default(0)
+  totalExpenses          Float    @default(0)
+  netCashInSafe          Float    @default(0)
+  ordersCount            Int      @default(0)
+  closedBy               String
+  notes                  String?
+  createdAt              DateTime @default(now())
 }
 
 // ----------------------------------------------------
@@ -502,6 +509,7 @@ model SystemSettings {
   dailyReportAlertSound       Boolean @default(true)
   internalSupplyMarkupEnabled Boolean @default(false) // تفعيل هامش بسيط عند توريد أبو عادل لسول ميت
   internalSupplyMarkupPercent Float   @default(0.0) // النسبة المئوية للهامش الإضافي (الافتراضي 0% نفس التكلفة)
+  talabatCommissionPercent    Float   @default(25.0) // عمولة طلبات (Talabat) الافتراضية %
   geminiApiKey                String? // اختياري كاحتياطي في السحابة
 
   receiptFooterNotes String   @default("شكراً لزيارتكم حلواني أبو عادل وسول ميت كافيه • حلي يومك واستمتع بقهوتك ☕🍰")
@@ -685,4 +693,31 @@ model PushSubscription {
   lastNotifiedAt DateTime?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+}
+
+// ----------------------------------------------------
+// 18. CONSIGNMENT RETURNS (أمانات البيع بين سول ميت وأبو عادل بالتكلفة)
+// ----------------------------------------------------
+model ConsignmentBatch {
+  id                 String   @id @default(cuid())
+  outletSourceCode   String   @default("SOULMATE_CAFE")
+  outletDestCode     String   @default("ABU_ADEL_PATISSERIE")
+  soulmateMenuItemId String
+  abuAdelMenuItemId  String?
+  itemName           String
+  unitType           String   @default("PIECE")
+  unitCost           Float    @default(0)
+  sellingPrice       Float    @default(0)
+  sentQty            Float    @default(0)
+  soldQty            Float    @default(0)
+  returnedQty        Float    @default(0)
+  remainingQty       Float    @default(0)
+  soldRevenue        Float    @default(0)
+  settledAmount      Float    @default(0)
+  settlementMode     String   @default("PENDING") // "PENDING" | "OFFSET_DEBT" | "CASH_PAYOUT"
+  status             String   @default("OPEN") // "OPEN" | "PARTIAL" | "SETTLED"
+  notes              String?
+  recordedBy         String   @default("المايسترو")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now()) @updatedAt
 }

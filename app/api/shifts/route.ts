@@ -93,6 +93,14 @@ export async function GET(req: Request) {
       .filter((o) => o.paymentMethod === "VODAFONE_CASH")
       .reduce((sum, o) => sum + getStoreNet(o), 0);
 
+    const talabatCollected = shiftOrders
+      .filter((o) => o.paymentMethod === "TALABAT" || o.orderType === "TALABAT")
+      .reduce((sum, o) => sum + getStoreNet(o), 0);
+
+    const talabatCommission = shiftOrders
+      .filter((o) => o.paymentMethod === "TALABAT" || o.orderType === "TALABAT")
+      .reduce((sum, o) => sum + (Number(o.commissionAmount) || getStoreNet(o) * 0.25), 0);
+
     const totalRevenue = shiftOrders.reduce((sum, o) => sum + getStoreNet(o), 0);
     const deliveryFeesTotal = shiftOrders.reduce((sum, o) => sum + (Number(o.deliveryFee) || 0), 0);
     const deliveryFeesAllOrders = shiftDeliveryOrders.reduce((sum, o) => sum + (Number(o.deliveryFee) || 0), 0);
@@ -138,6 +146,9 @@ export async function GET(req: Request) {
       visaCollected: Number(visaCollected.toFixed(2)),
       instapayCollected: Number(instapayCollected.toFixed(2)),
       vodafoneCollected: Number(vodafoneCollected.toFixed(2)),
+      talabatCollected: Number(talabatCollected.toFixed(2)),
+      talabatCommission: Number(talabatCommission.toFixed(2)),
+      talabatNetReceivable: Number(Math.max(0, talabatCollected - talabatCommission).toFixed(2)),
       totalRevenue: Number(totalRevenue.toFixed(2)),
       deliveryFeesTotal: Number(deliveryFeesTotal.toFixed(2)),
       deliveryFeesAllOrders: Number(deliveryFeesAllOrders.toFixed(2)),
@@ -244,6 +255,14 @@ export async function POST(req: Request) {
         .filter((o) => o.paymentMethod === "VODAFONE_CASH")
         .reduce((sum, o) => sum + getStoreNet(o), 0);
 
+      const totalTalabat = todayOrders
+        .filter((o) => o.paymentMethod === "TALABAT" || o.orderType === "TALABAT")
+        .reduce((sum, o) => sum + getStoreNet(o), 0);
+
+      const totalTalabatCommission = todayOrders
+        .filter((o) => o.paymentMethod === "TALABAT" || o.orderType === "TALABAT")
+        .reduce((sum, o) => sum + (Number(o.commissionAmount) || getStoreNet(o) * 0.25), 0);
+
       const totalRevenue = todayOrders.reduce((sum, o) => sum + getStoreNet(o), 0);
       const totalDeliveryFees = todayOrders.reduce((sum, o) => sum + (Number(o.deliveryFee) || 0), 0);
       const totalExpenses = todayExpenses.reduce((sum, e) => sum + e.amount, 0);
@@ -262,6 +281,8 @@ export async function POST(req: Request) {
           totalVisa: Number(totalVisa.toFixed(2)),
           totalInstapay: Number(totalInstapay.toFixed(2)),
           totalVodafone: Number(totalVodafone.toFixed(2)),
+          totalTalabat: Number(totalTalabat.toFixed(2)),
+          totalTalabatCommission: Number(totalTalabatCommission.toFixed(2)),
           totalExpenses: Number(totalExpenses.toFixed(2)),
           netCashInSafe: Number(netCashInSafe.toFixed(2)),
           ordersCount: todayOrders.length,
@@ -348,6 +369,14 @@ export async function POST(req: Request) {
       .filter((o) => o.paymentMethod === "VODAFONE_CASH")
       .reduce((sum, o) => sum + getStoreNet(o), 0);
 
+    const talabatCollected = shiftOrders
+      .filter((o) => o.paymentMethod === "TALABAT" || o.orderType === "TALABAT")
+      .reduce((sum, o) => sum + getStoreNet(o), 0);
+
+    const talabatCommission = shiftOrders
+      .filter((o) => o.paymentMethod === "TALABAT" || o.orderType === "TALABAT")
+      .reduce((sum, o) => sum + (Number(o.commissionAmount) || getStoreNet(o) * 0.25), 0);
+
     const totalRevenue = shiftOrders.reduce((sum, o) => sum + getStoreNet(o), 0);
     const deliveryFeesTotal = shiftOrders.reduce((sum, o) => sum + (Number(o.deliveryFee) || 0), 0);
     const expensesTotal = shiftExpenses.reduce((sum, e) => sum + e.amount, 0);
@@ -372,6 +401,8 @@ export async function POST(req: Request) {
         visaCollected: Number(visaCollected.toFixed(2)),
         instapayCollected: Number(instapayCollected.toFixed(2)),
         vodafoneCollected: Number(vodafoneCollected.toFixed(2)),
+        talabatCollected: Number(talabatCollected.toFixed(2)),
+        talabatCommission: Number(talabatCommission.toFixed(2)),
         deliveryFeesTotal: Number(deliveryFeesTotal.toFixed(2)),
         totalRevenue: Number(totalRevenue.toFixed(2)),
         expensesTotal: Number(expensesTotal.toFixed(2)),

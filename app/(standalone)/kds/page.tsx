@@ -299,7 +299,11 @@ export default function KdsScreenPage() {
                         </span>
                       </div>
                       <div className="flex items-center gap-2 pt-1 flex-wrap">
-                        {t.order?.orderType === "DELIVERY" ? (
+                        {t.order?.orderType === "TALABAT" || t.order?.paymentMethod === "TALABAT" ? (
+                          <span className="py-0.5 px-2 rounded-md text-[10px] font-black bg-orange-500/20 text-orange-300 border border-orange-500/40">
+                            🟠 أوردر طلبات (Talabat)
+                          </span>
+                        ) : t.order?.orderType === "DELIVERY" ? (
                           <span className="py-0.5 px-2 rounded-md text-[10px] font-black bg-sky-500/20 text-sky-300 border border-sky-500/30">
                             🛵 دليفري للمنزل
                           </span>

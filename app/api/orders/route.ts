@@ -10,6 +10,121 @@ import {
 
 export const dynamic = "force-dynamic";
 
+// Helper: Server-side deterministic snapshot of MenuItem unit cost (frozen inside Order.items so future factory invoices never mutate historical P&L)
+async function snapshotItemsWithCost(rawItems: any[]): Promise<any[]> {
+  if (!Array.isArray(rawItems) || rawItems.length === 0) return [];
+  const menuIds = new Set<string>();
+  for (const it of rawItems) {
+    if (it.menuItemId && !String(it.menuItemId).startsWith("custom-")) {
+      menuIds.add(String(it.menuItemId));
+    }
+    if (it.isCustomBox && Array.isArray(it.boxComponents)) {
+      for (const c of it.boxComponents) {
+        if (c.id && !String(c.id).startsWith("custom-")) menuIds.add(String(c.id));
+      }
+    }
+  }
+
+  const menuRows =
+    menuIds.size > 0
+      ? await prisma.menuItem.findMany({
+          where: { id: { in: Array.from(menuIds) } },
+          include: { recipes: { include: { rawMaterial: true } } },
+        })
+      : [];
+
+  const costMap = new Map<string, number>();
+  for (const m of menuRows) {
+    if (m.itemType === "PREPARED_BEVERAGE" && m.recipes.length > 0) {
+      const recipeCost = m.recipes.reduce(
+        (s, r) => s + Number(r.qtyRequired || 0) * Number(r.rawMaterial?.costPerUnit || 0),
+        0
+      );
+      costMap.set(m.id, Number((recipeCost > 0 ? recipeCost : m.costPrice || 0).toFixed(4)));
+    } else {
+      costMap.set(m.id, Number((m.costPrice || 0).toFixed(4)));
+    }
+  }
+
+  return rawItems.map((it: any) => {
+    if (it.costSnapshotted === true && it.costPrice !== undefined && it.costPrice !== null) {
+      return { ...it, costPrice: Number(it.costPrice) || 0, costSnapshotted: true };
+    }
+    if (it.isCustomBox && Array.isArray(it.boxComponents)) {
+      const enrichedComps = it.boxComponents.map((comp: any) => {
+        const wKg = Number(comp.weightKg) || Number(comp.grams) / 1000 || 0.25;
+        const unitCost =
+          comp.unitCost !== undefined && Number(comp.unitCost) > 0
+            ? Number(comp.unitCost)
+            : costMap.get(comp.id) ?? 0;
+        return { ...comp, unitCost, weightKg: wKg };
+      });
+      const boxCost = enrichedComps.reduce(
+        (s: number, c: any) => s + (Number(c.weightKg) || 0) * (Number(c.unitCost) || 0),
+        0
+      );
+      return {
+        ...it,
+        boxComponents: enrichedComps,
+        costPrice: Number(boxCost.toFixed(4)),
+        costSnapshotted: true,
+      };
+    }
+    const dbCost = it.menuItemId ? costMap.get(String(it.menuItemId)) : undefined;
+    const resolvedCost =
+      dbCost !== undefined
+        ? dbCost
+        : it.costPrice !== undefined && it.costPrice !== null
+        ? Number(it.costPrice)
+        : 0;
+    return {
+      ...it,
+      costPrice: Number((resolvedCost || 0).toFixed(4)),
+      costSnapshotted: true,
+    };
+  });
+}
+
+// Helper: FIFO track sales of Soulmate consignment stock held at Abu Adel (أمانة بيع)
+async function consumeOpenConsignmentsFIFO(
+  abuAdelMenuItemId: string,
+  qtySold: number,
+  unitSellPrice: number
+) {
+  if (!abuAdelMenuItemId || qtySold <= 0) return;
+  try {
+    const openBatches = await prisma.consignmentBatch.findMany({
+      where: {
+        abuAdelMenuItemId,
+        remainingQty: { gt: 0 },
+        status: { in: ["OPEN", "PARTIAL"] },
+      },
+      orderBy: { createdAt: "asc" },
+    });
+    let remainingToAllocate = qtySold;
+    for (const batch of openBatches) {
+      if (remainingToAllocate <= 0.0001) break;
+      const take = Math.min(remainingToAllocate, batch.remainingQty);
+      const effectivePrice = unitSellPrice > 0 ? unitSellPrice : batch.sellingPrice;
+      const newSold = Number((batch.soldQty + take).toFixed(3));
+      const newRemaining = Number(Math.max(0, batch.remainingQty - take).toFixed(3));
+      const newSoldRev = Number((batch.soldRevenue + take * effectivePrice).toFixed(2));
+      await prisma.consignmentBatch.update({
+        where: { id: batch.id },
+        data: {
+          soldQty: newSold,
+          remainingQty: newRemaining,
+          soldRevenue: newSoldRev,
+          status: "PARTIAL",
+        },
+      });
+      remainingToAllocate = Number((remainingToAllocate - take).toFixed(3));
+    }
+  } catch (e) {
+    console.error("Consignment FIFO allocation note:", e);
+  }
+}
+
 // Helper: Deplete inventory and log ERP movements
 async function depleteInventory(items: any[], orderNumber: string) {
   for (const it of items) {
@@ -102,6 +217,9 @@ async function depleteInventory(items: any[], orderNumber: string) {
       } catch (e) {
         console.error("Failed to log product sale movement:", e);
       }
+
+      // FIFO consume any Soulmate->Abu Adel consignment stock held for sale
+      await consumeOpenConsignmentsFIFO(it.menuItemId, qty, Number(it.price) || 0);
     }
   }
 }
@@ -116,14 +234,28 @@ function getPaymentMethodLabelAr(method?: string | null) {
       return "إنستاباي (InstaPay)";
     case "VODAFONE_CASH":
       return "فودافون كاش";
+    case "TALABAT":
+      return "طلبات (Talabat)";
     default:
       return method || "كاش";
   }
 }
 
-function buildShiftMethodIncrement(method: string, delta: number) {
+function computeTalabatFinancials(storeNet: number, method: string, orderType: string, settings: any) {
+  const isTalabat = method === "TALABAT" || orderType === "TALABAT";
+  if (!isTalabat) {
+    return { commissionPercent: 0, commissionAmount: 0, platformNetAmount: 0 };
+  }
+  const commissionPercent = Number(settings?.talabatCommissionPercent ?? 25) || 25;
+  const commissionAmount = Number(((Math.max(0, storeNet) * commissionPercent) / 100).toFixed(2));
+  const platformNetAmount = Number(Math.max(0, storeNet - commissionAmount).toFixed(2));
+  return { commissionPercent, commissionAmount, platformNetAmount };
+}
+
+function buildShiftMethodIncrement(method: string, delta: number, talabatCommissionDelta = 0) {
   const cleanDelta = Number(delta.toFixed(2));
-  if (!cleanDelta) return {};
+  const cleanComm = Number(talabatCommissionDelta.toFixed(2));
+  if (!cleanDelta && !cleanComm) return {};
   if (method === "CASH") {
     return {
       cashCollected: { increment: cleanDelta },
@@ -133,6 +265,12 @@ function buildShiftMethodIncrement(method: string, delta: number) {
   if (method === "CARD") return { visaCollected: { increment: cleanDelta } };
   if (method === "INSTAPAY") return { instapayCollected: { increment: cleanDelta } };
   if (method === "VODAFONE_CASH") return { vodafoneCollected: { increment: cleanDelta } };
+  if (method === "TALABAT") {
+    return {
+      talabatCollected: { increment: cleanDelta },
+      talabatCommission: { increment: cleanComm },
+    };
+  }
   return {};
 }
 
@@ -380,7 +518,7 @@ export async function POST(req: Request) {
       orderType,
       tableId,
       tableNumber,
-      items, // array of { menuItemId, nameAr, price, qty, notes, itemType, category }
+      items: rawItems, // array of { menuItemId, nameAr, price, qty, notes, itemType, category }
       customerName,
       customerPhone,
       deliveryZoneId,
@@ -405,14 +543,15 @@ export async function POST(req: Request) {
       notes,
     } = body;
 
-    if (!outletId || !Array.isArray(items) || items.length === 0) {
+    if (!outletId || !Array.isArray(rawItems) || rawItems.length === 0) {
       return NextResponse.json({ success: false, error: "بيانات الطلب والأصناف مطلوبة" }, { status: 400 });
     }
 
-    // Load Settings & Outlet
-    const [settings, targetOutletObj] = await Promise.all([
+    // Load Settings & Outlet & freeze historical unit cost snapshot onto items
+    const [settings, targetOutletObj, items] = await Promise.all([
       prisma.systemSettings.findFirst(),
       prisma.outlet.findUnique({ where: { id: outletId } }),
+      snapshotItemsWithCost(rawItems),
     ]);
 
     // 0. Resolve Table if DINE_IN
@@ -559,7 +698,14 @@ export async function POST(req: Request) {
 
     // Generate Order Number (Brand-aware prefix!)
     const count = await prisma.order.count();
-    const prefix = orderType === "DINE_IN" ? "DINE" : orderType === "DELIVERY" ? "DELV" : "TAKE";
+    const prefix =
+      orderType === "DINE_IN"
+        ? "DINE"
+        : orderType === "DELIVERY"
+        ? "DELV"
+        : orderType === "TALABAT"
+        ? "TAL"
+        : "TAKE";
     const orderNumber = `${prefix}-${1000 + count + 1}`;
 
     // Handle Customer CRM & Dynamic Multi-Brand Loyalty (Abu Adel & Soulmate)
@@ -646,6 +792,10 @@ export async function POST(req: Request) {
           : "NONE")
       : "NONE";
 
+    const effectiveCreateMethod = orderType === "TALABAT" ? "TALABAT" : paymentMethod || "CASH";
+    const storeNetCreate = Math.max(0, finalAmount - deliveryFee);
+    const talabatCreateFin = computeTalabatFinancials(storeNetCreate, effectiveCreateMethod, orderType || "DINE_IN", settings);
+
     // 2. Create the Order
     const order = await prisma.order.create({
       data: {
@@ -667,7 +817,7 @@ export async function POST(req: Request) {
         depositReceiptUrl: depositReceiptUrl || null,
         status: "NEW_PENDING",
         paymentStatus: "PENDING",
-        paymentMethod: paymentMethod || "CASH",
+        paymentMethod: effectiveCreateMethod,
         subtotal: Number(subtotal.toFixed(2)),
         serviceCharge: Number(serviceCharge.toFixed(2)),
         taxAmount: Number(taxAmount.toFixed(2)),
@@ -675,6 +825,9 @@ export async function POST(req: Request) {
         discountAmount: Number(discount.toFixed(2)),
         tipAmount: Number(tip.toFixed(2)),
         finalAmount: Number(finalAmount.toFixed(2)),
+        commissionPercent: talabatCreateFin.commissionPercent,
+        commissionAmount: talabatCreateFin.commissionAmount,
+        platformNetAmount: talabatCreateFin.platformNetAmount,
         cashierName: cashierName || null,
         waiterName: waiterName || null,
         customerName: customerName || null,
@@ -722,7 +875,13 @@ export async function POST(req: Request) {
       {
         title: `🛎️ طلب جديد #${order.orderNumber} — ${targetOutletObj?.name || "النظام"}`,
         body: `${order.customerName || "عميل"} • الإجمالي: ${order.finalAmount} ج.م${
-          order.orderType === "DELIVERY" ? " 🛵 (دليفري)" : order.orderType === "DINE_IN" ? " ☕ (صالة)" : " 🛍️ (تيك أواي)"
+          order.orderType === "DELIVERY"
+            ? " 🛵 (دليفري)"
+            : order.orderType === "TALABAT"
+            ? " 🟠 (طلبات)"
+            : order.orderType === "DINE_IN"
+            ? " ☕ (صالة)"
+            : " 🛍️ (تيك أواي)"
         }`,
         url: targetOutletObj?.code === "SOULMATE_CAFE" ? "/kds" : "/pos",
         tag: `new-order-${order.id}`,
@@ -922,11 +1081,12 @@ export async function PATCH(req: Request) {
         prisma.outlet.findUnique({ where: { id: order.outletId } }),
       ]);
 
-      const normalizedItems = nextItems.map((it: any) => ({
+      const rawNormalized = nextItems.map((it: any) => ({
         ...it,
         price: Number(it.price) || 0,
         qty: Number(it.qty) || 0,
       })).filter((it: any) => it.qty > 0);
+      const normalizedItems = await snapshotItemsWithCost(rawNormalized);
 
       if (normalizedItems.length === 0) {
         return NextResponse.json({ success: false, error: "الكميات المعدلة يجب أن تكون أكبر من صفر" }, { status: 400 });
@@ -987,6 +1147,10 @@ export async function PATCH(req: Request) {
         }
       }
 
+      const oldCommAmount = Number(order.commissionAmount || 0);
+      const newTalabatFin = computeTalabatFinancials(newStoreNet, order.paymentMethod, order.orderType, settings);
+      const commDiff = Number((newTalabatFin.commissionAmount - oldCommAmount).toFixed(2));
+
       // Adjust open Shift if already paid
       if (order.paymentStatus === "PAID") {
         try {
@@ -994,13 +1158,13 @@ export async function PATCH(req: Request) {
             where: { outletId: order.outletId, status: "OPEN" },
             orderBy: { openedAt: "desc" },
           });
-          if (activeShift && (storeNetDiff !== 0 || deliveryFeeDiff !== 0)) {
+          if (activeShift && (storeNetDiff !== 0 || deliveryFeeDiff !== 0 || commDiff !== 0)) {
             await prisma.shift.update({
               where: { id: activeShift.id },
               data: {
                 totalRevenue: { increment: storeNetDiff },
                 deliveryFeesTotal: { increment: deliveryFeeDiff },
-                ...buildShiftMethodIncrement(order.paymentMethod, storeNetDiff),
+                ...buildShiftMethodIncrement(order.paymentMethod, storeNetDiff, commDiff),
               },
             });
           }
@@ -1020,6 +1184,9 @@ export async function PATCH(req: Request) {
           discountAmount: Number(effectiveDiscount.toFixed(2)),
           tipAmount: Number(effectiveTip.toFixed(2)),
           finalAmount: newFinalAmount,
+          commissionPercent: newTalabatFin.commissionPercent,
+          commissionAmount: newTalabatFin.commissionAmount,
+          platformNetAmount: newTalabatFin.platformNetAmount,
           pointsEarned: newPointsEarned,
           isEdited: true,
           revisionCount: { increment: 1 },
@@ -1120,6 +1287,9 @@ export async function PATCH(req: Request) {
       const storeRevenuePortion = Number(
         Math.max(0, Number(order.finalAmount || 0) - Number(order.deliveryFee || 0)).toFixed(2)
       );
+      const sysSettings = await prisma.systemSettings.findFirst();
+      const oldCommAmount = Number(order.commissionAmount || 0);
+      const nextTalabatFin = computeTalabatFinancials(storeRevenuePortion, targetMethod, targetMethod === "TALABAT" ? "TALABAT" : order.orderType, sysSettings);
 
       // Move paid amount between payment buckets in open shift
       if (order.paymentStatus === "PAID" && storeRevenuePortion > 0) {
@@ -1132,8 +1302,8 @@ export async function PATCH(req: Request) {
             await prisma.shift.update({
               where: { id: activeShift.id },
               data: {
-                ...buildShiftMethodIncrement(oldMethod, -storeRevenuePortion),
-                ...buildShiftMethodIncrement(targetMethod, storeRevenuePortion),
+                ...buildShiftMethodIncrement(oldMethod, -storeRevenuePortion, -oldCommAmount),
+                ...buildShiftMethodIncrement(targetMethod, storeRevenuePortion, nextTalabatFin.commissionAmount),
               },
             });
           }
@@ -1148,6 +1318,9 @@ export async function PATCH(req: Request) {
           where: { id: orderId },
           data: {
             paymentMethod: targetMethod,
+            commissionPercent: nextTalabatFin.commissionPercent,
+            commissionAmount: nextTalabatFin.commissionAmount,
+            platformNetAmount: nextTalabatFin.platformNetAmount,
             paymentModified: true,
             lastEditReason: cleanReason,
             lastEditedBy: actor,
@@ -1384,6 +1557,9 @@ export async function PATCH(req: Request) {
         }
       }
 
+      const storeRevenueForSettle = Number(Math.max(0, newFinal - (order.deliveryFee || 0)).toFixed(2));
+      const settleTalabatFin = computeTalabatFinancials(storeRevenueForSettle, effectiveMethod, order.orderType, settings);
+
       const updatedOrder = await prisma.order.update({
         where: { id: orderId },
         data: {
@@ -1393,6 +1569,9 @@ export async function PATCH(req: Request) {
           discountAmount: discount,
           tipAmount: tip,
           finalAmount: Number(newFinal.toFixed(2)),
+          commissionPercent: settleTalabatFin.commissionPercent,
+          commissionAmount: settleTalabatFin.commissionAmount,
+          platformNetAmount: settleTalabatFin.platformNetAmount,
           cashierName: cashierName || order.cashierName || "كاشير المنظومة",
           customerId: linkedCustomerId,
           customerPhone: cleanSettlePhone || order.customerPhone,
@@ -1420,7 +1599,7 @@ export async function PATCH(req: Request) {
         });
       }
 
-      // Update active Shift if one exists (CRITICAL: Keep deliveryFee OUT of Store Revenue!)
+      // Update active Shift if one exists (CRITICAL: Keep deliveryFee OUT of Store Revenue & Talabat OUT of Cash Drawer!)
       try {
         const activeShift = await prisma.shift.findFirst({
           where: { outletId: order.outletId, status: "OPEN" },
@@ -1436,7 +1615,7 @@ export async function PATCH(req: Request) {
               totalRevenue: { increment: storeRevenuePortion },
               deliveryFeesTotal: { increment: deliveryPortion },
               ticketsCount: { increment: 1 },
-              ...buildShiftMethodIncrement(effectiveMethod, storeRevenuePortion),
+              ...buildShiftMethodIncrement(effectiveMethod, storeRevenuePortion, settleTalabatFin.commissionAmount),
             },
           });
         }

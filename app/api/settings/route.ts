@@ -89,6 +89,9 @@ export async function PATCH(req: Request) {
         ...(body.internalSupplyMarkupPercent !== undefined && {
           internalSupplyMarkupPercent: Math.max(0, Number(body.internalSupplyMarkupPercent) || 0),
         }),
+        ...(body.talabatCommissionPercent !== undefined && {
+          talabatCommissionPercent: Math.max(0, Math.min(100, Number(body.talabatCommissionPercent) || 0)),
+        }),
         ...(body.geminiApiKey !== undefined && String(body.geminiApiKey).trim() !== "" && {
           geminiApiKey: String(body.geminiApiKey).trim(),
         }),

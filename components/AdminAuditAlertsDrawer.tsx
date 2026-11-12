@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   AlertTriangle,
   Bell,
@@ -119,19 +120,21 @@ export default function AdminAuditAlertsDrawer({
         )}
       </button>
 
-      {/* Alerts & Audit Drawer Modal */}
-      {open && (
-        <div
-          className="fixed inset-0 z-[110] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4"
-          dir="rtl"
-          onClick={() => setOpen(false)}
-        >
+      {/* Alerts & Audit Drawer Modal — Portaled to document.body to escape sticky backdrop-filter header */}
+      {open &&
+        typeof document !== "undefined" &&
+        createPortal(
           <div
-            onClick={(e) => e.stopPropagation()}
-            className="bg-slate-900 border border-white/15 rounded-3xl w-full max-w-3xl max-h-[88vh] flex flex-col shadow-2xl overflow-hidden"
+            className="fixed inset-0 z-[150] bg-black/80 backdrop-blur-sm flex items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto"
+            dir="rtl"
+            onClick={() => setOpen(false)}
           >
-            {/* Header */}
-            <div className="px-6 py-4 bg-gradient-to-l from-rose-500/20 via-amber-500/10 to-slate-900 border-b border-white/10 flex items-center justify-between gap-3 flex-wrap">
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="my-auto bg-slate-900 border border-white/15 rounded-3xl w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden"
+            >
+              {/* Header */}
+              <div className="shrink-0 px-6 py-4 bg-gradient-to-l from-rose-500/20 via-amber-500/10 to-slate-900 border-b border-white/10 flex items-center justify-between gap-3 flex-wrap">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400">
                   <Bell className="w-5 h-5" />
@@ -181,7 +184,7 @@ export default function AdminAuditAlertsDrawer({
             </div>
 
             {/* Sub Tabs */}
-            <div className="px-6 pt-3 pb-2 border-b border-white/10 flex items-center gap-2 bg-slate-950/60">
+            <div className="shrink-0 px-6 pt-3 pb-2 border-b border-white/10 flex items-center gap-2 bg-slate-950/60">
               <button
                 type="button"
                 onClick={() => setTab("alerts")}
@@ -359,8 +362,9 @@ export default function AdminAuditAlertsDrawer({
               )}
             </div>
           </div>
-        </div>
-      )}
+        </div>,
+          document.body
+        )}
     </>
   );
 }

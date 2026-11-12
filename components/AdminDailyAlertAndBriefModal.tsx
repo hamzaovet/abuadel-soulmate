@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import {
   Bell,
   Volume2,
@@ -16,6 +17,7 @@ import {
   Cake,
   DollarSign,
   Send,
+  MessageSquare,
 } from "lucide-react";
 
 interface AdminDailyAlertAndBriefModalProps {
@@ -73,8 +75,10 @@ export default function AdminDailyAlertAndBriefModal({
   const [repeatSecondsEdit, setRepeatSecondsEdit] = useState<number>(settings?.dailyReportRepeatSeconds || 4);
   const [savingAlertCfg, setSavingAlertCfg] = useState(false);
 
-  // Editable Abu Adel factory replenishment quantities inside brief modal
+  // Editable Abu Adel factory replenishment quantities & daily limits inside brief modal
   const [qtyEdits, setQtyEdits] = useState<Record<string, string>>({});
+  const [limitEdits, setLimitEdits] = useState<Record<string, string>>({});
+  const [savingLimitId, setSavingLimitId] = useState<string | null>(null);
   const [sendingFactory, setSendingFactory] = useState(false);
   const [onlyShortagesFilter, setOnlyShortagesFilter] = useState(true);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
@@ -293,6 +297,93 @@ export default function AdminDailyAlertAndBriefModal({
     }
   };
 
+  const handleUpdateDailyLimit = async (row: any) => {
+    const rawVal = limitEdits[row.menuItemId];
+    if (rawVal === undefined) return;
+    const nextVal = Math.max(0, Number(rawVal) || 0);
+    if (nextVal === Number(row.dailyLimit)) return;
+    try {
+      setSavingLimitId(row.menuItemId);
+      const res = await fetch("/api/factory-orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "UPDATE_MIN_STOCK",
+          menuItemId: row.menuItemId,
+          minStockAlert: nextVal,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        const newShortage = Math.max(0, +(nextVal - Number(row.currentStock || 0)).toFixed(2));
+        const newSuggested = +(newShortage + Number(row.confirmedPreOrderTomorrow || 0)).toFixed(2);
+        setBrief((prev: any) =>
+          prev
+            ? {
+                ...prev,
+                abuAdelReplenishment: (prev.abuAdelReplenishment || []).map((item: any) =>
+                  item.menuItemId === row.menuItemId
+                    ? {
+                        ...item,
+                        dailyLimit: nextVal,
+                        shortageToDailyLimit: newShortage,
+                        totalFactoryOrderSuggested: newSuggested,
+                      }
+                    : item
+                ),
+              }
+            : prev
+        );
+        setQtyEdits((prev) => ({ ...prev, [row.menuItemId]: String(newSuggested) }));
+        setToastMsg(`تم تحديث حد الطلب اليومي لـ "${row.nameAr}" إلى ${nextVal} ✅`);
+        setTimeout(() => setToastMsg(null), 3500);
+        onRefreshDashboard?.();
+      } else {
+        setToastMsg(data.error || "تعذر تحديث حد الطلب اليومي");
+      }
+    } catch {
+      setToastMsg("خطأ في الاتصال لتحديث حد الطلب اليومي");
+    } finally {
+      setSavingLimitId(null);
+    }
+  };
+
+  const buildFactoryWhatsappText = () => {
+    const rows = (brief?.abuAdelReplenishment || []).filter((r: any) => {
+      const q = parseFloat(qtyEdits[r.menuItemId] ?? String(r.totalFactoryOrderSuggested ?? 0)) || 0;
+      return q > 0;
+    });
+    const unitLabel = (u: string) => (u === "KG" ? "كجم" : u === "BOX" ? "علبة" : "قطعة");
+    const lines = rows.map((r: any, idx: number) => {
+      const q = parseFloat(qtyEdits[r.menuItemId] ?? String(r.totalFactoryOrderSuggested ?? 0)) || 0;
+      return `${idx + 1}. ${r.nameAr}: *${q}* ${unitLabel(r.unitType)}`;
+    });
+    return [
+      `🏭 *طلبية المصنع اليومية - حلواني أبو عادل*`,
+      `📅 تاريخ التسليم المطلوب: *${brief?.tomorrowDate || selectedDate}*`,
+      `👤 المعتمد: ${currentUser?.name || "المايسترو"}`,
+      `────────────────────`,
+      ...(lines.length > 0 ? lines : ["لا توجد أصناف مطلوبة لهذا اليوم."]),
+      `────────────────────`,
+      `✅ تم الاعتماد على منظومة أبو عادل & سول ميت`,
+    ].join("\n");
+  };
+
+  const handleDispatchFactoryWhatsapp = async () => {
+    const text = buildFactoryWhatsappText();
+    try {
+      if (typeof navigator !== "undefined" && navigator.clipboard) {
+        await navigator.clipboard.writeText(text);
+      }
+    } catch {
+      // ignore clipboard errors on non-https
+    }
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, "_blank");
+    setToastMsg("تم نسخ نص الطلبية وفتح واتساب لإرسالها للمصنع 📱✅");
+    setTimeout(() => setToastMsg(null), 4000);
+  };
+
   const handleSendTomorrowFactoryOrder = async () => {
     if (!brief?.abuAdelReplenishment) return;
     try {
@@ -302,7 +393,7 @@ export default function AdminDailyAlertAndBriefModal({
         nameAr: r.nameAr,
         unitType: r.unitType,
         currentStock: r.currentStock,
-        minStockLevel: r.dailyLimit,
+        minStockLevel: Number(limitEdits[r.menuItemId] ?? r.dailyLimit) || 0,
         shortageQty: r.shortageToDailyLimit,
         confirmedPreOrderQty: r.confirmedPreOrderTomorrow,
         suggestedQty: r.totalFactoryOrderSuggested,
@@ -324,7 +415,10 @@ export default function AdminDailyAlertAndBriefModal({
       });
       const data = await res.json();
       if (data.success) {
-        setToastMsg(data.message || `تم اعتماد طلبية المصنع ليوم ${brief.tomorrowDate} 🏭✅`);
+        setToastMsg(
+          (data.message || `تم اعتماد طلبية المصنع ليوم ${brief.tomorrowDate}`) +
+            " — متاحة في تبويب [طلبية المصنع اليومية] أو للإرسال واتساب 📱✅"
+        );
         onRefreshDashboard?.();
       } else {
         setToastMsg(data.error || "تعذر إرسال طلبية المصنع");
@@ -336,19 +430,19 @@ export default function AdminDailyAlertAndBriefModal({
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || typeof document === "undefined") return null;
 
   const visibleProducts = (brief?.abuAdelReplenishment || []).filter((r: any) => {
     if (!onlyShortagesFilter) return true;
     return r.totalFactoryOrderSuggested > 0 || r.soldToday > 0 || r.currentStock <= r.dailyLimit;
   });
 
-  return (
-    <div className="fixed inset-0 z-[80] flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-md">
-      <div className="bg-slate-950 border-2 border-amber-500/50 rounded-3xl w-full max-w-6xl max-h-[94vh] flex flex-col shadow-2xl overflow-hidden text-slate-100">
+  return createPortal(
+    <div className="fixed inset-0 z-[140] flex items-start sm:items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
+      <div className="my-auto bg-slate-950 border-2 border-amber-500/50 rounded-3xl w-full max-w-6xl max-h-[94vh] flex flex-col shadow-2xl overflow-hidden text-slate-100">
         {/* TOP RINGING / HEADER BAR */}
         <div
-          className={`p-4 border-b border-slate-800 flex flex-col lg:flex-row lg:items-center justify-between gap-3 ${
+          className={`shrink-0 p-4 border-b border-slate-800 flex flex-col lg:flex-row lg:items-center justify-between gap-3 ${
             isRinging ? "bg-gradient-to-r from-rose-950/90 via-amber-950/80 to-rose-950/90 animate-pulse" : "bg-slate-900"
           }`}
         >
@@ -539,9 +633,9 @@ export default function AdminDailyAlertAndBriefModal({
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-4 gap-2 text-center text-[11px] font-mono">
+                      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-[11px] font-mono">
                         <div className="bg-slate-950 rounded-xl p-2 border border-slate-800">
-                          <div className="text-slate-400 font-sans text-[10px]">كاش</div>
+                          <div className="text-slate-400 font-sans text-[10px]">كاش بالدرج</div>
                           <div className="font-bold text-emerald-400">{b.cashSales.toLocaleString()}</div>
                         </div>
                         <div className="bg-slate-950 rounded-xl p-2 border border-slate-800">
@@ -555,6 +649,15 @@ export default function AdminDailyAlertAndBriefModal({
                         <div className="bg-slate-950 rounded-xl p-2 border border-slate-800">
                           <div className="text-slate-400 font-sans text-[10px]">فودافون</div>
                           <div className="font-bold text-rose-400">{b.vodafoneSales.toLocaleString()}</div>
+                        </div>
+                        <div className="bg-slate-950 rounded-xl p-2 border border-orange-500/30">
+                          <div className="text-orange-300 font-sans text-[10px]">طلبات (Talabat)</div>
+                          <div className="font-bold text-orange-400">{(b.talabatSales || 0).toLocaleString()}</div>
+                          {(b.talabatCommission || 0) > 0 && (
+                            <div className="text-[9px] text-slate-400 font-sans">
+                              عمولة: -{Number(b.talabatCommission).toFixed(0)} | صافي: {Number(b.talabatNetReceivable || 0).toFixed(0)}
+                            </div>
+                          )}
                         </div>
                       </div>
 
@@ -632,7 +735,7 @@ export default function AdminDailyAlertAndBriefModal({
                     <Cake className="w-4 h-4" />
                     <span>3. كشف مبيعات وأرصدة أبو عادل وطريحة المصنع المطلوبة (حد الطلب اليومي - الرصيد + الحجوزات)</span>
                   </h3>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <label className="text-xs text-slate-300 flex items-center gap-1.5 cursor-pointer bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl">
                       <input
                         type="checkbox"
@@ -644,16 +747,29 @@ export default function AdminDailyAlertAndBriefModal({
                     </label>
                     <button
                       type="button"
+                      onClick={handleDispatchFactoryWhatsapp}
+                      className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs flex items-center gap-1.5 shadow-lg cursor-pointer"
+                      title="نسخ كشف الطريحة وفتحه في واتساب لإرساله لإدارة المصنع مباشرة"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5" />
+                      <span>إرسال واتساب للمصنع 📱</span>
+                    </button>
+                    <button
+                      type="button"
                       onClick={handleSendTomorrowFactoryOrder}
                       disabled={sendingFactory}
                       className="px-4 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-lg cursor-pointer"
+                      title="يحفظ الطلبية رسمياً بحالة (مرسلة للمصنع) داخل تبويب طلبية المصنع اليومية لتكون جاهزة للطباعة والاستلام المخزني"
                     >
                       <Factory className="w-4 h-4" />
                       <Send className="w-3.5 h-3.5" />
-                      <span>{sendingFactory ? "جاري الإرسال..." : `اعتماد وإرسال طريحة المصنع ليوم ${brief?.tomorrowDate}`}</span>
+                      <span>{sendingFactory ? "جاري الاعتماد..." : `اعتماد في السجل وإرسال للمصنع (${brief?.tomorrowDate})`}</span>
                     </button>
                   </div>
                 </div>
+                <p className="text-[11px] text-slate-400">
+                  💡 يمكنك تعديل <strong className="text-amber-300">حد الطلب اليومي</strong> لأي صنف مباشرة من الخانة بالجدول (يُحفظ فوراً)، والاعتماد يحفظ الطريحة في تبويب <strong className="text-white">«طلبية المصنع اليومية»</strong> لطباعتها أو استلامها، مع زر <strong className="text-emerald-300">واتساب للمصنع</strong> للإرسال الفوري.
+                </p>
 
                 <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
                   <div className="overflow-x-auto max-h-[340px]">
@@ -661,7 +777,7 @@ export default function AdminDailyAlertAndBriefModal({
                       <thead className="bg-slate-950 text-slate-300 border-b border-slate-800 sticky top-0">
                         <tr>
                           <th className="py-2.5 px-3">الصنف</th>
-                          <th className="py-2.5 px-2 text-center">حد الطلب اليومي</th>
+                          <th className="py-2.5 px-2 text-center text-sky-200">حد الطلب اليومي ✏️</th>
                           <th className="py-2.5 px-2 text-center text-sky-300">مباع اليوم</th>
                           <th className="py-2.5 px-2 text-center">الرصيد المتبقي</th>
                           <th className="py-2.5 px-2 text-center text-rose-400">النقص عن الحد</th>
@@ -683,7 +799,29 @@ export default function AdminDailyAlertAndBriefModal({
                                 {r.nameAr}{" "}
                                 <span className="text-[10px] text-slate-400 font-normal">({r.unitType})</span>
                               </td>
-                              <td className="py-2 px-2 text-center text-slate-300">{r.dailyLimit}</td>
+                              <td className="py-1.5 px-2 text-center">
+                                <div className="inline-flex items-center gap-1">
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    step="any"
+                                    value={limitEdits[r.menuItemId] ?? String(r.dailyLimit ?? 0)}
+                                    onChange={(e) =>
+                                      setLimitEdits((prev) => ({
+                                        ...prev,
+                                        [r.menuItemId]: e.target.value,
+                                      }))
+                                    }
+                                    onBlur={() => handleUpdateDailyLimit(r)}
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter") handleUpdateDailyLimit(r);
+                                    }}
+                                    disabled={savingLimitId === r.menuItemId}
+                                    className="w-16 bg-slate-950 border border-sky-500/40 rounded-lg px-1.5 py-1 text-center font-bold text-sky-300 focus:outline-none focus:border-amber-400"
+                                    title="اضغط Enter أو اخرج من الخانة لحفظ حد الطلب اليومي"
+                                  />
+                                </div>
+                              </td>
                               <td className="py-2 px-2 text-center font-bold text-sky-300">{r.soldToday}</td>
                               <td className="py-2 px-2 text-center font-bold text-white">{r.currentStock}</td>
                               <td className="py-2 px-2 text-center font-bold text-rose-400">
@@ -719,6 +857,7 @@ export default function AdminDailyAlertAndBriefModal({
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
