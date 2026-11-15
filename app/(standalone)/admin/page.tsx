@@ -309,7 +309,7 @@ export default function AdminDashboardPage() {
   const [selectedPastryForMovements, setSelectedPastryForMovements] = useState<any>(null);
   const [showPastryMovementsModal, setShowPastryMovementsModal] = useState(false);
 
-  // Pure Abu Adel Pastry Items (Strict Brand Wall: 100% genuine patisserie, zero cafe beverages or Soul Mate items)
+  // Pure Abu Adel Pastry Items (Strict Brand Wall: 100% genuine patisserie, zero cafe items)
   const abuAdelPastryList = useMemo(() => {
     const list = pastryInventory.length > 0
       ? pastryInventory
@@ -322,9 +322,6 @@ export default function AdminDashboardPage() {
         "SMOOTHIE", "MILKSHAKE", "FRESH_JUICE", "MOJITO",
         "SOFT_DRINKS", "FRAPPE", "PANCAKE", "ICE_CREAM", "EXTRA"
       ].includes(item.category)) {
-        return false;
-      }
-      if (/اسبريسو|قهوة|كافيه|لاتيه|موكا|كابتشينو|شاي|نسكافيه|عصير|سموزي|ميلك|مشروب|كوكتيل|بيبسي|مياه معدنية|سودا|فريب|فرابيه|ريد بول|سفن أب|آيس كريم|ايس كريم/i.test(item.nameAr)) {
         return false;
       }
       return true;

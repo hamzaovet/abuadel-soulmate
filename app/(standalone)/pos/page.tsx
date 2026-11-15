@@ -547,9 +547,6 @@ export default function PosTerminalPage() {
       ].includes(item.category)) {
         return false;
       }
-      if (/اسبريسو|قهوة|كافيه|لاتيه|موكا|كابتشينو|شاي|نسكافيه|عصير|سموزي|ميلك|مشروب|كوكتيل|بيبسي|مياه معدنية|سودا|فريب|فرابيه|ريد بول|سفن أب|آيس كريم|ايس كريم/i.test(item.nameAr)) {
-        return false;
-      }
     }
 
     // Soul Mate is 100% Cafe & Beverages & Desserts (NO oriental sweets, kahk, large bakery/feteer)
@@ -560,9 +557,6 @@ export default function PosTerminalPage() {
         "ORIENTAL_SWEETS", "KAHK_NOVAM", "BAKERY_FETEER",
         "CHOCOLATE_SWEETS", "CAKES_TORTES", "WESTERN_PASTRY"
       ].includes(item.category)) {
-        return false;
-      }
-      if (/بسبوسة|كنافة|جاتوه|تورتة|بقلاوة|بلح الشام|زلابية|قطايف|كحك|بيتي فور|غريبة|هريسة|حلويات شرقية|ساليزون|باتون ساليه/i.test(item.nameAr)) {
         return false;
       }
     }
