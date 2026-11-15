@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Lock, User, Sparkles, ArrowRight, ShieldCheck, KeyRound } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeProviderAndToggle";
+import PwaInstallButton from "@/components/PwaInstallButton";
 
 export default function StaffLoginPage() {
   const router = useRouter();
@@ -99,6 +100,11 @@ export default function StaffLoginPage() {
               حلواني أبو عادل &amp; سول ميت كافيه VIP
             </p>
           </div>
+        </div>
+
+        {/* Windows PWA / Desktop App Install Button */}
+        <div className="flex justify-center">
+          <PwaInstallButton variant="button" />
         </div>
 
         {/* Error Alert */}

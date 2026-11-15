@@ -7,6 +7,8 @@ import CardQRModal from "@/components/CardQRModal";
 import OrderRevisionModals, { RevisionModalMode } from "@/components/OrderRevisionModals";
 import { PushOptInButton } from "@/components/PwaBootAndPushButton";
 import { ThemeToggle } from "@/components/ThemeProviderAndToggle";
+import PwaInstallButton from "@/components/PwaInstallButton";
+import SalesReportModal from "@/components/SalesReportModal";
 import {
   SOULMATE_CATEGORIES,
   ABU_ADEL_CATEGORIES,
@@ -31,6 +33,7 @@ import {
   Trash2,
   Receipt,
   Printer,
+  BarChart3,
   Lock,
   Unlock,
   QrCode,
@@ -139,6 +142,8 @@ export default function PosTerminalPage() {
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [deliveryZones, setDeliveryZones] = useState<any[]>([]);
   const [selectedZoneId, setSelectedZoneId] = useState<string>("");
+  const [customDeliveryFee, setCustomDeliveryFee] = useState<string>("");
+  const [showSalesReportModal, setShowSalesReportModal] = useState<boolean>(false);
   const [posOrders, setPosOrders] = useState<any[]>([]);
   const [posChatMessages, setPosChatMessages] = useState<any[]>([]);
   const [showOnlineQueueModal, setShowOnlineQueueModal] = useState<boolean>(false);
@@ -351,12 +356,15 @@ export default function PosTerminalPage() {
       const chatQuery = effectiveOutletId
         ? `/api/chat?outletId=${effectiveOutletId}`
         : "/api/chat";
+      const menuQuery = effectiveOutletId
+        ? `/api/menu?outletId=${effectiveOutletId}`
+        : "/api/menu";
 
       const [resOutlets, resTables, resMenu, resSettings, resShifts, resZones, resOrders, resChat, resDrivers, resOffers] =
         await Promise.all([
           fetch("/api/outlets"),
           fetch("/api/tables"),
-          fetch("/api/menu"),
+          fetch(menuQuery),
           fetch("/api/settings"),
           fetch(`/api/shifts?outletId=${effectiveOutletId || "ALL"}`),
           fetch("/api/delivery-zones"),
@@ -520,16 +528,39 @@ export default function PosTerminalPage() {
     }
   }, [isAbuAdel, orderType]);
 
-  // Filtered Menu Items
+  // Filtered Menu Items (Strict Outlet & Category Isolation between Abu Adel & Soulmate)
+  const targetOutletId = (currentUser?.role !== "owner" && currentUser?.outletId)
+    ? currentUser.outletId
+    : (activeOutletId || currentOutlet?.id || "");
+
   const filteredMenuItems = menuItems.filter((item) => {
-    const isOutletMatch = activeOutletId ? item.outletId === activeOutletId : true;
+    // 1. Strict Outlet Match: If targetOutletId is known, NEVER fall back to true!
+    if (targetOutletId && item.outletId && item.outletId !== targetOutletId) {
+      return false;
+    }
+
+    // 2. Strict Category & Beverage Guard (100% Brand Separation):
+    // Abu Adel is 100% Patisserie & Bakery (NO prepared cafe beverages like espresso/latte)
+    if (isAbuAdel) {
+      if (item.itemType === "PREPARED_BEVERAGE") return false;
+      if (["HOT_DRINKS", "ICE_COFFEE", "HOT_COFFEE", "COLD_COFFEE", "SMOOTHIE", "MILKSHAKE", "FRESH_JUICE", "MOJITO"].includes(item.category)) {
+        return false;
+      }
+    }
+    // Soul Mate is 100% Cafe & Beverages & Desserts (NO oriental pastries or kahk)
+    if (isSoulmate) {
+      if (["ORIENTAL_SWEETS", "KAHK_NOVAM", "BAKERY_FETEER", "CHOCOLATE_SWEETS"].includes(item.category)) {
+        return false;
+      }
+    }
+
     const isCatMatch = activeCategory === "ALL" || item.category === activeCategory;
     const isSearchMatch = searchQuery.trim()
       ? item.nameAr.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.nameEn?.toLowerCase().includes(searchQuery.toLowerCase())
       : true;
 
-    return isOutletMatch && isCatMatch && isSearchMatch && item.isAvailable;
+    return isCatMatch && isSearchMatch && item.isAvailable;
   });
 
   // Table selection & load order into cart
@@ -662,7 +693,9 @@ export default function PosTerminalPage() {
   const rawSubtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
   const deliveryFee =
     orderType === "DELIVERY"
-      ? selectedDeliveryZone
+      ? customDeliveryFee !== ""
+        ? Math.max(0, Number(customDeliveryFee) || 0)
+        : selectedDeliveryZone
         ? Number(selectedDeliveryZone.fee)
         : Number(settings?.deliveryFee || 20)
       : 0;
@@ -1208,15 +1241,52 @@ export default function PosTerminalPage() {
 
           <ThemeToggle compact />
 
-          {/* Navigation to Admin (Only for Owner or Branch Manager) */}
-          {(isOwner || currentUser?.role === "branch_manager") && (
+          {/* Sales Report Modal Button */}
+          <button
+            type="button"
+            onClick={() => setShowSalesReportModal(true)}
+            className="py-1.5 px-2.5 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/35 text-purple-300 hover:text-purple-200 text-xs font-black transition flex items-center gap-1.5 cursor-pointer shadow-sm"
+            title="تقارير المبيعات الشاملة والأصناف"
+          >
+            <BarChart3 className="w-3.5 h-3.5 text-purple-400" />
+            <span className="hidden sm:inline">تقارير المبيعات 📊</span>
+          </button>
+
+          {/* Windows Desktop App Install Button */}
+          <PwaInstallButton outletCode={currentOutlet?.code} variant="compact" />
+
+          {/* Cashier Permissions: Direct Links to Inventory & Suppliers */}
+          {currentUser?.role === "cashier" && (
+            <>
+              <Link
+                href={isAbuAdel ? "/admin?tab=pastry" : "/admin?tab=recipes"}
+                className="py-1.5 px-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-black transition flex items-center gap-1.5 shadow-sm"
+                title="مخزون وجرد الأصناف"
+              >
+                <Package className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="hidden md:inline">المخزون والجرد 📦</span>
+              </Link>
+
+              <Link
+                href="/admin?tab=suppliers"
+                className="py-1.5 px-2.5 rounded-xl bg-blue-500/15 hover:bg-blue-500/25 border border-blue-500/30 text-blue-300 text-xs font-black transition flex items-center gap-1.5 shadow-sm"
+                title="حسابات وفواتير الموردين"
+              >
+                <Truck className="w-3.5 h-3.5 text-blue-400" />
+                <span className="hidden md:inline">الموردين 🚚</span>
+              </Link>
+            </>
+          )}
+
+          {/* Navigation to Admin (For Owner, Branch Manager, or Cashier) */}
+          {(isOwner || currentUser?.role === "branch_manager" || currentUser?.role === "cashier") && (
             <Link
               href="/admin"
               className="py-1.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs transition flex items-center gap-1.5 shadow-md shadow-amber-500/20 hover:scale-105"
-              title="الذهاب إلى لوحة الإدارة العامة"
+              title="لوحة الإدارة والمخزون"
             >
               <Crown className="w-3.5 h-3.5 text-slate-950" />
-              <span>لوحة الإدارة 👑</span>
+              <span>{isOwner ? "لوحة الإدارة 👑" : "المخزون والإدارة 👑"}</span>
             </Link>
           )}
 
@@ -1633,7 +1703,15 @@ export default function PosTerminalPage() {
                     </label>
                     <select
                       value={selectedZoneId}
-                      onChange={(e) => setSelectedZoneId(e.target.value)}
+                      onChange={(e) => {
+                        setSelectedZoneId(e.target.value);
+                        const z = deliveryZones.find((x) => x.id === e.target.value);
+                        if (z) {
+                          setCustomDeliveryFee(String(z.fee));
+                        } else {
+                          setCustomDeliveryFee(String(settings?.deliveryFee || 20));
+                        }
+                      }}
                       className="w-full py-1.5 px-2 rounded-lg bg-black/80 border border-purple-500/40 text-white text-xs font-bold outline-none focus:border-purple-400"
                     >
                       <option value="">
@@ -1647,6 +1725,67 @@ export default function PosTerminalPage() {
                           </option>
                         ))}
                     </select>
+                  </div>
+
+                  {/* Dynamic Editable Delivery Fee with Quick Preset Buttons */}
+                  <div className="p-2 rounded-xl bg-sky-950/40 border border-sky-500/30 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[10px] text-amber-300 font-black flex items-center gap-1">
+                        <span>🛵 مصاريف التوصيل والدليفري (قابلة للتعديل):</span>
+                      </label>
+                      <span className="text-xs font-mono font-black text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded-md border border-amber-500/30">
+                        {deliveryFee} ج.م
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      <input
+                        type="number"
+                        min="0"
+                        step="5"
+                        value={customDeliveryFee}
+                        onChange={(e) => setCustomDeliveryFee(e.target.value)}
+                        placeholder={`تلقائي (${selectedDeliveryZone?.fee || settings?.deliveryFee || 20} ج)`}
+                        className="flex-1 py-1 px-2 rounded-lg bg-black/80 border border-amber-500/40 text-amber-200 font-mono font-bold text-xs outline-none focus:border-amber-400"
+                      />
+                      <span className="text-[10px] text-slate-400 font-bold">ج.م</span>
+                      {customDeliveryFee !== "" && (
+                        <button
+                          type="button"
+                          onClick={() => setCustomDeliveryFee("")}
+                          className="py-1 px-2 rounded-lg bg-white/10 hover:bg-rose-500/30 text-rose-300 text-[10px] font-bold transition"
+                          title="إعادة للقيمة الافتراضية للمنطقة"
+                        >
+                          تلقائي ↺
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Quick Preset Fee Buttons */}
+                    <div className="flex items-center gap-1 flex-wrap pt-0.5">
+                      {[
+                        { label: "مجاناً (0)", val: "0" },
+                        { label: "15 ج", val: "15" },
+                        { label: "20 ج", val: "20" },
+                        { label: "25 ج", val: "25" },
+                        { label: "30 ج", val: "30" },
+                        { label: "40 ج", val: "40" },
+                        { label: "50 ج", val: "50" },
+                      ].map((pill) => (
+                        <button
+                          key={pill.val}
+                          type="button"
+                          onClick={() => setCustomDeliveryFee(pill.val)}
+                          className={`py-0.5 px-2 rounded-md text-[10px] font-black transition cursor-pointer ${
+                            customDeliveryFee === pill.val
+                              ? "bg-amber-500 text-slate-950 shadow"
+                              : "bg-white/5 hover:bg-white/10 text-white/70"
+                          }`}
+                        >
+                          {pill.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                   <div>
                     <label className="text-[10px] text-slate-400 block mb-0.5 font-bold">عنوان التوصيل بالتفصيل *:</label>
@@ -2265,7 +2404,9 @@ export default function PosTerminalPage() {
                 <div className="max-h-36 overflow-y-auto space-y-1 pr-1 border border-white/5 rounded-xl p-1 bg-black/40">
                   {menuItems
                     .filter((m) => {
-                      const matchesOutlet = m.outlet?.code === "ABU_ADEL_PATISSERIE" || m.itemType === "READY_PASTRY";
+                      const matchesOutlet = (m.outletId === targetOutletId || m.outlet?.code === "ABU_ADEL_PATISSERIE") &&
+                        m.itemType !== "PREPARED_BEVERAGE" &&
+                        !["HOT_DRINKS", "ICE_COFFEE", "HOT_COFFEE", "COLD_COFFEE", "SMOOTHIE", "MILKSHAKE", "FRESH_JUICE", "MOJITO"].includes(m.category);
                       if (!matchesOutlet) return false;
                       if (!boxSearchQuery.trim()) return true;
                       return m.nameAr.toLowerCase().includes(boxSearchQuery.trim().toLowerCase());
@@ -3779,6 +3920,16 @@ export default function PosTerminalPage() {
           </div>
         </div>
       )}
+      {/* ─────────────────────────────────────────────────────────────
+          11. COMPREHENSIVE SALES & BI REPORT MODAL
+         ───────────────────────────────────────────────────────────── */}
+      <SalesReportModal
+        isOpen={showSalesReportModal}
+        onClose={() => setShowSalesReportModal(false)}
+        defaultOutletId={targetOutletId}
+        outlets={outlets}
+        isOwner={isOwner}
+      />
     </div>
   );
 }

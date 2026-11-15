@@ -12,7 +12,11 @@ export async function GET(req: Request) {
 
     const where: any = {};
     if (outletId && outletId !== "ALL") {
-      where.outletId = outletId;
+      if (outletId === "SOULMATE_CAFE" || outletId === "ABU_ADEL_PATISSERIE") {
+        where.outlet = { code: outletId };
+      } else {
+        where.outletId = outletId;
+      }
     }
     if (category && category !== "ALL") {
       where.category = category;

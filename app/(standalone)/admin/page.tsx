@@ -448,17 +448,33 @@ export default function AdminDashboardPage() {
       const user = JSON.parse(saved);
       if (
         user.role !== "owner" &&
-        user.role !== "branch_manager"
+        user.role !== "branch_manager" &&
+        user.role !== "cashier"
       ) {
         addToast("error", "عفواً، لا تملك صلاحية دخول لوحة الإدارة");
         router.replace("/pos");
         return;
       }
       setCurrentUser(user);
-      if (user.role === "branch_manager" && user.outletId) {
+      if ((user.role === "branch_manager" || user.role === "cashier") && user.outletId) {
         setSelectedOutletId(user.outletId);
         setMenuOutletFilter(user.outletId);
         setReportOutletFilter(user.outletId);
+      }
+
+      // Check tab in URL query params (Direct deep linking from POS)
+      if (typeof window !== "undefined") {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tab = urlParams.get("tab");
+        if (tab && ["overview", "treasury", "menu", "recipes", "pastry", "orders", "reservations", "chat", "loyalty", "suppliers"].includes(tab)) {
+          setActiveTab(tab as any);
+        } else if (user.role === "cashier") {
+          if (user.outlet?.code === "ABU_ADEL_PATISSERIE" || user.username?.includes("abuadel")) {
+            setActiveTab("pastry");
+          } else {
+            setActiveTab("recipes");
+          }
+        }
       }
     } catch {
       router.replace("/login");
@@ -2439,6 +2455,15 @@ export default function AdminDashboardPage() {
               />
             )}
 
+            {/* Quick Link to POS */}
+            <Link
+              href="/pos"
+              className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs border border-emerald-500/40 shadow-sm transition"
+              title="الذهاب إلى شاشة الكاشير ونقطة البيع"
+            >
+              <span>شاشة الكاشير (POS) 🛒</span>
+            </Link>
+
             <PushOptInButton
               role={isOwner ? "OWNER" : "ADMIN"}
               outletId={isOwner ? null : currentUser?.outletId || selectedOutletId || null}
@@ -2604,7 +2629,7 @@ export default function AdminDashboardPage() {
               )}
             </button>
 
-            {(isOwner || isBranchManager) && (
+            {(isOwner || isBranchManager || currentUser?.role === "cashier") && (
               <button
                 onClick={() => setActiveTab("suppliers")}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
