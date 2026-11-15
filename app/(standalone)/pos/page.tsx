@@ -534,24 +534,42 @@ export default function PosTerminalPage() {
     : (activeOutletId || currentOutlet?.id || "");
 
   const filteredMenuItems = menuItems.filter((item) => {
-    // 1. Strict Outlet Match: If targetOutletId is known, NEVER fall back to true!
-    if (targetOutletId && item.outletId && item.outletId !== targetOutletId) {
-      return false;
+    // 1. HARD BRAND ISOLATION WALL:
+    // Abu Adel is 100% Oriental & Western Patisserie & Bakery (NO cafe beverages, soft drinks, ice creams, frappe, etc.)
+    if (isAbuAdel) {
+      if (item.outlet?.code === "SOULMATE_CAFE") return false;
+      if (item.outlet?.code && item.outlet.code !== "ABU_ADEL_PATISSERIE") return false;
+      if (item.itemType === "PREPARED_BEVERAGE") return false;
+      if ([
+        "HOT_DRINKS", "ICE_COFFEE", "HOT_COFFEE", "COLD_COFFEE",
+        "SMOOTHIE", "MILKSHAKE", "FRESH_JUICE", "MOJITO",
+        "SOFT_DRINKS", "FRAPPE", "PANCAKE", "ICE_CREAM", "EXTRA"
+      ].includes(item.category)) {
+        return false;
+      }
+      if (/اسبريسو|قهوة|كافيه|لاتيه|موكا|كابتشينو|شاي|نسكافيه|عصير|سموزي|ميلك|مشروب|كوكتيل|بيبسي|مياه معدنية|سودا|فريب|فرابيه|ريد بول|سفن أب|آيس كريم|ايس كريم/i.test(item.nameAr)) {
+        return false;
+      }
     }
 
-    // 2. Strict Category & Beverage Guard (100% Brand Separation):
-    // Abu Adel is 100% Patisserie & Bakery (NO prepared cafe beverages like espresso/latte)
-    if (isAbuAdel) {
-      if (item.itemType === "PREPARED_BEVERAGE") return false;
-      if (["HOT_DRINKS", "ICE_COFFEE", "HOT_COFFEE", "COLD_COFFEE", "SMOOTHIE", "MILKSHAKE", "FRESH_JUICE", "MOJITO"].includes(item.category)) {
+    // Soul Mate is 100% Cafe & Beverages & Desserts (NO oriental sweets, kahk, large bakery/feteer)
+    if (isSoulmate) {
+      if (item.outlet?.code === "ABU_ADEL_PATISSERIE") return false;
+      if (item.outlet?.code && item.outlet.code !== "SOULMATE_CAFE") return false;
+      if ([
+        "ORIENTAL_SWEETS", "KAHK_NOVAM", "BAKERY_FETEER",
+        "CHOCOLATE_SWEETS", "CAKES_TORTES", "WESTERN_PASTRY"
+      ].includes(item.category)) {
+        return false;
+      }
+      if (/بسبوسة|كنافة|جاتوه|تورتة|بقلاوة|بلح الشام|زلابية|قطايف|كحك|بيتي فور|غريبة|هريسة|حلويات شرقية|ساليزون|باتون ساليه/i.test(item.nameAr)) {
         return false;
       }
     }
-    // Soul Mate is 100% Cafe & Beverages & Desserts (NO oriental pastries or kahk)
-    if (isSoulmate) {
-      if (["ORIENTAL_SWEETS", "KAHK_NOVAM", "BAKERY_FETEER", "CHOCOLATE_SWEETS"].includes(item.category)) {
-        return false;
-      }
+
+    // 2. Target Outlet Match: If targetOutletId is known, NEVER fall back to true!
+    if (targetOutletId && item.outletId && item.outletId !== targetOutletId) {
+      return false;
     }
 
     const isCatMatch = activeCategory === "ALL" || item.category === activeCategory;
@@ -1393,7 +1411,11 @@ export default function PosTerminalPage() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="ابحث بالاسم، فنجان قهوة، تورتة، موهيتو، كرواسون..."
+                placeholder={
+                  isAbuAdel
+                    ? "ابحث بالاسم أو الصنف (تورتة، بسبوسة، كنافة، شوكولاتة، كحك، جاتوه...)"
+                    : "ابحث بالاسم أو المشروب (اسبريسو، لاتيه، موهيتو، وافل، قهوة تركي...)"
+                }
                 className="w-full py-2 pr-9 pl-3 rounded-xl bg-black/60 border border-white/10 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-amber-400 font-bold"
               />
             </div>
@@ -2405,8 +2427,9 @@ export default function PosTerminalPage() {
                   {menuItems
                     .filter((m) => {
                       const matchesOutlet = (m.outletId === targetOutletId || m.outlet?.code === "ABU_ADEL_PATISSERIE") &&
+                        m.outlet?.code !== "SOULMATE_CAFE" &&
                         m.itemType !== "PREPARED_BEVERAGE" &&
-                        !["HOT_DRINKS", "ICE_COFFEE", "HOT_COFFEE", "COLD_COFFEE", "SMOOTHIE", "MILKSHAKE", "FRESH_JUICE", "MOJITO"].includes(m.category);
+                        !["HOT_DRINKS", "ICE_COFFEE", "HOT_COFFEE", "COLD_COFFEE", "SMOOTHIE", "MILKSHAKE", "FRESH_JUICE", "MOJITO", "SOFT_DRINKS", "FRAPPE", "PANCAKE", "ICE_CREAM", "EXTRA"].includes(m.category);
                       if (!matchesOutlet) return false;
                       if (!boxSearchQuery.trim()) return true;
                       return m.nameAr.toLowerCase().includes(boxSearchQuery.trim().toLowerCase());

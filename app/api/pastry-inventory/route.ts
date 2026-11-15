@@ -14,18 +14,20 @@ export async function GET(req: Request) {
       select: { id: true },
     });
 
+    // Strictly resolve outlet ID: default to Abu Adel, or filter by requested outlet
+    let effectiveOutletId = abuAdelOutlet?.id;
+    if (outletId && outletId !== "ALL") {
+      if (outletId === "ABU_ADEL_PATISSERIE") {
+        effectiveOutletId = abuAdelOutlet?.id;
+      } else {
+        effectiveOutletId = outletId;
+      }
+    }
+
     const where: any = {
-      OR: [
-        { outlet: { code: "ABU_ADEL_PATISSERIE" } },
-        ...(abuAdelOutlet ? [{ outletId: abuAdelOutlet.id }] : []),
-        { itemType: "READY_PASTRY" },
-      ],
+      outletId: effectiveOutletId,
     };
 
-    // If explicitly filtering by Abu Adel outlet
-    if (outletId && outletId !== "ALL" && outletId === abuAdelOutlet?.id) {
-      where.outletId = outletId;
-    }
     if (category && category !== "ALL") {
       where.category = category;
     }

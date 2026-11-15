@@ -309,6 +309,28 @@ export default function AdminDashboardPage() {
   const [selectedPastryForMovements, setSelectedPastryForMovements] = useState<any>(null);
   const [showPastryMovementsModal, setShowPastryMovementsModal] = useState(false);
 
+  // Pure Abu Adel Pastry Items (Strict Brand Wall: 100% genuine patisserie, zero cafe beverages or Soul Mate items)
+  const abuAdelPastryList = useMemo(() => {
+    const list = pastryInventory.length > 0
+      ? pastryInventory
+      : menuItems.filter((m) => m.outlet?.code === "ABU_ADEL_PATISSERIE");
+    return list.filter((item) => {
+      if (item.outlet?.code === "SOULMATE_CAFE") return false;
+      if (item.itemType === "PREPARED_BEVERAGE") return false;
+      if ([
+        "HOT_DRINKS", "ICE_COFFEE", "HOT_COFFEE", "COLD_COFFEE",
+        "SMOOTHIE", "MILKSHAKE", "FRESH_JUICE", "MOJITO",
+        "SOFT_DRINKS", "FRAPPE", "PANCAKE", "ICE_CREAM", "EXTRA"
+      ].includes(item.category)) {
+        return false;
+      }
+      if (/اسبريسو|قهوة|كافيه|لاتيه|موكا|كابتشينو|شاي|نسكافيه|عصير|سموزي|ميلك|مشروب|كوكتيل|بيبسي|مياه معدنية|سودا|فريب|فرابيه|ريد بول|سفن أب|آيس كريم|ايس كريم/i.test(item.nameAr)) {
+        return false;
+      }
+      return true;
+    });
+  }, [pastryInventory, menuItems]);
+
   // Sub-tabs for Recipes / Inventory Tab
   const [recipeSubTab, setRecipeSubTab] = useState<"cards" | "audit" | "bom">("cards");
   const [auditCounts, setAuditCounts] = useState<Record<string, string>>({});
@@ -538,7 +560,7 @@ export default function AdminDashboardPage() {
       ] = await Promise.all([
         fetch(currentUser?.role === "owner" ? "/api/recipes" : `/api/recipes${outletParam}`),
         fetch(currentUser?.role === "owner" ? "/api/menu" : `/api/menu${outletParam}`),
-        fetch("/api/pastry-inventory"),
+        fetch(currentUser?.role === "owner" && selectedOutletId === "ALL" ? "/api/pastry-inventory" : `/api/pastry-inventory${outletParam}`),
         fetch("/api/customers"),
         fetch(`/api/reservations${outletParam}`),
         fetch(`/api/chat${outletParam}`),
@@ -1577,7 +1599,7 @@ export default function AdminDashboardPage() {
 
     try {
       setIsSubmittingPastryAudit(true);
-      const auditItems = (pastryInventory.length > 0 ? pastryInventory : menuItems.filter((m) => m.itemType === "READY_PASTRY")).map((p) => {
+      const auditItems = abuAdelPastryList.map((p) => {
         const enteredVal = pastryAuditCounts[p.id];
         const actual = enteredVal !== undefined && enteredVal !== "" ? parseFloat(enteredVal) : (p.expectedStock ?? p.stockQty ?? 0);
         return {
@@ -2567,7 +2589,7 @@ export default function AdminDashboardPage() {
                 }`}
               >
                 <Cake className="w-4 h-4" />
-                <span>مخزن حلويات أبو عادل ({pastryInventory.length > 0 ? pastryInventory.length : 230} صنف)</span>
+                <span>مخزن حلويات أبو عادل ({abuAdelPastryList.length > 0 ? abuAdelPastryList.length : 230} صنف)</span>
               </button>
             )}
 
@@ -2760,7 +2782,7 @@ export default function AdminDashboardPage() {
                     <Cake className="w-4 h-4 text-emerald-400" />
                   </div>
                   <div className="text-2xl font-black text-emerald-400 font-mono">
-                    {pastryInventory.length || 230}{" "}
+                    {abuAdelPastryList.length || 230}{" "}
                     <span className="text-xs text-slate-400 font-normal">صنف</span>
                   </div>
                   <div className="text-[11px] text-slate-400 mt-2">
@@ -5275,10 +5297,7 @@ export default function AdminDashboardPage() {
                       { id: "CHOCOLATE_SWEETS", label: "الشوكولاتة" },
                       { id: "GIFT_BOXES", label: "بوكسات الهدايا" },
                     ].map((cat) => {
-                      const sourceList =
-                        pastryInventory.length > 0
-                          ? pastryInventory
-                          : menuItems.filter((m) => m.itemType === "READY_PASTRY" || m.outlet?.code === "ABU_ADEL_PATISSERIE");
+                      const sourceList = abuAdelPastryList;
                       const count =
                         cat.id === "ALL"
                           ? sourceList.length
@@ -5316,7 +5335,7 @@ export default function AdminDashboardPage() {
 
                 {/* Grid of Pastry Cards */}
                 {(() => {
-                  const source = pastryInventory.length > 0 ? pastryInventory : menuItems.filter((m) => m.itemType === "READY_PASTRY" || m.outlet?.code === "ABU_ADEL_PATISSERIE");
+                  const source = abuAdelPastryList;
                   const filtered = source.filter((item) => {
                     const matchQuery =
                       !pastrySearchQuery ||
@@ -5542,7 +5561,7 @@ export default function AdminDashboardPage() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-800 font-mono">
-                        {(pastryInventory.length > 0 ? pastryInventory : menuItems.filter((m) => m.itemType === "READY_PASTRY" || m.outlet?.code === "ABU_ADEL_PATISSERIE")).map((item) => {
+                        {abuAdelPastryList.map((item) => {
                           const unitLabel =
                             item.unitType === "KG"
                               ? "كجم"
